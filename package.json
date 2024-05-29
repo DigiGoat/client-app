@@ -16,7 +16,10 @@
     "test-renderer": "ng test -w 6",
     "test-renderer:ci": "ng test --ci --reporters=default --reporters=jest-junit",
     "test-renderer:watch": "ng test --watch",
-    "test-renderer:file": "yarn test -u --test-path-pattern"
+    "test-renderer:file": "yarn test -u --test-path-pattern",
+    "lint": "yarn lint-renderer & yarn lint-main",
+    "lint-renderer": "ng lint",
+    "lint-main": "eslint projects/main"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +39,11 @@
   "devDependencies": {
     "@angular-builders/jest": "^17.0.3",
     "@angular-devkit/build-angular": "^17.3.8",
+    "@angular-eslint/builder": "17.5.2",
+    "@angular-eslint/eslint-plugin": "17.5.2",
+    "@angular-eslint/eslint-plugin-template": "17.5.2",
+    "@angular-eslint/schematics": "17.5.2",
+    "@angular-eslint/template-parser": "17.5.2",
     "@angular/cli": "^17.3.6",
     "@angular/compiler-cli": "^17.3.0",
     "@electron-forge/cli": "^7.4.0",
@@ -47,7 +55,10 @@
     "@electron-forge/publisher-github": "^7.4.0",
     "@electron-forge/shared-types": "^7.4.0",
     "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
     "electron": "^30.0.8",
+    "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "ts-loader": "^9.5.1",

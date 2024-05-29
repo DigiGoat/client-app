@@ -136,3 +136,6 @@ out/
 
 # Testing
 /reports
+
+.nx/cache
+.nx/workspace-data
