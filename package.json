@@ -1,12 +1,17 @@
 {
   "name": "client-app",
   "version": "0.0.0",
+  "main": "dist/index.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build-main": "tsc --project projects/main/tsconfig.json",
+    "build-renderer": "ng build renderer",
+    "serve-renderer": "ng serve renderer",
+    "wait-for-serve-renderer": "wait-on http://localhost:4200",
+    "start": "yarn build-main & yarn serve-renderer & (yarn wait-for-serve-renderer && electron-forge start)",
+    "package": "yarn build-main && yarn build-renderer && electron-forge package",
+    "make": "yarn build-main && yarn build-renderer && electron-forge make",
+    "publish-app": "yarn build-main && yarn build-renderer && electron-forge publish"
   },
   "private": true,
   "dependencies": {
@@ -18,20 +23,34 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "electron-squirrel-startup": "^1.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.8",
     "@angular/cli": "^17.3.6",
     "@angular/compiler-cli": "^17.3.0",
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.4.0",
+    "@electron-forge/shared-types": "^7.4.0",
     "@types/jasmine": "~5.1.0",
+    "electron": "^30.0.8",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.4.2",
+    "wait-on": "^7.2.0"
   }
 }
