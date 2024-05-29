@@ -133,3 +133,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Testing
+/reports
