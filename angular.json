@@ -23,7 +23,7 @@
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/renderer/tsconfig.app.json",
+            "tsConfig": "projects/renderer/app.tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/renderer/src/favicon.ico",
@@ -81,7 +81,7 @@
           "builder": "@angular-builders/jest:run",
           "options": {
             "configPath": "jest.config.ts",
-            "tsConfig": "tsconfig.spec.json",
+            "tsConfig": "spec.tsconfig.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

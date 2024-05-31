@@ -8,16 +8,22 @@
     "noImplicitAny": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "outDir": "../../dist",
+    "outDir": "../../dist/main",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
       "*": [
         "node_modules/*"
       ]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
+  "files": [
+    "src/main.ts"
+  ],
   "include": [
-    "src/**/*"
+    "src/**/*.d.ts"
   ]
 }
