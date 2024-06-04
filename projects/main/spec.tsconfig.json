@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "../../out-tsc/main/spec",
+    "esModuleInterop": true,
     "types": [
       "jest"
     ]

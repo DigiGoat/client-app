@@ -3,9 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type { Config } from 'jest';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
-const config: Config = {
+const config: JestConfigWithTsJest = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -195,6 +195,16 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+  transform: {
+    // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
+    // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'projects/main/spec.tsconfig.json',
+      },
+    ],
+  },
 };
 
 export default config;
