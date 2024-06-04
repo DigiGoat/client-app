@@ -1,6 +1,6 @@
 import { BrowserWindow, app } from 'electron';
-import { MainWindow } from './main/main.window';
 import { GitService } from './services/git/git.service';
+import { MainWindow } from './windows/main/main.window';
 
 export class AppModule {
   setupHandlers() {

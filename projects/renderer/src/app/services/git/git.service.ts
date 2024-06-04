@@ -7,4 +7,6 @@ export class GitService {
 
   constructor() { }
   getInfo = window.electron.git.info;
+  isRepo = window.electron.git.isRepo;
+  init = window.electron.git.init;
 }

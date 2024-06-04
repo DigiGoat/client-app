@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 
 export class MainWindow {
-  base = join(__dirname, '../../../');
+  base = join(__dirname, '../../../../');
   constructor() {
     this.createWindow();
   }

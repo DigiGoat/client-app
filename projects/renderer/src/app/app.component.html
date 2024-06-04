@@ -1,1 +1,3 @@
 <h1>The currently installed version of git is {{info?.version}}</h1>
+<h2>The Repo {{isRepo ? 'Is' : 'Is Not'}} Initialized</h2>
+<button role="button" (click)="initRepo()" *ngIf="!isRepo">Initialize Repo</button>
