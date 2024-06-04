@@ -16,7 +16,7 @@
     "package": "(rm -r out || rmdir out) ; run-p build:* && electron-forge package",
     "make": "(rm -r out || rmdir out) ; run-p build:* && electron-forge make",
     "publish-app": "run-p build:* && electron-forge publish",
-    "test": "(rm -r coverage || rmdir coverage) run-p --continue-on-error 'test:* {@}' --",
+    "test": "(rm -r coverage || rmdir coverage) ; run-p --continue-on-error 'test:* {@}' --",
     "test:main": "jest --config projects/main/jest.config.ts -w 6",
     "test:renderer": "ng test -w 6",
     "test:preload": "jest --config projects/preload/jest.config.ts -w 6",
