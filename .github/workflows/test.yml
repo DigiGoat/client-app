@@ -1,16 +1,7 @@
 name: Jest Testing
 
 on:
-  push:
-    paths:
-      - 'src/**'
-      - '.github/workflows/test.yml'
-      - 'jest.config.ts'
   pull_request:
-    paths-ignore:
-      - 'src/**'
-      - '.github/workflows/test.yml'
-      - 'jest.config.ts'
   workflow_dispatch:
 
 permissions:
@@ -20,11 +11,10 @@ permissions:
 jobs:
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [18.x, 20.x]  # specify the Node.js versions you want to test against
     steps:
       - name: Checkout
@@ -40,27 +30,32 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Renderer Test
-        run: yarn test:renderer:ci
-
-      - name: Renderer Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Renderer Test Report (${{ matrix.os }}, ${{ matrix.node-version }})
-          path: reports/renderer/jest-*.xml
-          reporter: jest-junit
-          list-tests: 'failed'
-
-      - name: Main Test
-        if: success() || failure()
-        run: yarn test:main:ci
+      - name: Test
+        run: yarn ci:test
 
       - name: Main Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Main Test Report (${{ matrix.os }}, ${{ matrix.node-version }})
+          name: Main Test Report (${{ matrix.node-version }})
           path: reports/main/jest-*.xml
+          reporter: jest-junit
+          list-tests: 'failed'
+
+      - name: Renderer Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Renderer Test Report (${{ matrix.node-version }})
+          path: reports/renderer/jest-*.xml
+          reporter: jest-junit
+          list-tests: 'failed'
+
+      - name: Preload Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Preload Test Report (${{ matrix.node-version }})
+          path: reports/preload/jest-*.xml
           reporter: jest-junit
           list-tests: 'failed'
