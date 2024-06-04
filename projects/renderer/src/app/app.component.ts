@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { GitService } from './services/git/git.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'renderer';
+export class AppComponent implements OnInit {
+  info?: { installed: boolean; version: string; };
+  constructor(private gitService: GitService) { }
+  ngOnInit(): void {
+    this.gitService.getInfo().then(info => this.info = info);
+  }
 }
