@@ -8,9 +8,9 @@ export class MainWindow {
   }
   private window?: BrowserWindow;
   createWindow() {
-    // Create the browser window.
     this.window = new BrowserWindow({
       show: false,
+      minWidth: 992, //Minimum width for the bootstrap menubar
       webPreferences: {
         preload: join(this.base, 'preload/bundle.js')
       }
@@ -20,7 +20,12 @@ export class MainWindow {
 
     this.window.loadURL(startURL);
     this.window.on('ready-to-show', () => {
-      this.window?.show();
+      this.show();
     });
+  }
+  show() {
+    this.window?.show();
+    this.window?.setSize(992, 600);
+    this.window?.center();
   }
 }
