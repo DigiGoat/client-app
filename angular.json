@@ -33,11 +33,11 @@
             "tsConfig": "projects/renderer/tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/renderer/src/favicon.ico",
               "projects/renderer/src/assets"
             ],
             "styles": [
-              "projects/renderer/src/styles.scss"
+              "projects/renderer/src/styles.scss",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.scss"
             ],
             "scripts": []
           },
