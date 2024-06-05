@@ -1,10 +1,12 @@
 import { BrowserWindow, app } from 'electron';
 import { GitService } from './services/git/git.service';
 import { MainWindow } from './windows/main/main.window';
+import { WindowService } from './services/window/window.service';
 
 export class AppModule {
   setupHandlers() {
     new GitService();
+    new WindowService;
   }
   constructor() {
     // Handle creating/removing shortcuts on Windows when installing/uninstalling.
