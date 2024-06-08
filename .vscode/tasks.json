@@ -1,42 +1,110 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build.Main",
       "type": "npm",
-      "script": "start",
-      "isBackground": true,
+      "script": "build:main",
+      "isBackground": false,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": [
+          "relative",
+          "${cwd}"
+        ],
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "(.*?)"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation complete"
-          }
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
         }
       }
     },
     {
+      "label": "Build.Renderer",
       "type": "npm",
-      "script": "test",
+      "script": "serve:renderer",
       "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": [
+          "relative",
+          "${cwd}"
+        ],
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "(.*?)"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation complete"
-          }
+          "beginsPattern": "^.*",
+          "endsPattern": "bundle generation complete"
         }
       }
+    },
+    {
+      "label": "terminate: serve:renderer",
+      "command": "echo ${input:renderer}", // the 'start' command that's defined in the inputs list
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build",
+      "dependsOn": [
+        "Build.Main",
+        "Build.Renderer"
+      ],
+      "dependsOrder": "sequence"
+    },
+    {
+      "label": "preDebug",
+      "command": "lsof -i :9876",
+      "windows": {
+        "command": "netstat -a -n -o | findstr :9876"
+      },
+      "type": "shell",
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "openDebug",
+      "command": "echo ${input:debug}", // the 'start' command that's defined in the inputs list
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "Debug",
+      "dependsOn": [
+        "preDebug",
+        "openDebug"
+      ],
+      "dependsOrder": "sequence"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "renderer",
+      "type": "command",
+      "command": "workbench.action.tasks.terminate",
+      "args": "Build.Renderer" // the name of the task to be terminated when the 'start' command is executed.
+    },
+    {
+      "id": "debug",
+      "type": "command",
+      "command": "workbench.action.debug.start",
+      //"args": "debug Renderer"
     }
   ]
 }

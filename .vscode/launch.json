@@ -1,20 +1,46 @@
 {
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
+      "name": "Renderer",
       "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "request": "attach",
+      "port": 9876,
+      "url": "http://localhost:4200",
+      "sourceMaps": true,
+      "timeout": 10000,
+      "postDebugTask": "Debug"
     },
     {
-      "name": "ng test",
-      "type": "chrome",
+      "name": "Main",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
+      //"protocol": "inspector",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "--serve",
+        ".",
+        "--remote-debugging-port=9876"
+      ],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "preLaunchTask": "Build",
+      "postDebugTask": "terminate: serve:renderer"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Application Debug",
+      "configurations": [
+        "Main",
+        "Renderer"
+      ],
+      //"stopAll": true
     }
   ]
 }
