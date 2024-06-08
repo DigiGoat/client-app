@@ -1,0 +1,87 @@
+/** Default color value*/
+:root {
+  --main-color: hsl(230, 100%, 10%);
+  --secondary-color: hsl(230, 100%, 15%);
+  --tertiary-color: hsl(230, 100%, 20%);
+  --quaternary-color: hsl(230, 100%, 25%);
+  --text-color: white;
+
+  --main-light-color: hsl(230, 100%, 80%);
+  --secondary-light-color: hsl(230, 100%, 75%);
+  --tertiary-light-color: hsl(230, 100%, 70%);
+  --quaternary-light-color: hsl(230, 100%, 65%);
+  --text-light-color: black;
+}
+
+[data-bs-theme]app-root>div.color-scheme-main {
+  background-image: var(--background-image);
+}
+
+/**Colors for devices in dark mode*/
+:root {
+  --bs-link-color-rgb: 13, 202, 240 !important;
+  --bs-link-hover-color-rgb: 61, 213, 243 !important;
+}
+
+.nav-tabs {
+  --bs-nav-tabs-link-active-bg: var(--main-color) !important;
+}
+
+.muted {
+  color: hsl(0, 0%, 50%) !important;
+}
+
+.color-scheme-main {
+  background-color: var(--main-color) !important;
+  color: var(--text-color) !important;
+}
+
+.color-scheme-secondary {
+  background-color: var(--secondary-color) !important;
+  color: var(--text-color) !important;
+}
+
+.color-scheme-tertiary {
+  background-color: var(--tertiary-color) !important;
+  color: var(--text-color) !important;
+}
+
+.color-scheme-quaternary {
+  background-color: var(--quaternary-color) !important;
+  color: var(--text-color) !important;
+}
+
+/**Colors for devices in light mode*/
+@include color-mode(light) {
+  :root {
+    --bs-link-color-rgb: 10, 85, 195 !important;
+  }
+
+  .nav-tabs {
+    --bs-nav-tabs-link-active-bg: var(--main-light-color) !important;
+  }
+
+  .muted {
+    color: --bs-secondary-color !important;
+  }
+
+  .color-scheme-main {
+    background-color: var(--main-light-color) !important;
+    color: var(--text-light-color) !important;
+  }
+
+  .color-scheme-secondary {
+    background-color: var(--secondary-light-color) !important;
+    color: var(--text-light-color) !important;
+  }
+
+  .color-scheme-tertiary {
+    background-color: var(--tertiary-light-color) !important;
+    color: var(--text-light-color) !important;
+  }
+
+  .color-scheme-quaternary {
+    background-color: var(--quaternary-light-color) !important;
+    color: var(--text-light-color) !important;
+  }
+}
