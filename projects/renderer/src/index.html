@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>DigiGoat</title>
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
@@ -13,8 +12,15 @@
         document.execCommand('Stop');
       }
     </script>
+    <script>
+      function setTheme() {
+        document.documentElement.setAttribute("data-bs-theme", window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      }
+      setTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').onchange = setTheme;
+    </script>
   </head>
-  <body>
+  <body class="color-scheme-main">
     <app-root></app-root>
   </body>
 </html>

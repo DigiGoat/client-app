@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WindowService } from '../../../services/window/window.service';
 
 @Component({
   selector: 'app-home',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-
+  constructor(private windowService: WindowService) { }
+  async openSetup() {
+    await this.windowService.openSetup();
+    await this.windowService.close();
+  }
 }

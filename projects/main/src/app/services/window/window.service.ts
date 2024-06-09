@@ -1,8 +1,8 @@
 import { app, ipcMain, type IpcMainInvokeEvent } from 'electron';
-import { ensureDirSync } from 'fs-extra';
 import { join } from 'path';
-import { simpleGit, type SimpleGit } from 'simple-git';
 import { WindowService as WindowServiceType } from '../../../../../shared/services/window/window.service';
+import { MainWindow } from '../../windows/main/main.window';
+import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
   base = join(app.getPath('userData'), 'repo');
@@ -10,11 +10,16 @@ export class WindowService {
     close: (async (event: IpcMainInvokeEvent): ReturnType<WindowServiceType['close']> => {
       event.sender.close();
     }) as WindowServiceType['close'],
+    openSetup: async () => {
+      new SetupWindow();
+    },
+    openMain: async () => {
+      new MainWindow();
+    }
   };
-  git: SimpleGit;
   constructor() {
-    ensureDirSync(this.base);
-    this.git = simpleGit(this.base);
     ipcMain.handle('window:close', this.api.close);
+    ipcMain.handle('window:openSetup', this.api.openSetup);
+    ipcMain.handle('window:openMain', this.api.openMain);
   }
 }

@@ -3,4 +3,5 @@ import type { GitService as GitServiceType } from '../../../../../../shared/serv
 
 export const GitService: GitServiceType = {
   isRepo: () => ipcRenderer.invoke('git:isRepo'),
+  setup: (repo: string, token?: string) => ipcRenderer.invoke('git:setup', repo, token)
 };

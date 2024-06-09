@@ -1,0 +1,25 @@
+<div class="container text-center">
+  <h1>Setup Your Website:</h1>
+  <form>
+    <div class="mb-4">
+      <label for="url" class="form-label">Website ID:</label>
+      <input name="id" type="text" class="form-control" [class.is-valid]="!!id" [class.is-invalid]="!id" id="url" required
+        placeholder="ex. LilPilchuckCreek" [(ngModel)]="id">
+      <div class="valid-feedback"> Looks good! </div>
+      <div class="invalid-feedback"> Please Specify A Website ID </div>
+    </div>
+    <div class="mb-4">
+      <label for="token" class="form-label">Access Token:</label>
+      <input name="token" type="text" class="form-control" [class.is-valid]="token.startsWith('github_pat_')"
+        [class.is-invalid]="token && !token.startsWith('github_pat_')" id="token" placeholder="github_pat_" [(ngModel)]="token">
+      <div class="valid-feedback"> Looks good! </div>
+      <div class="invalid-feedback"> Tokens Must Start With `github_pat_` </div>
+    </div>
+    <div>
+      <button (click)="setup()" [disabled]="cloning || (!id || (token && !token.startsWith('github_pat_')))" type="button"
+        class="btn btn-info">Setup</button>
+    </div>
+  </form>
+  <h3 class="pt-4">OR:</h3>
+  <button (click)="setupDemo()" [disabled]="cloning" type="button" class="btn btn-warning">Preview The Demo</button>
+</div>

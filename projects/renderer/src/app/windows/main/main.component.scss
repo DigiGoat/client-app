@@ -1,0 +1,14 @@
+.nav-border {
+  position: relative;
+}
+
+.nav-border:after {
+  content: "";
+  position: absolute;
+  /* This will be your offset */
+  bottom: 3px;
+  left: 0;
+  width: 100%;
+  /* This will be your border */
+  border-bottom: 1px solid var(--bs-border-color);
+}

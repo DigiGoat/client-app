@@ -7,4 +7,5 @@ export class GitService {
 
   constructor() { }
   isRepo = window.electron.git.isRepo;
+  setup = window.electron.git.setup;
 }
