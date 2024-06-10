@@ -1,18 +1,20 @@
 import { BrowserWindow, app } from 'electron';
 import { GitService } from './services/git/git.service';
+import { ServiceModule } from './services/service.module';
 import { WindowService } from './services/window/window.service';
 import { MainWindow } from './windows/main/main.window';
 
 export class AppModule {
   setupHandlers() {
     new GitService();
-    new WindowService;
+    new WindowService();
   }
   constructor() {
     // Handle creating/removing shortcuts on Windows when installing/uninstalling.
     if (require('electron-squirrel-startup')) {
       app.quit();
     }
+    new ServiceModule();
     this.setupHandlers();
 
 
