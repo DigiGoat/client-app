@@ -5,7 +5,32 @@
       "label": "Build.Main",
       "type": "npm",
       "script": "build:main",
-      "isBackground": false,
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": [
+          "relative",
+          "${cwd}"
+        ],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
+        }
+      }
+    },
+    {
+      "label": "Build.Preload",
+      "type": "npm",
+      "script": "build:preload",
+      "isBackground": true,
       "group": {
         "kind": "build",
         "isDefault": true
@@ -61,9 +86,9 @@
       "label": "Build",
       "dependsOn": [
         "Build.Main",
-        "Build.Renderer"
+        "Build.Preload"
       ],
-      "dependsOrder": "sequence"
+      "dependsOrder": "parallel"
     },
     {
       "label": "preDebug",
