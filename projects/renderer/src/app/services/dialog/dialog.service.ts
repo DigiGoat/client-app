@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class DialogService {
 
-  constructor() { }
-
   showOpenDialog = window.electron.dialog.showOpenDialog;
   showSaveDialog = window.electron.dialog.showSaveDialog;
   showMessageBox = window.electron.dialog.showMessageBox;

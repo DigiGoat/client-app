@@ -11,4 +11,5 @@ export interface SharedModule {
 
 export type BackendService<T> = {
   [K in keyof T]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
-}; export type BackendSharedModule = Record<keyof SharedModule, BackendService<SharedModule[keyof SharedModule]>>;
+};
+export type BackendSharedModule = Record<keyof SharedModule, BackendService<SharedModule[keyof SharedModule]>>;

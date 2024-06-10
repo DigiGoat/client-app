@@ -24,7 +24,7 @@
     "ci:test:main": "JEST_JUNIT_OUTPUT_DIR='reports/main' jest --config projects/main/jest.config.ts --ci --reporters=default --reporters=jest-junit",
     "ci:test:renderer": "JEST_JUNIT_OUTPUT_DIR='reports/renderer' ng test --ci --reporters=default --reporters=jest-junit",
     "ci:test:preload": "JEST_JUNIT_OUTPUT_DIR='reports/preload' jest --config projects/preload/jest.config.ts --ci --reporters=default --reporters=jest-junit",
-    "lint": "run-p --continue-on-error lint:*",
+    "lint": "run-p --continue-on-error 'lint:* {@}' --",
     "lint:renderer": "ng lint",
     "lint:main": "eslint projects/main",
     "lint:preload": "eslint projects/preload"
