@@ -86,7 +86,8 @@
       "label": "Build",
       "dependsOn": [
         "Build.Main",
-        "Build.Preload"
+        "Build.Preload",
+        "Build.Renderer"
       ],
       "dependsOrder": "parallel"
     },

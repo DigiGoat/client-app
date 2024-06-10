@@ -36,7 +36,6 @@
   "compounds": [
     {
       "name": "Application Debug",
-      "preLaunchTask": "Build.Renderer",
       "configurations": [
         "Main",
         "Renderer"
