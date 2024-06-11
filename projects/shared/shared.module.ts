@@ -1,4 +1,5 @@
 import type { IpcMainEvent } from 'electron';
+import type { ConfigService } from './services/config/config.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
 import type { WindowService } from './services/window/window.service';
@@ -7,6 +8,7 @@ export interface SharedModule {
   git: GitService;
   window: WindowService;
   dialog: DialogService;
+  config: ConfigService;
 }
 
 type WithoutOnKeys<T> = {

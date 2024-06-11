@@ -45,12 +45,12 @@
       </div>
     </div>
     <div>
-      <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button"
-        class="btn btn-info">Setup</button>
+      <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info">Setup <i
+          class="bi bi-cloud-download"></i></button>
     </div>
   </form>
   <h3 class="pt-4">OR:</h3>
   <div>
-    <button (click)="setupDemo()" type="button" class="btn btn-warning">Preview The Demo</button>
+    <button (click)="setupDemo()" type="button" class="btn btn-warning">Preview The Demo <i class="bi bi-cloud-arrow-down"></i></button>
   </div>
 </div>

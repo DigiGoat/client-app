@@ -4,5 +4,7 @@ import type { WindowService as WindowServiceType } from '../../../../../../share
 export const WindowService: WindowServiceType = {
   close: () => ipcRenderer.invoke('window:close'),
   openSetup: () => ipcRenderer.invoke('window:openSetup'),
-  openMain: () => ipcRenderer.invoke('window:openMain')
+  openMain: () => ipcRenderer.invoke('window:openMain'),
+  openGit: () => ipcRenderer.invoke('window:openGit'),
+  quit: () => ipcRenderer.invoke('window:quit')
 };

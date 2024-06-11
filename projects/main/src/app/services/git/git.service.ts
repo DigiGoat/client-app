@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { BrowserWindow, app } from 'electron';
 import { emptyDirSync, ensureDirSync } from 'fs-extra';
 import { join } from 'path';
@@ -15,6 +16,18 @@ export class GitService {
       emptyDirSync(this.base);
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
     },
+    version: async () => {
+      return await this.git.version();
+    },
+    install: async () => {
+      if (process.platform === 'win32') {
+        execSync('start cmd /c "winget install Git.Git"');
+      } else if (process.platform === 'darwin') {
+        execSync('open -a Terminal $(which git)');
+      } else {
+        return Promise.reject('Unsupported platform');
+      }
+    }
   };
   git: SimpleGit;
   progress = (progress: SimpleGitProgressEvent) => {

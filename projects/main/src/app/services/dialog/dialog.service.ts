@@ -1,6 +1,6 @@
 import { BrowserWindow, dialog } from 'electron';
-import { DialogService as DialogServiceType } from '../../../../../shared/services/dialog/dialog.service.d';
-import { BackendService } from '../../../../../shared/shared.module.d';
+import { DialogService as DialogServiceType } from '../../../../../shared/services/dialog/dialog.service';
+import { BackendService } from '../../../../../shared/shared.module';
 export class DialogService {
   api: BackendService<DialogServiceType> = {
     showOpenDialog: async (event, options) => {
