@@ -1,4 +1,30 @@
-<div class="container text-center">
+<div *ngIf="cloning" class="container text-center d-flex flex-column justify-content-center vh-100">
+  <h4>{{resolvingProgress === 100 ? 'Done' : 'Cloning...' }}</h4>
+  <div class="progress-stacked">
+    <div class="progress" role="progressbar" [style.width]="remoteProgress  + '%'" [attr.aria-valuenow]="remoteProgress" aria-valuemin="0"
+      aria-valuemax="100">
+      <div class="progress-bar text-bg-warning" [class.progress-bar-striped]="remoteProgress < completeThreshold"
+        [class.progress-bar-animated]="!!remoteProgress">
+        {{remoteProgress < completeThreshold ? 'Connecting... ('+remoteProgress+'%)' : 'Connected'}}
+      </div>
+    </div>
+    <div class="progress" role="progressbar" [style.width]="receivingProgress + '%'" [attr.aria-valuenow]="receivingProgress"
+      aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar text-bg-info" [class.progress-bar-striped]="receivingProgress < completeThreshold"
+        [class.progress-bar-animated]="!!receivingProgress">
+        {{receivingProgress < completeThreshold ? 'Downloading... ('+receivingProgress+'%)' : 'Downloaded'}}
+      </div>
+    </div>
+    <div class="progress" role="progressbar" [style.width]="resolvingProgress + '%'" [attr.aria-valuenow]="resolvingProgress"
+      aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar text-bg-success" [class.progress-bar-striped]="resolvingProgress < completeThreshold"
+        [class.progress-bar-animated]="!!resolvingProgress">
+        {{resolvingProgress < completeThreshold ? 'Resolving... ('+resolvingProgress+'%)' : 'Resolved'}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container text-center d-flex flex-column justify-content-center vh-100" *ngIf="!cloning">
   <h1>Setup Your Website:</h1>
   <form>
     <div class="mb-4">
@@ -6,20 +32,25 @@
       <input name="id" type="text" class="form-control" [class.is-valid]="!!id" [class.is-invalid]="!id" id="url" required
         placeholder="ex. LilPilchuckCreek" [(ngModel)]="id">
       <div class="valid-feedback"> Looks good! </div>
-      <div class="invalid-feedback"> Please Specify A Website ID </div>
+      <div class="invalid-feedback"> Please Specify Your Website ID </div>
     </div>
     <div class="mb-4">
       <label for="token" class="form-label">Access Token:</label>
-      <input name="token" type="text" class="form-control" [class.is-valid]="token.startsWith('github_pat_')"
-        [class.is-invalid]="token && !token.startsWith('github_pat_')" id="token" placeholder="github_pat_" [(ngModel)]="token">
+      <input name="token" type="text" class="form-control" [class.is-valid]="token.startsWith('github_pat_') && token.length === 93"
+        [class.is-invalid]="!token.startsWith('github_pat_') || token.length !== 93" id="token" placeholder="github_pat_"
+        [(ngModel)]="token">
       <div class="valid-feedback"> Looks good! </div>
-      <div class="invalid-feedback"> Tokens Must Start With `github_pat_` </div>
+      <div class="invalid-feedback">
+        {{!token ? 'Please Specify Your Token' : !token.startsWith('github_pat_') ? 'Tokens Must Start With `github_pat_`' :  'Tokens Must Be 93 Characters Long'}}
+      </div>
     </div>
     <div>
-      <button (click)="setup()" [disabled]="cloning || (!id || (token && !token.startsWith('github_pat_')))" type="button"
+      <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button"
         class="btn btn-info">Setup</button>
     </div>
   </form>
   <h3 class="pt-4">OR:</h3>
-  <button (click)="setupDemo()" [disabled]="cloning" type="button" class="btn btn-warning">Preview The Demo</button>
+  <div>
+    <button (click)="setupDemo()" type="button" class="btn btn-warning">Preview The Demo</button>
+  </div>
 </div>
