@@ -21,7 +21,7 @@ export class GitService {
     },
     install: async () => {
       if (process.platform === 'win32') {
-        execSync('start cmd /c "winget install Git.Git"');
+        execSync('start cmd /k "winget install Git.Git"');
       } else if (process.platform === 'darwin') {
         execSync('open -a Terminal $(which git)');
       } else {
