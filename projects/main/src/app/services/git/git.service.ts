@@ -16,6 +16,9 @@ export class GitService {
       emptyDirSync(this.base);
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
     },
+    updateSetup: async (_event, repo, token) => {
+      await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
+    },
     version: async () => {
       return await this.git.version();
     },

@@ -33,6 +33,17 @@ export class SetupComponent implements OnInit {
       setTimeout(this.windowService.close, 1000);
     }
   }
+  async updateSetup() {
+    try {
+      await this.gitService.updateSetup(this.id, this.token);
+    } catch (error: unknown) {
+      const message = (error as { message: string; }).message;
+      await this.dialogService.showMessageBox({ message: 'Failed To Update!', type: 'error', detail: message.split('fatal:').pop() });
+      console.error(error);
+    } finally {
+      this.windowService.close();
+    }
+  }
   async setupDemo() {
     this.id = 'beta-demo';
     this.token = '';

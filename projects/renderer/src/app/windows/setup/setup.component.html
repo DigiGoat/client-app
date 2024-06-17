@@ -45,15 +45,17 @@
       </div>
     </div>
     <div>
-      <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info">Setup <i
-          class="bi bi-cloud-download"></i></button>
+      <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info"
+        *ngIf="!advanced">Setup <i class="bi bi-cloud-download"></i></button>
+      <button (click)="updateSetup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info"
+        *ngIf="advanced">Update <i class="bi bi-cloud-plus"></i></button>
     </div>
   </form>
   <h3 class="pt-4">OR:</h3>
   <div>
     <button (click)="setupDemo()" type="button" class="btn btn-warning" *ngIf="!advanced">Preview The Demo <i
         class="bi bi-cloud-arrow-down"></i></button>
-    <button (click)="setupBlank()" type="button" class="btn btn-warning" *ngIf="advanced">Preview A Blank Copy <i
+    <button (click)="setupBlank()" type="button" class="btn btn-warning" *ngIf="advanced">Start From Scratch <i
         class="bi bi-cloud-arrow-down-fill"></i></button>
   </div>
 </div>
