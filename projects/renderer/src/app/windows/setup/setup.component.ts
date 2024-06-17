@@ -1,4 +1,4 @@
-import { Component, signal, type OnInit } from '@angular/core';
+import { Component, HostListener, signal, type OnInit } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { WindowService } from '../../services/window/window.service';
@@ -38,6 +38,11 @@ export class SetupComponent implements OnInit {
     this.token = '';
     await this.setup();
   }
+  async setupBlank() {
+    this.id = 'web-ui';
+    this.token = '';
+    await this.setup();
+  }
   remoteProgress = signal(0);
   receivingProgress = signal(0);
   resolvingProgress = signal(0);
@@ -58,5 +63,16 @@ export class SetupComponent implements OnInit {
         }
       }
     };
+  }
+  advanced = false;
+  @HostListener('document:keydown', ['$event']) handleKeydownEvent(event: KeyboardEvent) {
+    if (event.key === 'Alt') {
+      this.advanced = true;
+    }
+  }
+  @HostListener('document:keyup', ['$event']) handleKeyupEvent(event: KeyboardEvent) {
+    if (event.key === 'Alt') {
+      this.advanced = false;
+    }
   }
 }
