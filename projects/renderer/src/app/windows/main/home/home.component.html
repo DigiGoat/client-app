@@ -1,2 +1,115 @@
-<p>home works!</p>
-<button (click)="openSetup()" role="button" class="btn btn-warning">Open Setup</button>
+<h1 class="text-center">Website Settings:</h1>
+<div class="container">
+  <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
+    <div class="mb-3 col">
+      <div class="input-group ">
+        <span class="input-group-text">Home Title:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.homeTitle" suggestion="DigiGoat Farm">
+      </div>
+      <div class="form-text">Your Farm's Name To Be Displayed On The Home Page</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Menubar Title:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.menubarTitle" suggestion="DigiGoat Farm">
+      </div>
+      <div class="form-text">Your Farm's Name To Be Displayed In The Menubar</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Tab Title:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.tabTitle" suggestion="DigiGoat">
+      </div>
+      <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Owner:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.owner" suggestion="DigiGoat">
+      </div>
+      <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Email:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.email" suggestion="rill.sized.0v@icloud.com">
+      </div>
+      <div class="form-text">Your Email To Be Displayed In The Footer & On The Homepage</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Homepage Content:</span>
+        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" suggestion="lorem ipsum dota"></textarea>
+      </div>
+      <div class="form-text">The Content To Be Displayed On The Homepage</div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings"> View Color Settings </button>
+      <div class="collapse p-3 color-scheme-secondary" id="colorSettings">
+        <div class="input-group ">
+          <span class="input-group-text">Main:</span>
+          <input type="text" class="form-control" [ngModel]="configService.colors.main"
+            (ngModelChange)="configService.colors = {main: $event}"
+            [style.background-color]="configService.colors.main || 'hsl(230, 100%, 10%)'" suggestion="hsl(230, 100%, 10%)">
+          <input type="text" class="form-control light" [ngModel]="configService.colors.light?.main"
+            (ngModelChange)="configService.colors = {light: {main: $event}}"
+            [style.background-color]="configService.colors.light?.main || 'hsl(230, 100%, 80%)'" suggestion="hsl(230, 100%, 80%)">
+        </div>
+        <div class="form-text">Primarily used for the background of the page</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Secondary:</span>
+          <input type="text" class="form-control" [ngModel]="configService.colors.secondary"
+            (ngModelChange)="configService.colors = {secondary: $event}"
+            [style.background-color]="configService.colors.secondary || 'hsl(230, 100%, 15%)'" suggestion="hsl(230, 100%, 15%)">
+          <input type="text" class="form-control light" suggestion="hsl(230, 100%, 75%)" [ngModel]="configService.colors.light?.secondary"
+            (ngModelChange)="configService.colors = {light: {secondary: $event}}"
+            [style.background-color]="configService.colors.light?.secondary || 'hsl(230, 100%, 75%)'">
+        </div>
+        <div class="form-text">Primarily used for the menubar</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Tertiary:</span>
+          <input type="text" class="form-control" [ngModel]="configService.colors.tertiary"
+            (ngModelChange)="configService.colors = {tertiary: $event}"
+            [style.background-color]="configService.colors.tertiary || 'hsl(230, 100%, 20%)'" suggestion="hsl(230, 100%, 20%)">
+          <input type="text" class="form-control light" [ngModel]="configService.colors.light?.tertiary"
+            (ngModelChange)="configService.colors = {light: {tertiary: $event}}"
+            [style.background-color]="configService.colors.light?.tertiary || 'hsl(230, 100%, 70%)'" suggestion="hsl(230, 100%, 70%)">
+        </div>
+        <div class="form-text">Primarily used for the header and footer of your goats popups</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Quaternary:</span>
+          <input type="text" class="form-control" [ngModel]="configService.colors.quaternary"
+            (ngModelChange)="configService.colors = {quaternary: $event}"
+            [style.background-color]="configService.colors.quaternary || 'hsl(230, 100%, 25%)'" suggestion="hsl(230, 100%, 25%)">
+          <input type="text" class="form-control light" [ngModel]="configService.colors.light?.quaternary"
+            (ngModelChange)="configService.colors = {light: {quaternary: $event}}"
+            [style.background-color]="configService.colors.light?.quaternary || 'hsl(230, 100%, 65%)'" suggestion="hsl(230, 100%, 65%)">
+        </div>
+        <div class="form-text">Primarily used for the background of your goats popups</div>
+      </div>
+      <div class="form-text">The Colors to be used on your website (Dark mode on the left, light mode on the right) </div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings"> View Analytics </button>
+      <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
+        <div class="input-group ">
+          <span class="input-group-text">GTAG:</span>
+          <input type="text" class="form-control" [ngModel]="configService.analytics.gtag"
+            (ngModelChange)="configService.analytics = {gtag: $event}">
+        </div>
+        <div class="form-text">Your Google Analytics Tag ID</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Clarity:</span>
+          <input type="text" class="form-control" [ngModel]="configService.analytics.clarity"
+            (ngModelChange)="configService.analytics = {clarity: $event}">
+        </div>
+        <div class="form-text">Your Microsoft Clarity ID</div>
+      </div>
+      <div class="form-text">The Analytics Settings For Your Website</div>
+    </div>
+  </div>
+  <div class="mb-3 text-center">
+    <button class="btn btn-warning w-25" type="button" (click)="openSetup()"> Switch Website's </button>
+  </div>

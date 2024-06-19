@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { FormsModule } from '@angular/forms';
 import { SuggestionDirective } from '../../directives/suggestion/suggestion.directive';
 import { TextareaDirective } from '../../directives/textarea/textarea.directive';
 import { GoatsComponent } from './goats/goats.component';
@@ -19,7 +20,8 @@ import { MainComponent } from './main.component';
   ],
   imports: [
     CommonModule,
-    MainRoutingModule
+    MainRoutingModule,
+    FormsModule
   ],
   exports: [MainComponent]
 })

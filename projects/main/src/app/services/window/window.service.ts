@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import { WindowService as WindowServiceType } from '../../../../../shared/services/window/window.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 import { GitWindow } from '../../windows/git/git.window';
@@ -7,8 +7,14 @@ import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
   api: BackendService<WindowServiceType> = {
-    close: async (event) => {
-      event.sender.close();
+    close: (event, ignoreChanges) => {
+      return new Promise(resolve => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        if (ignoreChanges) {
+          window.setDocumentEdited(false);
+        }
+        window.close();
+      });
     },
     openSetup: async () => {
       new SetupWindow();
@@ -21,6 +27,9 @@ export class WindowService {
     },
     quit: async () => {
       app.quit();
+    },
+    setUnsavedChanges: async (event, unsavedChanges) => {
+      BrowserWindow.fromWebContents(event.sender).setDocumentEdited(unsavedChanges);
     }
   };
 }

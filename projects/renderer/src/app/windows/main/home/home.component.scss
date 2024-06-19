@@ -1,0 +1,39 @@
+.input-group>span {
+  background-color: var(--tertiary-color);
+  color: var(--text-color);
+}
+
+.input-group>input,
+.input-group>textarea {
+  background-color: var(--quaternary-color);
+  color: var(--text-color);
+}
+
+[data-bs-theme=light] {
+  .input-group>span {
+    background-color: var(--tertiary-light-color);
+    color: var(--text-light-color);
+  }
+
+  .input-group>input,
+  .input-group>textarea {
+    background-color: var(--quaternary-light-color);
+    color: var(--text-light-color);
+  }
+}
+
+#colorSettings>div>input {
+  font-size: 0.775rem;
+  padding-left: 0.25rem;
+  padding: 0.25rem;
+  color: white;
+}
+
+#colorSettings>div>input.light {
+  color: black;
+}
+
+
+#colorSettings>div>input.light::placeholder {
+  color: hsl(0, 0%, 25%)
+}

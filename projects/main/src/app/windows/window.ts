@@ -21,5 +21,12 @@ export class Window {
       this.window?.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
       this.window?.center();
     });
+
+    this.window.on('close', event => {
+      if (this.window.documentEdited) {
+        event.preventDefault();
+        this.window.webContents.send('window:onsave');
+      }
+    });
   }
 }
