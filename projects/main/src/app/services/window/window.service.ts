@@ -7,14 +7,12 @@ import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
   api: BackendService<WindowServiceType> = {
-    close: (event, ignoreChanges) => {
-      return new Promise(resolve => {
-        const window = BrowserWindow.fromWebContents(event.sender);
-        if (ignoreChanges) {
-          window.setDocumentEdited(false);
-        }
-        window.close();
-      });
+    close: async (event, ignoreChanges) => {
+      const window = BrowserWindow.fromWebContents(event.sender);
+      if (ignoreChanges) {
+        window.setDocumentEdited(false);
+      }
+      window.close();
     },
     openSetup: async () => {
       new SetupWindow();
