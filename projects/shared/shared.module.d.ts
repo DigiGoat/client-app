@@ -2,6 +2,7 @@ import type { IpcMainEvent } from 'electron';
 import type { ConfigService } from './services/config/config.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
+import type { GoatService } from './services/goat/goat.service';
 import type { WindowService } from './services/window/window.service';
 
 export interface SharedModule {
@@ -9,6 +10,7 @@ export interface SharedModule {
   window: WindowService;
   dialog: DialogService;
   config: ConfigService;
+  goat: GoatService;
 }
 
 type WithoutOnKeys<T> = {

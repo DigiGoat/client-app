@@ -15,4 +15,6 @@ export class WindowService {
   set onsave(callback: () => void) {
     window.electron.window.onsave(callback);
   }
+  openGoat = window.electron.window.openGoat;
+  setTitle = window.electron.window.setTitle;
 }

@@ -8,5 +8,7 @@ export const WindowService: WindowServiceType = {
   openGit: () => ipcRenderer.invoke('window:openGit'),
   quit: () => ipcRenderer.invoke('window:quit'),
   setUnsavedChanges: (unsavedChanges: boolean) => ipcRenderer.invoke('window:setUnsavedChanges', unsavedChanges),
-  onsave: (callback) => ipcRenderer.on('window:onsave', () => callback())
+  onsave: (callback) => ipcRenderer.on('window:onsave', () => callback()),
+  openGoat: (type, goat) => ipcRenderer.invoke('window:openGoat', type, goat),
+  setTitle: (title) => ipcRenderer.invoke('window:setTitle', title)
 };

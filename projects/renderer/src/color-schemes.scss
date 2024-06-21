@@ -41,14 +41,26 @@
   color: var(--text-color) !important;
 }
 
+button.color-scheme-secondary:hover {
+  background-color: var(--main-color) !important;
+}
+
 .color-scheme-tertiary {
   background-color: var(--tertiary-color) !important;
   color: var(--text-color) !important;
 }
 
+button.color-scheme-tertiary:hover {
+  background-color: var(--secondary-color) !important;
+}
+
 .color-scheme-quaternary {
   background-color: var(--quaternary-color) !important;
   color: var(--text-color) !important;
+}
+
+button.color-scheme-quaternary:hover {
+  background-color: var(--tertiary-color) !important;
 }
 
 /**Colors for devices in light mode*/
@@ -75,13 +87,25 @@
     color: var(--text-light-color) !important;
   }
 
+  button.color-scheme-secondary:hover {
+    background-color: var(--main-light-color) !important;
+  }
+
   .color-scheme-tertiary {
     background-color: var(--tertiary-light-color) !important;
     color: var(--text-light-color) !important;
   }
 
+  button.color-scheme-tertiary:hover {
+    background-color: var(--secondary-light-color) !important;
+  }
+
   .color-scheme-quaternary {
     background-color: var(--quaternary-light-color) !important;
     color: var(--text-light-color) !important;
+  }
+
+  button.color-scheme-quaternary:hover {
+    background-color: var(--tertiary-light-color) !important;
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GoatService } from '../../../services/goat/goat.service';
 
 @Component({
   selector: 'app-goats',
@@ -6,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './goats.component.scss'
 })
 export class GoatsComponent {
-
+  does = this.goatService.does;
+  constructor(private goatService: GoatService) { }
 }

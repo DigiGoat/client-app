@@ -17,9 +17,9 @@ export class Window {
 
     this.window.loadURL(startURL);
     this.window.on('ready-to-show', () => {
-      this.window?.show();
-      this.window?.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
-      this.window?.center();
+      this.window.show();
+      this.window.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
+      this.window.center();
     });
 
     this.window.on('close', event => {
