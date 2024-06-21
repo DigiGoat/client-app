@@ -1,25 +1,26 @@
 <div *ngIf="cloning" class="container text-center d-flex flex-column justify-content-center vh-100">
-  <h4>{{resolvingProgress() === 100 ? 'Done' : 'Cloning...' }}</h4>
-  <div class="progress-stacked">
-    <div class="progress" role="progressbar" [style.width]="remoteProgress()  + '%'" [attr.aria-valuenow]="remoteProgress()"
-      aria-valuemin="0" aria-valuemax="100">
-      <div class="progress-bar text-bg-warning" [class.progress-bar-striped]="remoteProgress() < completeThreshold"
-        [class.progress-bar-animated]="!!remoteProgress()">
-        {{remoteProgress() < completeThreshold ? 'Connecting... ('+remoteProgress()+'%)' : 'Connected'}}
+  <h4>{{resolvingProgress() === 100 ? 'Done' : ('Cloning'+dots) }}</h4>
+  <div class="progress-stacked mb-5">
+    <div class="progress" role="progressbar" [style.width]=" (receivingProgress() === 0.5 ? (remoteProgress() || 33) : 100)+ '%'"
+      [attr.aria-valuenow]="remoteProgress()" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar text-bg-warning" [class.progress-bar-striped]="receivingProgress() === 0.5"
+        [class.progress-bar-animated]="receivingProgress() === 0.5">
+        {{receivingProgress() === 0.5  ? 'Connecting... ('+remoteProgress()+'%)' : 'Connected'}}
       </div>
     </div>
-    <div class="progress" role="progressbar" [style.width]="receivingProgress() + '%'" [attr.aria-valuenow]="receivingProgress()"
-      aria-valuemin="0" aria-valuemax="100">
-      <div class="progress-bar text-bg-info" [class.progress-bar-striped]="receivingProgress() < completeThreshold"
-        [class.progress-bar-animated]="!!receivingProgress()">
-        {{receivingProgress() < completeThreshold ? 'Downloading... ('+receivingProgress()+'%)' : 'Downloaded'}}
+    <div class="progress" role="progressbar"
+      [style.width]="(resolvingProgress() === 0.5 ? (receivingProgress() === 0.5 ? 0 : 33) : 100) + '%'"
+      [attr.aria-valuenow]="receivingProgress()" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar text-bg-info" [class.progress-bar-striped]="resolvingProgress() === 0.5"
+        [class.progress-bar-animated]="resolvingProgress() === 0.5">
+        {{resolvingProgress() === 0.5 ? 'Downloading... ('+receivingProgress()+'%)' : 'Downloaded'}}
       </div>
     </div>
-    <div class="progress" role="progressbar" [style.width]="resolvingProgress() + '%'" [attr.aria-valuenow]="resolvingProgress()"
-      aria-valuemin="0" aria-valuemax="100">
-      <div class="progress-bar text-bg-success" [class.progress-bar-striped]="resolvingProgress() < completeThreshold"
-        [class.progress-bar-animated]="!!resolvingProgress()">
-        {{resolvingProgress() < completeThreshold ? 'Resolving... ('+resolvingProgress()+'%)' : 'Resolved'}}
+    <div class="progress" role="progressbar" [style.width]="(resolvingProgress()===0.5 ? 0 : 33) + '%'"
+      [attr.aria-valuenow]="resolvingProgress()" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar text-bg-success" [class.progress-bar-striped]="resolvingProgress() < 100"
+        [class.progress-bar-animated]="resolvingProgress() < 100">
+        {{resolvingProgress() < 100 ? 'Resolving... ('+resolvingProgress()+'%)' : 'Resolved'}}
       </div>
     </div>
   </div>

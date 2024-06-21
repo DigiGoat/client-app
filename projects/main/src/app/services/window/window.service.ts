@@ -8,10 +8,13 @@ import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
   api: BackendService<WindowServiceType> = {
-    close: async (event, ignoreChanges) => {
+    close: async (event, ignoreChanges, ignoreClosable) => {
       const window = BrowserWindow.fromWebContents(event.sender);
       if (ignoreChanges) {
         window.setDocumentEdited(false);
+      }
+      if (ignoreClosable) {
+        window.setClosable(true);
       }
       window.close();
     },

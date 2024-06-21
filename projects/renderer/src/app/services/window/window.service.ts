@@ -12,6 +12,7 @@ export class WindowService {
   openGit = window.electron.window.openGit;
   quit = window.electron.window.quit;
   setUnsavedChanges = window.electron.window.setUnsavedChanges;
+  setClosable = window.electron.window.setClosable;
   set onsave(callback: () => void) {
     window.electron.window.onsave(callback);
   }

@@ -11,7 +11,17 @@ import { WindowService } from '../../services/window/window.service';
 export class SetupComponent implements OnInit {
   id = '';
   token = '';
-  cloning = false;
+  _cloning = false;
+  set cloning(cloning: boolean | undefined) {
+    if (cloning !== undefined) {
+      this._cloning = cloning;
+    }
+    this.windowService.setClosable(!cloning);
+  }
+  get cloning() {
+    return this._cloning;
+  }
+  dots = '';
   constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
   async setup() {
     this.cloning = true;
@@ -30,6 +40,7 @@ export class SetupComponent implements OnInit {
       }
       console.error(error);
     } finally {
+      this.cloning = undefined;
       setTimeout(this.windowService.close, 1000);
     }
   }
@@ -55,9 +66,8 @@ export class SetupComponent implements OnInit {
     await this.setup();
   }
   remoteProgress = signal(0);
-  receivingProgress = signal(0);
-  resolvingProgress = signal(0);
-  completeThreshold = 90;
+  receivingProgress = signal(0.5);
+  resolvingProgress = signal(0.5);
   ngOnInit() {
     this.gitService.onprogress = event => {
       if (event.method == 'clone') {
@@ -74,6 +84,13 @@ export class SetupComponent implements OnInit {
         }
       }
     };
+    setInterval(() => {
+      if (this.dots.length > 2) {
+        this.dots = '';
+      } else {
+        this.dots += '.';
+      }
+    }, 500);
   }
   advanced = false;
   @HostListener('document:keydown', ['$event']) handleKeydownEvent(event: KeyboardEvent) {
