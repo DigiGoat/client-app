@@ -17,4 +17,13 @@ export class GoatService {
     does[index] = doe;
     await window.electron.goat.setDoes(does);
   }
+  bucks = new Observable<Goat[]>(observer => {
+    window.electron.goat.getBucks().then(bucks => observer.next(bucks));
+    window.electron.goat.onBucksChange(bucks => observer.next(bucks));
+  });
+  async setBuck(index: number, buck: Goat) {
+    const bucks = await window.electron.goat.getBucks();
+    bucks[index] = buck;
+    await window.electron.goat.setBucks(bucks);
+  }
 }

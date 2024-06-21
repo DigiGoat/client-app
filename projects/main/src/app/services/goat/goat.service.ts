@@ -7,11 +7,20 @@ import type { BackendService } from '../../../../../shared/shared.module';
 export class GoatService {
   base = join(app.getPath('userData'), 'repo');
   does = join(this.base, 'src/assets/resources/does.json');
+  bucks = join(this.base, 'src/assets/resources/bucks.json');
   async getDoes() {
     try {
       return await readJson(this.does);
     } catch (err) {
       console.warn('Error Reading Does:', err);
+      return [];
+    }
+  }
+  async getBucks() {
+    try {
+      return await readJson(this.bucks);
+    } catch (err) {
+      console.warn('Error Reading Bucks:', err);
       return [];
     }
   }
@@ -21,6 +30,12 @@ export class GoatService {
     },
     setDoes: async (_event, does) => {
       await writeJSON(this.does, does);
+    },
+    getBucks: async () => {
+      return await this.getBucks();
+    },
+    setBucks: async (_event, bucks) => {
+      await writeJSON(this.bucks, bucks);
     }
   };
   constructor() {
@@ -32,6 +47,17 @@ export class GoatService {
       windows.forEach(window => {
         if (!window.isDestroyed()) {
           window.webContents.send('goat:doesChange', newDoes);
+        }
+      });
+    });
+    ensureFileSync(this.bucks);
+    watch(this.bucks, async () => {
+      const windows = BrowserWindow.getAllWindows();
+      const newBucks = await this.getBucks();
+      console.log('Bucks updated', newBucks);
+      windows.forEach(window => {
+        if (!window.isDestroyed()) {
+          window.webContents.send('goat:bucksChange', newBucks);
         }
       });
     });

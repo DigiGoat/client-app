@@ -8,5 +8,6 @@ import { GoatService } from '../../../services/goat/goat.service';
 })
 export class GoatsComponent {
   does = this.goatService.does;
+  bucks = this.goatService.bucks;
   constructor(private goatService: GoatService) { }
 }
