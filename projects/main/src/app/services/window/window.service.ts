@@ -3,6 +3,7 @@ import { WindowService as WindowServiceType } from '../../../../../shared/servic
 import type { BackendService } from '../../../../../shared/shared.module';
 import { GitWindow } from '../../windows/git/git.window';
 import { GoatWindow } from '../../windows/goat/goat.window';
+import { LoginWindow } from '../../windows/login/login.window';
 import { MainWindow } from '../../windows/main/main.window';
 import { SetupWindow } from '../../windows/setup/setup.window';
 
@@ -27,6 +28,9 @@ export class WindowService {
     openGit: async () => {
       new GitWindow();
     },
+    openLogin: async () => {
+      new LoginWindow();
+    },
     quit: async () => {
       app.quit();
     },
@@ -39,8 +43,21 @@ export class WindowService {
     openGoat: async (event, type, index) => {
       const windows = BrowserWindow.getAllWindows();
       const window = windows.find(window => window.webContents.getURL().endsWith(`goat/${type}/${index}`));
+      const otherWindow = windows.find(window => window.webContents.getURL().includes('#/goat'));
       if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
         window.focus();
+      } else if (otherWindow) {
+        let attempts = 0;
+        otherWindow.on('close', () => attempts++);
+        otherWindow.on('closed', () => {
+          if (attempts < 3 /*If there are changes, it takes two attempts to close the window*/) {
+            new GoatWindow(type, index);
+          }
+        });
+        otherWindow.close();
       } else {
         new GoatWindow(type, index);
       }
