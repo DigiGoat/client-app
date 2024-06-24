@@ -1,9 +1,9 @@
-import { Directive, ElementRef, HostBinding, HostListener, type OnInit } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, type AfterViewChecked } from '@angular/core';
 
 @Directive({
   selector: 'textarea'
 })
-export class TextareaDirective implements OnInit {
+export class TextareaDirective implements AfterViewChecked {
   @HostBinding('style.resize') resize = 'none';
   @HostBinding('style.overflow-y') overflowY = 'hidden';
   @HostBinding('style.word-wrap') wordWrap = 'break-word';
@@ -15,7 +15,7 @@ export class TextareaDirective implements OnInit {
   }
   constructor(private el: ElementRef<HTMLTextAreaElement>) {
   }
-  ngOnInit() {
+  ngAfterViewChecked() {
     this.adjust();
   }
   adjust() {
