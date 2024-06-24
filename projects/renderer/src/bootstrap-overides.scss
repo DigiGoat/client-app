@@ -4,7 +4,9 @@
 }
 
 .input-group>input,
-.input-group>textarea {
+.input-group>textarea,
+div:has(.form-label)>input,
+div:has(.form-label)>textarea {
   background-color: var(--quaternary-color);
   color: var(--text-color);
 }
@@ -16,7 +18,9 @@
   }
 
   .input-group>input,
-  .input-group>textarea {
+  .input-group>textarea,
+  div:has(.form-label)>input,
+  div:has(.form-label)>textarea {
     background-color: var(--quaternary-light-color);
     color: var(--text-light-color);
   }

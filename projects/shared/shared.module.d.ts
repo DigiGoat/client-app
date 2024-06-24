@@ -1,4 +1,5 @@
 import type { IpcMainEvent } from 'electron';
+import type { ADGAService } from './services/adga/adga.service';
 import type { ConfigService } from './services/config/config.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
@@ -11,6 +12,7 @@ export interface SharedModule {
   dialog: DialogService;
   config: ConfigService;
   goat: GoatService;
+  adga: ADGAService;
 }
 
 type WithoutOnKeys<T> = {

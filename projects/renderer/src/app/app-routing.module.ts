@@ -8,7 +8,8 @@ const routes: Routes = [
   { path: 'main', canActivate: [GitGuard, RepoGuard], loadChildren: () => import('./windows/main/main.module').then(m => m.MainModule) },
   { path: 'setup', canActivate: [GitGuard], loadChildren: () => import('./windows/setup/setup.module').then(m => m.SetupModule) },
   { path: 'git', loadChildren: () => import('./windows/git/git.module').then(m => m.GitModule) },
-  { path: 'goat', loadChildren: () => import('./windows/goat/goat.module').then(m => m.GoatModule) }
+  { path: 'goat', loadChildren: () => import('./windows/goat/goat.module').then(m => m.GoatModule) },
+  { path: 'login', loadChildren: () => import('./windows/login/login.module').then(m => m.LoginModule) }
 ];
 
 @NgModule({
