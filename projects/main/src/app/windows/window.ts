@@ -7,6 +7,7 @@ export class Window {
   constructor(options?: BrowserWindowConstructorOptions, path?: string) {
     this.window = new BrowserWindow({
       show: false,
+      backgroundColor: 'hsl(230, 100%, 10%)',
       webPreferences: {
         preload: join(this.base, 'preload/bundle.js')
       },
@@ -16,10 +17,12 @@ export class Window {
     const startURL = app.isPackaged ? `file://${join(this.base, 'renderer/browser', 'index.html')}#${path ?? ''}` : `http://localhost:4200/#/${path ?? ''}`;
 
     this.window.loadURL(startURL);
-    this.window.on('ready-to-show', () => {
-      this.window.show();
-      this.window.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
-      this.window.center();
+    this.window.once('ready-to-show', () => {
+      if (!this.window.isVisible()) {
+        this.window.show();
+        this.window.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
+        this.window.center();
+      }
     });
 
     this.window.on('close', event => {
