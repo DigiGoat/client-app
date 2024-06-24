@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, Input, type OnInit } from '@angular/core';
+import { Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
+import { ADGAService } from '../../../../services/adga/adga.service';
 import { DialogService } from '../../../../services/dialog/dialog.service';
 import { DiffService } from '../../../../services/diff/diff.service';
 import { WindowService } from '../../../../services/window/window.service';
@@ -14,7 +15,7 @@ export class GoatComponent implements OnInit {
   @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
-  constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private cdr: ChangeDetectorRef) { }
+  constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
     let initial = true;
@@ -41,6 +42,36 @@ export class GoatComponent implements OnInit {
       }
     };
   }
+  /* ------------------------------ Sync Handlers ------------------------------*/
+  @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
+  @ViewChild('dropdownButton') dropdownButton!: ElementRef<HTMLButtonElement>;
+  async syncAll() {
+    let shown = false;
+    if (!this.dropdown.nativeElement.classList.contains('show')) {
+      this.dropdownButton.nativeElement.click();
+      shown = true;
+    }
+    await Promise.all([this.syncDetails()]);
+    if (!shown && this.dropdown.nativeElement.classList.contains('show')) {
+      this.dropdownButton.nativeElement.click();
+    }
+  }
+  syncingDetails = false;
+  async syncDetails() {
+    this.syncingDetails = true;
+    try {
+      const goats = (await this.adgaService.getOwnedGoats()).items;
+      const goat = goats.find(goat => goat.normalizeId === this.id);
+      if (goat) {
+        this.goat = goat;
+      }
+    } catch (error) {
+      alert((error as { message: string; }).message);
+    } finally {
+      this.syncingDetails = false;
+    }
+  }
+  /* ------------------------------ Object Handlers ------------------------------*/
   _oldGoat: Goat = {};
   _goat: Goat = {};
   get unsavedChanges() {
@@ -56,7 +87,7 @@ export class GoatComponent implements OnInit {
     return this._goat;
   }
 
-  /* ----- Variable Accessors ----- */
+  /* ------------------------------ Variable Accessors ------------------------------ */
   get nickname() {
     return this.goat.nickname;
   }

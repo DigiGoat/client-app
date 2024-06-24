@@ -1,3 +1,28 @@
+<div *ngIf="goat.normalizeId" class="btn-group m-1 position-absolute end-0" online-only-parent>
+  <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()" [disabled]="syncingDetails">Sync
+    All <i class="bi bi-arrow-repeat" [class.spin]="syncingDetails"></i></button>
+  <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
+    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  <ul #dropdown class="dropdown-menu color-scheme-quaternary">
+    <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingDetails" (click)="syncDetails()">Sync
+        Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
+    <!--
+    <li><button type="button" class="dropdown-item" (click)="syncShows()" [disabled]="syncing">Sync Shows <i
+          class="bi bi-arrow-repeat float-end" [class.spin]="syncingShows"></i></button>
+    </li>
+    <li><button type="button" class="dropdown-item" (click)="syncLA()" [disabled]="syncing">Sync LA <i class="bi bi-arrow-repeat float-end"
+          [class.spin]="syncingLA"></i></button></li>
+    <li><button type="button" class="dropdown-item" (click)="syncAwards()" [disabled]="syncing">Sync Awards <i
+          class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button>
+    </li>
+    <li><button type="button" class="dropdown-item" (click)="syncProgeny()" [disabled]="syncing">Sync Progeny <i
+          class="bi bi-arrow-repeat float-end" [class.spin]="syncingProgeny"></i></button>
+    </li>
+  -->
+  </ul>
+</div>
 <h1 class="text-center" *ngIf="goat.nickname || goat.name || goat.normalizeId">{{goat.nickname || goat.name || goat.normalizeId}}:</h1>
 <div class="row px-3 row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
   <div class="mb-3 col">
@@ -39,7 +64,8 @@
   <div class="mb-3 col">
     <div class="input-group">
       <span class="input-group-text">Color And Markings:</span>
-      <input type="text" class="form-control" [(ngModel)]="colorAndMarking" (ngModelChange)="goat = {colorAndMarking: $event}">
+      <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"
+        (ngModelChange)="goat = {colorAndMarking: $event}"></textarea>
     </div>
     <div class="form-text">What Your Goat Looks Like</div>
   </div>
