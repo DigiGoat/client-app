@@ -8,6 +8,7 @@ import { GoatsComponent } from './goats/goats.component';
 import { HomeComponent } from './home/home.component';
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
+import { SettingsComponent } from './settings/settings.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { MainComponent } from './main.component';
     HomeComponent,
     MainComponent,
     GoatsComponent,
-    GoatListComponent
+    GoatListComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,

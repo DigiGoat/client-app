@@ -4,12 +4,14 @@ import { SaveGuard } from '../../guards/save/save.guard';
 import { GoatsComponent } from './goats/goats.component';
 import { HomeComponent } from './home/home.component';
 import { MainComponent } from './main.component';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   {
     path: '', component: MainComponent, children: [
       { path: 'home', component: HomeComponent, canDeactivate: [SaveGuard] },
       { path: 'goats', component: GoatsComponent },
+      { path: 'settings', component: SettingsComponent },
       { path: '', redirectTo: '/main/home', pathMatch: 'full' }
     ]
   }

@@ -6,6 +6,7 @@ export const WindowService: WindowServiceType = {
   openSetup: () => ipcRenderer.invoke('window:openSetup'),
   openMain: () => ipcRenderer.invoke('window:openMain'),
   openGit: () => ipcRenderer.invoke('window:openGit'),
+  openLogin: () => ipcRenderer.invoke('window:openLogin'),
   quit: () => ipcRenderer.invoke('window:quit'),
   setUnsavedChanges: (unsavedChanges: boolean) => ipcRenderer.invoke('window:setUnsavedChanges', unsavedChanges),
   setClosable: (closable) => ipcRenderer.invoke('window:setClosable', closable),

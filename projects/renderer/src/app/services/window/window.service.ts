@@ -10,6 +10,7 @@ export class WindowService {
   openSetup = window.electron.window.openSetup;
   openMain = window.electron.window.openMain;
   openGit = window.electron.window.openGit;
+  openLogin = window.electron.window.openLogin;
   quit = window.electron.window.quit;
   setUnsavedChanges = window.electron.window.setUnsavedChanges;
   setClosable = window.electron.window.setClosable;
