@@ -10,7 +10,7 @@ export class ADGAService {
   adga?: ADGA;
   accountPath = join(app.getPath('userData'), 'ADGA Account');
   account?: { username: string, password: string, id?: number, email: string, name: string; };
-  noADGAMessage = Promise.reject(new Error('No ADGA Account Found!'));
+  get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
   handleError(error: Error & AxiosError) {
     if (error.isAxiosError) {
       if (error.response) {
@@ -77,8 +77,8 @@ export class ADGAService {
       (async () => {
         try {
           const info = await this.adga.getCurrentLoginInfo();
-          const profile = await this.adga.getDirectlyLinkedAccounts(this.account.id);
-          const account = { name: profile.displayName, email: info.user.emailAddress, username: this.account.username, password: this.account.password, id: this.account.id };
+          const profile = await this.adga.getMembershipDetails();
+          const account = { name: profile.account.displayName, email: info.user.emailAddress, username: this.account.username, password: this.account.password, id: this.account.id };
           await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
         } catch (err) {
           console.warn('Error Updating ADGA Info (non-fatal):', err);
