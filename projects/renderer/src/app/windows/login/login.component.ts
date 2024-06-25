@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       if (message.includes('ETIMEDOUT')) {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
       } else if (message.includes('Invalid Login ID Or Password')) {
-        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'Invalid Login ID Or Password. Please Check Your Credentials & Try Again' });
+        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'Invalid Login ID or Password. Please Check Your Credentials & Try Again' });
       } else {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'error', detail: message });
 
@@ -39,9 +39,13 @@ export class LoginComponent implements OnInit {
     }
   }
   async ngOnInit() {
-    const account = await this.adgaService.getAccount();
-    this.username = account.username;
-    this.password = account.password;
-    this.id = account.id;
+    try {
+      const account = await this.adgaService.getAccount();
+      this.username = account.username;
+      this.password = account.password;
+      this.id = account.id;
+    } catch (e) {
+      console.warn('Error Reading Account:', e);
+    }
   }
 }
