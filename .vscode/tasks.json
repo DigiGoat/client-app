@@ -93,9 +93,9 @@
     },
     {
       "label": "preDebug",
-      "command": "lsof -i :9876",
+      "command": "sleep 1 && lsof -i :9876",
       "windows": {
-        "command": "netstat -a -n -o | findstr :9876"
+        "command": "sleep 1 && netstat -a -n -o | findstr :9876"
       },
       "type": "shell",
       "presentation": {
