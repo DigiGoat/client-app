@@ -35,7 +35,7 @@ export class SetupComponent implements OnInit {
         await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Repository Not Found' });
       } else if (message.includes('The requested URL returned error: 403')) {
         await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Invalid Token' });
-      } else if (message.includes('invalid index-pack output')) {
+      } else if (message.includes('invalid index-pack output') || message.includes('Couldn\'t connect to server')) {
         await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'error', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
       } else {
         await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'error', detail: message.split('fatal:').pop() });
