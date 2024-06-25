@@ -61,7 +61,7 @@ export class ADGAService {
     this.adga = new ADGA(username, password);
     const info = await this.adga.getCurrentLoginInfo();
     const profile = await this.adga.getMembershipDetails();
-    const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id };
+    const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id ?? info.accountProfile.account.id, herdName: info.accountProfile.herdName };
     this.account = account;
     await this.writeAccount(account);
     return account;
@@ -89,7 +89,12 @@ export class ADGAService {
       if (!this.adga) {
         return this.noADGAMessage;
       }
-      return await this.adga.getOwnedGoats(this.account?.id);
+      try {
+        return await this.adga.getOwnedGoats(this.account?.id);
+      } catch (err) {
+        console.warn('Error Fetching Owned Goats:', err);
+        return this.handleError(err);
+      }
     }
   };
   constructor() {
