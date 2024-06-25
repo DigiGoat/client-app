@@ -36,21 +36,21 @@ export class ADGAService {
     if (app.isPackaged) {
       return JSON.parse(safeStorage.decryptString(await readFile(this.accountPath)));
     } else {
-      return readJSON(this.accountPath + '.raw');
+      return readJSON(this.accountPath + '.json');
     }
   }
   readAccountSync() {
     if (app.isPackaged) {
       return JSON.parse(safeStorage.decryptString(readFileSync(this.accountPath)));
     } else {
-      return readJSONSync(this.accountPath + '.raw');
+      return readJSONSync(this.accountPath + '.json');
     }
   }
   async writeAccount(account: { username: string, password: string, id?: number, email: string, name: string; }) {
     if (app.isPackaged) {
       await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
     } else {
-      await writeJSON(this.accountPath + '.raw', account);
+      await writeJSON(this.accountPath + '.json', account);
     }
   }
   async fetchAccount(username: string, password: string, id?: number) {
