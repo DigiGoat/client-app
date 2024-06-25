@@ -1,7 +1,7 @@
 import ADGA from 'adga';
 import { AxiosError } from 'axios';
 import { app, safeStorage } from 'electron';
-import { ensureFileSync, readFile, readFileSync, writeFile } from 'fs-extra';
+import { ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import { ADGAService as ADGAServiceType } from '../../../../../shared/services/adga/adga.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -32,11 +32,40 @@ export class ADGAService {
       return Promise.reject(error);
     }
   }
-
+  async readAccount() {
+    if (app.isPackaged) {
+      return JSON.parse(safeStorage.decryptString(await readFile(this.accountPath)));
+    } else {
+      return readJSON(this.accountPath + '.raw');
+    }
+  }
+  readAccountSync() {
+    if (app.isPackaged) {
+      return JSON.parse(safeStorage.decryptString(readFileSync(this.accountPath)));
+    } else {
+      return readJSONSync(this.accountPath + '.raw');
+    }
+  }
+  async writeAccount(account: { username: string, password: string, id?: number, email: string, name: string; }) {
+    if (app.isPackaged) {
+      await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
+    } else {
+      await writeJSON(this.accountPath + '.raw', account);
+    }
+  }
+  async fetchAccount(username: string, password: string, id?: number) {
+    this.adga = new ADGA(username, password);
+    const info = await this.adga.getCurrentLoginInfo();
+    const profile = await this.adga.getMembershipDetails();
+    const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id };
+    this.account = account;
+    await this.writeAccount(account);
+    return account;
+  }
   api: BackendService<ADGAServiceType> = {
     getAccount: async () => {
       try {
-        const account = JSON.parse(safeStorage.decryptString(await readFile(this.accountPath)));
+        const account = await this.readAccount();
         this.account = account;
         return this.account;
       } catch (err) {
@@ -46,13 +75,7 @@ export class ADGAService {
     },
     login: async (_event, username, password, id) => {
       try {
-        this.adga = new ADGA(username, password);
-        const info = await this.adga.getCurrentLoginInfo();
-        const profile = await this.adga.getMembershipDetails();
-        const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id };
-        this.account = account;
-        await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
-        return account;
+        return await this.fetchAccount(username, password, id);
       } catch (err) {
         console.warn('Error Logging In:', err);
         return this.handleError(err);
@@ -68,22 +91,10 @@ export class ADGAService {
   constructor() {
     ensureFileSync(this.accountPath);
     try {
-      this.account = JSON.parse(safeStorage.decryptString(readFileSync(this.accountPath)));
-      this.adga = new ADGA(this.account.username, this.account.password);
+      this.account = this.readAccountSync();
+      this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
     } catch (err) {
       console.warn('Error Accessing Account:', err);
-    }
-    if (this.adga) {
-      (async () => {
-        try {
-          const info = await this.adga.getCurrentLoginInfo();
-          const profile = await this.adga.getMembershipDetails();
-          const account = { name: profile.account.displayName, email: info.user.emailAddress, username: this.account.username, password: this.account.password, id: this.account.id };
-          await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
-        } catch (err) {
-          console.warn('Error Updating ADGA Info (non-fatal):', err);
-        }
-      })();
     }
   }
 }
