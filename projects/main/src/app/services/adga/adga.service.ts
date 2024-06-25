@@ -1,7 +1,7 @@
 import ADGA from 'adga';
 import { AxiosError } from 'axios';
 import { app, safeStorage } from 'electron';
-import { ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
+import { ensureFile, ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import { ADGAService as ADGAServiceType } from '../../../../../shared/services/adga/adga.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -34,15 +34,19 @@ export class ADGAService {
   }
   async readAccount() {
     if (app.isPackaged) {
+      await ensureFile(this.accountPath);
       return JSON.parse(safeStorage.decryptString(await readFile(this.accountPath)));
     } else {
+      await ensureFile(this.accountPath + '.json');
       return readJSON(this.accountPath + '.json');
     }
   }
   readAccountSync() {
     if (app.isPackaged) {
+      ensureFileSync(this.accountPath);
       return JSON.parse(safeStorage.decryptString(readFileSync(this.accountPath)));
     } else {
+      ensureFileSync(this.accountPath + '.json');
       return readJSONSync(this.accountPath + '.json');
     }
   }
@@ -89,12 +93,11 @@ export class ADGAService {
     }
   };
   constructor() {
-    ensureFileSync(this.accountPath);
     try {
       this.account = this.readAccountSync();
       this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
     } catch (err) {
-      console.warn('Error Accessing Account:', err);
+      console.warn('Error Accessing Account (non-fatal):', err);
     }
   }
 }
