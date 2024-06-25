@@ -47,9 +47,9 @@
     </div>
     <div>
       <button (click)="setup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info"
-        *ngIf="!advanced">Setup <i class="bi bi-cloud-download"></i></button>
+        advanced="false">Setup <i class="bi bi-cloud-download"></i></button>
       <button (click)="updateSetup()" [disabled]="!id || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info"
-        *ngIf="advanced">Update <i class="bi bi-cloud-plus"></i></button>
+        advanced>Update <i class="bi bi-cloud-plus"></i></button>
     </div>
   </form>
   <h3 class="pt-4">OR:</h3>

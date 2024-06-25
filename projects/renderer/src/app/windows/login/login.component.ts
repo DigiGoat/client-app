@@ -38,6 +38,10 @@ export class LoginComponent implements OnInit {
       setTimeout(() => this.status = 'Login', 2000);
     }
   }
+  async logout() {
+    await this.adgaService.logout();
+    this.windowService.close();
+  }
   async ngOnInit() {
     try {
       const account = await this.adgaService.getAccount();

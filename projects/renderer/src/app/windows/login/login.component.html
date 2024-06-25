@@ -25,11 +25,12 @@
       <div class="valid-feedback"> Looks good! </div>
     </div>
     <div>
-      <button (click)="login()" [disabled]="!username || !password || status !== 'Login'" type="button" class="btn "
+      <button (click)="login()" advanced="false" [disabled]="!username || !password || status !== 'Login'" type="button" class="btn btn"
         [class.btn-info]="status === 'Login'" [class.btn-warning]="status === 'Logging In...'" [class.btn-success]="status === 'Success!'"
         [class.btn-danger]="status === 'Login Failed'">{{status}} <i class="bi h3" [class.bi-person-add]="status === 'Login'"
           [class.bi-person-dash]="status === 'Logging In...'" [class.bi-person-exclamation]="status === 'Login Failed'"
           [class.bi-person-check]="status === 'Success!'"></i></button>
+      <button (click)="logout()" advanced type="button" class="btn btn-danger">Logout <i class="bi bi-person-x h3"></i></button>
     </div>
     <div>
       <h3 *ngIf="name">Welcome {{name}}</h3>

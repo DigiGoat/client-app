@@ -3,13 +3,13 @@ import { AxiosError } from 'axios';
 import { app, safeStorage } from 'electron';
 import { ensureFile, ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
-import { ADGAService as ADGAServiceType } from '../../../../../shared/services/adga/adga.service';
+import { ADGAService as ADGAServiceType, type Account } from '../../../../../shared/services/adga/adga.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
 export class ADGAService {
   adga?: ADGA;
   accountPath = join(app.getPath('userData'), 'ADGA Account');
-  account?: { username: string, password: string, id?: number, email: string, name: string; };
+  account?: Account;
   get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
   handleError(error: Error & AxiosError) {
     if (error.isAxiosError) {
@@ -50,7 +50,7 @@ export class ADGAService {
       return readJSONSync(this.accountPath + '.json');
     }
   }
-  async writeAccount(account: { username: string, password: string, id?: number, email: string, name: string; }) {
+  async writeAccount(account: Account) {
     if (app.isPackaged) {
       await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
     } else {
@@ -84,6 +84,9 @@ export class ADGAService {
         console.warn('Error Logging In:', err);
         return this.handleError(err);
       }
+    },
+    logout: async () => {
+      await this.writeAccount({} as Account);
     },
     getOwnedGoats: async () => {
       if (!this.adga) {

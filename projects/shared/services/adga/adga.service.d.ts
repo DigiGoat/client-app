@@ -3,6 +3,7 @@ import type { OwnedGoats } from 'adga';
 export interface ADGAService {
   getAccount: () => Promise<Account>;
   login: (username: string, password: string, id?: number) => Promise<Account>;
+  logout: () => Promise<void>;
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
 }
 export interface Account {
@@ -10,5 +11,6 @@ export interface Account {
   email: string;
   username: string;
   password: string;
-  id?: number;
+  id: number;
+  herdName: string;
 }

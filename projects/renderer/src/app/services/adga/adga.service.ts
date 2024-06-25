@@ -9,5 +9,6 @@ export class ADGAService {
 
   getAccount = window.electron.adga.getAccount;
   login = window.electron.adga.login;
+  logout = window.electron.adga.logout;
   getOwnedGoats = window.electron.adga.getOwnedGoats;
 }
