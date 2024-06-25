@@ -1,4 +1,5 @@
 import ADGA from 'adga';
+import { AxiosError } from 'axios';
 import { app, safeStorage } from 'electron';
 import { ensureFileSync, readFile, readFileSync, writeFile } from 'fs-extra';
 import { join } from 'path';
@@ -10,6 +11,27 @@ export class ADGAService {
   accountPath = join(app.getPath('userData'), 'ADGA Account');
   account?: { username: string, password: string, id?: number, email: string, name: string; };
   noADGAMessage = Promise.reject(new Error('No ADGA Account Found!'));
+  handleError(error: Error & AxiosError) {
+    if (error.isAxiosError) {
+      if (error.response) {
+        const response = error.response;
+        if ((response.data as { error?: { message?: string; }; }).error) {
+          const responseError = (error.response.data as { error?: { details?: string; }; }).error;
+          if (responseError.details) {
+            return Promise.reject(new Error(responseError.details));
+          } else {
+            return Promise.reject(new Error(JSON.stringify(responseError)));
+          }
+        } else {
+          return Promise.reject(new Error(`Request Failed with Status Code ${response.status} - ${response.statusText}`));
+        }
+      }
+    } else if (error.message) {
+      return Promise.reject(new Error(error.message));
+    } else {
+      return Promise.reject(error);
+    }
+  }
 
   api: BackendService<ADGAServiceType> = {
     getAccount: async () => {
@@ -26,14 +48,14 @@ export class ADGAService {
       try {
         this.adga = new ADGA(username, password);
         const info = await this.adga.getCurrentLoginInfo();
-        const profile = await this.adga.getDirectlyLinkedAccounts(id);
-        const account = { name: profile.displayName, email: info.user.emailAddress, username: username, password: password, id: id };
+        const profile = await this.adga.getMembershipDetails();
+        const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id };
         this.account = account;
         await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
         return account;
       } catch (err) {
         console.warn('Error Logging In:', err);
-        return Promise.reject(new Error('Error Logging In' + err.message));
+        return this.handleError(err);
       }
     },
     getOwnedGoats: async () => {
