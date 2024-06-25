@@ -20,16 +20,48 @@ export class WindowService {
       window.close();
     },
     openSetup: async () => {
-      new SetupWindow();
+      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/setup'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else {
+        new SetupWindow();
+      }
     },
     openMain: async () => {
-      new MainWindow();
+      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/main'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else {
+        new MainWindow();
+      }
     },
     openGit: async () => {
-      new GitWindow();
+      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/git'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else {
+        new GitWindow();
+      }
     },
     openLogin: async () => {
-      new LoginWindow();
+      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/login'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else {
+        new LoginWindow();
+      }
     },
     quit: async () => {
       app.quit();
