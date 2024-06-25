@@ -1,5 +1,6 @@
 import { Component, type OnInit } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
+import { DialogService } from '../../services/dialog/dialog.service';
 import { WindowService } from '../../services/window/window.service';
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   id?: number;
   status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
   name?: string;
-  constructor(private adgaService: ADGAService, private windowService: WindowService) { }
+  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService) { }
   async login() {
     try {
       this.windowService.setClosable(false);
@@ -25,7 +26,16 @@ export class LoginComponent implements OnInit {
     } catch (e) {
       this.status = 'Login Failed';
       this.windowService.setClosable(true);
-      setTimeout(() => this.status = 'Login', 2500);
+      const message = (e as { message: string; }).message;
+      if (message.includes('ETIMEDOUT')) {
+        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
+      } else if (message.includes('Invalid Login ID Or Password')) {
+        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'Invalid Login ID Or Password. Please Check Your Credentials & Try Again' });
+      } else {
+        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'error', detail: message });
+
+      }
+      setTimeout(() => this.status = 'Login', 2000);
     }
   }
   async ngOnInit() {
