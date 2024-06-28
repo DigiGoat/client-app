@@ -12,19 +12,17 @@ export class ADGAService {
   account?: Account;
   get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
   handleError(error: Error & AxiosError) {
-    if (error.isAxiosError) {
-      if (error.response) {
-        const response = error.response;
-        if ((response.data as { error?: { message?: string; }; }).error) {
-          const responseError = (error.response.data as { error?: { details?: string; }; }).error;
-          if (responseError.details) {
-            return Promise.reject(new Error(responseError.details));
-          } else {
-            return Promise.reject(new Error(JSON.stringify(responseError)));
-          }
+    if (error.isAxiosError && error.response) {
+      const response = error.response;
+      if ((response.data as { error?: { message?: string; }; }).error) {
+        const responseError = (error.response.data as { error?: { details?: string; }; }).error;
+        if (responseError.details) {
+          return Promise.reject(new Error(responseError.details));
         } else {
-          return Promise.reject(new Error(`Request Failed with Status Code ${response.status} - ${response.statusText}`));
+          return Promise.reject(new Error(JSON.stringify(responseError)));
         }
+      } else {
+        return Promise.reject(new Error(`Request Failed with Status Code ${response.status} - ${response.statusText}`));
       }
     } else if (error.message) {
       return Promise.reject(new Error(error.message));
