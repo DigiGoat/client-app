@@ -26,6 +26,7 @@ export class GoatComponent implements OnInit {
           this.goat = goats[this.index] ?? {};
           initial = false;
         }
+        this.windowService.setUnsavedChanges(this.unsavedChanges);
       }
     });
     this.windowService.onsave = async () => {
