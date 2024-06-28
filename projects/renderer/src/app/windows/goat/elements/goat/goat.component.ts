@@ -27,6 +27,7 @@ export class GoatComponent implements OnInit {
           initial = false;
         }
         this.windowService.setUnsavedChanges(this.unsavedChanges);
+        this.cdr.detectChanges();
       }
     });
     this.windowService.onsave = async () => {
@@ -75,9 +76,14 @@ export class GoatComponent implements OnInit {
   /* ------------------------------ Object Handlers ------------------------------*/
   _oldGoat: Goat = {};
   _goat: Goat = {};
+  get unsavedChangesDiff() {
+    return this.diffService.diff(this._oldGoat, this.goat) as Record<string, string>;
+  }
+  isDirty(parameter: string) {
+    return (parameter in this.unsavedChangesDiff);
+  }
   get unsavedChanges() {
-    const diff = this.diffService.diff(this._oldGoat, this.goat);
-    return !!Object.keys(diff).length;
+    return !!Object.keys(this.unsavedChangesDiff).length;
   }
   set goat(goat: Goat) {
     Object.assign(this._goat, goat);

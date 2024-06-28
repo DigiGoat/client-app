@@ -40,3 +40,19 @@
   //transform: translate3d(-50%, -50%, 0);
   //will-change: transform;
 }
+
+/*.unsaved {
+  color: var(--bs-teal) !important;
+  //font-style: italic !important;
+}*/
+
+.modified,
+.modified>* {
+  color: var(--bs-success) !important;
+  font-style: italic !important;
+}
+
+/*.unsaved.modified {
+  color: var(--bs-teal) !important;
+  font-style: italic !important;
+}*/
