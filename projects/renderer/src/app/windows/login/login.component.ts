@@ -29,6 +29,8 @@ export class LoginComponent implements OnInit {
       const message = (e as { message: string; }).message;
       if (message.includes('ETIMEDOUT')) {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
+      } else if (message.includes('ENOTFOUND')) {
+        await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'Failed To Connect. Please Verify Your Internet Connection & Try Again' });
       } else if (message.includes('Invalid Login ID Or Password')) {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'Invalid Login ID or Password. Please Check Your Credentials & Try Again' });
       } else {
