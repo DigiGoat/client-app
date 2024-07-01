@@ -85,6 +85,7 @@ export class ADGAService {
     },
     logout: async () => {
       await this.writeAccount({} as Account);
+      this.adga = undefined;
     },
     getOwnedGoats: async () => {
       if (!this.adga) {
@@ -112,7 +113,9 @@ export class ADGAService {
   constructor() {
     try {
       this.account = this.readAccountSync();
-      this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
+      if (this.account.username && this.account.password) {
+        this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
+      }
     } catch (err) {
       console.warn('Error Accessing Account (non-fatal):', err);
     }
