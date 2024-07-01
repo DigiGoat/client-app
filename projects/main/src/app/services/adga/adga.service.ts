@@ -96,6 +96,17 @@ export class ADGAService {
         console.warn('Error Fetching Owned Goats:', err);
         return this.handleError(err);
       }
+    },
+    getGoat: async (_event, id) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return await this.adga.getGoat(id);
+      } catch (err) {
+        console.warn('Error Fetching Goat:', err);
+        return this.handleError(err);
+      }
     }
   };
   constructor() {

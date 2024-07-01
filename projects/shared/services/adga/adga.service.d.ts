@@ -1,10 +1,11 @@
-import type { OwnedGoats } from 'adga';
+import type { Goat, OwnedGoats } from 'adga';
 
 export interface ADGAService {
   getAccount: () => Promise<Account>;
   login: (username: string, password: string, id?: number) => Promise<Account>;
   logout: () => Promise<void>;
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
+  getGoat: (id: number) => Promise<Goat['result']>;
 }
 export interface Account {
   name: string;

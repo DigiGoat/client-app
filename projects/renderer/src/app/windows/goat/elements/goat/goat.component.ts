@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
@@ -15,7 +15,7 @@ export class GoatComponent implements OnInit {
   @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
-  constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService) { }
+  constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
     let initial = true;
@@ -44,6 +44,18 @@ export class GoatComponent implements OnInit {
       }
     };
   }
+  /* Sync Helpers */
+  softMerge<T extends Record<string, unknown>>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
+    const obj3 = obj1;
+    for (const key in obj2) {
+      if (typeof obj2[key] === 'string' && (obj2[key] as string | never)?.toLowerCase() === (obj1[key] as string | never)?.toLowerCase()) {
+        continue;
+      } else {
+        obj3[key] = obj2[key];
+      }
+    }
+    return obj3;
+  }
   /* ------------------------------ Sync Handlers ------------------------------*/
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
   @ViewChild('dropdownButton') dropdownButton!: ElementRef<HTMLButtonElement>;
@@ -62,11 +74,8 @@ export class GoatComponent implements OnInit {
   async syncDetails() {
     this.syncingDetails = true;
     try {
-      const goats = (await this.adgaService.getOwnedGoats()).items;
-      const goat = goats.find(goat => goat.normalizeId === this.id);
-      if (goat) {
-        this.goat = goat;
-      }
+      const { name, dateOfBirth, normalizeId, colorAndMarking, animalTattoo } = await this.adgaService.getGoat(this.goat.id!);
+      this.goat = this.softMerge(this.goat, { name, dateOfBirth, normalizeId, colorAndMarking, animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation.name } })) });
     } catch (error) {
       alert((error as { message: string; }).message);
     } finally {
