@@ -1,5 +1,6 @@
 import { Component, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
 
 @Component({
@@ -10,7 +11,7 @@ import { GoatService } from '../../../services/goat/goat.service';
 export class BuckComponent implements OnInit {
   index = -1;
   bucks = this.goatService.bucks;
-  setter = this.goatService.setBuck;
+  setter = (index: number, buck: Goat) => this.goatService.setBuck(index, buck);
   constructor(private route: ActivatedRoute, private goatService: GoatService) {
   }
   async ngOnInit() {

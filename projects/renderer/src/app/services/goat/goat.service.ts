@@ -27,8 +27,10 @@ export class GoatService {
   });
   async setBuck(index: number, buck: Goat) {
     const bucks = await window.electron.goat.getBucks();
+    const diffMessage = this.commitMsg(bucks[index], buck);
     bucks[index] = buck;
     await window.electron.goat.setBucks(bucks);
+    await this.gitService.commitBucks([`Updated ${buck.nickname ?? buck.name ?? buck.normalizeId}`, ...diffMessage]);
   }
 
   /* -------------------- Message Parsing -------------------- */

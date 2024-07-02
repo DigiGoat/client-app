@@ -43,6 +43,9 @@ export class GitService {
     commitDoes: async (_event, message) => {
       await this.git.commit(message, this.does);
     },
+    commitBucks: async (_event, message) => {
+      await this.git.commit(message, this.bucks);
+    },
     push: async () => {
       await this.git.push('origin', 'main', ['--force']);
     }

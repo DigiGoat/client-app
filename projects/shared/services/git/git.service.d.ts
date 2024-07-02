@@ -9,5 +9,6 @@ export interface GitService {
   install: () => Promise<void>;
   getPublishedDoes: () => Promise<Goat[]>;
   commitDoes: (message: string[]) => Promise<void>;
+  commitBucks: (message: string[]) => Promise<void>;
   push: () => Promise<void>;
 }
