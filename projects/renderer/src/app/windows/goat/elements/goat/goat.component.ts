@@ -81,9 +81,9 @@ export class GoatComponent implements OnInit {
     this.syncingDetails = true;
     try {
       const { name, dateOfBirth, normalizeId, colorAndMarking, animalTattoo } = await this.adgaService.getGoat(this.goat.id!);
-      this.goat = this.softMerge(this.goat, { name, dateOfBirth, normalizeId, colorAndMarking, animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation.name } })) });
+      this.goat = this.softMerge(this.goat, { name: this.adgaService.titleCase(name), dateOfBirth, normalizeId, colorAndMarking: this.adgaService.titleCase(colorAndMarking), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation.name } })) });
     } catch (error) {
-      alert((error as { message: string; }).message);
+      await this.adgaService.handleError(error as Error, 'Error Syncing Details!');
     } finally {
       this.syncingDetails = false;
     }
