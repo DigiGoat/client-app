@@ -1,4 +1,4 @@
-import type { SimpleGitProgressEvent, VersionResult } from 'simple-git';
+import type { SimpleGitProgressEvent, StatusResult, VersionResult } from 'simple-git';
 
 export interface GitService {
   isRepo: () => Promise<boolean>;
@@ -11,4 +11,7 @@ export interface GitService {
   commitDoes: (message: string[]) => Promise<void>;
   commitBucks: (message: string[]) => Promise<void>;
   push: () => Promise<void>;
+  reset: () => Promise<void>;
+  getStatus: () => Promise<StatusResult>;
+  onchange: (callback: () => void) => void;
 }

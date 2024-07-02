@@ -41,25 +41,33 @@ export class GoatService {
   constructor() {
     ensureFileSync(this.does);
     watch(this.does, async () => {
-      const windows = BrowserWindow.getAllWindows();
-      const newDoes = await this.getDoes();
-      console.log('Does updated', newDoes);
-      windows.forEach(window => {
-        if (!window.isDestroyed()) {
-          window.webContents.send('goat:doesChange', newDoes);
-        }
-      });
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newDoes = await this.getDoes();
+        console.log('Does updated', newDoes);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:doesChange', newDoes);
+          }
+        });
+      } catch (err) {
+        console.error('Error Updating Does:', err);
+      }
     });
     ensureFileSync(this.bucks);
     watch(this.bucks, async () => {
-      const windows = BrowserWindow.getAllWindows();
-      const newBucks = await this.getBucks();
-      console.log('Bucks updated', newBucks);
-      windows.forEach(window => {
-        if (!window.isDestroyed()) {
-          window.webContents.send('goat:bucksChange', newBucks);
-        }
-      });
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newBucks = await this.getBucks();
+        console.log('Bucks updated', newBucks);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:bucksChange', newBucks);
+          }
+        });
+      } catch (err) {
+        console.error('Error Updating Bucks:', err);
+      }
     });
   }
 }

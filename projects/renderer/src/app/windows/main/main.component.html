@@ -10,10 +10,18 @@
         </li>
       </ul>
       <ul class="navbar-nav nav pe-2 d-flex justify-content-end align-items-center nav-border w-25">
-        <li class="nav-item" tooltip="Publish Changes">
-          <button type="button" class="nav-link position-relative" disabled> <i class="bi bi-cloud-upload h4"></i>
-            <span class="position-absolute translate-middle badge rounded-pill bg-success opacity-75" style="top: 25% !important;"> 4<span
-                class="visually-hidden">unread messages</span>
+        <li class="nav-item" tooltip="Publish Changes" advanced="false">
+          <button type="button" class="nav-link position-relative" [disabled]="publishing || !changes" (click)="publish()"> <i
+              class="bi bi-cloud-upload h4"></i>
+            <span class="position-absolute translate-middle badge rounded-pill bg-success opacity-75" style="top: 25% !important;"
+              *ngIf="changes"> {{changes}}<span class="visually-hidden">unread messages</span>
+            </span>
+          </button>
+        </li>
+        <li class="nav-item" tooltip="Reset Changes" advanced>
+          <button type="button" class="nav-link position-relative" (click)="reset()"> <i class="bi bi-cloud-slash h4"></i>
+            <span class="position-absolute translate-middle badge rounded-pill bg-danger opacity-75" style="top: 25% !important;">
+              {{changes}}<span class="visually-hidden">unread messages</span>
             </span>
           </button>
         </li>
