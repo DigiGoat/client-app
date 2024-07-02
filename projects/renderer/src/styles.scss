@@ -41,18 +41,20 @@
   //will-change: transform;
 }
 
-/*.unsaved {
+.unsaved,
+.unsaved>* {
   color: var(--bs-teal) !important;
   //font-style: italic !important;
-}*/
+}
 
-.modified,
-.modified>* {
+.unpublished,
+.unpublished>* {
   color: var(--bs-success) !important;
   font-style: italic !important;
 }
 
-/*.unsaved.modified {
+.unsaved.unpublished,
+.unsaved.unpublished>* {
   color: var(--bs-teal) !important;
   font-style: italic !important;
-}*/
+}

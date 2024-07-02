@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-end">
-  <h1 class="text-center flex-grow-1" *ngIf="goat.nickname || goat.name || goat.normalizeId" [class.modified]="unsavedChanges">
+  <h1 class="text-center flex-grow-1" *ngIf="goat.nickname || goat.name || goat.normalizeId" [class.unsaved]="unsavedChanges">
     {{goat.nickname || goat.name || goat.normalizeId}}:
   </h1>
   <div *ngIf="goat.id" class="btn-group p-1" online-only-parent>
@@ -31,22 +31,22 @@
 <div class="container">
   <div class="row  row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
     <div class="mb-3 col">
-      <div class="input-group" [class.modified]="isDirty('nickname')">
+      <div class="input-group" [class.unsaved]="isDirty('nickname')">
         <span class="input-group-text">Nickname:</span>
         <input type="text" class="form-control" [(ngModel)]="nickname" [suggestion]="name?.split(' ')?.pop() ?? ''">
       </div>
       <div class="form-text">Your Goat's Farm Name (Used As The Primary Identifier)</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.modified]="isDirty('name')">
+      <div class="input-group" [class.unsaved]="isDirty('name')">
         <span class="input-group-text">Name:</span>
         <input type="text" class="form-control" [(ngModel)]="name">
       </div>
       <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
     </div>
     <div class="mb-3 col">
-      <!--Should it appear modified if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
-      <div class="input-group" [class.modified]="isDirty('dateOfBirth')">
+      <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+      <div class="input-group" [class.unsaved]="isDirty('dateOfBirth')">
         <span class="input-group-text">Date Of Birth:</span>
         <input type="text" class="form-control" [ngModel]="dateOfBirth | date:'longDate'" #dateOfBirthEl
           (blur)="goat = {dateOfBirth: dateOfBirthEl.value }">
@@ -54,21 +54,21 @@
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.modified]="isDirty('normalizeId')">
+      <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
         <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD">
       </div>
       <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="isDirty('description')">
         <span class="input-group-text">Description:</span>
         <textarea type="text" class="form-control" [(ngModel)]="description"></textarea>
       </div>
       <div class="form-text">Some Information About Your Goat</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.modified]="isDirty('colorAndMarking')">
+      <div class="input-group" [class.unsaved]="isDirty('colorAndMarking')">
         <span class="input-group-text">Color And Markings:</span>
         <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"
           (ngModelChange)="goat = {colorAndMarking: $event}"></textarea>
