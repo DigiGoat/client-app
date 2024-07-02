@@ -32,7 +32,7 @@ export class ADGAService {
   getOwnedGoats = window.electron.adga.getOwnedGoats;
   getGoat = window.electron.adga.getGoat;
 
-  private lowerCaseList = ['the'];
+  private lowerCaseList = ['the', 'w'];
   private upperCaseList = ['sgch', 'dhrv', 'imax'];
   private titleCaseList = ['hot', 'me', 'old', 'in', 'day', 'van', 'fly', 'oh', 'joy', 'man', 'be', 'i\'m'];
   private parseCase(word: string) {
