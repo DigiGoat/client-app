@@ -51,6 +51,10 @@ export class GitService {
       await this.git.commit(message, this.bucks);
       this.change();
     },
+    commitConfig: async (_event, message) => {
+      await this.git.commit(message, 'src/assets/resources/config.json');
+      this.change();
+    },
     push: async () => {
       await this.git.push(['--force']);
       this.change();

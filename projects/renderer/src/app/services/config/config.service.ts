@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import type { Config } from '../../../../../shared/services/config/config.service';
 import { DialogService } from '../dialog/dialog.service';
 import { DiffService } from '../diff/diff.service';
+import { GitService } from '../git/git.service';
 import { WindowService } from '../window/window.service';
 
 @Injectable({
@@ -10,9 +11,14 @@ import { WindowService } from '../window/window.service';
 export class ConfigService {
   private _oldConfig: Config = {};
   private _config: Config = {};
-  get unsavedChanges(): boolean {
-    const diff = this.diffService.diff(this._oldConfig, this.config);
-    return !!Object.keys(diff).length;
+  get unsavedChangesDiff() {
+    return this.diffService.diff(this._oldConfig, this.config) as Record<string, string>;
+  }
+  isDirty(parameter: string) {
+    return (parameter in this.unsavedChangesDiff);
+  }
+  get unsavedChanges() {
+    return !!Object.keys(this.unsavedChangesDiff).length;
   }
   set config(config: Partial<Config>) {
     Object.assign(this._config, config);
@@ -22,14 +28,17 @@ export class ConfigService {
     return this._config;
   }
   async saveChanges() {
+    const diffMessage = this.diffService.commitMsg(this._oldConfig, this.config);
     await window.electron.config.set(this._config);
     await this.windowService.setUnsavedChanges(false);
+    await this.gitService.commitConfig(diffMessage);
   }
   async discardChanges() {
+    this._config = {};
     this.config = this._oldConfig;
     await this.windowService.setUnsavedChanges(false);
   }
-  constructor(private diffService: DiffService, private windowService: WindowService, private dialogService: DialogService) {
+  constructor(private diffService: DiffService, private windowService: WindowService, private dialogService: DialogService, private gitService: GitService) {
     this.windowService.setUnsavedChanges(false);
     window.electron.config.get().then(config => {
       this._oldConfig = config;
@@ -134,7 +143,7 @@ export class ConfigService {
     return {};
   }
   set colors(colors: ColorScheme) {
-    if (typeof (this.config['colors'] as Record<string, Record<string, string>>)['light'] === 'object' || colors.light) {
+    if (this.config['colors'] && typeof (this.config['colors'] as Record<string, Record<string, string>>)['light'] === 'object' || colors.light) {
       this.config = {
         colors: {
           ...(typeof this.config['colors'] === 'object' ? this.config['colors'] : {}),

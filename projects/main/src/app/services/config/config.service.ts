@@ -28,14 +28,18 @@ export class ConfigService {
   constructor() {
     ensureFileSync(this.config);
     watch(this.config, async () => {
-      const windows = BrowserWindow.getAllWindows();
-      const newConfig = await this.getConfig();
-      console.log('Config updated', newConfig);
-      windows.forEach(window => {
-        if (!window.isDestroyed()) {
-          window.webContents.send('config:change', newConfig);
-        }
-      });
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newConfig = await this.getConfig();
+        console.log('Config updated', newConfig);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('config:change', newConfig);
+          }
+        });
+      } catch (err) {
+        console.warn('Error Updating Config:', err);
+      }
     });
   }
 }

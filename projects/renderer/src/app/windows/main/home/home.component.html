@@ -2,42 +2,42 @@
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
     <div class="mb-3 col">
-      <div class="input-group ">
+      <div class="input-group" [class.unsaved]="configService.isDirty('homeTitle')">
         <span class="input-group-text">Home Title:</span>
         <input type="text" class="form-control" [(ngModel)]="configService.homeTitle" suggestion="DigiGoat Farm">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed On The Home Page</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="configService.isDirty('menubarTitle')">
         <span class="input-group-text">Menubar Title:</span>
         <input type="text" class="form-control" [(ngModel)]="configService.menubarTitle" suggestion="DigiGoat Farm">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed In The Menubar</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="configService.isDirty('tabTitle')">
         <span class="input-group-text">Tab Title:</span>
         <input type="text" class="form-control" [(ngModel)]="configService.tabTitle" suggestion="DigiGoat">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="configService.isDirty('owner')">
         <span class="input-group-text">Owner:</span>
         <input type="text" class="form-control" [(ngModel)]="configService.owner" suggestion="DigiGoat">
       </div>
       <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="configService.isDirty('email')">
         <span class="input-group-text">Email:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.email" suggestion="rill.sized.0v@icloud.com">
+        <input type="email" class="form-control" [(ngModel)]="configService.email" suggestion="rill.sized.0v@icloud.com">
       </div>
       <div class="form-text">Your Email To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group">
+      <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
         <span class="input-group-text">Homepage Content:</span>
         <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" suggestion="lorem ipsum dota"></textarea>
       </div>
@@ -45,9 +45,10 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings"> View Color Settings </button>
+        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings"
+        [class.unsaved]="configService.isDirty('colors')"> View Color Settings </button>
       <div class="collapse p-3 color-scheme-secondary" id="colorSettings">
-        <div class="input-group ">
+        <div class="input-group">
           <span class="input-group-text">Main:</span>
           <input type="text" class="form-control" [ngModel]="configService.colors.main"
             (ngModelChange)="configService.colors = {main: $event}"
@@ -92,7 +93,8 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings"> View Analytics </button>
+        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings"
+        [class.unsaved]="configService.isDirty('analytics')"> View Analytics </button>
       <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
         <div class="input-group ">
           <span class="input-group-text">GTAG:</span>
