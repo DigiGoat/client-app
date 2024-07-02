@@ -7,4 +7,5 @@ export interface GitService {
   onprogress: (callback: (event: SimpleGitProgressEvent) => void) => void;
   version: () => Promise<VersionResult>;
   install: () => Promise<void>;
+  getPublishedDoes: () => Promise<Goat[]>;
 }

@@ -30,6 +30,9 @@ export class GitService {
       } else {
         return Promise.reject('Unsupported platform');
       }
+    },
+    getPublishedDoes: async () => {
+      return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));
     }
   };
   git: SimpleGit;

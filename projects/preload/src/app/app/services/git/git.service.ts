@@ -7,5 +7,6 @@ export const GitService: GitServiceType = {
   updateSetup: (repo: string, token?: string) => ipcRenderer.invoke('git:updateSetup', repo, token),
   onprogress: (callback) => ipcRenderer.on('git:progress', (_event, progress) => callback(progress)),
   version: () => ipcRenderer.invoke('git:version'),
-  install: () => ipcRenderer.invoke('git:install')
+  install: () => ipcRenderer.invoke('git:install'),
+  getPublishedDoes: () => ipcRenderer.invoke('git:getPublishedDoes')
 };

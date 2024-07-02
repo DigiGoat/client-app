@@ -15,4 +15,5 @@ export class GitService {
     window.electron.git.onprogress(callback);
   }
   install = window.electron.git.install;
+  getPublishedDoes = window.electron.git.getPublishedDoes;
 }

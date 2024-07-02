@@ -139,3 +139,7 @@ out/
 
 .nx/cache
 .nx/workspace-data
+
+
+# Temporary test block until implemented
+*.spec.ts
