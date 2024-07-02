@@ -12,12 +12,16 @@ export class GitService {
     isRepo: async () => {
       return await this.git.checkIsRepo();
     },
-    setup: async (_event, repo, token) => {
+    setup: async (_event, repo, name, email, token) => {
       emptyDirSync(this.base);
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
+      await this.git.addConfig('user.name', name);
+      await this.git.addConfig('user.email', email);
     },
-    updateSetup: async (_event, repo, token) => {
+    updateSetup: async (_event, repo, name, email, token) => {
       await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
+      await this.git.addConfig('user.name', name);
+      await this.git.addConfig('user.email', email);
     },
     version: async () => {
       return await this.git.version();

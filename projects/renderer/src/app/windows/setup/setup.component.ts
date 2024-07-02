@@ -11,6 +11,8 @@ import { WindowService } from '../../services/window/window.service';
 export class SetupComponent implements OnInit {
   id = '';
   token = '';
+  name = '';
+  email = '';
   _cloning = false;
   set cloning(cloning: boolean | undefined) {
     if (cloning !== undefined) {
@@ -26,7 +28,7 @@ export class SetupComponent implements OnInit {
   async setup() {
     this.cloning = true;
     try {
-      await this.gitService.setup(this.id, this.token);
+      await this.gitService.setup(this.id, this.name, this.email, this.token);
     } catch (error: unknown) {
       const message = (error as { message: string; }).message;
       if (message.includes('Could not resolve host: github.com')) {
@@ -48,7 +50,7 @@ export class SetupComponent implements OnInit {
   }
   async updateSetup() {
     try {
-      await this.gitService.updateSetup(this.id, this.token);
+      await this.gitService.updateSetup(this.id, this.name, this.email, this.token);
     } catch (error: unknown) {
       const message = (error as { message: string; }).message;
       await this.dialogService.showMessageBox({ message: 'Failed To Update!', type: 'error', detail: message.split('fatal:').pop() });
