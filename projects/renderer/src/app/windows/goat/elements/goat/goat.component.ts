@@ -63,11 +63,17 @@ export class GoatComponent implements OnInit {
     let shown = false;
     if (!this.dropdown.nativeElement.classList.contains('show')) {
       this.dropdownButton.nativeElement.click();
+    } else {
       shown = true;
     }
     await Promise.all([this.syncDetails()]);
-    if (!shown && this.dropdown.nativeElement.classList.contains('show')) {
-      this.dropdownButton.nativeElement.click();
+    if (this.dropdown.nativeElement.classList.contains('show')) {
+      if (!shown) {
+        this.dropdownButton.nativeElement.click();
+      } else {
+        this.dropdownButton.nativeElement.click();
+        this.dropdownButton.nativeElement.click();
+      }
     }
   }
   syncingDetails = false;
