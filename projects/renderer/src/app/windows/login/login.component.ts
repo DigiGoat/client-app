@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
       this.windowService.setClosable(false);
       this.status = 'Logging In...';
       const account = await this.adgaService.login(this.username, this.password, this.id);
-      this.name = account.name;
+      this.name = this.adgaService.titleCase(account.name);
       this.status = 'Success!';
       this.windowService.setClosable(true);
       setTimeout(this.windowService.close, 1000);
