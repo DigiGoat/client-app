@@ -56,13 +56,21 @@ export class ADGAService {
     }
   }
   async fetchAccount(username: string, password: string, id?: number) {
-    this.adga = new ADGA(username, password);
-    const info = await this.adga.getCurrentLoginInfo();
-    const profile = await this.adga.getMembershipDetails();
-    const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id ?? info.accountProfile.account.id, herdName: info.accountProfile.herdName };
-    this.account = account;
-    await this.writeAccount(account);
-    return account;
+    try {
+      this.account = { username: username, password: password, id: id } as Account;
+      this.adga = new ADGA(username, password);
+      const info = await this.adga.getCurrentLoginInfo();
+      const profile = await this.adga.getMembershipDetails();
+      const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id ?? info.accountProfile.account.id, herdName: info.accountProfile.herdName };
+      this.account = account;
+      return account;
+    } catch (error) {
+      this.adga = undefined;
+      return this.handleError(error);
+    } finally {
+      await this.writeAccount(this.account);
+    }
+
   }
   api: BackendService<ADGAServiceType> = {
     getAccount: async () => {
