@@ -8,4 +8,6 @@ export interface GitService {
   version: () => Promise<VersionResult>;
   install: () => Promise<void>;
   getPublishedDoes: () => Promise<Goat[]>;
+  commitDoes: (message: string[]) => Promise<void>;
+  push: () => Promise<void>;
 }

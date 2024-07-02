@@ -8,6 +8,8 @@ import type { BackendService } from '../../../../../shared/shared.module';
 
 export class GitService {
   base = join(app.getPath('userData'), 'repo');
+  does = join(this.base, 'src/assets/resources/does.json');
+  bucks = join(this.base, 'src/assets/resources/bucks.json');
   api: BackendService<GitServiceType> = {
     isRepo: async () => {
       return await this.git.checkIsRepo();
@@ -37,6 +39,12 @@ export class GitService {
     },
     getPublishedDoes: async () => {
       return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));
+    },
+    commitDoes: async (_event, message) => {
+      await this.git.commit(message, this.does);
+    },
+    push: async () => {
+      await this.git.push('origin', 'main', ['--force']);
     }
   };
   git: SimpleGit;
