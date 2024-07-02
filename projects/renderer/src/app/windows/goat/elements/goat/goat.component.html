@@ -1,8 +1,8 @@
-<div class="d-flex">
+<div class="d-flex justify-content-end">
   <h1 class="text-center flex-grow-1" *ngIf="goat.nickname || goat.name || goat.normalizeId" [class.modified]="unsavedChanges">
     {{goat.nickname || goat.name || goat.normalizeId}}:
   </h1>
-  <div *ngIf="goat.id" class="btn-group p-1 justify-content-end" online-only-parent>
+  <div *ngIf="goat.id" class="btn-group p-1" online-only-parent>
     <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()"
       [disabled]="syncingDetails">Sync All <i class="bi bi-arrow-repeat" [class.spin]="syncingDetails"></i></button>
     <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
@@ -28,61 +28,63 @@
     </ul>
   </div>
 </div>
-<div class="row g-0 px-3 row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
-  <div class="mb-3 col">
-    <div class="input-group" [class.modified]="isDirty('nickname')">
-      <span class="input-group-text">Nickname:</span>
-      <input type="text" class="form-control" [(ngModel)]="nickname">
-    </div>
-    <div class="form-text">Your Goat's Farm Name (Used As The Primary Identifier)</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group" [class.modified]="isDirty('name')">
-      <span class="input-group-text">Name:</span>
-      <input type="text" class="form-control" [(ngModel)]="name">
-    </div>
-    <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
-  </div>
-  <div class="mb-3 col">
-    <!--Should it appear modified if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
-    <div class="input-group" [class.modified]="isDirty('dateOfBirth')">
-      <span class="input-group-text">Date Of Birth:</span>
-      <input type="text" class="form-control" [ngModel]="dateOfBirth | date:'longDate'" #dateOfBirthEl
-        (blur)="goat = {dateOfBirth: dateOfBirthEl.value }">
-    </div>
-    <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group" [class.modified]="isDirty('normalizeId')">
-      <span class="input-group-text">ID:</span>
-      <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD">
-    </div>
-    <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group">
-      <span class="input-group-text">Description:</span>
-      <textarea type="text" class="form-control" [(ngModel)]="description"></textarea>
-    </div>
-    <div class="form-text">Some Information About Your Goat</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group" [class.modified]="isDirty('colorAndMarking')">
-      <span class="input-group-text">Color And Markings:</span>
-      <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"
-        (ngModelChange)="goat = {colorAndMarking: $event}"></textarea>
-    </div>
-    <div class="form-text">What Your Goat Looks Like</div>
-  </div>
-  <div class="mb-3 col">
-    <span *ngFor="let tattoo of tattoos; index as i">
-      <div class="input-group">
-        <span class="input-group-text">Tattoo(s):</span>
-        <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
-          (ngModelChange)="setTattooLocation(i, $event)"><span class="input-group-text">:</span>
-        <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)">
+<div class="container">
+  <div class="row  row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
+    <div class="mb-3 col">
+      <div class="input-group" [class.modified]="isDirty('nickname')">
+        <span class="input-group-text">Nickname:</span>
+        <input type="text" class="form-control" [(ngModel)]="nickname" [suggestion]="name?.split(' ')?.pop() ?? ''">
       </div>
-      <div class="form-text">TODO: MAKE NEATER</div>
-    </span>
+      <div class="form-text">Your Goat's Farm Name (Used As The Primary Identifier)</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group" [class.modified]="isDirty('name')">
+        <span class="input-group-text">Name:</span>
+        <input type="text" class="form-control" [(ngModel)]="name">
+      </div>
+      <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
+    </div>
+    <div class="mb-3 col">
+      <!--Should it appear modified if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+      <div class="input-group" [class.modified]="isDirty('dateOfBirth')">
+        <span class="input-group-text">Date Of Birth:</span>
+        <input type="text" class="form-control" [ngModel]="dateOfBirth | date:'longDate'" #dateOfBirthEl
+          (blur)="goat = {dateOfBirth: dateOfBirthEl.value }">
+      </div>
+      <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group" [class.modified]="isDirty('normalizeId')">
+        <span class="input-group-text">ID:</span>
+        <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD">
+      </div>
+      <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group">
+        <span class="input-group-text">Description:</span>
+        <textarea type="text" class="form-control" [(ngModel)]="description"></textarea>
+      </div>
+      <div class="form-text">Some Information About Your Goat</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group" [class.modified]="isDirty('colorAndMarking')">
+        <span class="input-group-text">Color And Markings:</span>
+        <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"
+          (ngModelChange)="goat = {colorAndMarking: $event}"></textarea>
+      </div>
+      <div class="form-text">What Your Goat Looks Like</div>
+    </div>
+    <div class="mb-3 col">
+      <span *ngFor="let tattoo of tattoos; index as i">
+        <div class="input-group">
+          <span class="input-group-text">Tattoo(s):</span>
+          <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
+            (ngModelChange)="setTattooLocation(i, $event)"><span class="input-group-text">:</span>
+          <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)">
+        </div>
+        <div class="form-text">TODO: MAKE NEATER</div>
+      </span>
+    </div>
   </div>
 </div>
