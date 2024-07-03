@@ -1,6 +1,6 @@
 import ADGA from 'adga';
 import { AxiosError } from 'axios';
-import { app, safeStorage } from 'electron';
+import { BrowserWindow, app, safeStorage } from 'electron';
 import { ensureFile, ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import { ADGAService as ADGAServiceType, type Account } from '../../../../../shared/services/adga/adga.service';
@@ -54,6 +54,7 @@ export class ADGAService {
     } else {
       await writeJSON(this.accountPath + '.json', account);
     }
+    this.change();
   }
   async fetchAccount(username: string, password: string, id?: number) {
     try {
@@ -70,7 +71,6 @@ export class ADGAService {
     } finally {
       await this.writeAccount(this.account);
     }
-
   }
   api: BackendService<ADGAServiceType> = {
     getAccount: async () => {
@@ -127,5 +127,8 @@ export class ADGAService {
     } catch (err) {
       console.warn('Error Accessing Account (non-fatal):', err);
     }
+  }
+  change() {
+    BrowserWindow.getAllWindows().forEach(window => window.webContents.send('adga:change'));
   }
 }

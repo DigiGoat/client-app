@@ -1,6 +1,7 @@
 import { Component, type OnInit } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { DiffService } from '../../services/diff/diff.service';
 import { WindowService } from '../../services/window/window.service';
 @Component({
   selector: 'app-login',
@@ -13,13 +14,13 @@ export class LoginComponent implements OnInit {
   id?: number;
   status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
   name?: string;
-  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService) { }
+  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService) { }
   async login() {
     try {
       this.windowService.setClosable(false);
       this.status = 'Logging In...';
       const account = await this.adgaService.login(this.username, this.password, this.id);
-      this.name = this.adgaService.titleCase(account.name);
+      this.name = this.diffService.titleCase(account.name);
       this.status = 'Success!';
       this.windowService.setClosable(true);
       setTimeout(this.windowService.close, 1000);

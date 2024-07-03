@@ -48,4 +48,26 @@ export class DiffService {
   private prettyCase(key: string): string {
     return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
   }
+
+  private lowerCaseList = ['the', 'w'];
+  private upperCaseList = ['sgch', 'dhrv', 'imax'];
+  private titleCaseList = ['hot', 'me', 'old', 'in', 'day', 'van', 'fly', 'oh', 'joy', 'man', 'be', 'i\'m', 'lil'];
+  private parseCase(word: string) {
+    if (this.lowerCaseList.includes(word)) {
+      return word.toLowerCase();
+    } else if (this.upperCaseList.includes(word)) {
+      return word.toUpperCase();
+    } else if (this.titleCaseList.includes(word)) {
+      return word.replace(word[0], word[0].toUpperCase());
+    } else if (word.length < 4) {
+      return word.toUpperCase();
+    } else {
+      return word.replace(word[0], word[0].toUpperCase());
+    }
+  }
+  titleCase(str: string) {
+    str = str.toLowerCase();
+    str = str.split(' ').map(str => str.split(',').map(_str => _str.split('/').map(__str => __str.split('-').map(word => this.parseCase(word)).join('-')).join('/')).join(',')).join(' ');
+    return str;
+  }
 }

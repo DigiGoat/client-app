@@ -1,45 +1,46 @@
 <h1 class="text-center">Website Settings:</h1>
+<p class="text-center text-secondary fst-italic">Tip: You Can Autofill Most Of This Info Once You Sign Into Your ADGA Account </p>
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('homeTitle')">
         <span class="input-group-text">Home Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.homeTitle" suggestion="DigiGoat Farm">
+        <input type="text" class="form-control" [(ngModel)]="configService.homeTitle" [suggestion]="suggestionService.homeTitle">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed On The Home Page</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('menubarTitle')">
         <span class="input-group-text">Menubar Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.menubarTitle" suggestion="DigiGoat Farm">
+        <input type="text" class="form-control" [(ngModel)]="configService.menubarTitle" [suggestion]="suggestionService.menubarTitle">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed In The Menubar</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('tabTitle')">
         <span class="input-group-text">Tab Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.tabTitle" suggestion="DigiGoat">
+        <input type="text" class="form-control" [(ngModel)]="configService.tabTitle" [suggestion]="suggestionService.tabTitle">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('owner')">
         <span class="input-group-text">Owner:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.owner" suggestion="DigiGoat">
+        <input type="text" class="form-control" [(ngModel)]="configService.owner" [suggestion]="suggestionService.name">
       </div>
       <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('email')">
         <span class="input-group-text">Email:</span>
-        <input type="email" class="form-control" [(ngModel)]="configService.email" suggestion="rill.sized.0v@icloud.com">
+        <input type="email" class="form-control" [(ngModel)]="configService.email" [suggestion]="suggestionService.email">
       </div>
       <div class="form-text">Your Email To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
         <span class="input-group-text">Homepage Content:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" suggestion="lorem ipsum dota"></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription"></textarea>
       </div>
       <div class="form-text">The Content To Be Displayed On The Homepage</div>
     </div>
