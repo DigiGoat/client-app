@@ -1,4 +1,4 @@
-import { BrowserWindow, app, dialog, shell } from 'electron';
+import { BrowserWindow, Menu, app, dialog, shell, type MenuItemConstructorOptions } from 'electron';
 import { readJSON } from 'fs-extra';
 import { join } from 'path';
 import parse from 'semver/functions/parse';
@@ -12,6 +12,43 @@ export class AppModule {
       app.quit();
     }
     new ServiceModule();
+    const template: MenuItemConstructorOptions[] = [
+      { role: 'appMenu' },
+      { role: 'fileMenu' },
+      { role: 'editMenu' },
+      app.isPackaged ? {
+        label: 'View',
+        submenu: [
+          { role: 'resetZoom' },
+          { role: 'zoomIn' },
+          { role: 'zoomOut' },
+          { type: 'separator' },
+          { role: 'togglefullscreen' }
+        ]
+      } : { role: 'viewMenu' },
+      { role: 'windowMenu' },
+      {
+        role: 'help',
+        submenu: [
+          {
+            label: 'View web-ui Repository',
+            click: async () => {
+              await shell.openExternal('https://github.com/DigiGoat/web-ui');
+            }
+          },
+          {
+            label: 'View client-app Repository',
+            click: async () => {
+              await shell.openExternal('https://github.com/DigiGoat/client-app');
+            }
+          }
+        ]
+      }
+    ];
+
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+
 
 
     // This method will be called when Electron has finished
