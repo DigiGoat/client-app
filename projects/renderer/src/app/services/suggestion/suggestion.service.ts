@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ApplicationRef, Injectable } from '@angular/core';
 import { ADGAService } from '../adga/adga.service';
 import { DiffService } from '../diff/diff.service';
 
@@ -11,9 +11,10 @@ export class SuggestionService {
       this.name = this.diffService.titleCase(account.name ?? '');
       this.email = account.email ?? '';
       this.herdName = account.herdName ?? '';
+      this.applicationRef.tick();
     });
   }
-  constructor(private adgaService: ADGAService, private diffService: DiffService) {
+  constructor(private adgaService: ADGAService, private diffService: DiffService, private applicationRef: ApplicationRef) {
     this.suggestAccount();
     this.adgaService.onchange = () => this.suggestAccount();
   }
@@ -22,7 +23,7 @@ export class SuggestionService {
 
   private herdName = '';
   get homeTitle() {
-    return this.diffService.titleCase(this.herdName.endsWith('FARM') ? this.herdName : `${this.herdName} FARM`);
+    return this.diffService.titleCase((this.herdName.endsWith('FARM') || !this.herdName) ? this.herdName : `${this.herdName} FARM`);
   }
   get menubarTitle() {
     return this.homeTitle;

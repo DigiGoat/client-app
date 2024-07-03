@@ -1,5 +1,6 @@
 <h1 class="text-center">Website Settings:</h1>
-<p class="text-center text-secondary fst-italic">Tip: You Can Autofill Most Of This Info Once You Sign Into Your ADGA Account </p>
+<p class="text-center text-secondary fst-italic" *ngIf="!suggestionService.name">Tip: You Can Autofill Most Of This Info Once You <button
+    class="btn btn-link text-secondary fst-italic p-0" (click)="openLogin()">Login To Your ADGA Account</button> </p>
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
     <div class="mb-3 col">

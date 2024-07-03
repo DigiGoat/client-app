@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ConfigService } from '../../../services/config/config.service';
-import { WindowService } from '../../../services/window/window.service';
 import { SuggestionService } from '../../../services/suggestion/suggestion.service';
+import { WindowService } from '../../../services/window/window.service';
 
 @Component({
   selector: 'app-home',
@@ -15,5 +15,8 @@ export class HomeComponent {
   async openSetup() {
     await this.windowService.openSetup();
     await this.windowService.close();
+  }
+  async openLogin() {
+    await this.windowService.openLogin();
   }
 }
