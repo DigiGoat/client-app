@@ -1,7 +1,7 @@
 {
   "name": "client-app",
   "productName": "DigiGoat",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -46,6 +46,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "fs-extra": "^11.2.0",
     "rxjs": "~7.8.0",
+    "semver": "^7.6.2",
     "simple-git": "^3.24.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
@@ -70,6 +71,7 @@
     "@types/bootstrap": "^5.2.10",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.12",
+    "@types/semver": "^7.5.8",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",
