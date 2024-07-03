@@ -58,3 +58,7 @@
   color: var(--bs-teal) !important;
   font-style: italic !important;
 }
+
+[suggestion]::placeholder {
+  font-style: italic;
+}
