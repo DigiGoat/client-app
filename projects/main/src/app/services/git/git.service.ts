@@ -1,7 +1,9 @@
 import { execSync } from 'child_process';
-import { BrowserWindow, app } from 'electron';
-import { emptyDirSync, ensureDirSync } from 'fs-extra';
+import { BrowserWindow, app, dialog, shell } from 'electron';
+import { emptyDirSync, ensureDirSync, readJSON } from 'fs-extra';
 import { join } from 'path';
+import type { SemVer } from 'semver';
+import parse from 'semver/functions/parse';
 import { ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
 import { GitService as GitServiceType } from '../../../../../shared/services/git/git.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -89,5 +91,54 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""'] });
+    this.checkForUpdates();
+  }
+  async checkForUpdates() {
+    try {
+      console.debug('Checking for upstream remote...');
+      const remotes = await this.git.getRemotes();
+      if (!remotes.find(remote => remote.name.includes('upstream'))) {
+        console.debug('upstream remote not found, adding...');
+        await this.git.addRemote('upstream', 'https://github.com/DigiGoat/web-ui.git');
+      }
+      console.debug('Fetching upstream...');
+      await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
+      console.debug('Checking for updates...');
+      const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
+      const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
+      if (app.isReady()) {
+        this.determineUpdates(oldVersion, newVersion);
+      } else {
+        app.once('ready', () => this.determineUpdates(oldVersion, newVersion));
+      }
+    } catch (e) {
+      console.warn('Failed to update with error:', e);
+    }
+  }
+  async determineUpdates(oldVersion: SemVer, newVersion: SemVer) {
+    console.debug('Current version:', oldVersion.toString(), 'New version:', newVersion.toString());
+    if (newVersion.major > oldVersion.major) {
+      //Major update available, will require the app to be updated
+      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['OK', 'Later'], cancelId: 1, defaultId: 0 });
+      if (action.response === 0) {
+        shell.openExternal('https://github.com/DigiGoat/client-app/releases');
+      }
+    } else if (newVersion.minor > oldVersion.minor) {
+      //Minor update available, will prompt the user to update
+      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update RECOMMENDS that you update the app to install', type: 'question', buttons: ['Install', 'Later'], cancelId: 1, defaultId: 0 });
+      if (action.response === 0) {
+        await this.installUpdates(oldVersion.toString(), newVersion.toString());
+      }
+    } else if (oldVersion.toString() !== newVersion.toString()) {
+      //Patch update available, will prompt the user to update
+      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update DOES NOT REQUIRE that you update the app to install', type: 'question', buttons: ['Install', 'Later'], cancelId: 1, defaultId: 0 });
+      if (action.response === 0) {
+        await this.installUpdates(oldVersion.toString(), newVersion.toString());
+      }
+    }
+  }
+  async installUpdates(oldVersion: string, newVersion: string) {
+    await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
+    this.change();
   }
 }
