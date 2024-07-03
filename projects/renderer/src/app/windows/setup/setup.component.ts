@@ -29,20 +29,8 @@ export class SetupComponent implements OnInit {
     this.cloning = true;
     try {
       await this.gitService.setup(this.id, this.name, this.email, this.token);
-    } catch (error: unknown) {
-      const message = (error as { message: string; }).message;
-      if (message.includes('Could not resolve host: github.com')) {
-        await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'It Appears That Your Internet Connection Is Offline' });
-      } else if (message.includes('.git/\' not found')) {
-        await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Repository Not Found' });
-      } else if (message.includes('The requested URL returned error: 403')) {
-        await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Invalid Token' });
-      } else if (message.includes('invalid index-pack output') || message.includes('Couldn\'t connect to server')) {
-        await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'error', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
-      } else {
-        await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'error', detail: message.split('fatal:').pop() });
-      }
-      console.error(error);
+    } catch (error) {
+      await this.gitService.handleError('Clone Failed!', error as Error);
     } finally {
       this.cloning = undefined;
       setTimeout(this.windowService.close, 1000);
@@ -60,14 +48,26 @@ export class SetupComponent implements OnInit {
     }
   }
   async setupDemo() {
-    this.id = 'beta-demo';
-    this.token = '';
-    await this.setup();
+    this.cloning = true;
+    try {
+      await this.gitService.setupDemo();
+    } catch (error) {
+      await this.gitService.handleError('Clone Failed!', error as Error);
+    } finally {
+      this.cloning = undefined;
+      setTimeout(this.windowService.close, 1000);
+    }
   }
   async setupBlank() {
-    this.id = 'web-ui';
-    this.token = '';
-    await this.setup();
+    this.cloning = true;
+    try {
+      await this.gitService.setupBlank();
+    } catch (error) {
+      await this.gitService.handleError('Clone Failed!', error as Error);
+    } finally {
+      this.cloning = undefined;
+      setTimeout(this.windowService.close, 1000);
+    }
   }
   remoteProgress = signal(0);
   receivingProgress = signal(0.5);

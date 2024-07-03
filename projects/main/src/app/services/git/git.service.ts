@@ -28,6 +28,18 @@ export class GitService {
       await this.git.addConfig('user.name', name || 'Digi');
       await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
     },
+    setupDemo: async () => {
+      emptyDirSync(this.base);
+      await this.git.clone(`https://github.com/DigiGoat/${app.getVersion().includes('beta') ? 'beta-demo' : 'demo'}.git`, '.');
+      await this.git.addConfig('user.name', 'Digi');
+      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
+    },
+    setupBlank: async () => {
+      emptyDirSync(this.base);
+      await this.git.clone('https://github.com/DigiGoat/web-ui.git', '.', ['--branch', app.getVersion().includes('beta') ? 'beta' : 'main', '--single-branch']);
+      await this.git.addConfig('user.name', 'Digi');
+      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
+    },
     version: async () => {
       return await this.git.version();
     },
