@@ -24,6 +24,7 @@ export class GitService {
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
       await this.git.addConfig('user.name', name || 'Digi');
       await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
+      await this.checkForUpdates();
     },
     updateSetup: async (_event, repo, name, email, token) => {
       await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
@@ -35,12 +36,14 @@ export class GitService {
       await this.git.clone(`https://github.com/DigiGoat/${app.getVersion().includes('beta') ? 'beta-demo' : 'demo'}.git`, '.');
       await this.git.addConfig('user.name', 'Digi');
       await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
+      await this.checkForUpdates();
     },
     setupBlank: async () => {
       emptyDirSync(this.base);
       await this.git.clone('https://github.com/DigiGoat/web-ui.git', '.', ['--branch', app.getVersion().includes('beta') ? 'beta' : 'main', '--single-branch']);
       await this.git.addConfig('user.name', 'Digi');
       await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
+      await this.checkForUpdates();
     },
     version: async () => {
       return await this.git.version();
@@ -76,6 +79,7 @@ export class GitService {
     reset: async () => {
       await this.git.reset(ResetMode.HARD, ['origin']);
       this.change();
+      await this.checkForUpdates();
     },
     getStatus: async () => {
       const status = await this.git.status();
@@ -106,30 +110,31 @@ export class GitService {
       console.debug('Checking for updates...');
       const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
       const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
+      const appVersion = parse(app.getVersion());
       if (app.isReady()) {
-        this.determineUpdates(oldVersion, newVersion);
+        this.determineUpdates(oldVersion, newVersion, appVersion);
       } else {
-        app.once('ready', () => this.determineUpdates(oldVersion, newVersion));
+        app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
       }
     } catch (e) {
       console.warn('Failed to update with error:', e);
     }
   }
-  async determineUpdates(oldVersion: SemVer, newVersion: SemVer) {
+  async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {
     console.debug('Current version:', oldVersion.toString(), 'New version:', newVersion.toString());
-    if (newVersion.major > oldVersion.major) {
+    if (newVersion.major > oldVersion.major && newVersion.major > appVersion.major) {
       //Major update available, will require the app to be updated
       const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['OK', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
       }
-    } else if (newVersion.minor > oldVersion.minor) {
+    } else if (newVersion.minor > oldVersion.minor && newVersion.minor > appVersion.minor) {
       //Minor update available, will prompt the user to update
       const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update RECOMMENDS that you update the app to install', type: 'question', buttons: ['Install', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {
         await this.installUpdates(oldVersion.toString(), newVersion.toString());
       }
-    } else if (oldVersion.toString() !== newVersion.toString()) {
+    } else if (oldVersion.compare(newVersion) < 0) {
       //Patch update available, will prompt the user to update
       const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update DOES NOT REQUIRE that you update the app to install', type: 'question', buttons: ['Install', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {
