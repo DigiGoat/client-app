@@ -38,36 +38,48 @@ export class GoatService {
       await writeJSON(this.bucks, bucks);
     }
   };
-  constructor() {
+  watchDoes() {
     ensureFileSync(this.does);
-    watch(this.does, async () => {
+    watch(this.does, async (event) => {
       try {
         const windows = BrowserWindow.getAllWindows();
         const newDoes = await this.getDoes();
-        console.log('Does updated', newDoes);
+        console.log('Does updated', event, newDoes);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:doesChange', newDoes);
           }
         });
       } catch (err) {
-        console.error('Error Updating Does:', err);
+        console.warn('Error Updating Does:', err);
+      }
+      if (event === 'rename') {
+        this.watchDoes();
       }
     });
+  }
+  watchBucks() {
     ensureFileSync(this.bucks);
-    watch(this.bucks, async () => {
+    watch(this.bucks, async (event) => {
       try {
         const windows = BrowserWindow.getAllWindows();
         const newBucks = await this.getBucks();
-        console.log('Bucks updated', newBucks);
+        console.log('Bucks updated', event, newBucks);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:bucksChange', newBucks);
           }
         });
       } catch (err) {
-        console.error('Error Updating Bucks:', err);
+        console.warn('Error Updating Bucks:', err);
+      }
+      if (event === 'rename') {
+        this.watchBucks();
       }
     });
+  }
+  constructor() {
+    this.watchDoes();
+    this.watchBucks();
   }
 }

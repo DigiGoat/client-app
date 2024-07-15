@@ -1,13 +1,29 @@
-<h1 class="text-center">Goats:</h1>
+<div class="d-flex justify-content-end">
+  <h1 class="text-center flex-grow-1"> Goats: </h1>
+  <div class="btn-group p-1" online-only-parent>
+    <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()" [disabled]="syncing">Sync All
+      <i class="bi bi-arrow-repeat" [class.spin]="syncing"></i></button>
+    <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
+      data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
+      <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    <ul #dropdown class="dropdown-menu color-scheme-quaternary">
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncDoes()">Sync Does <i
+            class="bi bi-arrow-repeat float-end" [class.spin]="syncingDoes !== false"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncBucks()">Sync Bucks <i
+            class="bi bi-arrow-repeat float-end" [class.spin]="syncingBucks !== false"></i></button></li>
+    </ul>
+  </div>
+</div>
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around text-center">
     <div class="mb-3 col">
       <h3>Does:</h3>
-      <app-goat-list type="doe" [goats]="does"></app-goat-list>
+      <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Bucks:</h3>
-      <app-goat-list type="buck" [goats]="bucks"></app-goat-list>
+      <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks"></app-goat-list>
     </div>
   </div>
 </div>

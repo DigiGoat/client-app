@@ -15,5 +15,6 @@ export type Goat = Partial<{
   colorAndMarking: string;
   animalTattoo: { tattoo?: string; tattooLocation?: { name?: string; }; }[];
   id: number;
+  sex: 'Female' | 'Male';
 }>;
 export type GoatType = 'doe' | 'buck';

@@ -12,6 +12,7 @@ import { WindowService } from '../../../../services/window/window.service';
 export class GoatListComponent implements OnInit {
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input({ required: true }) type!: GoatType;
+  @Input() syncing?: boolean | number = false;
   goats: Goat[] = [];
 
   constructor(private windowService: WindowService, private cdr: ChangeDetectorRef) { }

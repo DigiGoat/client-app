@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../dialog/dialog.service';
+import { DiffService } from '../diff/diff.service';
 import { WindowService } from '../window/window.service';
 
 @Injectable({
@@ -7,7 +9,7 @@ import { WindowService } from '../window/window.service';
 })
 export class ADGAService {
 
-  constructor(private dialogService: DialogService, private windowService: WindowService) { }
+  constructor(private dialogService: DialogService, private windowService: WindowService, private diffService: DiffService) { }
 
   async handleError(err: Error, title: string) {
     if (err.message.includes('No ADGA Account Found!')) {
@@ -29,8 +31,24 @@ export class ADGAService {
   getAccount = window.electron.adga.getAccount;
   login = window.electron.adga.login;
   logout = window.electron.adga.logout;
-  getOwnedGoats = window.electron.adga.getOwnedGoats;
-  getGoat = window.electron.adga.getGoat;
+  async getOwnedGoats() {
+    const goats = await window.electron.adga.getOwnedGoats();
+    return goats.items.map(goat => this.parseGoat(goat));
+  }
+  async getGoat(id: number) {
+    return this.parseGoat(await window.electron.adga.getGoat(id));
+  }
+  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex }: Goat): Goat {
+    const parsedGoat = {
+      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
+    };
+    Object.keys(parsedGoat).forEach(key => {
+      if ((parsedGoat[key as keyof Goat]) === undefined) {
+        delete parsedGoat[key as keyof Goat];
+      }
+    });
+    return parsedGoat;
+  }
   set onchange(callback: () => void) {
     window.electron.adga.onchange(callback);
   }

@@ -44,18 +44,6 @@ export class GoatComponent implements OnInit {
       }
     };
   }
-  /* Sync Helpers */
-  softMerge<T extends Record<string, unknown>>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
-    const obj3 = obj1;
-    for (const key in obj2) {
-      if (typeof obj2[key] === 'string' && (obj2[key] as string | never)?.toLowerCase() === (obj1[key] as string | never)?.toLowerCase()) {
-        continue;
-      } else {
-        obj3[key] = obj2[key];
-      }
-    }
-    return obj3;
-  }
   /* ------------------------------ Sync Handlers ------------------------------*/
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
   @ViewChild('dropdownButton') dropdownButton!: ElementRef<HTMLButtonElement>;
@@ -80,8 +68,8 @@ export class GoatComponent implements OnInit {
   async syncDetails() {
     this.syncingDetails = true;
     try {
-      const { name, dateOfBirth, normalizeId, colorAndMarking, animalTattoo } = await this.adgaService.getGoat(this.goat.id!);
-      this.goat = this.softMerge(this.goat, { name: this.diffService.titleCase(name), dateOfBirth, normalizeId, colorAndMarking: this.diffService.titleCase(colorAndMarking), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation.name } })) });
+      const goat = await this.adgaService.getGoat(this.goat.id!);
+      this.goat = this.diffService.softMerge(this.goat, goat);
     } catch (error) {
       await this.adgaService.handleError(error as Error, 'Error Syncing Details!');
     } finally {

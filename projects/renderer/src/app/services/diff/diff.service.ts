@@ -51,7 +51,7 @@ export class DiffService {
 
   private lowerCaseList = ['the', 'w'];
   private upperCaseList = ['sgch', 'dhrv', 'imax'];
-  private titleCaseList = ['hot', 'me', 'old', 'in', 'day', 'van', 'fly', 'oh', 'joy', 'man', 'be', 'i\'m', 'lil'];
+  private titleCaseList = ['be', 'bee', 'day', 'fly', 'for', 'hot', 'i\'m', 'in', 'joy', 'lil', 'man', 'me', 'mr', 'my', 'oh', 'old', 'on', 'pan', 'pie', 'red', 'sky', 'van'];
   private parseCase(word: string) {
     if (this.lowerCaseList.includes(word)) {
       return word.toLowerCase();
@@ -67,7 +67,18 @@ export class DiffService {
   }
   titleCase(str: string) {
     str = str.toLowerCase();
-    str = str.split(' ').map(str => str.split(',').map(_str => _str.split('/').map(__str => __str.split('-').map(word => this.parseCase(word)).join('-')).join('/')).join(',')).join(' ');
+    str = str.split(' ').map(str => str.split(',').map(_str => _str.split('/').map(__str => __str.split('-').map(___str => ___str.split('.').map(word => this.parseCase(word)).join('.')).join('-')).join('/')).join(',')).join(' ');
     return str;
+  }
+  softMerge<T extends Record<string, unknown>>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
+    const obj3 = obj1;
+    for (const key in obj2) {
+      if (typeof obj2[key] === 'string' && (obj2[key] as string | never)?.toLowerCase() === (obj1[key] as string | never)?.toLowerCase()) {
+        continue;
+      } else {
+        obj3[key] = obj2[key];
+      }
+    }
+    return obj3;
   }
 }
