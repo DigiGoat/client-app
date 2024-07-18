@@ -21,4 +21,8 @@ export class AdvancedDirective {
       this.show = !this.advanced;
     }
   }
+  //If the window looses focus, hide the advanced options
+  @HostListener('window:blur', ['$event']) handleFocusEvent() {
+    this.show = !this.advanced;
+  }
 }

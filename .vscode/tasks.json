@@ -6,6 +6,10 @@
       "type": "npm",
       "script": "build:main",
       "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
       "group": {
         "kind": "build",
         "isDefault": true
@@ -31,6 +35,10 @@
       "type": "npm",
       "script": "build:preload",
       "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
       "group": {
         "kind": "build",
         "isDefault": true
@@ -56,6 +64,10 @@
       "type": "npm",
       "script": "serve:renderer",
       "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
       "group": {
         "kind": "build",
         "isDefault": true
