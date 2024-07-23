@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, readJson, watch, writeJSON } from 'fs-extra';
+import { ensureFileSync, exists, readJson, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import type { GoatService as GoatServiceType } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -10,6 +10,7 @@ export class GoatService {
   bucks = join(this.base, 'src/assets/resources/bucks.json');
   async getDoes() {
     try {
+      this.watchDoes();
       return await readJson(this.does);
     } catch (err) {
       console.warn('Error Reading Does:', err);
@@ -18,6 +19,7 @@ export class GoatService {
   }
   async getBucks() {
     try {
+      this.watchBucks();
       return await readJson(this.bucks);
     } catch (err) {
       console.warn('Error Reading Bucks:', err);
@@ -38,7 +40,10 @@ export class GoatService {
       await writeJSON(this.bucks, bucks);
     }
   };
+  watchingDoes = false;
   watchDoes() {
+    if (this.watchingDoes) return;
+    this.watchingDoes = true;
     ensureFileSync(this.does);
     watch(this.does, async (event) => {
       try {
@@ -53,12 +58,17 @@ export class GoatService {
       } catch (err) {
         console.warn('Error Updating Does:', err);
       }
-      if (event === 'rename') {
+      if (event === 'rename' && await exists(join(this.base, '.git'))) {
         this.watchDoes();
+      } else {
+        this.watchingDoes = false;
       }
     });
   }
+  watchingBucks = false;
   watchBucks() {
+    if (this.watchingBucks) return;
+    this.watchingBucks = true;
     ensureFileSync(this.bucks);
     watch(this.bucks, async (event) => {
       try {
@@ -73,8 +83,10 @@ export class GoatService {
       } catch (err) {
         console.warn('Error Updating Bucks:', err);
       }
-      if (event === 'rename') {
+      if (event === 'rename' && await exists(join(this.base, '.git'))) {
         this.watchBucks();
+      } else {
+        this.watchingBucks = false;
       }
     });
   }
