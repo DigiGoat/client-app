@@ -11,7 +11,7 @@
       </ul>
       <ul class="navbar-nav nav pe-2 d-flex justify-content-end align-items-center nav-border w-25">
         <li class="nav-item" tooltip="Publish Changes" advanced="false">
-          <button type="button" class="nav-link position-relative" [disabled]="publishing || !changes" (click)="publish()"> <i
+          <button online-only type="button" class="nav-link position-relative" [disabled]="publishing || !changes" (click)="publish()"> <i
               class="bi bi-cloud-upload h4"></i>
             <span class="position-absolute translate-middle badge rounded-pill bg-success opacity-75" style="top: 25% !important;"
               *ngIf="changes"> {{changes}}<span class="visually-hidden">unread messages</span>
