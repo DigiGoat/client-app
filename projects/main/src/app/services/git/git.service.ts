@@ -94,7 +94,7 @@ export class GitService {
   };
   constructor() {
     ensureDirSync(this.base);
-    this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""'] });
+    this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false'] });
     this.checkForUpdates();
   }
   async checkForUpdates() {
