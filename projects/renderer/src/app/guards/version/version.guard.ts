@@ -17,7 +17,7 @@ export const VersionGuard: CanActivateFn = async () => {
   const appVersion = await appService.getVersion();
 
   if (repoVersion && repoVersion.major < appVersion.major) {
-    const action = await dialogService.showMessageBox({ message: 'Incompatible website Version', detail: 'Your website is outdated. Please update it to use this app version', buttons: ['Update', 'Install Older App', 'Quit'], type: 'warning', cancelId: 2 });
+    const action = await dialogService.showMessageBox({ message: 'Incompatible website Version', detail: 'Your website is outdated. Please update it to use this app version', buttons: ['Update', 'Install Older App', 'Switch Website\'s', 'Quit'], type: 'warning', cancelId: 3 });
     //Alert the user, try some stuff
     if (action.response === 0) {
       //Update
@@ -63,6 +63,9 @@ export const VersionGuard: CanActivateFn = async () => {
       //Install Older App
       appService.openVersion(repoVersion.major);
       await windowService.quit();
+    } else if (action.response === 2) {
+      windowService.openSetup();
+      windowService.close();
     } else {
       //Quit
       await windowService.quit();
