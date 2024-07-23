@@ -17,4 +17,7 @@ export interface GitService {
   reset: () => Promise<void>;
   getStatus: () => Promise<StatusResult>;
   onchange: (callback: () => void) => void;
+  fetchUpdate: () => Promise<SemVer>;
+  readUpdate: () => Promise<SemVer>;
+  installUpdates: () => Promise<SemVer>;
 }

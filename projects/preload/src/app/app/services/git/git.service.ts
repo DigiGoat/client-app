@@ -18,4 +18,7 @@ export const GitService: GitServiceType = {
   reset: () => ipcRenderer.invoke('git:reset'),
   getStatus: () => ipcRenderer.invoke('git:getStatus'),
   onchange: (callback) => ipcRenderer.on('git:change', () => callback()),
+  fetchUpdate: () => ipcRenderer.invoke('git:fetchUpdate'),
+  readUpdate: () => ipcRenderer.invoke('git:readUpdate'),
+  installUpdates: () => ipcRenderer.invoke('git:installUpdates')
 };

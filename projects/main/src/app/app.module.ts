@@ -85,7 +85,7 @@ export class AppModule {
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
         app.exit();
       } else if (webVersion.minor > appVersion.minor) {
-        const action = await dialog.showMessageBox({ message: 'App Update Available!', detail: 'A new version of the app is available, would you like to update now?', type: 'question', buttons: ['Yes', 'No'] });
+        const action = await dialog.showMessageBox({ message: 'App Update Recommended!', detail: 'A new version of the app is available, would you like to update now?', type: 'question', buttons: ['Yes', 'No'] });
         if (action.response === 0) {
           shell.openExternal('https://github.com/DigiGoat/client-app/releases');
         }

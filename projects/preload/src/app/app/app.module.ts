@@ -6,6 +6,8 @@ import { DialogService } from './services/dialog/dialog.service';
 import { GitService } from './services/git/git.service';
 import { GoatService } from './services/goat/goat.service';
 import { WindowService } from './services/window/window.service';
+import { RepoService } from './services/repo/repo.service';
+import { AppService } from './services/app/app.service';
 
 export class AppModule {
   api: SharedModule = {
@@ -14,7 +16,9 @@ export class AppModule {
     dialog: DialogService,
     config: ConfigService,
     goat: GoatService,
-    adga: ADGAService
+    adga: ADGAService,
+    repo: RepoService,
+    app: AppService
   };
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);

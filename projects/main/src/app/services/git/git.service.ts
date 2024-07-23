@@ -86,6 +86,30 @@ export class GitService {
       delete status.isClean;
       return status;
     },
+    fetchUpdate: async () => {
+      console.debug('Checking for upstream remote...');
+      const remotes = await this.git.getRemotes();
+      if (!remotes.find(remote => remote.name.includes('upstream'))) {
+        console.debug('upstream remote not found, adding...');
+        await this.git.addRemote('upstream', 'https://github.com/DigiGoat/web-ui.git');
+      }
+      console.debug('Fetching upstream...');
+      await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
+      console.debug('Checking for updates...');
+      const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
+      return newVersion;
+    },
+    readUpdate: async () => {
+      const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      return newVersion;
+    },
+    installUpdates: async () => {
+      const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
+      const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
+      this.change();
+      return newVersion;
+    }
   };
   git: SimpleGit;
   progress = (progress: SimpleGitProgressEvent) => {
@@ -134,7 +158,7 @@ export class GitService {
       if (action.response === 0) {
         await this.installUpdates(oldVersion.toString(), newVersion.toString());
       }
-    } else if (oldVersion.compare(newVersion) < 0) {
+    } else if (oldVersion.compare(newVersion) < 0 && oldVersion.major >= appVersion.major) {
       //Patch update available, will prompt the user to update
       const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update DOES NOT REQUIRE that you update the app to install', type: 'question', buttons: ['Install', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {

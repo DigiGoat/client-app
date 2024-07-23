@@ -28,17 +28,20 @@ export class GitService {
   set onchange(callback: () => void) {
     window.electron.git.onchange(callback);
   }
+  fetchUpdate = window.electron.git.fetchUpdate;
+  readUpdate = window.electron.git.readUpdate;
+  installUpdates = window.electron.git.installUpdates;
   async handleError(title: string, err: Error) {
     if (err.message.includes('Could not resolve host: github.com')) {
-      await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'It Appears That Your Internet Connection Is Offline' });
+      await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'It Appears That Your Internet Connection Is Offline' });
     } else if (err.message.includes('.git/\' not found')) {
-      await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Repository Not Found' });
+      await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'Repository Not Found' });
     } else if (err.message.includes('The requested URL returned error: 403')) {
-      await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'Invalid Token' });
+      await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'Invalid Token' });
     } else if (err.message.includes('invalid index-pack output') || err.message.includes('Couldn\'t connect to server')) {
-      await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
+      await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
     } else {
-      await this.dialogService.showMessageBox({ message: 'Clone Failed!', type: 'error', detail: err.message.split('fatal:').pop() });
+      await this.dialogService.showMessageBox({ message: title, type: 'error', detail: err.message.split('fatal:').pop() });
     }
   }
 }

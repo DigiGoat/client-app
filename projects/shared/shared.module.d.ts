@@ -1,9 +1,11 @@
 import type { IpcMainEvent } from 'electron';
 import type { ADGAService } from './services/adga/adga.service';
+import type { AppService } from './services/app/app.service';
 import type { ConfigService } from './services/config/config.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
 import type { GoatService } from './services/goat/goat.service';
+import type { RepoService } from './services/repo/repo.service';
 import type { WindowService } from './services/window/window.service';
 
 export interface SharedModule {
@@ -13,6 +15,8 @@ export interface SharedModule {
   config: ConfigService;
   goat: GoatService;
   adga: ADGAService;
+  repo: RepoService;
+  app: AppService;
 }
 
 type WithoutOnKeys<T> = {

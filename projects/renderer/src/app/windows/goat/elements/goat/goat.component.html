@@ -2,7 +2,7 @@
   <h1 class="text-center flex-grow-1" *ngIf="goat.nickname || goat.name || goat.normalizeId" [class.unsaved]="unsavedChanges">
     {{goat.nickname || goat.name || goat.normalizeId}}:
   </h1>
-  <div *ngIf="goat.id" class="btn-group p-1" online-only-parent>
+  <div *ngIf="goat.id" class="btn-group p-1">
     <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()"
       [disabled]="syncingDetails">Sync All <i class="bi bi-arrow-repeat" [class.spin]="syncingDetails"></i></button>
     <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
