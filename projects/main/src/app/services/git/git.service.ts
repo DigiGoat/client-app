@@ -117,7 +117,7 @@ export class GitService {
         app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
       }
     } catch (e) {
-      console.warn('Failed to update with error:', e);
+      console.warn('Failed to Check For Updates (Non-Fatal):', e);
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {
