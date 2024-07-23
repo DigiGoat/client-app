@@ -1,5 +1,6 @@
 import { Component, type OnInit } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
+import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { WindowService } from '../../services/window/window.service';
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   id?: number;
   status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
   name?: string;
-  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService) { }
+  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private appService: AppService) { }
   async login() {
     try {
       this.windowService.setClosable(false);
@@ -53,6 +54,20 @@ export class LoginComponent implements OnInit {
       this.id = account.id;
     } catch (e) {
       console.warn('Error Reading Account:', e);
+    }
+  }
+
+  passwordShown = false;
+  showPassword = false;
+  async togglePassword() {
+    if (!this.showPassword && !this.passwordShown) {
+      const allowed = await this.appService.authenticate('show your ADGA password');
+      if (allowed) {
+        this.showPassword = true;
+        this.passwordShown = true;
+      }
+    } else {
+      this.showPassword = !this.showPassword;
     }
   }
 }
