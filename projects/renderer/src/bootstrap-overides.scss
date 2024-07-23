@@ -25,3 +25,7 @@ div:has(.form-label)>textarea {
     color: var(--text-light-color);
   }
 }
+
+.btn-group>button {
+  text-wrap: nowrap;
+}
