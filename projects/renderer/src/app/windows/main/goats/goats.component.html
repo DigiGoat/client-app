@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-end">
   <h1 class="text-center flex-grow-1"> Goats: </h1>
-  <div class="btn-group p-1" online-only-parent>
+  <div class="btn-group p-1">
     <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()" [disabled]="syncing">Sync All
       <i class="bi bi-arrow-repeat" [class.spin]="syncing"></i></button>
     <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
