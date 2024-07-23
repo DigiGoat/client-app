@@ -58,7 +58,6 @@ export class ADGAService {
   }
   async fetchAccount(username: string, password: string, id?: number) {
     try {
-      this.account = { username: username, password: password, id: id } as Account;
       this.adga = new ADGA(username, password);
       const info = await this.adga.getCurrentLoginInfo();
       const profile = await this.adga.getMembershipDetails();
