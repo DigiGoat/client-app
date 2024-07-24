@@ -52,4 +52,8 @@ export class ADGAService {
   set onchange(callback: () => void) {
     window.electron.adga.onchange(callback);
   }
+  async lookupGoats(ids: number[]): Promise<Goat[]> {
+    const goats = await window.electron.adga.lookupGoats(ids);
+    return goats.map(goat => this.parseGoat(goat));
+  }
 }

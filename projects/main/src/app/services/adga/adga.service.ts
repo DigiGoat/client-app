@@ -65,7 +65,7 @@ export class ADGAService {
       this.account = account;
       return account;
     } catch (error) {
-      this.adga = undefined;
+      //this.adga = undefined;
       return this.handleError(error);
     } finally {
       await this.writeAccount(this.account);
@@ -113,6 +113,17 @@ export class ADGAService {
         return await this.adga.getGoat(id);
       } catch (err) {
         console.warn('Error Fetching Goat:', err);
+        return this.handleError(err);
+      }
+    },
+    lookupGoats: async (_event, ids) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return (await this.adga.getGoats(ids))['items'];
+      } catch (err) {
+        console.warn('Error Looking Up Goats:', err);
         return this.handleError(err);
       }
     }

@@ -8,4 +8,5 @@ export const ADGAService: ADGAServiceType = {
   getOwnedGoats: () => ipcRenderer.invoke('adga:getOwnedGoats'),
   getGoat: (id) => ipcRenderer.invoke('adga:getGoat', id),
   onchange: (callback) => ipcRenderer.on('adga:change', () => callback()),
+  lookupGoats: (ids) => ipcRenderer.invoke('adga:lookupGoats', ids)
 };

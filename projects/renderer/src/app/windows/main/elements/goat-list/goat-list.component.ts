@@ -15,6 +15,7 @@ export class GoatListComponent implements OnInit {
   @Input({ required: true }) type!: GoatType;
   @Input() syncing?: boolean | number = false;
   @Output() deleteIndex = new EventEmitter<number>;
+  @Output() addGoat = new EventEmitter<Goat>();
   goats: Goat[] = [];
 
   constructor(private windowService: WindowService, private cdr: ChangeDetectorRef, private goatService: GoatService) { }

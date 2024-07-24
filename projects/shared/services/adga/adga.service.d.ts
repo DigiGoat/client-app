@@ -1,4 +1,4 @@
-import type { Goat, OwnedGoats } from 'adga';
+import type { Goat, Goats, OwnedGoats } from 'adga';
 
 export interface ADGAService {
   getAccount: () => Promise<Account>;
@@ -7,6 +7,7 @@ export interface ADGAService {
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
   getGoat: (id: number) => Promise<Goat['result']>;
   onchange: (callback: () => void) => void;
+  lookupGoats: (ids: number[]) => Promise<Goats['result']['items']>;
 }
 export interface Account {
   name: string;

@@ -92,4 +92,11 @@ export class GoatsComponent {
   deleteBuck(index: number) {
     this.goatService.deleteBuck(index);
   }
+
+  addDoe(doe: Goat) {
+    this.goatService.addDoe(doe);
+  }
+  addBuck(buck: Goat) {
+    this.goatService.addBuck(buck);
+  }
 }

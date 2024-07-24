@@ -1,0 +1,11 @@
+<div class="input-group">
+  <input type="number" class="form-control" placeholder="Add A Goat..." #search>
+  <button class="btn btn-secondary color-scheme-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-reference="parent"
+    (focus)="lookupGoats(search.value)"><i class="bi bi-search"></i></button>
+  <ul class="dropdown-menu color-scheme-quaternary w-100">
+    <li *ngIf="goats"><button class="dropdown-item color-scheme-quaternary" *ngFor="let goat of goats"
+        (click)="goatSelected.emit(goat)">{{goat.name}}</button><span *ngIf="!goats.length" class="dropdown-item color-scheme-quaternary">No
+        Goats Found</span></li>
+    <li *ngIf="!goats" class="dropdown-item">Loading...</li>
+  </ul>
+</div>
