@@ -30,7 +30,7 @@ export const VersionGuard: CanActivateFn = async () => {
           await windowService.quit();
         } else if (newestVersion.major < appVersion.major) {
           //I screwed up and published a new app version before publishing a new web-ui version
-          await dialogService.showMessageBox({ message: 'Something Weird Happened', detail: `An impossible error happened. Please try again later. (App Version: ${appVersion.toString()} - Upstream Web Version: ${newestVersion.toString()})`, type: 'error' });
+          await dialogService.showMessageBox({ message: 'Something Weird Happened', detail: `An impossible error happened. Please try again later. (App Version: ${appVersion.raw} - Upstream Web Version: ${newestVersion.raw})`, type: 'error' });
           await windowService.quit();
         } else {
           //The update is ready
