@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, Input, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
+import { GoatService } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
 
 
@@ -13,9 +14,10 @@ export class GoatListComponent implements OnInit {
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input({ required: true }) type!: GoatType;
   @Input() syncing?: boolean | number = false;
+  @Output() deleteIndex = new EventEmitter<number>;
   goats: Goat[] = [];
 
-  constructor(private windowService: WindowService, private cdr: ChangeDetectorRef) { }
+  constructor(private windowService: WindowService, private cdr: ChangeDetectorRef, private goatService: GoatService) { }
 
   ngOnInit() {
     this._goats.subscribe({
@@ -28,5 +30,10 @@ export class GoatListComponent implements OnInit {
 
   async openGoat(index: number) {
     this.windowService.openGoat(this.type, index);
+  }
+
+  deleteGoat(event: MouseEvent, index: number) {
+    event.stopPropagation();
+    this.deleteIndex.emit(index);
   }
 }

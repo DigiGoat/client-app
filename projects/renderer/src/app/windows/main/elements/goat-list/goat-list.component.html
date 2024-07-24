@@ -2,5 +2,9 @@
   <button *ngFor="let goat of goats; index as i" class="list-group-item list-group-item-action color-scheme-tertiary"
     (click)="openGoat(i)">{{goat.nickname || goat.name || goat.normalizeId}} <i *ngIf="syncing === i"
       class="bi bi-arrow-repeat spin position-absolute" style="left: 3%"></i>
+    <button class="parent-hover position-absolute translate-middle top-50 end-0 btn btn-outline-danger btn-sm"
+      (click)="deleteGoat($event, i)">
+      <i class="bi bi-trash"></i>
+    </button>
   </button>
 </div>

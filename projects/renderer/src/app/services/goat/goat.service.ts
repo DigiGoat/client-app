@@ -36,6 +36,12 @@ export class GoatService {
     await window.electron.goat.setDoes(newDoes);
     await this.gitService.commitDoes(diffMessage);
   }
+  async deleteDoe(index: number) {
+    const does = await this.getDoes();
+    const doe = does.splice(index, 1)[0];
+    await window.electron.goat.setDoes(does);
+    await this.gitService.commitDoes([`Deleted ${doe.nickname || doe.name || doe.normalizeId}`]);
+  }
   bucks = new Observable<Goat[]>(observer => {
     window.electron.goat.getBucks().then(bucks => observer.next(bucks));
     window.electron.goat.onBucksChange(bucks => observer.next(bucks));
@@ -61,5 +67,11 @@ export class GoatService {
     }
     await window.electron.goat.setBucks(newBucks);
     await this.gitService.commitBucks(diffMessage);
+  }
+  async deleteBuck(index: number) {
+    const bucks = await this.getBucks();
+    const buck = bucks.splice(index, 1)[0];
+    await window.electron.goat.setBucks(bucks);
+    await this.gitService.commitBucks([`Deleted ${buck.nickname || buck.name || buck.normalizeId}`]);
   }
 }

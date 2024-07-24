@@ -63,3 +63,7 @@
 [ng-reflect-suggestion]::placeholder {
   font-style: italic;
 }
+
+:not(:hover)>.parent-hover {
+  display: none;
+}

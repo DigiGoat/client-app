@@ -86,4 +86,10 @@ export class GoatsComponent {
       this.syncingBucks = false;
     }
   }
+  deleteDoe(index: number) {
+    this.goatService.deleteDoe(index);
+  }
+  deleteBuck(index: number) {
+    this.goatService.deleteBuck(index);
+  }
 }

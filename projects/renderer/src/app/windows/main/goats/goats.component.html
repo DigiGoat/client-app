@@ -19,11 +19,11 @@
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around text-center">
     <div class="mb-3 col">
       <h3>Does:</h3>
-      <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes"></app-goat-list>
+      <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes" (deleteIndex)="deleteDoe($event)"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Bucks:</h3>
-      <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks"></app-goat-list>
+      <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)"></app-goat-list>
     </div>
   </div>
 </div>
