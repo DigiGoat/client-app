@@ -3,6 +3,7 @@ import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
+import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
 
 @Component({
   selector: 'app-goats',
@@ -12,6 +13,10 @@ import { GoatService } from '../../../services/goat/goat.service';
 export class GoatsComponent {
   does = this.goatService.does;
   bucks = this.goatService.bucks;
+  filters = {
+    doe: DoeFilter,
+    buck: BuckFilter,
+  };
   constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService) { }
 
   get syncing() {
