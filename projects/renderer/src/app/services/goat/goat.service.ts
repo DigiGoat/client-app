@@ -46,7 +46,7 @@ export class GoatService {
     const does = await this.getDoes();
     does.push(doe);
     await window.electron.goat.setDoes(does);
-    await this.gitService.commitDoes([`Added ${doe.nickname || doe.name || doe.normalizeId}`, ...this.diffService.commitMsg({}, doe)]);
+    await this.gitService.commitDoes([`Added ${doe.nickname || doe.name || doe.normalizeId}`, ...this.diffService.commitMsg({}, doe).map(msg => `      ${msg}`)]);
   }
   bucks = new Observable<Goat[]>(observer => {
     window.electron.goat.getBucks().then(bucks => observer.next(bucks));
@@ -84,6 +84,6 @@ export class GoatService {
     const bucks = await this.getBucks();
     bucks.push(buck);
     await window.electron.goat.setBucks(bucks);
-    await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck)]);
+    await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck).map(msg => `      ${msg}`)]);
   }
 }
