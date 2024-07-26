@@ -1,11 +1,28 @@
 <div class="input-group">
-  <input type="number" class="form-control" placeholder="Add A Goat..." #search>
-  <button class="btn btn-secondary color-scheme-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-reference="parent"
-    (focus)="lookupGoats(search.value)"><i class="bi bi-search"></i></button>
-  <ul class="dropdown-menu color-scheme-quaternary w-100">
-    <li *ngIf="goats"><button class="dropdown-item color-scheme-quaternary" *ngFor="let goat of goats"
-        (click)="goatSelected.emit(goat)">{{goat.name}}</button><span *ngIf="!goats.length" class="dropdown-item color-scheme-quaternary">No
-        Goats Found</span></li>
-    <li *ngIf="!goats" class="dropdown-item">Loading...</li>
+  <input type="text" class="form-control" placeholder="Add A Goat..." #search
+    (keydown)=" $event.key === 'Enter'?  dropdown.focus() : undefined">
+  <button #dropdown class="btn btn-secondary color-scheme-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+    data-bs-reference="parent" (focus)="lookupGoats(search.value)"><i class="bi bi-search"></i></button>
+  <ul class="dropdown-menu color-scheme-quaternary w-100" style="max-height: 200px; overflow-y: scroll">
+    <li *ngIf="!idGoats || !nameGoats" class="dropdown-item color-scheme-quaternary"><i class="bi bi-arrow-repeat spin pe-2"></i>Loading...
+    </li>
+    <li *ngFor="let goat of idGoats">
+      <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
+        <div class='fw-semibold text-wrap'> {{goat.name}}</div>
+        <div class='fw-light' [innerHTML]="formatGoat(goat, search.value).normalizeId"></div>
+      </button>
+    </li>
+    <li *ngIf="idGoats?.length && nameGoats?.length">
+      <hr class="dropdown-divider">
+    </li>
+    <li *ngFor="let goat of nameGoats">
+      <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
+        <div class='fw-semibold text-wrap' [innerHTML]="formatGoat(goat, search.value).name"></div>
+        <div class='fw-light'>{{goat.normalizeId}}</div>
+      </button>
+    </li>
+    <li *ngIf="(idGoats && nameGoats) && (!nameGoats.length && !idGoats.length)">
+      <span class="dropdown-item color-scheme-quaternary">No Goats Found</span>
+    </li>
   </ul>
 </div>

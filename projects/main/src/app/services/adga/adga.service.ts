@@ -116,17 +116,28 @@ export class ADGAService {
         return this.handleError(err);
       }
     },
-    lookupGoats: async (_event, ids) => {
+    lookupGoatsById: async (_event, normalizeId) => {
       if (!this.adga) {
         return this.noADGAMessage;
       }
       try {
-        return (await this.adga.getGoats(ids))['items'];
+        return (await this.adga.getAllGoatsByNormalizeId(normalizeId)).items;
       } catch (err) {
         console.warn('Error Looking Up Goats:', err);
         return this.handleError(err);
       }
-    }
+    },
+    lookupGoatsByName: async (_event, name) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return (await this.adga.getAllGoatsByName(name)).items;
+      } catch (err) {
+        console.warn('Error Looking Up Goats:', err);
+        return this.handleError(err);
+      }
+    },
   };
   constructor() {
     try {

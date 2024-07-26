@@ -10,12 +10,24 @@ import { GoatService } from '../../../../services/goat/goat.service';
   styleUrl: './goat-lookup.component.scss'
 })
 export class GoatLookupComponent {
-  goats?: Goat[] = [];
+  nameGoats?: Goat[] = [];
+  idGoats?: Goat[] = [];
   @Output() goatSelected = new EventEmitter<Goat>();
 
   constructor(private adgaService: ADGAService, private diffService: DiffService, private goatService: GoatService) { }
-  async lookupGoats(id: string) {
-    this.goats = undefined;
-    this.goats = await this.adgaService.lookupGoats([Number(id)]);
+  async lookupGoats(search: string) {
+    await Promise.all([(async () => {
+      this.idGoats = undefined;
+      this.idGoats = await this.adgaService.lookupGoatsById(search);
+    })(), (async () => {
+      this.nameGoats = undefined;
+      this.nameGoats = await this.adgaService.lookupGoatsByName(search);
+    })()]);
+  }
+  formatGoat(goat: Goat, search: string) {
+    goat = structuredClone(goat);
+    goat.normalizeId = goat.normalizeId?.replace(new RegExp(`(${search})`, 'ig'), '<span class="text-info">$1</span>');
+    goat.name = goat.name?.replace(new RegExp(`(${search})`, 'ig'), '<span class="text-info">$1</span>');
+    return goat;
   }
 }

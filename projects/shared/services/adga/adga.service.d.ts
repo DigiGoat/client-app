@@ -7,7 +7,8 @@ export interface ADGAService {
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
   getGoat: (id: number) => Promise<Goat['result']>;
   onchange: (callback: () => void) => void;
-  lookupGoats: (ids: number[]) => Promise<Goats['result']['items']>;
+  lookupGoatsById: (normalizeId: string) => Promise<Goats['result']['items']>;
+  lookupGoatsByName: (name: string) => Promise<Goats['result']['items']>;
 }
 export interface Account {
   name: string;
