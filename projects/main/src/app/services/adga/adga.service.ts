@@ -147,6 +147,9 @@ export class ADGAService {
       blacklist.push(id);
       await writeJSON(this.blacklistPath, blacklist);
     },
+    getBlacklist: async () => {
+      return await readJSON(this.blacklistPath).catch(() => []);
+    },
   };
   constructor() {
     try {

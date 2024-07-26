@@ -61,4 +61,5 @@ export class ADGAService {
     return goats.map(goat => this.parseGoat(goat));
   }
   blacklistOwnedGoat = window.electron.adga.blacklistOwnedGoat;
+  getBlacklist = window.electron.adga.getBlacklist;
 }
