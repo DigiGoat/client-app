@@ -60,4 +60,5 @@ export class ADGAService {
     const goats = await window.electron.adga.lookupGoatsById(normalizeId);
     return goats.map(goat => this.parseGoat(goat));
   }
+  blacklistOwnedGoat = window.electron.adga.blacklistOwnedGoat;
 }

@@ -9,6 +9,7 @@ import type { BackendService } from '../../../../../shared/shared.module';
 export class ADGAService {
   adga?: ADGA;
   accountPath = join(app.getPath('userData'), 'ADGA Account');
+  blacklistPath = join(app.getPath('userData'), 'ADGA Blacklist');
   account?: Account;
   get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
   handleError(error: Error & AxiosError) {
@@ -99,7 +100,10 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        return await this.adga.getOwnedGoats(this.account?.id);
+        const blacklist = await readJSON(this.blacklistPath).catch(() => []);
+        const goats = await this.adga.getOwnedGoats(this.account?.id);
+        goats.items = goats.items.filter(goat => !blacklist.includes(goat.id));
+        return goats;
       } catch (err) {
         console.warn('Error Fetching Owned Goats:', err);
         return this.handleError(err);
@@ -137,6 +141,11 @@ export class ADGAService {
         console.warn('Error Looking Up Goats:', err);
         return this.handleError(err);
       }
+    },
+    blacklistOwnedGoat: async (_event, id) => {
+      const blacklist = await readJSON(this.blacklistPath).catch(() => []);
+      blacklist.push(id);
+      await writeJSON(this.blacklistPath, blacklist);
     },
   };
   constructor() {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
+import { ADGAService } from '../adga/adga.service';
 import { DiffService } from '../diff/diff.service';
 import { GitService } from '../git/git.service';
 
@@ -9,7 +10,7 @@ import { GitService } from '../git/git.service';
 })
 export class GoatService {
 
-  constructor(private gitService: GitService, private diffService: DiffService) { }
+  constructor(private gitService: GitService, private diffService: DiffService, private adgaService: ADGAService) { }
   does = new Observable<Goat[]>(observer => {
     window.electron.goat.getDoes().then(does => observer.next(does));
     window.electron.goat.onDoesChange(does => observer.next(does));
@@ -41,6 +42,9 @@ export class GoatService {
     const doe = does.splice(index, 1)[0];
     await window.electron.goat.setDoes(does);
     await this.gitService.commitDoes([`Deleted ${doe.nickname || doe.name || doe.normalizeId}`]);
+    if (doe.id) {
+      await this.adgaService.blacklistOwnedGoat(doe.id);
+    }
   }
   async addDoe(doe: Goat) {
     const does = await this.getDoes();
@@ -79,6 +83,9 @@ export class GoatService {
     const buck = bucks.splice(index, 1)[0];
     await window.electron.goat.setBucks(bucks);
     await this.gitService.commitBucks([`Deleted ${buck.nickname || buck.name || buck.normalizeId}`]);
+    if (buck.id) {
+      await this.adgaService.blacklistOwnedGoat(buck.id);
+    }
   }
   async addBuck(buck: Goat) {
     const bucks = await this.getBucks();

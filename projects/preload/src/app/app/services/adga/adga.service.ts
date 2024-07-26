@@ -10,4 +10,5 @@ export const ADGAService: ADGAServiceType = {
   onchange: (callback) => ipcRenderer.on('adga:change', () => callback()),
   lookupGoatsById: (normalizeId) => ipcRenderer.invoke('adga:lookupGoatsById', normalizeId),
   lookupGoatsByName: (name) => ipcRenderer.invoke('adga:lookupGoatsByName', name),
+  blacklistOwnedGoat: (id) => ipcRenderer.invoke('adga:blacklistOwnedGoat', id),
 };
