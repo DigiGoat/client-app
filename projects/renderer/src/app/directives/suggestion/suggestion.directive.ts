@@ -9,6 +9,8 @@ export class SuggestionDirective {
   @HostBinding('placeholder') get placeholder() {
     return this.suggestion;
   }
+  @HostBinding('class.placeholder-italics') fontStyle = true;
+
   @HostListener('focus') onFocus() {
     if (!this.el.nativeElement.value.length) {
       this.el.nativeElement.value = this.suggestion;

@@ -59,8 +59,7 @@
   font-style: italic !important;
 }
 
-[suggestion]::placeholder,
-[ng-reflect-suggestion]::placeholder {
+.placeholder-italics::placeholder {
   font-style: italic;
 }
 
