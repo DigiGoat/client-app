@@ -2,7 +2,8 @@
   <input type="text" class="form-control" placeholder="Add A Goat..." #search
     (keydown)=" $event.key === 'Enter'?  dropdown.focus() : undefined">
   <button #dropdown class="btn btn-secondary color-scheme-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-    data-bs-reference="parent" (focus)="lookupGoats(search.value)" online-only><i class="bi bi-search"></i></button>
+    data-bs-reference="parent" (focus)="lookupGoats(search.value)" online-only [disabled]="!search.value.length"><i
+      class="bi bi-search"></i></button>
   <ul class="dropdown-menu color-scheme-quaternary w-100" style="max-height: 200px; overflow-y: scroll">
     <li *ngIf="!idGoats || !nameGoats" class="dropdown-item color-scheme-quaternary"><i class="bi bi-arrow-repeat spin pe-2"></i>Loading...
     </li>
