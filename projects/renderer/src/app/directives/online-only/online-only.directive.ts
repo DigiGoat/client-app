@@ -18,11 +18,10 @@ export class OnlineOnlyDirective implements OnInit {
     this.disabled = !navigator.onLine;
   }
   set disabled(disabled: boolean) {
-    this.el.nativeElement.disabled = disabled;
     if (disabled) {
-      this.el.nativeElement.classList.add('disabled');
+      this.el.nativeElement.classList.add('offline');
     } else {
-      this.el.nativeElement.classList.remove('disabled');
+      this.el.nativeElement.classList.remove('offline');
     }
   }
 }

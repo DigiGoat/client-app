@@ -66,3 +66,17 @@
 :not(:hover)>.parent-hover {
   display: none;
 }
+
+.btn.offline {
+  color: var(--bs-btn-disabled-color);
+  pointer-events: none !important;
+  background-color: var(--bs-btn-disabled-bg);
+  border-color: var(--bs-btn-disabled-border-color);
+  opacity: var(--bs-btn-disabled-opacity) !important;
+}
+
+.nav-link.offline {
+  color: var(--bs-nav-link-disabled-color);
+  pointer-events: none !important;
+  cursor: default !important;
+}
