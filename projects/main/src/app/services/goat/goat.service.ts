@@ -58,10 +58,11 @@ export class GoatService {
       } catch (err) {
         console.warn('Error Updating Does:', err);
       }
-      if (event === 'rename' && await exists(join(this.base, '.git'))) {
-        this.watchDoes();
-      } else {
+      if (event === 'rename') {
         this.watchingDoes = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchDoes();
+        }
       }
     });
   }
@@ -83,10 +84,11 @@ export class GoatService {
       } catch (err) {
         console.warn('Error Updating Bucks:', err);
       }
-      if (event === 'rename' && await exists(join(this.base, '.git'))) {
-        this.watchBucks();
-      } else {
+      if (event === 'rename') {
         this.watchingBucks = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchBucks();
+        }
       }
     });
   }
