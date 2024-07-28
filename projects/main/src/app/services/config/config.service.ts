@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, readJson, watch, writeJson } from 'fs-extra';
+import { ensureFileSync, exists, readJson, watch, writeJson } from 'fs-extra';
 import { join } from 'path';
 import { ConfigService as ConfigServiceType } from '../../../../../shared/services/config/config.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -10,6 +10,7 @@ export class ConfigService {
   config = join(this.base, 'src/assets/resources/config.json');
   async getConfig() {
     try {
+      this.watchConfig();
       return await readJson(this.config);
     } catch (err) {
       console.warn('Error Reading Config:', err);
@@ -25,9 +26,13 @@ export class ConfigService {
       await writeJson(this.config, config);
     }
   };
-  constructor() {
+
+  watchingConfig = false;
+  watchConfig() {
+    if (this.watchingConfig) return;
+    this.watchingConfig = true;
     ensureFileSync(this.config);
-    watch(this.config, async () => {
+    watch(this.config, async (event) => {
       try {
         const windows = BrowserWindow.getAllWindows();
         const newConfig = await this.getConfig();
@@ -40,6 +45,16 @@ export class ConfigService {
       } catch (err) {
         console.warn('Error Updating Config:', err);
       }
+      if (event === 'rename') {
+        this.watchingConfig = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchConfig();
+        }
+      }
     });
+
+  }
+  constructor() {
+    this.watchConfig();
   }
 }
