@@ -1,0 +1,40 @@
+<h1 class="text-center">
+  {{queries[0]}}:
+</h1>
+<div class="container py-3">
+  <div class="row px-3 row-cols-2 row-cols-lg-3  row-cols-xxl-4 justify-content-around">
+    <div class="mb-3 col" *ngFor="let image of images; index as i">
+      <div class="card text-center color-scheme-secondary">
+        <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
+          <img [src]="'data:;base64,'+image.src" class="card-img rounded object-fit-contain" [alt]="image.alt">
+        </div>
+        <div class="card-footer color-scheme-tertiary">
+          <div class="input-group pt-2">
+            <input type="text" class="form-control color-scheme-tertiary" placeholder="Image Alt" name="{{i}}" [(ngModel)]="images[i].alt"
+              tooltip="Some text to be displayed if the image fails to load" disabled>
+            <button class="btn btn-outline-danger" tooltip="Delete Image" (click)="deleteImage(image.file)"><i
+                class="bi bi-trash"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3 col">
+      <div class="card text-center color-scheme-secondary">
+        <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
+          <button class="btn btn-secondary color-scheme-secondary card-img"
+            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" (click)="uploadImage()">
+            <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
+              <h4 class="d-flex align-items-center justify-content-center">Upload Image <i class="bi bi-upload ps-2 pt-2"></i></h4>
+            </div>
+          </button>
+        </div>
+        <div class="card-footer color-scheme-tertiary"> OR: <div class="input-group pt-2">
+            <input type="url" class="form-control color-scheme-tertiary" placeholder="Download Image" #link disabled tooltip="Coming Soon!">
+            <!--<button class="btn btn-secondary color-scheme-tertiary" (click)="downloadImage(link.value)" tooltip="Download Image"><i
+                class="bi bi-download"></i></button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

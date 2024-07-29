@@ -41,7 +41,9 @@
   color: var(--text-color) !important;
 }
 
-button.color-scheme-secondary:hover {
+button.color-scheme-secondary:hover,
+input.color-scheme-secondary:disabled,
+input.color-scheme-secondary.disabled {
   background-color: var(--main-color) !important;
 }
 
@@ -50,7 +52,9 @@ button.color-scheme-secondary:hover {
   color: var(--text-color) !important;
 }
 
-button.color-scheme-tertiary:hover {
+button.color-scheme-tertiary:hover,
+input.color-scheme-tertiary:disabled,
+input.color-scheme-tertiary.disabled {
   background-color: var(--secondary-color) !important;
 }
 
@@ -59,7 +63,9 @@ button.color-scheme-tertiary:hover {
   color: var(--text-color) !important;
 }
 
-button.color-scheme-quaternary:hover {
+button.color-scheme-quaternary:hover,
+input.color-scheme-quaternary:disabled,
+input.color-scheme-quaternary.disabled {
   background-color: var(--tertiary-color) !important;
 }
 

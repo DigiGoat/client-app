@@ -6,6 +6,7 @@ import { ConfigService } from './config/config.service';
 import { DialogService } from './dialog/dialog.service';
 import { GitService } from './git/git.service';
 import { GoatService } from './goat/goat.service';
+import { ImageService } from './image/image.service';
 import { RepoService } from './repo/repo.service';
 import { WindowService } from './window/window.service';
 
@@ -18,7 +19,8 @@ export class ServiceModule {
     goat: new GoatService().api,
     adga: new ADGAService().api,
     repo: new RepoService().api,
-    app: new AppService().api
+    app: new AppService().api,
+    image: new ImageService().api
   };
   constructor() {
     Object.keys(this.api).forEach(service => Object.keys(this.api[service as keyof SharedModule]).forEach(key => ipcMain.handle(`${service}:${key}`, this.api[service as keyof SharedModule][key as keyof SharedModule[keyof SharedModule]])));

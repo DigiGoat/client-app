@@ -1,13 +1,14 @@
 import { contextBridge } from 'electron';
 import type { SharedModule } from '../../../../shared/shared.module';
 import { ADGAService } from './services/adga/adga.service';
+import { AppService } from './services/app/app.service';
 import { ConfigService } from './services/config/config.service';
 import { DialogService } from './services/dialog/dialog.service';
 import { GitService } from './services/git/git.service';
 import { GoatService } from './services/goat/goat.service';
-import { WindowService } from './services/window/window.service';
+import { ImageService } from './services/image/image.service';
 import { RepoService } from './services/repo/repo.service';
-import { AppService } from './services/app/app.service';
+import { WindowService } from './services/window/window.service';
 
 export class AppModule {
   api: SharedModule = {
@@ -18,7 +19,8 @@ export class AppModule {
     goat: GoatService,
     adga: ADGAService,
     repo: RepoService,
-    app: AppService
+    app: AppService,
+    image: ImageService
   };
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);

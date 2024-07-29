@@ -42,4 +42,9 @@ export class GoatListComponent implements OnInit {
     this.windowService.openGoat(this.type, this.goats.length);
     this.addGoat.emit(goat);
   }
+  openImages(event: MouseEvent, index: number) {
+    event.stopPropagation();
+    const { normalizeId, name, nickname } = this.goats[index];
+    this.windowService.openImages([nickname, name, normalizeId].filter(param => param !== undefined) as string[]);
+  }
 }

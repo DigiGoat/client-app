@@ -44,4 +44,5 @@ export class GitService {
       await this.dialogService.showMessageBox({ message: title, type: 'error', detail: err.message.split('fatal:').pop() });
     }
   }
+  commitImages = window.electron.git.commitImages;
 }

@@ -11,4 +11,5 @@ export interface WindowService {
   onsave: (callback: () => void) => void;
   openGoat: (type: GoatType, index: number) => Promise<void>;
   setTitle: (title: string) => Promise<void>;
+  openImages: (searchQueries: string[]) => Promise<void>;
 }

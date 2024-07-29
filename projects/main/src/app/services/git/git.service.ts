@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
-import { emptyDirSync, ensureDirSync, readJSON } from 'fs-extra';
+import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
 import type { SemVer } from 'semver';
 import parse from 'semver/functions/parse';
@@ -109,6 +109,17 @@ export class GitService {
       await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
       this.change();
       return newVersion;
+    },
+    commitImages: async (_event, paths, message) => {
+      paths = paths.map(path => `src/assets/images/${path}`);
+      for (const path of paths) {
+        if (await exists(join(this.base, path))) {
+          await this.git.add(path);
+        }
+      }
+      paths.push('src/assets/images/map.json');
+      await this.git.commit(message, paths);
+      this.change();
     }
   };
   git: SimpleGit;

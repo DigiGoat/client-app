@@ -12,5 +12,6 @@ export const WindowService: WindowServiceType = {
   setClosable: (closable) => ipcRenderer.invoke('window:setClosable', closable),
   onsave: (callback) => ipcRenderer.on('window:onsave', () => callback()),
   openGoat: (type, goat) => ipcRenderer.invoke('window:openGoat', type, goat),
-  setTitle: (title) => ipcRenderer.invoke('window:setTitle', title)
+  setTitle: (title) => ipcRenderer.invoke('window:setTitle', title),
+  openImages: (searchQueries) => ipcRenderer.invoke('window:openImages', searchQueries),
 };

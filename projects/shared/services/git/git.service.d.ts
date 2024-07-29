@@ -20,4 +20,5 @@ export interface GitService {
   fetchUpdate: () => Promise<SemVer>;
   readUpdate: () => Promise<SemVer>;
   installUpdates: () => Promise<SemVer>;
+  commitImages: (paths: string[], message: string[]) => Promise<void>;
 }
