@@ -10,4 +10,5 @@ export class AppService {
   openVersion = window.electron.app.openVersion;
   openLatest = window.electron.app.openLatest;
   authenticate = window.electron.app.authenticate;
+  inspectDirectory = window.electron.app.inspectDirectory;
 }

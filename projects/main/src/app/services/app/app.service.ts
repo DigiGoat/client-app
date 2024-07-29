@@ -2,6 +2,7 @@ import { app, shell, systemPreferences } from 'electron';
 import { parse } from 'semver';
 import { AppService as AppServiceType } from '../../../../../shared/services/app/app.service';
 import type { BackendService } from '../../../../../shared/shared.module';
+import { readdir } from 'fs-extra';
 
 export class AppService {
   api: BackendService<AppServiceType> = {
@@ -19,6 +20,9 @@ export class AppService {
       } else {
         return true;
       }
+    },
+    inspectDirectory: async (_event, path) => {
+      return await readdir(path);
     }
   };
 }

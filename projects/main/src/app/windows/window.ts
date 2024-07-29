@@ -1,4 +1,4 @@
-import { app, BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
+import { app, BrowserWindow, shell, type BrowserWindowConstructorOptions } from 'electron';
 import { join } from 'path';
 
 export class Window {
@@ -30,6 +30,10 @@ export class Window {
         event.preventDefault();
         this.window.webContents.send('window:onsave');
       }
+    });
+    this.window.webContents.setWindowOpenHandler(({ url }) => {
+      shell.openExternal(url);
+      return { action: 'deny' };
     });
   }
 }

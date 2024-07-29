@@ -7,4 +7,5 @@ export class RepoService {
 
   constructor() { }
   getVersion = window.electron.repo.getVersion;
+  setFavicon = window.electron.repo.setFavicon;
 }

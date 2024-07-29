@@ -120,6 +120,10 @@ export class GitService {
       paths.push('src/assets/images/map.json');
       await this.git.commit(message, paths);
       this.change();
+    },
+    commitFavicon: async () => {
+      await this.git.add(join(this.base, 'src/assets/icons/'));
+      await this.git.commit('Updated favicon', 'src/assets/icons/');
     }
   };
   git: SimpleGit;
