@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
+import { DirectivesModule } from '../../directives/directives.module';
 import { ImageRoutingModule } from './image-routing.module';
 import { ImageComponent } from './image.component';
-import { DirectivesModule } from '../../directives/directives.module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -14,8 +14,8 @@ import { DirectivesModule } from '../../directives/directives.module';
   imports: [
     CommonModule,
     ImageRoutingModule,
-    FormsModule,
-    DirectivesModule
+    DirectivesModule,
+    FormsModule
   ]
 })
 export class ImageModule { }

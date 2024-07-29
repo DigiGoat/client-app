@@ -10,8 +10,9 @@
         </div>
         <div class="card-footer color-scheme-tertiary">
           <div class="input-group pt-2">
-            <input type="text" class="form-control color-scheme-tertiary" placeholder="Image Alt" name="{{i}}" [(ngModel)]="images[i].alt"
-              tooltip="Some text to be displayed if the image fails to load" disabled>
+            <input type="text" class="form-control color-scheme-tertiary" placeholder="Image Alt"
+              tooltip="Some text to be displayed if the image fails to load" [(ngModel)]="image.alt" (blur)="setImage(image)">
+            <!--<button class="btn btn-outline-warning" (click)=" setImage(image)" tooltip="Update Alt"><i class="bi bi-floppy"></i></button>-->
             <button class="btn btn-outline-danger" tooltip="Delete Image" (click)="deleteImage(image.file)"><i
                 class="bi bi-trash"></i></button>
           </div>

@@ -61,4 +61,20 @@ export class ImageComponent implements OnInit {
     await this.imageService.deleteImage(file);
     await this.gitService.commitImages([file], [`Deleted Image From ${this.queries[0]}`, `Deleted ${file}`]);
   }
+  async setImage(image: (Image & { src: string; })) {
+    const map = await this.imageService.getImageMap();
+    const keys = Object.keys(map).filter(directory => this.queries.includes(directory));
+    let oldAlt;
+    for (const key of keys) {
+      if (map[key].length) {
+        const index = map[key].findIndex(_image => image.file.endsWith(_image.file));
+        if (index !== -1) {
+          oldAlt = map[key][index].alt;
+          map[key][index].alt = image.alt;
+        }
+      }
+    }
+    await this.imageService.setImageMap(map);
+    await this.gitService.commitImages([], [`Updated Image Alt For ${this.queries[0]}`, oldAlt ? `Updated Image Alt From "${oldAlt}" To "${image.alt}"` : `Set Image Alt To "${image.alt}"`]);
+  }
 }
