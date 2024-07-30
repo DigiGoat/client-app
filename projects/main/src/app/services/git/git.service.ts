@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { exec } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
@@ -50,9 +50,9 @@ export class GitService {
     },
     install: async () => {
       if (process.platform === 'win32') {
-        execSync('start cmd /k "winget install Git.Git --source winget"');
+        exec('start cmd /k "winget install Git.Git --source winget"');
       } else if (process.platform === 'darwin') {
-        execSync('open -a Terminal $(which git)');
+        exec('open -a Terminal $(which git)');
       } else {
         return Promise.reject('Unsupported platform');
       }
