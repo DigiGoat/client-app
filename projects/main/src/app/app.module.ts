@@ -65,7 +65,11 @@ export class AppModule {
     // explicitly with Cmd + Q.
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {
-        app.quit();
+        setTimeout(() => {
+          if (BrowserWindow.getAllWindows().length === 0) {
+            app.quit();
+          }
+        }, 1000);
       }
     });
 
