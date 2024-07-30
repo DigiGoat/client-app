@@ -47,4 +47,13 @@ export class GoatListComponent implements OnInit {
     const { normalizeId, name, nickname } = this.goats[index];
     this.windowService.openImages([nickname, name, normalizeId].filter(param => param !== undefined) as string[]);
   }
+  lookupFilter = (goat: Goat) => {
+    if (this.goats.find(_goat => _goat.id === goat.id)) {
+      return false;
+    } else if (this.filter) {
+      return this.filter(goat);
+    } else {
+      return true;
+    }
+  };
 }
