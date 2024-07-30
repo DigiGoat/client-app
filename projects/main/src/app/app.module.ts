@@ -13,7 +13,6 @@ export class AppModule {
     }
     new ServiceModule();
     const template: MenuItemConstructorOptions[] = [
-      { role: 'appMenu' },
       { role: 'fileMenu' },
       { role: 'editMenu' },
       /*app.isPackaged ? {
@@ -45,7 +44,9 @@ export class AppModule {
         ]
       }
     ];
-
+    if (process.platform === 'darwin') {
+      template.unshift({ role: 'appMenu' });
+    }
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
