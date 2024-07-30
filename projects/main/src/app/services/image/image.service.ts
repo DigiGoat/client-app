@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron';
-import { ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
+import { ensureFile, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
+import { existsSync } from 'original-fs';
 import { join } from 'path';
 import { ImageService as ImageServiceType, type ImageMap } from '../../../../../shared/services/image/image.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -62,27 +63,28 @@ export class ImageService {
   watchingImages = false;
   watchImages() {
     if (this.watchingImages) return;
-    this.watchingImages = true;
-    ensureFileSync(this.imageMap);
-    watch(this.imageMap, async (event) => {
-      try {
-        const windows = BrowserWindow.getAllWindows();
-        const newImageMap = await this.getImageMap();
-        windows.forEach(window => {
-          if (!window.isDestroyed()) {
-            window.webContents.send('image:change', newImageMap);
-          }
-        });
-      } catch (err) {
-        console.warn('Error Updating Image Map:', err);
-      }
-      if (event === 'rename') {
-        this.watchingImages = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchImages();
+    if (existsSync(this.imageMap)) {
+      this.watchingImages = true;
+      watch(this.imageMap, async (event) => {
+        try {
+          const windows = BrowserWindow.getAllWindows();
+          const newImageMap = await this.getImageMap();
+          windows.forEach(window => {
+            if (!window.isDestroyed()) {
+              window.webContents.send('image:change', newImageMap);
+            }
+          });
+        } catch (err) {
+          console.warn('Error Updating Image Map:', err);
         }
-      }
-    });
+        if (event === 'rename') {
+          this.watchingImages = false;
+          if (await exists(join(this.base, '.git'))) {
+            this.watchImages();
+          }
+        }
+      });
+    }
   }
   constructor() {
     //this.watchImages();
