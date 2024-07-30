@@ -93,7 +93,7 @@ export class GoatService {
     });
   }
   constructor() {
-    this.watchDoes();
-    this.watchBucks();
+    //this.watchDoes();
+    //this.watchBucks();
   }
 }

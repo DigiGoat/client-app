@@ -55,6 +55,6 @@ export class ConfigService {
 
   }
   constructor() {
-    this.watchConfig();
+    //this.watchConfig();
   }
 }
