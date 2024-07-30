@@ -16,7 +16,7 @@ export class AppModule {
       { role: 'appMenu' },
       { role: 'fileMenu' },
       { role: 'editMenu' },
-      app.isPackaged ? {
+      /*app.isPackaged ? {
         label: 'View',
         submenu: [
           { role: 'resetZoom' },
@@ -25,7 +25,7 @@ export class AppModule {
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]
-      } : { role: 'viewMenu' },
+      } : */{ role: 'viewMenu' },
       { role: 'windowMenu' },
       {
         role: 'help',
