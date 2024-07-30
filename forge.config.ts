@@ -10,7 +10,9 @@ const config: ForgeConfig = {
     icon: './assets/AppIcon'
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel(), new MakerDMG()],
+  makers: [new MakerSquirrel(), new MakerDMG({
+    icon: './assets/AppIcon.icns',
+  })],
   plugins: [
     new AutoUnpackNativesPlugin({}),
   ],
