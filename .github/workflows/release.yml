@@ -8,41 +8,34 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Github checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: "node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-
-      - run: yarn install --immutable
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install
 
       - name: Publish app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn publish:mac
+
   windows_release:
     runs-on: windows-latest
     steps:
       - name: Github checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: "node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-
-      - run: yarn install --immutable
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install
 
       - name: Publish app
         env:
