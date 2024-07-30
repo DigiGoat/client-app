@@ -11,7 +11,7 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel(), new MakerDMG({
-    icon: './assets/AppIcon.icns',
+    icon: './assets/AppIcon.dmg.icns',
   })],
   plugins: [
     new AutoUnpackNativesPlugin({}),
