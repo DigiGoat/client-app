@@ -2,6 +2,6 @@ import { Window } from '../window';
 
 export class MainWindow extends Window {
   constructor() {
-    super({ minWidth: 992, height: 600, title: 'DigiGoat' });
+    super({ minWidth: process.platform === 'darwin' ? 992 : 992 + 16, height: 600, title: 'DigiGoat' });
   }
 }
