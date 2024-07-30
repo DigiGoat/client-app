@@ -71,9 +71,7 @@ input.color-scheme-quaternary.disabled {
 
 /**Colors for devices in light mode*/
 @include color-mode(light) {
-  :root {
-    --bs-link-color-rgb: 10, 85, 195 !important;
-  }
+  --bs-link-color-rgb: 10, 85, 195 !important;
 
   .nav-tabs {
     --bs-nav-tabs-link-active-bg: var(--main-light-color) !important;
