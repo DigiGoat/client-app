@@ -6,10 +6,11 @@ import type { ForgeConfig } from '@electron-forge/shared-types';
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true
+    asar: true,
+    icon: './assets/AppIcon'
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerDMG({})],
+  makers: [new MakerSquirrel(), new MakerDMG()],
   plugins: [
     new AutoUnpackNativesPlugin({}),
   ],
@@ -19,7 +20,7 @@ const config: ForgeConfig = {
         owner: 'DigiGoat',
         name: 'client-app',
       },
-      prerelease: true,
+      draft: true,
     })
   ]
 };
