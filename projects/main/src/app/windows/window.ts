@@ -27,7 +27,7 @@ export class Window {
     });
 
     this.window.on('close', event => {
-      if (this.window.documentEdited) {
+      if (this.window.documentEdited || this.window.title.endsWith('*')) {
         event.preventDefault();
         this.window.webContents.send('window:onsave');
       }

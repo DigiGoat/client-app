@@ -68,7 +68,18 @@ export class WindowService {
       app.quit();
     },
     setUnsavedChanges: async (event, unsavedChanges) => {
-      BrowserWindow.fromWebContents(event.sender).setDocumentEdited(unsavedChanges);
+      const window = BrowserWindow.fromWebContents(event.sender);
+      window.setDocumentEdited(unsavedChanges);
+      if (process.platform !== 'darwin') {
+        let title = window.title;
+        while (title.endsWith('*')) {
+          title = title.slice(0, -1);
+        }
+        if (unsavedChanges) {
+          title += '*';
+        }
+        window.setTitle(title);
+      }
     },
     setClosable: async (event, closable) => {
       BrowserWindow.fromWebContents(event.sender).setClosable(closable);
