@@ -48,7 +48,7 @@
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
         data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings"
-        [class.unsaved]="configService.isDirty('colors')"> View Color Settings </button>
+        [class.unsaved]="configService.isDirty('colors')"> View Color Settings <i class="bi bi-palette2"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="colorSettings">
         <div class="input-group">
           <span class="input-group-text">Main:</span>
@@ -96,7 +96,7 @@
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
         data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings"
-        [class.unsaved]="configService.isDirty('analytics')"> View Analytics </button>
+        [class.unsaved]="configService.isDirty('analytics')"> View Analytics <i class="bi bi-clipboard-data"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
         <div class="input-group ">
           <span class="input-group-text">GTAG:</span>
