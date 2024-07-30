@@ -25,5 +25,13 @@
     <li *ngIf="(idGoats && nameGoats) && (!nameGoats.length && !idGoats.length)">
       <span class="dropdown-item color-scheme-quaternary">No Goats Found</span>
     </li>
+    <li>
+      <hr class="dropdown-divider">
+    </li>
+    <li>
+      <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit({name: search.value})">
+        <div class='fw-semibold text-wrap'>Add Unregistered Goat With Name "{{search.value}}"</div>
+      </button>
+    </li>
   </ul>
 </div>

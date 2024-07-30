@@ -39,7 +39,7 @@ export class GoatListComponent implements OnInit {
     this.deleteIndex.emit(index);
   }
   newGoat(goat: Goat) {
-    this.windowService.openGoat(this.type, this.goats.length);
+    //this.windowService.openGoat(this.type, this.goats.length);
     this.addGoat.emit(goat);
   }
   openImages(event: MouseEvent, index: number) {
