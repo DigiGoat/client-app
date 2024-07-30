@@ -25,7 +25,7 @@ jobs:
       - name: Publish app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn publish-app
+        run: yarn publish:mac
   windows_release:
     runs-on: windows-latest
     steps:
@@ -47,4 +47,4 @@ jobs:
       - name: Publish app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn publish-app
+        run: yarn publish:windows
