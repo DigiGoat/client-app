@@ -85,6 +85,6 @@ export class ImageService {
     });
   }
   constructor() {
-    this.watchImages();
+    //this.watchImages();
   }
 }
