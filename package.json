@@ -1,6 +1,12 @@
 {
   "name": "client-app",
   "productName": "DigiGoat",
+  "author": {
+    "name": "DigiGoat",
+    "email": "rill.sized.0v@icloud.com",
+    "url": "https://github.com/DigiGoat"
+  },
+  "description": "An app to merge the gap between ADGA, your farm, and the internet.",
   "version": "1.0.0-beta.1",
   "main": "dist/main/main.js",
   "scripts": {
