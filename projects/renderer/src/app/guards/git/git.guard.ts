@@ -25,6 +25,10 @@ export const GitGuard: CanActivateFn = async () => {
     if (message.includes('No developer tools were found, requesting install.')) {
       await dialogService.showMessageBox({ message: 'Git Not Found!', type: 'warning', detail: 'Click OK To Quit, Then Open "Install Command Line Developer Tools" In Your Dock And Follow The Steps. Once Complete, Re-Open DigiGoat' });
       await windowService.quit();
+    } else if (message.includes('ENOENT')) {
+      await dialogService.showMessageBox({ message: 'Git Not Found!', type: 'warning', detail: 'Please Click Below To Setup Git' });
+      await windowService.openGit();
+      await windowService.close();
     } else {
       await dialogService.showMessageBox({ message: 'Git Error!', type: 'error', detail: message });
     }
