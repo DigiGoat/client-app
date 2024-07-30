@@ -13,6 +13,14 @@ export const VersionGuard: CanActivateFn = async () => {
   const windowService = inject(WindowService);
   const gitService = inject(GitService);
 
+  try {
+    if (!(await gitService.version()).installed) {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+
   const repoVersion = await repoService.getVersion();
   const appVersion = await appService.getVersion();
 
