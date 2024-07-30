@@ -8,6 +8,7 @@ export class Window {
     this.window = new BrowserWindow({
       show: false,
       backgroundColor: 'hsl(230, 100%, 10%)',
+      useContentSize: true,
       webPreferences: {
         preload: join(this.base, 'preload/bundle.js')
       },
