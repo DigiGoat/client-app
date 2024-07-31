@@ -8,7 +8,7 @@ import Git from 'simple-git';
 //@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
 
-const origin = process.env['GITHUB_SHA'];
+const origin = process.env['BEFORE'];
 
 const ci = !!process.env['CI'];
 const log = {
