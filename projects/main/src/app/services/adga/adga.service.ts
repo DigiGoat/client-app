@@ -152,13 +152,20 @@ export class ADGAService {
     },
   };
   constructor() {
-    this.account = this.readAccountSync();
-    try {
-      if (this.account.username && this.account.password) {
-        this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
+    function init() {
+      try {
+        this.account = this.readAccountSync();
+        if (this.account.username && this.account.password) {
+          this.fetchAccount(this.account.username, this.account.password).catch((err: unknown) => console.warn('Error Updating ADGA Info (non-fatal):', err));
+        }
+      } catch (err) {
+        console.warn('Error Accessing Account (non-fatal):', err);
       }
-    } catch (err) {
-      console.warn('Error Accessing Account (non-fatal):', err);
+    }
+    if (process.platform === 'darwin') {
+      init();
+    } else {
+      app.on('ready', init);
     }
   }
   change() {
