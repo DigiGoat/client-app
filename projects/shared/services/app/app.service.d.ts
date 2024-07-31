@@ -6,4 +6,5 @@ export interface AppService {
   openLatest: () => Promise<void>;
   authenticate: (message: string) => Promise<boolean>;
   inspectDirectory: (path: string) => Promise<string[]>;
+  platform: NodeJS.Platform;
 }

@@ -7,4 +7,5 @@ export const AppService: AppServiceType = {
   openLatest: () => ipcRenderer.invoke('app:openLatest'),
   authenticate: (message) => ipcRenderer.invoke('app:authenticate', message),
   inspectDirectory: path => ipcRenderer.invoke('app:inspectDirectory', path),
+  platform: process.platform,
 };
