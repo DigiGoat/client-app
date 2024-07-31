@@ -90,8 +90,8 @@ export class GoatComponent implements OnInit {
   }
   set goat(goat: Goat) {
     Object.assign(this._goat, goat);
-    this.windowService.setUnsavedChanges(this.unsavedChanges);
     this.windowService.setTitle(this.goat.nickname || this.goat.name || this.goat.normalizeId || '');
+    this.windowService.setUnsavedChanges(this.unsavedChanges);
   }
   get goat() {
     return this._goat;
