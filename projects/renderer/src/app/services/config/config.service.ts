@@ -31,7 +31,7 @@ export class ConfigService {
     const diffMessage = this.diffService.commitMsg(this._oldConfig, this.config);
     await window.electron.config.set(this._config);
     await this.windowService.setUnsavedChanges(false);
-    await this.gitService.commitConfig(diffMessage);
+    await this.gitService.commitConfig(['Updated Config', ...diffMessage]);
   }
   async discardChanges() {
     this._config = {};
