@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Make sure that the pull request updated the version in the package.json
 import axios from 'axios';
+//@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
 import { lte } from 'semver';
 import Git from 'simple-git';
+//@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
 
 const origin = `origin/${process.env['GITHUB_BASE_REF']}`;
@@ -40,6 +43,10 @@ async function checkVersion() {
   if (lte(packageJson.version, version)) {
     log.error('The version associated with this pull request is not greater than the previous version');
     summary.push(`- [ ] Version Check: \`v${version} <= v${packageJson.version}\``);
+    success = false;
+  } else if ((process.env['GITHUB_REF_NAME'] === 'beta' && !packageJson.version.includes('beta')) || process.env['GITHUB_REF_NAME'] === 'main' && packageJson.version.includes('beta')) {
+    log.error('The version associated with this pull request does not match the branch');
+    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['GITHUB_REF_NAME']} !== v${packageJson.version}\``);
     success = false;
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
