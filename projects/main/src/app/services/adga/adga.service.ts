@@ -165,7 +165,7 @@ export class ADGAService {
     if (safeStorage.isEncryptionAvailable()) {
       init();
     } else {
-      app.on('ready', () => init());
+      app.once('browser-window-created', () => init());
     }
   }
   change() {
