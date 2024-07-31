@@ -152,8 +152,8 @@ export class ADGAService {
     },
   };
   constructor() {
+    this.account = this.readAccountSync();
     try {
-      this.account = this.readAccountSync();
       if (this.account.username && this.account.password) {
         this.fetchAccount(this.account.username, this.account.password).catch(err => console.warn('Error Updating ADGA Info (non-fatal):', err));
       }
