@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, exists, existsSync, readJson, watch, writeJson } from 'fs-extra';
+import { ensureFileSync, exists, readJson, watch, writeJson } from 'fs-extra';
 import { join } from 'path';
 import { ConfigService as ConfigServiceType } from '../../../../../shared/services/config/config.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -30,32 +30,35 @@ export class ConfigService {
   watchingConfig = false;
   watchConfig() {
     if (this.watchingConfig) return;
-    if (existsSync(this.config)) {
-      this.watchingConfig = true;
-      watch(this.config, async (event) => {
-        try {
-          const windows = BrowserWindow.getAllWindows();
-          const newConfig = await this.getConfig();
-          console.log('Config updated', newConfig);
-          windows.forEach(window => {
-            if (!window.isDestroyed()) {
-              window.webContents.send('config:change', newConfig);
-            }
-          });
-        } catch (err) {
-          console.warn('Error Updating Config:', err);
-        }
-        if (event === 'rename') {
-          this.watchingConfig = false;
-          if (await exists(join(this.base, '.git'))) {
-            this.watchConfig();
+    ensureFileSync(this.config);
+    this.watchingConfig = true;
+    watch(this.config, async (event) => {
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newConfig = await this.getConfig();
+        console.log('Config updated', newConfig);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('config:change', newConfig);
           }
+        });
+      } catch (err) {
+        console.warn('Error Updating Config:', err);
+      }
+      if (event === 'rename') {
+        this.watchingConfig = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchConfig();
         }
-      });
-    }
-
+      }
+    }).on('error', async () => {
+      this.watchingConfig = false;
+      if (await exists(join(this.base, '.git'))) {
+        this.watchConfig();
+      }
+    });
   }
   constructor() {
-    //this.watchConfig();
+    this.watchConfig();
   }
 }
