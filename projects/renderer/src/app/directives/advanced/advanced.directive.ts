@@ -15,14 +15,14 @@ export class AdvancedDirective {
   @HostListener('document:keydown', ['$event']) handleKeydownEvent(event: KeyboardEvent) {
     if (event.key === 'Alt') {
       this.show = this.advanced;
-    } else if (event.key === 'Shift' && (event.target as unknown as { localName: string; }).localName === 'body' && this.appService.platform !== 'darwin') {
+    } else if (event.key === 'Shift' && !['input', 'textarea'].includes((event.target as unknown as { localName: string; }).localName) && this.appService.platform !== 'darwin') {
       this.show = this.advanced;
     }
   }
   @HostListener('document:keyup', ['$event']) handleKeyupEvent(event: KeyboardEvent) {
     if (event.key === 'Alt') {
       this.show = !this.advanced;
-    } else if (event.key === 'Shift' && (event.target as unknown as { localName: string; }).localName === 'body' && this.appService.platform !== 'darwin') {
+    } else if (event.key === 'Shift' && !['input', 'textarea'].includes((event.target as unknown as { localName: string; }).localName) && this.appService.platform !== 'darwin') {
       this.show = !this.advanced;
     }
   }
