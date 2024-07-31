@@ -4,7 +4,6 @@ import axios from 'axios';
 //@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
-import { lte } from 'semver';
 import Git from 'simple-git';
 //@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
@@ -80,9 +79,10 @@ use the id of that release to update the release
   }
   log.info('Publishing Release');
   await github.patch(`/repos/${process.env['GITHUB_REPOSITORY']}/releases/${releaseId}`, {
-    body: `#v${version}\n${changes}`,
-    draft: lte(version, packageJson.version), //Auto publish betas, but not main releases
-    prerelease: lte(version, packageJson.version)
+    body: process.env['GITHUB_REF_NAME'] === 'main' ? `# v${version}\n${changes}` : changes,
+    draft: false,
+    tag_name: tag,
+    prerelease: process.env['GITHUB_REF_NAME'] === 'beta'
   });
   log.success('Updated release');
 })();
