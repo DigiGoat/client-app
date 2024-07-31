@@ -162,7 +162,7 @@ export class ADGAService {
         console.warn('Error Accessing Account (non-fatal):', err);
       }
     }
-    if (process.platform === 'darwin') {
+    if (safeStorage.isEncryptionAvailable()) {
       init();
     } else {
       app.on('ready', init);
