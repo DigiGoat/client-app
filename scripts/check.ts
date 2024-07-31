@@ -41,6 +41,10 @@ async function checkVersion() {
     log.error('The version associated with this pull request is not greater than the previous version');
     summary.push(`- [ ] Version Check: \`v${version} <= v${packageJson.version}\``);
     success = false;
+  } else if ((process.env['GITHUB_REF_NAME'] === 'beta' && !packageJson.version.includes('beta')) || process.env['GITHUB_REF_NAME'] === 'main' && packageJson.version.includes('beta')) {
+    log.error('The version associated with this pull request does not match the branch');
+    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['GITHUB_REF_NAME']} !== v${packageJson.version}\``);
+    success = false;
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
   }
