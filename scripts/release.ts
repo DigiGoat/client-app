@@ -57,15 +57,21 @@ use the id of that release to update the release
   log.info('Getting version');
   const { version } = packageJson;
   log.debug('Version:', version);
-  log.info('Getting release');
-  const { data: { tag_name: tag, id: releaseId } } = await github.get(`/repos/${process.env['GITHUB_REPOSITORY']}/releases/tags/v${version}`);
+  log.info('Getting releases');
+  const { data: releases } = await github.get('/repos/digigoat/client-app/releases');
+  const release = releases.find((r: { name: string; }) => r.name === `v${version}`);
+  if (!release) {
+    log.error(`Release ${version} not found`);
+    process.exit(1);
+  }
+  const { tag_name: tag, id: releaseId } = release;
   log.info(`Found release ${tag} with id ${releaseId}`);
   log.info('Getting changes');
   const changes = await getChanges();
   log.debug('Changes:', changes);
   //Get the releases assets and delete two, one ending with .nupkg, and another titled RELEASES
   log.info('Deleting old assets');
-  const { data: assets } = await github.get(`/repos/${process.env['GITHUB_REPOSITORY']}/releases/${releaseId}/assets`);
+  const { data: assets } = await github.get(`/repos/digigoat/client-app/releases/${releaseId}/assets`);
   for (const { name, id } of assets) {
     if (name.endsWith('.nupkg') || name === 'RELEASES') {
       await github.delete(`/repos/${process.env['GITHUB_REPOSITORY']}/releases/assets/${id}`);
