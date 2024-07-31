@@ -2,6 +2,7 @@ name: Release app
 on:
   workflow_dispatch:
   push:
+    branches: [main, beta]
 permissions:
   contents: write
 jobs:
@@ -18,6 +19,10 @@ jobs:
           cache-dependency-path: yarn.lock
 
       - run: yarn install
+
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
 
       - name: Publish app
         env:
@@ -38,7 +43,39 @@ jobs:
 
       - run: yarn install
 
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
       - name: Publish app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn publish:windows
+  publish_release:
+    needs: [macos_release, windows_release]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
+      - name: Run check
+        run: yarn release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
