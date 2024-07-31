@@ -61,16 +61,40 @@ export class GitService {
       return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));
     },
     commitDoes: async (_event, message) => {
-      await this.git.commit(message, this.does);
-      this.change();
+      try {
+        await this.git.commit(message, this.does);
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
     },
     commitBucks: async (_event, message) => {
-      await this.git.commit(message, this.bucks);
-      this.change();
+      try {
+        await this.git.commit(message, this.bucks);
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
     },
     commitConfig: async (_event, message) => {
-      await this.git.commit(message, 'src/assets/resources/config.json');
-      this.change();
+      try {
+        await this.git.commit(message, 'src/assets/resources/config.json');
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
     },
     push: async () => {
       await this.git.push(['--force']);
@@ -118,12 +142,28 @@ export class GitService {
         }
       }
       paths.push('src/assets/images/map.json');
-      await this.git.commit(message, paths);
-      this.change();
+      try {
+        await this.git.commit(message, paths);
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
     },
     commitFavicon: async () => {
-      await this.git.add(join(this.base, 'src/assets/icons/'));
-      await this.git.commit('Updated favicon', 'src/assets/icons/');
+      try {
+        await this.git.add(join(this.base, 'src/assets/icons/'));
+        await this.git.commit('Updated favicon', 'src/assets/icons/');
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
     }
   };
   git: SimpleGit;
