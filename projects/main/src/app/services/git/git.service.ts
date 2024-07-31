@@ -164,6 +164,21 @@ export class GitService {
           return Promise.reject(err);
         }
       }
+    },
+    getSetup: async () => {
+      //`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`
+      try {
+        const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin').refs.fetch;
+        return {
+          name: (await this.git.getConfig('user.name')).value,
+          email: (await this.git.getConfig('user.email')).value,
+          token: remoteUrl.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
+          repo: remoteUrl.split('github.com/DigiGoat/')[1].split('.git')[0]
+        };
+      } catch (err) {
+        console.warn('Error Getting Setup:', err);
+        return {};
+      }
     }
   };
   git: SimpleGit;

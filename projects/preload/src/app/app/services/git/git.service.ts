@@ -22,5 +22,6 @@ export const GitService: GitServiceType = {
   readUpdate: () => ipcRenderer.invoke('git:readUpdate'),
   installUpdates: () => ipcRenderer.invoke('git:installUpdates'),
   commitImages: (paths, message) => ipcRenderer.invoke('git:commitImages', paths, message),
-  commitFavicon: () => ipcRenderer.invoke('git:commitFavicon')
+  commitFavicon: () => ipcRenderer.invoke('git:commitFavicon'),
+  getSetup: () => ipcRenderer.invoke('git:getSetup'),
 };

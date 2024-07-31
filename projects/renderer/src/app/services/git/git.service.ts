@@ -46,4 +46,5 @@ export class GitService {
   }
   commitImages = window.electron.git.commitImages;
   commitFavicon = window.electron.git.commitFavicon;
+  getSetup = window.electron.git.getSetup;
 }

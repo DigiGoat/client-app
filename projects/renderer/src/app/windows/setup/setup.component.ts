@@ -72,7 +72,7 @@ export class SetupComponent implements OnInit {
   remoteProgress = signal(0);
   receivingProgress = signal(0.5);
   resolvingProgress = signal(0.5);
-  ngOnInit() {
+  async ngOnInit() {
     this.gitService.onprogress = event => {
       if (event.method == 'clone') {
         switch (event.stage) {
@@ -95,6 +95,11 @@ export class SetupComponent implements OnInit {
         this.dots += '.';
       }
     }, 500);
+    const setup = await this.gitService.getSetup();
+    this.name = setup.name || '';
+    this.email = setup.email || '';
+    this.id = setup.repo || '';
+    this.token = setup.token || '';
   }
   advanced = false;
   @HostListener('document:keydown', ['$event']) handleKeydownEvent(event: KeyboardEvent) {
