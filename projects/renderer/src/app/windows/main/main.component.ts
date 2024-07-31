@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, ViewEncapsulation, type OnInit } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
+import { WindowService } from '../../services/window/window.service';
 
 @Component({
   selector: 'app-main',
@@ -10,7 +11,7 @@ import { GitService } from '../../services/git/git.service';
 })
 export class MainComponent implements OnInit {
   changes = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
+  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService) { }
 
   async ngOnInit() {
     this.changes = (await this.gitService.getStatus()).ahead;
@@ -22,7 +23,15 @@ export class MainComponent implements OnInit {
   publishing = false;
   async publish() {
     this.publishing = true;
-    await this.gitService.push();
+    if ((await this.gitService.getSetup()).token) {
+      await this.gitService.push();
+    } else {
+      const action = await this.dialogService.showMessageBox({ message: 'No Access Token Configured!', type: 'warning', detail: 'Please Configure A Access Token Before Publishing', buttons: ['Open Setup', 'Cancel'] });
+      if (action.response === 0) {
+        await this.windowService.openSetup();
+        await this.windowService.close();
+      }
+    }
     this.publishing = false;
   }
   async reset() {
