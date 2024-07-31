@@ -36,5 +36,10 @@ export class Window {
       shell.openExternal(url);
       return { action: 'deny' };
     });
+    app.on('before-quit', () => {
+      if (this.window) {
+        this.window.setClosable(true);
+      }
+    });
   }
 }
