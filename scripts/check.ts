@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Make sure that the pull request updated the version in the package.json
 import axios from 'axios';
+//@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
 import { lte } from 'semver';
 import Git from 'simple-git';
+//@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
 
 const origin = `origin/${process.env['GITHUB_BASE_REF']}`;
