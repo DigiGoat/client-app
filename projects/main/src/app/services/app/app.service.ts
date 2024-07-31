@@ -10,14 +10,19 @@ export class AppService {
     openVersion: async (_event, version) => shell.openExternal(`https://github.com/DigiGoat/client-app/releases?q=${version}.x`),
     openLatest: async () => shell.openExternal('https://github.com/DigiGoat/client-app/releases/latest'),
     authenticate: async (_event, message) => {
-      if (systemPreferences.canPromptTouchID()) {
-        try {
-          await systemPreferences.promptTouchID(message);
+      try {
+        if (systemPreferences.canPromptTouchID()) {
+          try {
+            await systemPreferences.promptTouchID(message);
+            return true;
+          } catch (_err) {
+            return false;
+          }
+        } else {
           return true;
-        } catch (_err) {
-          return false;
         }
-      } else {
+      } catch (_err) {
+        //Failed to check if touch ID is allowed, this just means we are on windows
         return true;
       }
     },
