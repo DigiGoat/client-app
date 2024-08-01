@@ -28,8 +28,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - run: echo ${{ github.base_ref }}
+
       - name: Fix version
-        if: github.ref_name == 'main'
+        if: github.base_ref == 'refs/heads/main'
         run: yarn fix-version
 
       - name: Run check
