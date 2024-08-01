@@ -37,7 +37,7 @@ export class Window {
       return { action: 'deny' };
     });
     app.on('before-quit', () => {
-      if (this.window) {
+      if (!this.window.isDestroyed()) {
         this.window.setClosable(true);
       }
     });
