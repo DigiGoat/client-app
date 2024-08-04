@@ -230,7 +230,7 @@ export class GitService {
     console.debug('Current version:', oldVersion.toString(), 'New version:', newVersion.toString());
     if (newVersion.major > oldVersion.major && newVersion.major > appVersion.major) {
       //Major update available, will require the app to be updated
-      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['OK', 'Later'], cancelId: 1, defaultId: 0 });
+      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['View...', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
       }
