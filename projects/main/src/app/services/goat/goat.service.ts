@@ -8,6 +8,7 @@ export class GoatService {
   base = join(app.getPath('userData'), 'repo');
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
+  related = join(this.base, 'src/assets/resources/related.json');
   async getDoes() {
     try {
       this.watchDoes();
@@ -26,6 +27,15 @@ export class GoatService {
       return [];
     }
   }
+  async getRelated() {
+    try {
+      this.watchRelated();
+      return await readJson(this.related);
+    } catch (err) {
+      console.warn('Error Reading Related:', err);
+      return [];
+    }
+  }
   api: BackendService<GoatServiceType> = {
     getDoes: async () => {
       return await this.getDoes();
@@ -38,6 +48,12 @@ export class GoatService {
     },
     setBucks: async (_event, bucks) => {
       await writeJSON(this.bucks, bucks);
+    },
+    getRelated: async () => {
+      return await this.getRelated();
+    },
+    setRelated: async (_event, related) => {
+      await writeJSON(this.related, related);
     }
   };
   watchingDoes = false;
@@ -102,8 +118,40 @@ export class GoatService {
       }
     });
   }
+  watchingRelated = false;
+  watchRelated() {
+    if (this.watchingRelated) return;
+    ensureFileSync(this.related);
+    this.watchingRelated = true;
+    watch(this.related, async (event) => {
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newRelated = await this.getRelated();
+        console.log('Related updated', event, newRelated);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:relatedChange', newRelated);
+          }
+        });
+      } catch (err) {
+        console.warn('Error Updating Related:', err);
+      }
+      if (event === 'rename') {
+        this.watchingRelated = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchRelated();
+        }
+      }
+    }).on('error', async () => {
+      this.watchingRelated = false;
+      if (await exists(join(this.base, '.git'))) {
+        this.watchRelated();
+      }
+    });
+  }
   constructor() {
     this.watchDoes();
     this.watchBucks();
+    this.watchRelated();
   }
 }

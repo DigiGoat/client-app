@@ -1,4 +1,6 @@
 import type { SimpleGitProgressEvent, StatusResult, VersionResult } from 'simple-git';
+import type { Goat } from '../goat/goat.service';
+import type { SemVer } from 'semver';
 
 export interface GitService {
   isRepo: () => Promise<boolean>;
@@ -13,6 +15,7 @@ export interface GitService {
   commitDoes: (message: string[]) => Promise<void>;
   commitBucks: (message: string[]) => Promise<void>;
   commitConfig: (message: string[]) => Promise<void>;
+  commitRelated: (message: string[]) => Promise<void>;
   push: () => Promise<void>;
   reset: () => Promise<void>;
   getStatus: () => Promise<StatusResult>;

@@ -7,5 +7,8 @@ export const GoatService: GoatServiceType = {
   onDoesChange: (callback) => ipcRenderer.on('goat:doesChange', (_event, does) => callback(does)),
   getBucks: () => ipcRenderer.invoke('goat:getBucks'),
   setBucks: (bucks) => ipcRenderer.invoke('goat:setBucks', bucks),
-  onBucksChange: (callback) => ipcRenderer.on('goat:bucksChange', (_event, bucks) => callback(bucks))
+  onBucksChange: (callback) => ipcRenderer.on('goat:bucksChange', (_event, bucks) => callback(bucks)),
+  getRelated: () => ipcRenderer.invoke('goat:getRelated'),
+  setRelated: (related) => ipcRenderer.invoke('goat:setRelated', related),
+  onRelatedChange: (callback) => ipcRenderer.on('goat:relatedChange', (_event, related) => callback(related)),
 };

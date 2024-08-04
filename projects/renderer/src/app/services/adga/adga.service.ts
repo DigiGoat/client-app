@@ -38,9 +38,9 @@ export class ADGAService {
   async getGoat(id: number) {
     return this.parseGoat(await window.electron.adga.getGoat(id));
   }
-  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex }: Goat): Goat {
+  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId }: Goat): Goat {
     const parsedGoat = {
-      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
+      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, damId, sireId, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
     };
     Object.keys(parsedGoat).forEach(key => {
       if ((parsedGoat[key as keyof Goat]) === undefined) {
