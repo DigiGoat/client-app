@@ -1,3 +1,6 @@
+## 1.0.2-beta.1
+* Fixed a bug when versioning on windows
+
 ## 1.0.1-beta.1
 * Starting to investigate a bug that results in an incorrect version being reported by the pre-check
 
