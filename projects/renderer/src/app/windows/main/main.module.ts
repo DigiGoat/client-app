@@ -10,6 +10,7 @@ import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { GoatLookupComponent } from './elements/goat-lookup/goat-lookup.component';
+import { BasicGoatListComponent } from './elements/basic-goat-list/basic-goat-list.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { GoatLookupComponent } from './elements/goat-lookup/goat-lookup.componen
     GoatsComponent,
     GoatListComponent,
     SettingsComponent,
-    GoatLookupComponent
+    GoatLookupComponent,
+    BasicGoatListComponent
   ],
   imports: [
     CommonModule,

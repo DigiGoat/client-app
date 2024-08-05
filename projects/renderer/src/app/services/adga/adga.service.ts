@@ -33,10 +33,13 @@ export class ADGAService {
   logout = window.electron.adga.logout;
   async getOwnedGoats() {
     const goats = await window.electron.adga.getOwnedGoats();
-    return goats.items.map(goat => this.parseGoat(goat));
+    return goats.items.map(goat => this.parseGoat(goat)).reverse();
   }
   async getGoat(id: number) {
     return this.parseGoat(await window.electron.adga.getGoat(id));
+  }
+  async getGoats(ids: number[]) {
+    return (await window.electron.adga.getGoats(ids)).items.map(goat => this.parseGoat(goat));
   }
   private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId }: Goat): Goat {
     const parsedGoat = {

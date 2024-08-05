@@ -120,6 +120,17 @@ export class ADGAService {
         return this.handleError(err);
       }
     },
+    getGoats: async (_event, ids) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return await this.adga.getGoats(ids);
+      } catch (err) {
+        console.warn('Error Fetching Goats:', err);
+        return this.handleError(err);
+      }
+    },
     lookupGoatsById: async (_event, normalizeId) => {
       if (!this.adga) {
         return this.noADGAMessage;

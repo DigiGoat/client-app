@@ -1,3 +1,9 @@
+## 2.0.0-beta.1
+* Added related goats!
+  * This allows you to have a pedigree for your does and bucks
+* Fixed a very rare bug that would cause a minor crash when deleting a goat
+* When syncing, goats are now ordered from oldest to youngest (originally it was youngest to oldest)
+
 ## 1.0.2-beta.1
 * Fixed a bug when versioning on windows
 

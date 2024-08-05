@@ -12,6 +12,9 @@
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingDoes !== false"></i></button></li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncBucks()">Sync Bucks <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingBucks !== false"></i></button></li>
+      <li tooltip="The goats used for the pedigrees of your does and bucks"><button type="button"
+          class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncRelated()">Sync Related <i
+            class="bi bi-arrow-repeat float-end" [class.spin]="syncingRelated !== false"></i></button></li>
     </ul>
   </div>
 </div>
@@ -26,6 +29,10 @@
       <h3>Bucks:</h3>
       <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)" (addGoat)="addBuck($event)"
         [filter]="filters.buck"></app-goat-list>
+    </div>
+    <div class="mb-3 col">
+      <h3>Related:</h3>
+      <app-basic-goat-list [goats]="related" [syncing]="syncingRelated"></app-basic-goat-list>
     </div>
   </div>
 </div>
