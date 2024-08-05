@@ -1,4 +1,4 @@
-<div class="list-group color-scheme-secondary">
+<div class="list-group color-scheme-secondary position-relative">
   <button *ngFor="let goat of goats; index as i" class="list-group-item list-group-item-action color-scheme-tertiary"
     (click)="openGoat(i)">{{goat.nickname || goat.name || goat.normalizeId}} <i *ngIf="syncing === i"
       class="bi bi-arrow-repeat spin position-absolute" style="left: 3%"></i>
@@ -12,7 +12,7 @@
       </button>
     </div>
   </button>
-  <app-goat-lookup class="list-group-item list-group-item-action color-scheme-tertiary" (goatSelected)="newGoat($event)"
-    [filter]="lookupFilter">
+  <app-goat-lookup class="list-group-item list-group-item-action color-scheme-tertiary position-sticky bottom-0"
+    (goatSelected)="newGoat($event)" [filter]="lookupFilter">
   </app-goat-lookup>
 </div>
