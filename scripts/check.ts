@@ -4,7 +4,7 @@ import axios from 'axios';
 //@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
-import { lte } from 'semver';
+import { lte, major } from 'semver';
 import Git from 'simple-git';
 //@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
@@ -50,6 +50,14 @@ async function checkVersion() {
     success = false;
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
+  }
+  const webVersion = JSON.parse(Buffer.from((await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['GITHUB_REF_NAME']}`) as { content: string; }).content, 'base64').toString('utf-8')).version;
+  if (major(packageJson.version) !== major(webVersion)) {
+    log.error('The version associated with this pull request does not match the web version');
+    summary.push(`- [ ] Version Check: web-ui major version does not match client-app version \`v${webVersion} !== v${packageJson.version}\` (\`v${major(webVersion)} !== v${major(packageJson.version)}\`)`);
+    success = false;
+  } else {
+    summary.push(`- [x] Version Check: Web version matches version \`v${major(webVersion)} === v${major(packageJson.version)}\``);
   }
 }
 async function checkChangelog() {
