@@ -113,9 +113,9 @@ export class GitService {
       this.change();
     },
     reset: async () => {
-      await this.git.reset(ResetMode.HARD, ['origin']);
+      await this.git.reset(ResetMode.HARD, ['@{upstream}']);
       this.change();
-      await this.checkForUpdates();
+      this.checkForUpdates();
     },
     getStatus: async () => {
       const status = await this.git.status();
