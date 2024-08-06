@@ -36,4 +36,3 @@ jobs:
         run: yarn pull-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BASE_REF: ${{ github.base_ref }}
