@@ -51,7 +51,7 @@ async function checkVersion() {
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
   }
-  const webPackage = await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['GITHUB_BASE_REF']}`) as { content: string; };
+  const webPackage = (await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['GITHUB_BASE_REF']}`)).data;
   log.debug('Web Package', JSON.stringify(webPackage, null, 2));
   const webVersion = JSON.parse(Buffer.from(webPackage.content, 'base64').toString('utf-8')).version;
   if (major(packageJson.version) !== major(webVersion)) {
