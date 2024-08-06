@@ -14,6 +14,7 @@ export class WindowService {
       const window = BrowserWindow.fromWebContents(event.sender);
       if (ignoreChanges) {
         window.setDocumentEdited(false);
+        window.setTitle('');
       }
       if (ignoreClosable) {
         window.setClosable(true);
