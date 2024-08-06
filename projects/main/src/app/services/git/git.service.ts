@@ -4,7 +4,7 @@ import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
 import type { SemVer } from 'semver';
 import parse from 'semver/functions/parse';
-import { ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
+import { CleanOptions, ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
 import { GitService as GitServiceType } from '../../../../../shared/services/git/git.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
@@ -96,14 +96,26 @@ export class GitService {
         }
       }
     },
+    commitRelated: async (_event, message) => {
+      try {
+        await this.git.commit(message, 'src/assets/resources/related.json');
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
+    },
     push: async () => {
       await this.git.push(['--force']);
       this.change();
     },
     reset: async () => {
-      await this.git.reset(ResetMode.HARD, ['origin']);
+      await this.git.reset(ResetMode.HARD, ['@{upstream}']);
       this.change();
-      await this.checkForUpdates();
+      this.checkForUpdates();
     },
     getStatus: async () => {
       const status = await this.git.status();
@@ -130,6 +142,7 @@ export class GitService {
     installUpdates: async () => {
       const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
       const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      await this.git.clean(CleanOptions.FORCE);
       await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
       this.change();
       return newVersion;
@@ -218,7 +231,7 @@ export class GitService {
     console.debug('Current version:', oldVersion.toString(), 'New version:', newVersion.toString());
     if (newVersion.major > oldVersion.major && newVersion.major > appVersion.major) {
       //Major update available, will require the app to be updated
-      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['OK', 'Later'], cancelId: 1, defaultId: 0 });
+      const action = await dialog.showMessageBox({ message: 'Web Update Available!', detail: 'This update REQUIRES that you update the app to install', type: 'question', buttons: ['View...', 'Later'], cancelId: 1, defaultId: 0 });
       if (action.response === 0) {
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
       }

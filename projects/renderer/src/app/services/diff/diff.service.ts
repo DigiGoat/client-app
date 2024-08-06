@@ -49,17 +49,45 @@ export class DiffService {
     return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
   }
 
-  private lowerCaseList = ['the', 'w'];
-  private upperCaseList = ['sgch', 'dhrv', 'imax'];
-  private titleCaseList = ['be', 'bee', 'day', 'fly', 'for', 'hot', 'i\'m', 'in', 'joy', 'lil', 'man', 'me', 'mr', 'my', 'oh', 'old', 'on', 'pan', 'pie', 'red', 'sky', 'van'];
+  private overrides = {
+    'w': 'w',
+    'sgch': 'SGCH',
+    'dhrv': 'DHRV',
+    'imax': 'IMAX',
+    'be': 'Be',
+    'in': 'In',
+    'me': 'Me',
+    'mr': 'Mr',
+    'my': 'My',
+    'oh': 'Oh',
+    'on': 'On',
+    'go': 'Go',
+    'of': 'Of',
+    'gch': 'GCH',
+    'moondustmayhem': 'MoondustMayhem',
+    'sophisticatedlady': 'SophisticatedLady',
+    'belleoftheball': 'BelleOfTheBall',
+    'ilm': 'ILM',
+    'kissfroma': 'KissFromA',
+    'setfiretothe': 'SetFireToThe',
+    'tua': 'TUA',
+    'ofthe': 'OfThe',
+    'wtm': 'WTM',
+    'cto': 'CTO',
+    'ya': 'Ya',
+    'an': 'An',
+    'bydesign': 'ByDesign',
+    'frb': 'FRB',
+    'jdi': 'JDI',
+    'rmi': 'RMI',
+    'ats': 'ATS',
+  };
+
   private parseCase(word: string) {
-    if (this.lowerCaseList.includes(word)) {
-      return word.toLowerCase();
-    } else if (this.upperCaseList.includes(word)) {
-      return word.toUpperCase();
-    } else if (this.titleCaseList.includes(word)) {
-      return word.replace(word[0], word[0].toUpperCase());
-    } else if (word.length < 4) {
+    word = word.toLowerCase();
+    if (this.overrides[word as keyof typeof this.overrides]) {
+      return this.overrides[word as keyof typeof this.overrides];
+    } else if (word.length < 3) {
       return word.toUpperCase();
     } else {
       return word.replace(word[0], word[0].toUpperCase());

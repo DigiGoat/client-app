@@ -14,6 +14,7 @@ export class WindowService {
       const window = BrowserWindow.fromWebContents(event.sender);
       if (ignoreChanges) {
         window.setDocumentEdited(false);
+        window.setTitle('');
       }
       if (ignoreClosable) {
         window.setClosable(true);
@@ -64,8 +65,13 @@ export class WindowService {
         new LoginWindow();
       }
     },
-    quit: async () => {
-      app.quit();
+    quit: async (_event, relaunch) => {
+      if (relaunch) {
+        app.relaunch();
+        app.exit(); //Ensure that the quit is not cancelled
+      } else {
+        app.quit();
+      }
     },
     setUnsavedChanges: async (event, unsavedChanges) => {
       const window = BrowserWindow.fromWebContents(event.sender);
@@ -129,6 +135,18 @@ export class WindowService {
         otherWindow.close();
       } else {
         new ImageWindow(searchQueries);
+      }
+    },
+    refreshMain: async () => {
+      const windows = BrowserWindow.getAllWindows();
+      const window = windows.find(window => window.webContents.getURL().includes('#/main'));
+      if (window) {
+        window.on('closed', () => {
+          new MainWindow();
+        });
+        window.setDocumentEdited(false);
+        window.setTitle('');
+        window.close();
       }
     },
   };

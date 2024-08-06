@@ -54,3 +54,12 @@ div:has(.form-label)>textarea {
   --bs-btn-disabled-border-color: var(--color-indigo);
   --bs-gradient: none;
 }
+
+.list-group {
+  max-height: 445.5px;
+  overflow-y: scroll;
+}
+
+.list-group-item {
+  z-index: 0 !important;
+}

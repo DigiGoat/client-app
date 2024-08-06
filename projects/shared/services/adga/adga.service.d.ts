@@ -6,6 +6,7 @@ export interface ADGAService {
   logout: () => Promise<void>;
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
   getGoat: (id: number) => Promise<Goat['result']>;
+  getGoats: (ids: number[]) => Promise<Goats['result']>;
   onchange: (callback: () => void) => void;
   lookupGoatsById: (normalizeId: string) => Promise<Goats['result']['items']>;
   lookupGoatsByName: (name: string) => Promise<Goats['result']['items']>;
