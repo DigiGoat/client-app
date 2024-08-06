@@ -44,25 +44,20 @@ async function checkVersion() {
     log.error('The version associated with this pull request is not greater than the previous version');
     summary.push(`- [ ] Version Check: \`v${version} <= v${packageJson.version}\``);
     success = false;
-  } else if ((process.env['GITHUB_REF_NAME'] === 'beta' && !packageJson.version.includes('beta')) || (process.env['GITHUB_REF_NAME'] === 'main' && packageJson.version.includes('beta'))) {
+  } else if ((process.env['BASE_REF'] === 'beta' && !packageJson.version.includes('beta')) || (process.env['BASE_REF'] === 'main' && packageJson.version.includes('beta'))) {
     log.error('The version associated with this pull request does not match the branch');
-    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['GITHUB_REF_NAME']} !== v${packageJson.version}\``);
+    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['BASE_REF']} !== v${packageJson.version}\``);
     success = false;
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
   }
-  try {
-    const webVersion = JSON.parse(Buffer.from((await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['GITHUB_REF_NAME']}`) as { content: string; }).content, 'base64').toString('utf-8')).version;
-    if (major(packageJson.version) !== major(webVersion)) {
-      log.error('The version associated with this pull request does not match the web version');
-      summary.push(`- [ ] Version Check: web-ui major version does not match client-app version \`v${webVersion} !== v${packageJson.version}\` (\`v${major(webVersion)} !== v${major(packageJson.version)}\`)`);
-      success = false;
-    } else {
-      summary.push(`- [x] Version Check: Web version matches version \`v${major(webVersion)} === v${major(packageJson.version)}\``);
-    }
-  } catch (err: unknown) {
-    log.error('An error occurred while checking the web version:', JSON.stringify(err, null, 2));
-    throw err;
+  const webVersion = JSON.parse(Buffer.from((await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['BASE_REF']}`) as { content: string; }).content, 'base64').toString('utf-8')).version;
+  if (major(packageJson.version) !== major(webVersion)) {
+    log.error('The version associated with this pull request does not match the web version');
+    summary.push(`- [ ] Version Check: web-ui major version does not match client-app version \`v${webVersion} !== v${packageJson.version}\` (\`v${major(webVersion)} !== v${major(packageJson.version)}\`)`);
+    success = false;
+  } else {
+    summary.push(`- [x] Version Check: Web version matches version \`v${major(webVersion)} === v${major(packageJson.version)}\``);
   }
 }
 async function checkChangelog() {
@@ -99,6 +94,7 @@ async function checkChangelog() {
       process.exitCode = 1;
     }
   } catch (err: unknown) {
+    log.error(JSON.stringify(err, null, 2));
     if (err instanceof Error) {
       log.error('An error occurred during the pre-checks:', err);
       summary.push(`- [ ] An error occurred during the pre-checks: \`${err.message}\``);
