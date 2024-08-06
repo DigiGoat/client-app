@@ -58,14 +58,20 @@ export class GoatsComponent {
       does = does ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Female');
       const oldDoes = await this.goatService.getDoes();
       does = [...structuredClone(oldDoes), ...does.filter(doe => !oldDoes.some(d => d.id === doe.id))];
-      for (let i = 0; i < does.length; i++) {
-        this.syncingDoes = i;
-        const doe = does[i];
-        if (doe.id) {
-          does[i] = this.diffService.softMerge(doe, await this.adgaService.getGoat(doe.id));
+      await this.goatService.writeDoes(does);
+      try {
+        for (let i = 0; i < does.length; i++) {
+          this.syncingDoes = i;
+          const doe = does[i];
+          if (doe.id) {
+            does[i] = this.diffService.softMerge(doe, await this.adgaService.getGoat(doe.id));
+          }
         }
+        await this.goatService.setDoes(oldDoes, does);
+      } catch (err) {
+        await this.goatService.writeDoes(oldDoes);
+        await this.adgaService.handleError(err as Error, 'Does Sync Failed!');
       }
-      await this.goatService.setDoes(oldDoes, does);
     } catch (err) {
       await this.adgaService.handleError(err as Error, 'Does Sync Failed!');
     } finally {
@@ -79,14 +85,20 @@ export class GoatsComponent {
       bucks = bucks ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Male');
       const oldBucks = await this.goatService.getBucks();
       bucks = [...structuredClone(oldBucks), ...bucks.filter(buck => !oldBucks.some(b => b.id === buck.id))];
-      for (let i = 0; i < bucks.length; i++) {
-        this.syncingBucks = i;
-        const buck = bucks[i];
-        if (buck.id) {
-          bucks[i] = this.diffService.softMerge(buck, await this.adgaService.getGoat(buck.id));
+      await this.goatService.writeBucks(bucks);
+      try {
+        for (let i = 0; i < bucks.length; i++) {
+          this.syncingBucks = i;
+          const buck = bucks[i];
+          if (buck.id) {
+            bucks[i] = this.diffService.softMerge(buck, await this.adgaService.getGoat(buck.id));
+          }
         }
+        await this.goatService.setBucks(oldBucks, bucks);
+      } catch (err) {
+        await this.goatService.writeBucks(oldBucks);
+        await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
       }
-      await this.goatService.setBucks(oldBucks, bucks);
     } catch (err) {
       await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
     } finally {
@@ -112,17 +124,25 @@ export class GoatsComponent {
         }
       }
       const related = await this.adgaService.getGoats(ids);
-      const newIds: number[] = [];
-      for (const goat of related) {
-        if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
-          newIds.push(goat.damId);
+      await this.goatService.writeRelated(related);
+      try {
+        const newIds: number[] = [];
+        for (let i = 0; i < related.length; i++) {
+          this.syncingRelated = i;
+          const goat = related[i];
+          if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
+            newIds.push(goat.damId);
+          }
+          if (goat.sireId && !ids.includes(goat.sireId) && !newIds.includes(goat.sireId)) {
+            newIds.push(goat.sireId);
+          }
         }
-        if (goat.sireId && !ids.includes(goat.sireId) && !newIds.includes(goat.sireId)) {
-          newIds.push(goat.sireId);
-        }
+        related.push(...(await this.adgaService.getGoats(newIds)));
+        await this.goatService.setRelated(oldRelated, related);
+      } catch (err) {
+        await this.goatService.writeRelated(oldRelated);
+        await this.adgaService.handleError(err as Error, 'Related Goats Sync Failed!');
       }
-      related.push(...(await this.adgaService.getGoats(newIds)));
-      await this.goatService.setRelated(oldRelated, related);
     } catch (err) {
       console.warn('Related Goats Sync Failed:', err);
       await this.adgaService.handleError(err as Error, 'Related Goats Sync Failed!');

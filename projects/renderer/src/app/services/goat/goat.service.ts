@@ -37,6 +37,9 @@ export class GoatService {
     await window.electron.goat.setDoes(newDoes);
     await this.gitService.commitDoes(diffMessage);
   }
+  async writeDoes(does: Goat[]) {
+    await window.electron.goat.setDoes(does);
+  }
   async deleteDoe(index: number) {
     const does = await this.getDoes();
     const doe = does.splice(index, 1)[0];
@@ -78,6 +81,9 @@ export class GoatService {
     await window.electron.goat.setBucks(newBucks);
     await this.gitService.commitBucks(diffMessage);
   }
+  async writeBucks(bucks: Goat[]) {
+    await window.electron.goat.setBucks(bucks);
+  }
   async deleteBuck(index: number) {
     const bucks = await this.getBucks();
     const buck = bucks.splice(index, 1)[0];
@@ -111,5 +117,8 @@ export class GoatService {
     }
     await window.electron.goat.setRelated(newRelated);
     await this.gitService.commitRelated(diffMessage);
+  }
+  async writeRelated(related: Goat[]) {
+    await window.electron.goat.setRelated(related);
   }
 }
