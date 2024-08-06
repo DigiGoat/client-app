@@ -38,6 +38,7 @@ export class MainComponent implements OnInit {
     const action = await this.dialogService.showMessageBox({ message: 'Are you sure you want to reset?', detail: 'This will permanently reset ALL unpublished changes. This cannot be undone', type: 'warning', buttons: ['Reset Changes', 'Cancel'] });
     if (action.response === 0) {
       await this.gitService.reset();
+      await this.windowService.refreshMain();
     }
   }
 }

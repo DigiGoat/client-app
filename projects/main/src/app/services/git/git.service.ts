@@ -4,7 +4,7 @@ import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
 import type { SemVer } from 'semver';
 import parse from 'semver/functions/parse';
-import { ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
+import { CleanOptions, ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
 import { GitService as GitServiceType } from '../../../../../shared/services/git/git.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
@@ -142,6 +142,7 @@ export class GitService {
     installUpdates: async () => {
       const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
       const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      await this.git.clean(CleanOptions.FORCE);
       await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
       this.change();
       return newVersion;

@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, exists, readJson, watch, writeJSON } from 'fs-extra';
+import { ensureFileSync, exists, existsSync, readJson, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import type { GoatService as GoatServiceType } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -120,7 +120,7 @@ export class GoatService {
   }
   watchingRelated = false;
   watchRelated() {
-    if (this.watchingRelated) return;
+    if (this.watchingRelated || !existsSync(this.related)) return;
     ensureFileSync(this.related);
     this.watchingRelated = true;
     watch(this.related, async (event) => {

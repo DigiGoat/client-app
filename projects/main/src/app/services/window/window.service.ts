@@ -132,5 +132,17 @@ export class WindowService {
         new ImageWindow(searchQueries);
       }
     },
+    refreshMain: async () => {
+      const windows = BrowserWindow.getAllWindows();
+      const window = windows.find(window => window.webContents.getURL().includes('#/main'));
+      if (window) {
+        window.on('closed', () => {
+          new MainWindow();
+        });
+        window.setDocumentEdited(false);
+        window.setTitle('');
+        window.close();
+      }
+    },
   };
 }

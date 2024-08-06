@@ -14,4 +14,5 @@ export const WindowService: WindowServiceType = {
   openGoat: (type, goat) => ipcRenderer.invoke('window:openGoat', type, goat),
   setTitle: (title) => ipcRenderer.invoke('window:setTitle', title),
   openImages: (searchQueries) => ipcRenderer.invoke('window:openImages', searchQueries),
+  refreshMain: () => ipcRenderer.invoke('window:refreshMain'),
 };

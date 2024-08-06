@@ -12,4 +12,5 @@ export interface WindowService {
   openGoat: (type: GoatType, index: number) => Promise<void>;
   setTitle: (title: string) => Promise<void>;
   openImages: (searchQueries: string[]) => Promise<void>;
+  refreshMain: () => Promise<void>;
 }
