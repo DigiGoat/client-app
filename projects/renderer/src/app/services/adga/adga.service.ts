@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../dialog/dialog.service';
 import { DiffService } from '../diff/diff.service';
+import { GitService } from '../git/git.service';
 import { WindowService } from '../window/window.service';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { WindowService } from '../window/window.service';
 })
 export class ADGAService {
 
-  constructor(private dialogService: DialogService, private windowService: WindowService, private diffService: DiffService) { }
+  constructor(private dialogService: DialogService, private windowService: WindowService, private diffService: DiffService, private gitService: GitService) { }
 
   async handleError(err: Error, title: string) {
     if (err.message.includes('No ADGA Account Found!')) {
@@ -23,6 +24,8 @@ export class ADGAService {
         await this.windowService.openLogin();
       }
 
+    } else if (err.message.includes('git')) {
+      await this.gitService.handleError(title, err);
     } else {
       await this.dialogService.showMessageBox({ message: title, detail: err.message, type: 'error' });
     }

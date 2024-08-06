@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import type { SimpleGitProgressEvent, VersionResult } from 'simple-git';
 import { DialogService } from '../dialog/dialog.service';
+import { WindowService } from '../window/window.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GitService {
 
-  constructor(private dialogService: DialogService) { }
+  constructor(private dialogService: DialogService, private windowService: WindowService) { }
   isRepo = window.electron.git.isRepo;
   setup = window.electron.git.setup;
   updateSetup = window.electron.git.updateSetup;
@@ -41,6 +42,9 @@ export class GitService {
       await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'Invalid Token' });
     } else if (err.message.includes('invalid index-pack output') || err.message.includes('Couldn\'t connect to server')) {
       await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
+    } else if (err.message.includes('a git process\nmay have crashed in this repository earlier')) {
+      await this.dialogService.showMessageBox({ message: title, type: 'error', detail: 'Something Crashed When Saving Files Earlier. A Relaunch is Required', buttons: ['Exit and Relaunch'] });
+      await this.windowService.quit(true);
     } else {
       await this.dialogService.showMessageBox({ message: title, type: 'error', detail: err.message.split('fatal:').pop() });
     }

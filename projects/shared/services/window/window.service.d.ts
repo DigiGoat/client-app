@@ -5,7 +5,7 @@ export interface WindowService {
   openMain: () => Promise<void>;
   openGit: () => Promise<void>;
   openLogin: () => Promise<void>;
-  quit: () => Promise<void>;
+  quit: (relaunch?: boolean) => Promise<void>;
   setUnsavedChanges: (unsavedChanges: boolean) => Promise<void>;
   setClosable: (closable: boolean) => Promise<void>;
   onsave: (callback: () => void) => void;

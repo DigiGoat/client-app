@@ -65,8 +65,13 @@ export class WindowService {
         new LoginWindow();
       }
     },
-    quit: async () => {
-      app.quit();
+    quit: async (_event, relaunch) => {
+      if (relaunch) {
+        app.relaunch();
+        app.exit(); //Ensure that the quit is not cancelled
+      } else {
+        app.quit();
+      }
     },
     setUnsavedChanges: async (event, unsavedChanges) => {
       const window = BrowserWindow.fromWebContents(event.sender);
