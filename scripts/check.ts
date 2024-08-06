@@ -101,6 +101,7 @@ async function checkChangelog() {
       log.error('An unknown error occurred during the pre-checks:', err);
       summary.push(`- [ ] An unknown error occurred during the pre-checks: \`${err}\``);
     }
+    process.exitCode = 1;
   }
   console.log('Posting the summary...');
   await postSummary();
