@@ -19,7 +19,6 @@ export class BasicGoatListComponent implements OnInit {
     this._goats.subscribe({
       next: goats => {
         this.goats = goats;
-        this.cdr.detectChanges(); // Notify Angular that the component's data has changed
       }
     });
   }
