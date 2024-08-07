@@ -4,7 +4,7 @@ import axios from 'axios';
 //@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
 import { readFile } from 'fs/promises';
-import { lte } from 'semver';
+import { lte, major } from 'semver';
 import Git from 'simple-git';
 //@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
@@ -44,12 +44,22 @@ async function checkVersion() {
     log.error('The version associated with this pull request is not greater than the previous version');
     summary.push(`- [ ] Version Check: \`v${version} <= v${packageJson.version}\``);
     success = false;
-  } else if ((process.env['GITHUB_REF_NAME'] === 'beta' && !packageJson.version.includes('beta')) || (process.env['GITHUB_REF_NAME'] === 'main' && packageJson.version.includes('beta'))) {
+  } else if ((process.env['GITHUB_BASE_REF'] === 'beta' && !packageJson.version.includes('beta')) || (process.env['GITHUB_BASE_REF'] === 'main' && packageJson.version.includes('beta'))) {
     log.error('The version associated with this pull request does not match the branch');
-    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['GITHUB_REF_NAME']} !== v${packageJson.version}\``);
+    summary.push(`- [ ] Version Check: Branch does not match version \`${process.env['GITHUB_BASE_REF']} !== v${packageJson.version}\``);
     success = false;
   } else {
     summary.push(`- [x] Version Check: \`v${version} --> v${packageJson.version}\``);
+  }
+  const webPackage = (await github.get(`/repos/DigiGoat/web-ui/contents/package.json?ref=${process.env['GITHUB_BASE_REF']}`)).data;
+  log.debug('Web Package', JSON.stringify(webPackage, null, 2));
+  const webVersion = JSON.parse(Buffer.from(webPackage.content, 'base64').toString('utf-8')).version;
+  if (major(packageJson.version) !== major(webVersion)) {
+    log.error('The version associated with this pull request does not match the web version');
+    summary.push(`- [ ] Version Check: web-ui major version does not match client-app version \`v${webVersion} !== v${packageJson.version}\` (\`v${major(webVersion)} !== v${major(packageJson.version)}\`)`);
+    success = false;
+  } else {
+    summary.push(`- [x] Version Check: Web version matches version \`v${major(webVersion)} === v${major(packageJson.version)}\``);
   }
 }
 async function checkChangelog() {
@@ -86,6 +96,7 @@ async function checkChangelog() {
       process.exitCode = 1;
     }
   } catch (err: unknown) {
+    log.error(JSON.stringify(err, null, 2));
     if (err instanceof Error) {
       log.error('An error occurred during the pre-checks:', err);
       summary.push(`- [ ] An error occurred during the pre-checks: \`${err.message}\``);
@@ -93,6 +104,7 @@ async function checkChangelog() {
       log.error('An unknown error occurred during the pre-checks:', err);
       summary.push(`- [ ] An unknown error occurred during the pre-checks: \`${err}\``);
     }
+    process.exitCode = 1;
   }
   console.log('Posting the summary...');
   await postSummary();

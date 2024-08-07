@@ -20,4 +20,5 @@ export class WindowService {
   openGoat = window.electron.window.openGoat;
   setTitle = window.electron.window.setTitle;
   openImages = window.electron.window.openImages;
+  refreshMain = window.electron.window.refreshMain;
 }

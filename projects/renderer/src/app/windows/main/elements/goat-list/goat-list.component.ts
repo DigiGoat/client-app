@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../../services/goat/goat.service';
@@ -19,13 +19,13 @@ export class GoatListComponent implements OnInit {
   @Input() filter?: (goat: Goat) => boolean;
   goats: Goat[] = [];
 
-  constructor(private windowService: WindowService, private cdr: ChangeDetectorRef, private goatService: GoatService) { }
+  constructor(private windowService: WindowService, private goatService: GoatService) { }
 
   ngOnInit() {
     this._goats.subscribe({
       next: goats => {
         this.goats = goats;
-        this.cdr.detectChanges(); // Notify Angular that the component's data has changed
+        //! WARNING: THIS WILL CAUSE THE APP TO CRASH! - this.cdr.detectChanges(); // Notify Angular that the component's data has changed
       }
     });
   }

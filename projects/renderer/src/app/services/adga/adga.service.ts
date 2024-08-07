@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../dialog/dialog.service';
 import { DiffService } from '../diff/diff.service';
+import { GitService } from '../git/git.service';
 import { WindowService } from '../window/window.service';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { WindowService } from '../window/window.service';
 })
 export class ADGAService {
 
-  constructor(private dialogService: DialogService, private windowService: WindowService, private diffService: DiffService) { }
+  constructor(private dialogService: DialogService, private windowService: WindowService, private diffService: DiffService, private gitService: GitService) { }
 
   async handleError(err: Error, title: string) {
     if (err.message.includes('No ADGA Account Found!')) {
@@ -23,6 +24,8 @@ export class ADGAService {
         await this.windowService.openLogin();
       }
 
+    } else if (err.message.includes('git')) {
+      await this.gitService.handleError(title, err);
     } else {
       await this.dialogService.showMessageBox({ message: title, detail: err.message, type: 'error' });
     }
@@ -33,14 +36,17 @@ export class ADGAService {
   logout = window.electron.adga.logout;
   async getOwnedGoats() {
     const goats = await window.electron.adga.getOwnedGoats();
-    return goats.items.map(goat => this.parseGoat(goat));
+    return goats.items.map(goat => this.parseGoat(goat)).reverse();
   }
   async getGoat(id: number) {
     return this.parseGoat(await window.electron.adga.getGoat(id));
   }
-  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex }: Goat): Goat {
+  async getGoats(ids: number[]) {
+    return (await window.electron.adga.getGoats(ids)).items.map(goat => this.parseGoat(goat));
+  }
+  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId }: Goat): Goat {
     const parsedGoat = {
-      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
+      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, damId, sireId, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
     };
     Object.keys(parsedGoat).forEach(key => {
       if ((parsedGoat[key as keyof Goat]) === undefined) {

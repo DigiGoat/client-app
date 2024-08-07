@@ -1,0 +1,7 @@
+<div class="list-group color-scheme-secondary">
+  <span *ngIf="!goats.length" class="list-group-item color-scheme-tertiary">No Goats Found!</span>
+  <button *ngFor="let goat of goats; index as i"
+    class="list-group-item list-group-item-action color-scheme-tertiary">{{goat.nickname || goat.name || goat.normalizeId}} <i
+      *ngIf="syncing === i" class="bi bi-arrow-repeat spin position-absolute" style="left: 3%"></i>
+  </button>
+</div>

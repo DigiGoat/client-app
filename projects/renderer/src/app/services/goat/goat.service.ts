@@ -37,6 +37,9 @@ export class GoatService {
     await window.electron.goat.setDoes(newDoes);
     await this.gitService.commitDoes(diffMessage);
   }
+  async writeDoes(does: Goat[]) {
+    await window.electron.goat.setDoes(does);
+  }
   async deleteDoe(index: number) {
     const does = await this.getDoes();
     const doe = does.splice(index, 1)[0];
@@ -78,6 +81,9 @@ export class GoatService {
     await window.electron.goat.setBucks(newBucks);
     await this.gitService.commitBucks(diffMessage);
   }
+  async writeBucks(bucks: Goat[]) {
+    await window.electron.goat.setBucks(bucks);
+  }
   async deleteBuck(index: number) {
     const bucks = await this.getBucks();
     const buck = bucks.splice(index, 1)[0];
@@ -92,5 +98,27 @@ export class GoatService {
     bucks.push(buck);
     await window.electron.goat.setBucks(bucks);
     await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck).map(msg => `      ${msg}`)]);
+  }
+  related = new Observable<Goat[]>(observer => {
+    window.electron.goat.getRelated().then(related => observer.next(related));
+    window.electron.goat.onRelatedChange(related => observer.next(related));
+  });
+  getRelated = window.electron.goat.getRelated;
+  async setRelated(oldRelated: Goat[], newRelated: Goat[]) {
+    const diffMessage = ['Synced Related Goats'];
+    for (let i = 0; i < oldRelated.length; i++) {
+      const diff = this.diffService.commitMsg(oldRelated[i], newRelated[i]).map(msg => `      ${msg}`);
+      if (diff.length) {
+        diffMessage.push(`Updated ${newRelated[i].nickname || newRelated[i].name || newRelated[i].normalizeId || oldRelated[i].nickname || oldRelated[i].name || oldRelated[i].normalizeId || 'Unknown'}`, ...diff);
+      }
+    }
+    for (let i = oldRelated.length; i < newRelated.length; i++) {
+      diffMessage.push(`Added ${newRelated[i].nickname || newRelated[i].name || newRelated[i].normalizeId}`, ...this.diffService.commitMsg({}, newRelated[i]).map(msg => `      ${msg}`));
+    }
+    await window.electron.goat.setRelated(newRelated);
+    await this.gitService.commitRelated(diffMessage);
+  }
+  async writeRelated(related: Goat[]) {
+    await window.electron.goat.setRelated(related);
   }
 }
