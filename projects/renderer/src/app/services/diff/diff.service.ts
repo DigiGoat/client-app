@@ -81,6 +81,7 @@ export class DiffService {
     'jdi': 'JDI',
     'rmi': 'RMI',
     'ats': 'ATS',
+    'ags': 'AGS',
   };
 
   private parseCase(word: string) {
