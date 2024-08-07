@@ -1,10 +1,10 @@
-import { Directive, ElementRef, HostBinding, HostListener, Input, type OnInit } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, Input, type OnDestroy, type OnInit } from '@angular/core';
 import type { Tooltip } from 'bootstrap';
 
 @Directive({
   selector: '[tooltip]'
 })
-export class TooltipDirective implements OnInit {
+export class TooltipDirective implements OnInit, OnDestroy {
   private bsTooltip?: Tooltip;
   @Input('tooltip-placement') placement: 'auto' | 'top' | 'bottom' | 'left' | 'right' = 'auto';
   @Input() set tooltip(value: string) {
@@ -21,6 +21,9 @@ export class TooltipDirective implements OnInit {
   constructor(private el: ElementRef) { }
   ngOnInit(): void {
     this.bsTooltip = bootstrap.Tooltip.getOrCreateInstance(this.el.nativeElement, { placement: this.placement });
+  }
+  ngOnDestroy(): void {
+    this.bsTooltip?.dispose();
   }
 
 }
