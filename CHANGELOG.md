@@ -1,3 +1,6 @@
+## 2.1.0-beta.1
+* Added owner accounts to related does
+
 ## 2.0.0-beta.1
 * Added related goats!
   * This allows you to have a pedigree for your does and bucks

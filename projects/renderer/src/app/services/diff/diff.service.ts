@@ -17,7 +17,7 @@ export class DiffService {
     const diff = this.detailedDiff(original, current);
     const added = Object.keys(diff.added);
     const deleted = Object.keys(diff.deleted);
-    const updated = Object.keys(diff.updated);
+    const updated = Object.keys(diff.updated ?? {});
     const body: string[] = [];
     for (const addition of added) {
       if (typeof current[addition] !== 'object') {
@@ -81,6 +81,7 @@ export class DiffService {
     'jdi': 'JDI',
     'rmi': 'RMI',
     'ats': 'ATS',
+    'ags': 'AGS',
   };
 
   private parseCase(word: string) {

@@ -19,7 +19,10 @@ export type Goat = Partial<{
   animalTattoo: { tattoo?: string; tattooLocation?: { name?: string; }; }[];
   id: number;
   sex: 'Female' | 'Male';
-  damId?: number;
-  sireId?: number;
+  damId: number;
+  sireId: number;
+  ownerAccount: {
+    displayName?: string;
+  } | null;
 }>;
 export type GoatType = 'doe' | 'buck';

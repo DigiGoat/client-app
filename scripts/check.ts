@@ -59,7 +59,7 @@ async function checkVersion() {
     summary.push(`- [ ] Version Check: web-ui major version does not match client-app version \`v${webVersion} !== v${packageJson.version}\` (\`v${major(webVersion)} !== v${major(packageJson.version)}\`)`);
     success = false;
   } else {
-    summary.push(`- [x] Version Check: Web version matches version \`v${major(webVersion)} === v${major(packageJson.version)}\``);
+    summary.push(`- [x] Version Check: web-ui major version matches! (\`v${major(webVersion)} === v${major(packageJson.version)}\`)`);
   }
 }
 async function checkChangelog() {
