@@ -7,7 +7,7 @@ import { readdir } from 'fs-extra';
 export class AppService {
   api: BackendService<AppServiceType> = {
     getVersion: async () => parse(app.getVersion()),
-    openVersion: async (_event, version) => shell.openExternal(`https://github.com/DigiGoat/client-app/releases?q=${version}.x`),
+    openVersion: async (_event, version) => shell.openExternal(`https://github.com/DigiGoat/client-app/releases?q=v${version}.x`),
     openLatest: async () => shell.openExternal('https://github.com/DigiGoat/client-app/releases/latest'),
     authenticate: async (_event, message) => {
       try {

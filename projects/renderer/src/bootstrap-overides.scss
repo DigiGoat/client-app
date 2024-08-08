@@ -57,7 +57,7 @@ div:has(.form-label)>textarea {
 
 .list-group {
   max-height: 445.5px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .list-group-item {
