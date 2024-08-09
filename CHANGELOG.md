@@ -1,3 +1,6 @@
+## 2.1.1-beta.1
+* Added Support To Download Images From A Link!
+
 ## 2.1.0-beta.1
 * Added owner accounts to related does
 
