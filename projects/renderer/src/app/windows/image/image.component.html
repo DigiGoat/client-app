@@ -30,9 +30,13 @@
           </button>
         </div>
         <div class="card-footer color-scheme-tertiary"> OR: <div class="input-group pt-2">
-            <input type="url" class="form-control color-scheme-tertiary" placeholder="Download Image" #link disabled tooltip="Coming Soon!">
-            <!--<button class="btn btn-secondary color-scheme-tertiary" (click)="downloadImage(link.value)" tooltip="Download Image"><i
-                class="bi bi-download"></i></button>-->
+            <input type="url" class="form-control color-scheme-tertiary" placeholder="https://example.com" #link
+              (keydown)=" $event.key === 'Enter'?  download.focus() : undefined" (paste)="paste(link, $event)">
+            <button class="btn btn-secondary color-scheme-tertiary" online-only
+              (click)="link.value ? downloadImage(link, download) : showClipboard(link, 'value')"
+              (mouseenter)="showClipboard(link, 'placeholder')" (mouseleave)="link.placeholder = 'https://example.com'"
+              [tooltip]="link.value ? 'Download Image' : 'Paste From Clipboard'" tooltip-placement="top" #download><i class="bi"
+                [class.bi-download]="link.value" [class.bi-type]="!link.value"></i></button>
           </div>
         </div>
       </div>

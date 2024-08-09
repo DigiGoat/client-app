@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Image } from '../../../../../shared/services/image/image.service';
@@ -14,7 +15,7 @@ export class ImageComponent implements OnInit {
   queries: string[] = [];
   oldImages: (Image & { src: string; })[] = [];
   images: (Image & { src: string; })[] = [];
-  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService) {
+  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService, private httpClient: HttpClient) {
   }
   async ngOnInit() {
     this.queries = this.route.snapshot.queryParamMap.keys;
@@ -45,11 +46,31 @@ export class ImageComponent implements OnInit {
     await this.imageService.setImageMap(map);
     await this.gitService.commitImages(paths, [`Added Images To ${this.queries[0]}`, ...paths.map(path => `      Added ${path}`)]);
   }
-  /*
-    async downloadImage(url: string) {
-       const image = await new Promise((resolve, reject) => this.http.get(url).subscribe({ next: resolve, error: reject }));
-    }
-  */
+
+  async downloadImage(input: HTMLInputElement, button: HTMLButtonElement) {
+    if (!input.value) return;
+    button.disabled = true;
+    this.httpClient.get(input.value, { responseType: 'arraybuffer' }).subscribe({
+      next: async response => {
+        const base64Data = this.imageService.stringToBase64(response);
+        const name = (new Date()).toString();
+        const path = `${this.queries[0]}/${name}`;
+        this.imageService.writeImage(path, base64Data);
+        const map = await this.imageService.getImageMap();
+        if (!map[this.queries[0]]) map[this.queries[0]] = [];
+        map[this.queries[0]].push({ file: name });
+        await this.imageService.setImageMap(map);
+        await this.gitService.commitImages([path], [`Downloaded Image To ${this.queries[0]}`, `Downloaded ${path}`]);
+        button.disabled = false;
+      },
+      error: error => {
+        console.error(error);
+        this.dialogService.showMessageBox({ type: 'error', message: 'Failed To Download Image', detail: error.message });
+        button.disabled = false;
+      }
+    });
+    input.value = '';
+  }
   async deleteImage(file: string) {
     const map = await this.imageService.getImageMap();
     for (const query of this.queries) {
@@ -76,5 +97,18 @@ export class ImageComponent implements OnInit {
     }
     await this.imageService.setImageMap(map);
     await this.gitService.commitImages([], [`Updated Image Alt For ${this.queries[0]}`, oldAlt ? `Updated Image Alt From "${oldAlt}" To "${image.alt}"` : `Set Image Alt To "${image.alt}"`]);
+  }
+  paste(element: HTMLInputElement, event: ClipboardEvent) {
+    event.preventDefault();
+    const text = event.clipboardData!.getData('text');
+    element.value = text;
+    element.dispatchEvent(new Event('input'));
+    element.blur();
+    element.focus();
+  }
+  async showClipboard(element: HTMLInputElement, param: 'placeholder' | 'value') {
+    const clipboard = await navigator.clipboard.readText();
+    element[param] = clipboard;
+    if (param === 'value') element.focus();
   }
 }
