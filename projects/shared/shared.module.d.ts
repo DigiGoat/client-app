@@ -25,11 +25,11 @@ type WithoutOnKeys<T> = {
   [K in keyof T as K extends `on${infer _}` ? never : K]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
 };
 
-type WithoutNonFunctions<T> = {
-  [K in keyof T as T[K] extends Function ? K : never]: T[K]
+type WithoutNonPromises<T> = {
+  [K in keyof T as T[K] extends (...args: any[]) => Promise<any> ? K : never]: T[K]
 };
 
 export type BackendService<T> = {
-  [K in keyof WithoutOnKeys<WithoutNonFunctions<T>>]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
+  [K in keyof WithoutOnKeys<WithoutNonPromises<T>>]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
 };
 export type BackendSharedModule = Record<keyof SharedModule, BackendService<SharedModule[keyof SharedModule]>>;

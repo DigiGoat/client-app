@@ -10,4 +10,5 @@ export const ImageService: ImageServiceType = {
   getImageMap: () => ipcRenderer.invoke('image:getImageMap'),
   setImageMap: (imageMap) => ipcRenderer.invoke('image:setImageMap', imageMap),
   readImage: (path) => ipcRenderer.invoke('image:readImage', path),
+  stringToBase64: (string) => Buffer.from(string as string).toString('base64'),
 };
