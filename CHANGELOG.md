@@ -1,3 +1,7 @@
+## 2.1.2-beta.1
+* Added the ability to rearrange goats!
+* Fixed a bug causing the dropdown showing goat search results to be hidden
+
 ## 2.1.1-beta.1
 * Added Support To Download Images From A Link!
 
