@@ -3,6 +3,7 @@ import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
+import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class GoatListComponent implements OnInit {
   @Input() syncing?: boolean | number = false;
   @Output() deleteIndex = new EventEmitter<number>;
   @Output() addGoat = new EventEmitter<Goat>();
+  @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
   @Input() filter?: (goat: Goat) => boolean;
   goats: Goat[] = [];
 
@@ -56,4 +58,8 @@ export class GoatListComponent implements OnInit {
       return true;
     }
   };
+  rearrange(event: CdkDragDrop<Goat[]>) {
+    moveItemInArray(this.goats, event.previousIndex, event.currentIndex);
+    this.rearranged.emit(event);
+  }
 }

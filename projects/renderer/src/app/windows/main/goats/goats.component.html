@@ -23,12 +23,12 @@
     <div class="mb-3 col">
       <h3>Does:</h3>
       <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes" (deleteIndex)="deleteDoe($event)" (addGoat)="addDoe($event)"
-        [filter]="filters.doe"></app-goat-list>
+        (rearranged)="rearrangeDoes($event)" [filter]="filters.doe"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Bucks:</h3>
       <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)" (addGoat)="addBuck($event)"
-        [filter]="filters.buck"></app-goat-list>
+        [filter]="filters.buck" (rearranged)="rearrangeBucks($event)"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Related:</h3>
