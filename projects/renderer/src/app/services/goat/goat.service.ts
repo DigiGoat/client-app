@@ -1,3 +1,4 @@
+import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
@@ -59,6 +60,13 @@ export class GoatService {
     window.electron.goat.getBucks().then(bucks => observer.next(bucks));
     window.electron.goat.onBucksChange(bucks => observer.next(bucks));
   });
+  async rearrangeDoes(event: CdkDragDrop<Goat[]>) {
+    const does = await this.getDoes();
+    moveItemInArray(does, event.previousIndex, event.currentIndex);
+    const doe = does[event.currentIndex];
+    await window.electron.goat.setDoes(does);
+    await this.gitService.commitDoes([`Moved ${doe.nickname || doe.name || doe.normalizeId} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+  }
   getBucks = window.electron.goat.getBucks;
   async setBuck(index: number, buck: Goat) {
     const bucks = await window.electron.goat.getBucks();
@@ -98,6 +106,13 @@ export class GoatService {
     bucks.push(buck);
     await window.electron.goat.setBucks(bucks);
     await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck).map(msg => `      ${msg}`)]);
+  }
+  async rearrangeBucks(event: CdkDragDrop<Goat[]>) {
+    const bucks = await this.getBucks();
+    moveItemInArray(bucks, event.previousIndex, event.currentIndex);
+    const buck = bucks[event.currentIndex];
+    await window.electron.goat.setBucks(bucks);
+    await this.gitService.commitBucks([`Moved ${buck.nickname || buck.name || buck.normalizeId} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   related = new Observable<Goat[]>(observer => {
     window.electron.goat.getRelated().then(related => observer.next(related));
