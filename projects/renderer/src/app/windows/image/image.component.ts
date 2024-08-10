@@ -13,7 +13,6 @@ import { ImageService } from '../../services/image/image.service';
 })
 export class ImageComponent implements OnInit {
   queries: string[] = [];
-  oldImages: (Image & { src: string; })[] = [];
   images: (Image & { src: string; })[] = [];
   constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService, private httpClient: HttpClient) {
   }
@@ -28,7 +27,7 @@ export class ImageComponent implements OnInit {
       image.src = await this.imageService.readLocalImage(image.file);
     }
     this.images = images;
-    this.cdr.detectChanges();
+    //this.cdr.detectChanges();
   }
 
   async uploadImage() {
@@ -36,15 +35,17 @@ export class ImageComponent implements OnInit {
     const map = await this.imageService.getImageMap();
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
     const paths: string[] = [];
+    let i = 0;
     for (const image of images.filePaths) {
-      const name = (new Date()).toString();
+      const name = `${(new Date()).toString()}-${i}`;
       const path = `${this.queries[0]}/${name}`;
       this.imageService.writeImage(path, await this.imageService.readImage(image));
       map[this.queries[0]].push({ file: name });
       paths.push(path);
+      i++;
     }
     await this.imageService.setImageMap(map);
-    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[0]}`, ...paths.map(path => `      Added ${path}`)]);
+    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `      Added ${path}`)]);
   }
 
   async downloadImage(input: HTMLInputElement, button: HTMLButtonElement) {
@@ -80,7 +81,7 @@ export class ImageComponent implements OnInit {
     }
     await this.imageService.setImageMap(map);
     await this.imageService.deleteImage(file);
-    await this.gitService.commitImages([file], [`Deleted Image From ${this.queries[0]}`, `Deleted ${file}`]);
+    await this.gitService.commitImages([file], [`Deleted Image From ${this.queries[this.queries.length - 1]}`, `Deleted ${file}`]);
   }
   async setImage(image: (Image & { src: string; })) {
     const map = await this.imageService.getImageMap();
@@ -96,7 +97,7 @@ export class ImageComponent implements OnInit {
       }
     }
     await this.imageService.setImageMap(map);
-    await this.gitService.commitImages([], [`Updated Image Alt For ${this.queries[0]}`, oldAlt ? `Updated Image Alt From "${oldAlt}" To "${image.alt}"` : `Set Image Alt To "${image.alt}"`]);
+    await this.gitService.commitImages([], [`Updated Image Alt For ${this.queries[this.queries.length - 1]}`, oldAlt ? `Updated Image Alt From "${oldAlt}" To "${image.alt}"` : `Set Image Alt To "${image.alt}"`]);
   }
   paste(element: HTMLInputElement, event: ClipboardEvent) {
     event.preventDefault();
@@ -110,5 +111,24 @@ export class ImageComponent implements OnInit {
     const clipboard = await navigator.clipboard.readText();
     element[param] = clipboard;
     if (param === 'value') element.focus();
+  }
+  async makePrimary(image: (Image & { src: string; })) {
+    const map = await this.imageService.getImageMap();
+    for (const query of this.queries) {
+      if (map[query]) {
+        const index = map[query].findIndex(_image => image.file.endsWith(_image.file));
+        if (index !== -1) {
+          map[query].splice(index, 1);
+        }
+      }
+    }
+    await this.imageService.deleteImage(image.file);
+    if (!map[this.queries[0]]) map[this.queries[0]] = [];
+    image.file = image.file.split('/').slice(2).join('/');
+    this.imageService.writeImage(`${this.queries[0]}/${image.file}`, image.src);
+    delete (image as { src?: string; }).src;
+    map[this.queries[0]].unshift(image);
+    await this.imageService.setImageMap(map);
+    await this.gitService.commitImages([`${this.queries[0]}/${image.file}`], [`Made Image Primary For ${this.queries[this.queries.length - 1]}`, `Made ${image.file} Primary`]);
   }
 }

@@ -1,9 +1,9 @@
+import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
-import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -47,7 +47,7 @@ export class GoatListComponent implements OnInit {
   openImages(event: MouseEvent, index: number) {
     event.stopPropagation();
     const { normalizeId, name, nickname } = this.goats[index];
-    this.windowService.openImages([nickname, name, normalizeId].filter(param => param !== undefined) as string[]);
+    this.windowService.openImages([normalizeId, name, nickname].filter(param => param !== undefined) as string[]);
   }
   lookupFilter = (goat: Goat) => {
     if (this.goats.find(_goat => _goat.id === goat.id)) {

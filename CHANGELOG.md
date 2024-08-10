@@ -1,3 +1,7 @@
+## 2.1.3-beta.1
+* Added the ability to select a primary image for a goat
+  * This is the image that will be displayed on the does/bucks page
+
 ## 2.1.2-beta.1
 * Added the ability to rearrange goats!
 * Fixed a bug causing the dropdown showing goat search results to be hidden
