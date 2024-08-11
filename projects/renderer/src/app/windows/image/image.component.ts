@@ -36,8 +36,9 @@ export class ImageComponent implements OnInit {
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
     const paths: string[] = [];
     let i = 0;
+    const timestamp = Date.now();
     for (const image of images.filePaths) {
-      const name = `${(new Date()).toString()}-${i}`;
+      const name = `${timestamp}-${i}`;
       const path = `${this.queries[0]}/${name}`;
       this.imageService.writeImage(path, await this.imageService.readImage(image));
       map[this.queries[0]].push({ file: name });
@@ -54,7 +55,7 @@ export class ImageComponent implements OnInit {
     this.httpClient.get(input.value, { responseType: 'arraybuffer' }).subscribe({
       next: async response => {
         const base64Data = this.imageService.stringToBase64(response);
-        const name = (new Date()).toString();
+        const name = `${Date.now()}`;
         const path = `${this.queries[0]}/${name}`;
         this.imageService.writeImage(path, base64Data);
         const map = await this.imageService.getImageMap();

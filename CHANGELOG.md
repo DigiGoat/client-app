@@ -1,3 +1,6 @@
+## 2.1.3-beta.2
+* Fixed a bug causing the app to crash on windows when adding images to goats
+
 ## 2.1.3-beta.1
 * Added the ability to select a primary image for a goat
   * This is the image that will be displayed on the does/bucks page
