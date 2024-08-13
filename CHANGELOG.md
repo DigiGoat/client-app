@@ -1,3 +1,6 @@
+## 2.1.3-beta.5
+* Added The Ability To Add Images Via Drag + Drop!
+
 ## 2.1.3-beta.4
 * Proper implementation of `2.1.3-beta.3`
 
