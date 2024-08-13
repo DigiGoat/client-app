@@ -1,3 +1,6 @@
+## 2.1.3-beta.6
+* Added a warning dialog when deleting a goat
+
 ## 2.1.3-beta.5
 * Added The Ability To Add Images Via Drag + Drop!
 
