@@ -1,3 +1,6 @@
+## 2.1.3-beta.4
+* Proper implementation of `2.1.3-beta.3`
+
 ## 2.1.3-beta.3
 * Images now retain their file extension
 

@@ -8,7 +8,7 @@ export interface ImageService {
   setImageMap: (imageMap: ImageMap) => Promise<void>;
   readImage: (path: string) => Promise<string>;
   stringToBase64: (string: string | ArrayBuffer) => string;
-  getExtension: (path: string) => string;
+  getExtension: (path: string) => Promise<string>;
 }
 export type Image = { file: string, alt?: string; };
 export type ImageMap = { [directory: string]: Image[]; };
