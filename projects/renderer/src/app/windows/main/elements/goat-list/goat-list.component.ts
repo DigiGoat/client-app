@@ -2,7 +2,7 @@ import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
-import { GoatService } from '../../../../services/goat/goat.service';
+import { DialogService } from '../../../../services/dialog/dialog.service';
 import { WindowService } from '../../../../services/window/window.service';
 
 
@@ -21,7 +21,7 @@ export class GoatListComponent implements OnInit {
   @Input() filter?: (goat: Goat) => boolean;
   goats: Goat[] = [];
 
-  constructor(private windowService: WindowService, private goatService: GoatService) { }
+  constructor(private windowService: WindowService, private dialogService: DialogService) { }
 
   ngOnInit() {
     this._goats.subscribe({
@@ -36,9 +36,12 @@ export class GoatListComponent implements OnInit {
     this.windowService.openGoat(this.type, index);
   }
 
-  deleteGoat(event: MouseEvent, index: number) {
+  async deleteGoat(event: MouseEvent, index: number) {
     event.stopPropagation();
-    this.deleteIndex.emit(index);
+    const action = await this.dialogService.showMessageBox({ message: `Are you sure you want to delete ${this.goats[index].nickname || this.goats[index].name || 'this goat'}?`, buttons: ['Yes', 'No'], type: 'warning' });
+    if (action.response === 0) {
+      this.deleteIndex.emit(index);
+    }
   }
   newGoat(goat: Goat) {
     //this.windowService.openGoat(this.type, this.goats.length);
