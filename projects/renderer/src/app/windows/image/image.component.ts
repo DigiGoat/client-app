@@ -49,6 +49,28 @@ export class ImageComponent implements OnInit {
     await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `      Added ${path}`)]);
   }
 
+  //Handle the drop event
+  async importImage(event: DragEvent) {
+    const files = Array.from(event.dataTransfer!.files);
+    event.preventDefault();
+    event.stopPropagation();
+    const map = await this.imageService.getImageMap();
+    if (!map[this.queries[0]]) map[this.queries[0]] = [];
+    const paths: string[] = [];
+    let i = 0;
+    const timestamp = Date.now();
+    for (const file of files) {
+      const name = `${timestamp}-${i}${await this.imageService.getExtension(file.path)}`;
+      const path = `${this.queries[0]}/${name}`;
+      this.imageService.writeImage(path, await this.imageService.readImage(file.path));
+      map[this.queries[0]].push({ file: name });
+      paths.push(path);
+      i++;
+    }
+    await this.imageService.setImageMap(map);
+    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `      Added ${path}`)]);
+  }
+
   async downloadImage(input: HTMLInputElement, button: HTMLButtonElement) {
     if (!input.value) return;
     button.disabled = true;

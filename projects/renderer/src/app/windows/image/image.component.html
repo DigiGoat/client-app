@@ -25,7 +25,9 @@
       <div class="card text-center color-scheme-secondary">
         <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
           <button class="btn btn-secondary color-scheme-secondary card-img"
-            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" (click)="uploadImage()">
+            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" (click)="uploadImage()" #drop
+            (dragover)="$event.preventDefault(); drop.classList.add('drag-over')" (dragleave)="drop.classList.remove('drag-over')"
+            (drop)="drop.classList.remove('drag-over'); importImage($event)">
             <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
               <h4 class="d-flex align-items-center justify-content-center">Upload Image <i class="bi bi-upload ps-2 pt-2"></i></h4>
             </div>
