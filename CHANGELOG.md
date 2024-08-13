@@ -1,3 +1,6 @@
+## 2.1.3-beta.3
+* Images now retain their file extension
+
 ## 2.1.3-beta.2
 * Fixed a bug causing the app to crash on windows when adding images to goats
 
