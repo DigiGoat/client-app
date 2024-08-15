@@ -1,3 +1,6 @@
+## 2.1.3-beta.7
+* Added a README for documentation!
+
 ## 2.1.3-beta.6
 * Added a warning dialog when deleting a goat
 
