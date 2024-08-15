@@ -1,3 +1,4 @@
+import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, ViewChild, type ElementRef } from '@angular/core';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
@@ -156,11 +157,17 @@ export class GoatsComponent {
   deleteBuck(index: number) {
     this.goatService.deleteBuck(index);
   }
+  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeDoes(event);
+  }
 
   addDoe(doe: Goat) {
     this.goatService.addDoe(doe);
   }
   addBuck(buck: Goat) {
     this.goatService.addBuck(buck);
+  }
+  rearrangeBucks(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeBucks(event);
   }
 }

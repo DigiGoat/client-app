@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
-import { DiffService } from '../../../../services/diff/diff.service';
-import { GoatService } from '../../../../services/goat/goat.service';
 
 @Component({
   selector: 'app-goat-lookup',
@@ -15,7 +13,7 @@ export class GoatLookupComponent {
   @Output() goatSelected = new EventEmitter<Goat>();
   @Input() filter?: (goat: Goat) => boolean;
 
-  constructor(private adgaService: ADGAService, private diffService: DiffService, private goatService: GoatService) { }
+  constructor(private adgaService: ADGAService) { }
   async lookupGoats(search: string) {
     await Promise.all([(async () => {
       this.idGoats = undefined;

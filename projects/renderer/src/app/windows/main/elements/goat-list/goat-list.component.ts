@@ -1,7 +1,8 @@
+import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
-import { GoatService } from '../../../../services/goat/goat.service';
+import { DialogService } from '../../../../services/dialog/dialog.service';
 import { WindowService } from '../../../../services/window/window.service';
 
 
@@ -16,10 +17,11 @@ export class GoatListComponent implements OnInit {
   @Input() syncing?: boolean | number = false;
   @Output() deleteIndex = new EventEmitter<number>;
   @Output() addGoat = new EventEmitter<Goat>();
+  @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
   @Input() filter?: (goat: Goat) => boolean;
   goats: Goat[] = [];
 
-  constructor(private windowService: WindowService, private goatService: GoatService) { }
+  constructor(private windowService: WindowService, private dialogService: DialogService) { }
 
   ngOnInit() {
     this._goats.subscribe({
@@ -34,9 +36,12 @@ export class GoatListComponent implements OnInit {
     this.windowService.openGoat(this.type, index);
   }
 
-  deleteGoat(event: MouseEvent, index: number) {
+  async deleteGoat(event: MouseEvent, index: number) {
     event.stopPropagation();
-    this.deleteIndex.emit(index);
+    const action = await this.dialogService.showMessageBox({ message: `Are you sure you want to delete ${this.goats[index].nickname || this.goats[index].name || 'this goat'}?`, buttons: ['Yes', 'No'], type: 'warning' });
+    if (action.response === 0) {
+      this.deleteIndex.emit(index);
+    }
   }
   newGoat(goat: Goat) {
     //this.windowService.openGoat(this.type, this.goats.length);
@@ -45,7 +50,7 @@ export class GoatListComponent implements OnInit {
   openImages(event: MouseEvent, index: number) {
     event.stopPropagation();
     const { normalizeId, name, nickname } = this.goats[index];
-    this.windowService.openImages([nickname, name, normalizeId].filter(param => param !== undefined) as string[]);
+    this.windowService.openImages([normalizeId, name, nickname].filter(param => param !== undefined) as string[]);
   }
   lookupFilter = (goat: Goat) => {
     if (this.goats.find(_goat => _goat.id === goat.id)) {
@@ -56,4 +61,8 @@ export class GoatListComponent implements OnInit {
       return true;
     }
   };
+  rearrange(event: CdkDragDrop<Goat[]>) {
+    moveItemInArray(this.goats, event.previousIndex, event.currentIndex);
+    this.rearranged.emit(event);
+  }
 }

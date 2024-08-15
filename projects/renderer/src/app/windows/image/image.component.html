@@ -1,10 +1,12 @@
 <h1 class="text-center">
-  {{queries[0]}}:
+  {{queries[queries.length-1]}}:
 </h1>
 <div class="container py-3">
   <div class="row px-3 row-cols-2 row-cols-lg-3  row-cols-xxl-4 justify-content-around">
     <div class="mb-3 col" *ngFor="let image of images; index as i">
       <div class="card text-center color-scheme-secondary">
+        <button *ngIf="i > 0" class="position-absolute top-0 parent-hover btn" tooltip="Make Primary Image" style="right: 3%; z-index: 1000"
+          (click)="makePrimary(image)"><i class="bi bi-star"></i></button>
         <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
           <img [src]="'data:;base64,'+image.src" class="card-img rounded object-fit-contain" [alt]="image.alt">
         </div>
@@ -23,16 +25,22 @@
       <div class="card text-center color-scheme-secondary">
         <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
           <button class="btn btn-secondary color-scheme-secondary card-img"
-            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" (click)="uploadImage()">
+            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" (click)="uploadImage()" #drop
+            (dragover)="$event.preventDefault(); drop.classList.add('drag-over')" (dragleave)="drop.classList.remove('drag-over')"
+            (drop)="drop.classList.remove('drag-over'); importImage($event)">
             <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
               <h4 class="d-flex align-items-center justify-content-center">Upload Image <i class="bi bi-upload ps-2 pt-2"></i></h4>
             </div>
           </button>
         </div>
         <div class="card-footer color-scheme-tertiary"> OR: <div class="input-group pt-2">
-            <input type="url" class="form-control color-scheme-tertiary" placeholder="Download Image" #link disabled tooltip="Coming Soon!">
-            <!--<button class="btn btn-secondary color-scheme-tertiary" (click)="downloadImage(link.value)" tooltip="Download Image"><i
-                class="bi bi-download"></i></button>-->
+            <input type="url" class="form-control color-scheme-tertiary" placeholder="https://example.com" #link
+              (keydown)=" $event.key === 'Enter'?  download.focus() : undefined" (paste)="paste(link, $event)">
+            <button class="btn btn-secondary color-scheme-tertiary" online-only
+              (click)="link.value ? downloadImage(link, download) : showClipboard(link, 'value')"
+              (mouseenter)="showClipboard(link, 'placeholder')" (mouseleave)="link.placeholder = 'https://example.com'"
+              [tooltip]="link.value ? 'Download Image' : 'Paste From Clipboard'" tooltip-placement="top" #download><i class="bi"
+                [class.bi-download]="link.value" [class.bi-type]="!link.value"></i></button>
           </div>
         </div>
       </div>

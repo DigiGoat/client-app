@@ -17,4 +17,6 @@ export class ImageService {
   getImageMap = window.electron.image.getImageMap;
   setImageMap = window.electron.image.setImageMap;
   readImage = window.electron.image.readImage;
+  stringToBase64 = window.electron.image.stringToBase64;
+  getExtension = window.electron.image.getExtension;
 }

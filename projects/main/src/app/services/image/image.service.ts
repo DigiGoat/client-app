@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
-import { join } from 'path';
+import { extname, join } from 'path';
 import { ImageService as ImageServiceType, type ImageMap } from '../../../../../shared/services/image/image.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
@@ -57,6 +57,9 @@ export class ImageService {
     },
     readImage: async (_event, path) => {
       return await readFile(path, 'base64');
+    },
+    getExtension: async (_event, path) => {
+      return extname(path);
     }
   };
   watchingImages = false;

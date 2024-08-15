@@ -1,3 +1,32 @@
+## 2.1.3-beta.7
+* Added a README for documentation!
+
+## 2.1.3-beta.6
+* Added a warning dialog when deleting a goat
+
+## 2.1.3-beta.5
+* Added The Ability To Add Images Via Drag + Drop!
+
+## 2.1.3-beta.4
+* Proper implementation of `2.1.3-beta.3`
+
+## 2.1.3-beta.3
+* Images now retain their file extension
+
+## 2.1.3-beta.2
+* Fixed a bug causing the app to crash on windows when adding images to goats
+
+## 2.1.3-beta.1
+* Added the ability to select a primary image for a goat
+  * This is the image that will be displayed on the does/bucks page
+
+## 2.1.2-beta.1
+* Added the ability to rearrange goats!
+* Fixed a bug causing the dropdown showing goat search results to be hidden
+
+## 2.1.1-beta.1
+* Added Support To Download Images From A Link!
+
 ## 2.1.0-beta.1
 * Added owner accounts to related does
 
