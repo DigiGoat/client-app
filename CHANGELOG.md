@@ -1,3 +1,6 @@
+## 2.1.4-beta.1
+* Added missing photos for README
+
 ## 2.1.3-beta.7
 * Added a README for documentation!
 
