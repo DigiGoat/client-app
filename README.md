@@ -12,6 +12,7 @@
 
 ### Works with ADGA
 No more copy/paste. What used to be hours of entering goats one by one, having to look up the same information each time, is now just the click of a button. When editing your goats, there is a convenient `Sync All` button that fetches all your owned goats, their registration info (such as name, id, etc.), and all the necessary goats (termed "related goats") to automatically construct a pedigree.
+
 ![Sync Button](docs/Sync.png)
 ### Internet Efficient
 Unlike most website editors that require a constant, high speed connection, DigiGoat only uses internet as needed. Such as syncing with ADGA or when you wish to publish changes.
