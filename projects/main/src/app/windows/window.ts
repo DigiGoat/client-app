@@ -39,6 +39,13 @@ export class Window {
     app.on('before-quit', () => {
       if (!this.window.isDestroyed()) {
         this.window.setClosable(true);
+        let attempts = 0;
+        this.window.on('close', () => attempts++);
+        this.window.on('closed', () => {
+          if (attempts === 2 /*If there are changes, it takes two attempts to close the window*/) {
+            app.quit();
+          }
+        });
       }
     });
   }

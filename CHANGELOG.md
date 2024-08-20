@@ -1,3 +1,7 @@
+## 2.1.4-beta.2
+* Moved documentation to https://github.com/DigiGoat 
+* When quitting the app with unsaved changes, the app will finish quitting after displaying dialog
+
 ## 2.1.4-beta.1
 * Added missing photos for README
 
