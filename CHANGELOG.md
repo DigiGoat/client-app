@@ -1,3 +1,7 @@
+## 2.1.5-beta.1
+* Added support for Markdown!
+  * When configuring your home description or a goat's description, the app will preview the markdown (NOTE: Requests are limited to 60 per hour! However, if you publish during this time, it will still be rendered.)
+
 ## 2.1.4-beta.2
 * Moved documentation to https://github.com/DigiGoat 
 * When quitting the app with unsaved changes, the app will finish quitting after displaying dialog

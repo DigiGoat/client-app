@@ -63,7 +63,7 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('description')">
         <span class="input-group-text">Description:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="description"></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="description" markdown></textarea>
       </div>
       <div class="form-text">Some Information About Your Goat</div>
     </div>
