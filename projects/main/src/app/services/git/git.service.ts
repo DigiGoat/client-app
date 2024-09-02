@@ -170,6 +170,7 @@ export class GitService {
       try {
         await this.git.add(join(this.base, 'src/assets/icons/'));
         await this.git.commit('Updated favicon', 'src/assets/icons/');
+        this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
           console.warn('Nothing to commit');
