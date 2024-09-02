@@ -85,6 +85,7 @@ export class DiffService {
     'riseupfromtheash': 'RiseUpFromTheAsh',
     '8sr': '8SR',
     'likea': 'LikeA',
+    'famfarm': 'FamFarm'
   };
 
   private parseCase(word: string) {
