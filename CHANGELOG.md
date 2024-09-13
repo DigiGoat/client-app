@@ -1,3 +1,7 @@
+## 2.1.8-beta.1
+* Moved the `Switch Website's` button to the settings page
+* Made the ID Blacklist hidden by default
+
 ## 2.1.7-beta.1
 * Improved the publish button!
   * The publish button now shows a progress bar when publishing

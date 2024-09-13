@@ -16,10 +16,6 @@ import { WindowService } from '../../../services/window/window.service';
 export class HomeComponent {
   constructor(private windowService: WindowService, public configService: ConfigService, public suggestionService: SuggestionService, private dialogService: DialogService, private appService: AppService, private repoService: RepoService, private gitService: GitService) { }
 
-  async openSetup() {
-    await this.windowService.openSetup();
-    await this.windowService.close();
-  }
   async openLogin() {
     await this.windowService.openLogin();
   }
