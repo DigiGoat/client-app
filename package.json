@@ -7,7 +7,7 @@
     "url": "https://github.com/DigiGoat"
   },
   "description": "An app to merge the gap between ADGA, your farm, and the internet.",
-  "version": "2.1.5-beta.1",
+  "version": "2.1.8-beta.1",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -41,7 +41,7 @@
     "lint:preload": "eslint projects/preload",
     "pull-check": "ts-node --skipProject --compilerOptions '{\"resolveJsonModule\": true}' ./scripts/check.ts",
     "release": "ts-node --skipProject --compilerOptions '{\"resolveJsonModule\": true}' ./scripts/release.ts",
-    "fix-version": "ts-node ./scripts/version.ts"
+    "fix-version": "ts-node --skipProject ./scripts/version.ts"
   },
   "private": true,
   "dependencies": {

@@ -1,15 +1,18 @@
 <h1 class="text-center">App Settings:</h1>
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
-    <div class="mb-3 col">
+    <div class="mb-3 col text-center ">
+      <button class="btn btn-secondary color-scheme-quaternary w-75" type="button" (click)="openLogin()"> ADGA Account </button>
+    </div>
+    <div class="mb-3 col text-center ">
+      <button class="btn btn-warning w-75" type="button" (click)="openSetup()"> Switch Website's </button>
+    </div>
+    <div class="mb-3 col" advanced>
       <div class="input-group">
         <span class="input-group-text">Blacklist:</span>
         <div class="form-control color-scheme-quaternary" [innerHTML]="blacklist"></div>
       </div>
       <div class="form-text">Animals on your ADGA account that will be ignored when updating your owned goats</div>
     </div>
-  </div>
-  <div class="mb-3 text-center">
-    <button class="btn btn-secondary color-scheme-quaternary w-25" type="button" (click)="openLogin()"> ADGA Account </button>
   </div>
 </div>
