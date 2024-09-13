@@ -11,7 +11,26 @@ import { WindowService } from '../../services/window/window.service';
 })
 export class MainComponent implements OnInit {
   changes = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService) { }
+  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService) {
+    this.gitService.onprogress = (event) => {
+      if (event.method === 'push') {
+        switch (event.stage) {
+          case 'counting':
+            this.publishProgress = event.progress / 25;
+            break;
+          case 'compressing':
+            this.publishProgress = 25 + event.progress / 25;
+            break;
+          case 'writing':
+            this.publishProgress = 50 + event.progress / 25;
+            break;
+          case 'remote:':
+            this.publishProgress = 75 + event.progress / 25;
+            break;
+        }
+      }
+    };
+  }
 
   async ngOnInit() {
     this.changes = (await this.gitService.getStatus()).ahead;
@@ -21,10 +40,18 @@ export class MainComponent implements OnInit {
     };
   }
   publishing = false;
+  publishProgress = 0;
   async publish() {
     this.publishing = true;
     if ((await this.gitService.getSetup()).token) {
-      await this.gitService.push();
+      try {
+        await this.gitService.push();
+      } catch (err) {
+        console.warn(err);
+        await this.gitService.handleError('Publish Failed!', err as Error);
+      } finally {
+        this.publishProgress = 0;
+      }
     } else {
       const action = await this.dialogService.showMessageBox({ message: 'No Access Token Configured!', type: 'warning', detail: 'Please Configure A Access Token Before Publishing', buttons: ['Open Setup', 'Cancel'] });
       if (action.response === 0) {

@@ -1,3 +1,28 @@
+## 2.1.8-beta.1
+* Moved the `Switch Website's` button to the settings page
+* Made the ID Blacklist hidden by default
+
+## 2.1.7-beta.1
+* Improved the publish button!
+  * The publish button now shows a progress bar when publishing
+  * It is better at handling errors
+
+## 2.1.6-beta.1
+* Fixed a bug causing changes not to be detected when importing a favicon
+* Updated TitleCase Algorithm
+  * Added RiseUpFromTheAsh, 8SR, LikeA, and FamFarm
+
+## 2.1.5-beta.1
+* Added support for Markdown!
+  * When configuring your home description or a goat's description, the app will preview the markdown (NOTE: Requests are limited to 60 per hour! However, if you publish during this time, it will still be rendered.)
+
+## 2.1.4-beta.2
+* Moved documentation to https://github.com/DigiGoat 
+* When quitting the app with unsaved changes, the app will finish quitting after displaying dialog
+
+## 2.1.4-beta.1
+* Added missing photos for README
+
 ## 2.1.3-beta.7
 * Added a README for documentation!
 

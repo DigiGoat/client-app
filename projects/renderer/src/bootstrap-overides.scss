@@ -3,10 +3,10 @@
   color: var(--text-color);
 }
 
-.input-group>input,
-.input-group>textarea,
-div:has(.form-label)>input,
-div:has(.form-label)>textarea {
+.input-group>*,
+.input-group>*,
+div:has(.form-label)>*,
+div:has(.form-label)>* {
   background-color: var(--quaternary-color);
   color: var(--text-color);
 }
@@ -17,10 +17,10 @@ div:has(.form-label)>textarea {
     color: var(--text-light-color);
   }
 
-  .input-group>input,
-  .input-group>textarea,
-  div:has(.form-label)>input,
-  div:has(.form-label)>textarea {
+  .input-group>*,
+  .input-group>*,
+  div:has(.form-label)>*,
+  div:has(.form-label)>* {
     background-color: var(--quaternary-light-color);
     color: var(--text-light-color);
   }

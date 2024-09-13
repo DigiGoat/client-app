@@ -41,7 +41,7 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
         <span class="input-group-text">Homepage Content:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription"></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" markdown></textarea>
       </div>
       <div class="form-text">The Content To Be Displayed On The Homepage</div>
     </div>
@@ -120,8 +120,5 @@
           href="http://realfavicongenerator.net/" target="_blank">Real Favicon Generator</a> To Create Your Favicon, Then Import Them Here
       </div>
     </div>
-  </div>
-  <div class="mb-3 text-center">
-    <button class="btn btn-warning w-25" type="button" (click)="openSetup()"> Switch Website's </button>
   </div>
 </div>

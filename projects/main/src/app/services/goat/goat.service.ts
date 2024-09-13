@@ -41,19 +41,19 @@ export class GoatService {
       return await this.getDoes();
     },
     setDoes: async (_event, does) => {
-      await writeJSON(this.does, does);
+      await writeJSON(this.does, does, { spaces: 2 });
     },
     getBucks: async () => {
       return await this.getBucks();
     },
     setBucks: async (_event, bucks) => {
-      await writeJSON(this.bucks, bucks);
+      await writeJSON(this.bucks, bucks, { spaces: 2 });
     },
     getRelated: async () => {
       return await this.getRelated();
     },
     setRelated: async (_event, related) => {
-      await writeJSON(this.related, related);
+      await writeJSON(this.related, related, { spaces: 2 });
     }
   };
   watchingDoes = false;

@@ -16,4 +16,8 @@ export class SettingsComponent implements OnInit {
     this.windowService.openLogin();
   }
   blacklist?: string;
+  async openSetup() {
+    await this.windowService.openSetup();
+    await this.windowService.close();
+  }
 }

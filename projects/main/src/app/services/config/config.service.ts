@@ -23,7 +23,7 @@ export class ConfigService {
     },
     set: async (_event, config) => {
       ensureFileSync(this.config);
-      await writeJson(this.config, config);
+      await writeJson(this.config, config, { spaces: 2 });
     }
   };
 
