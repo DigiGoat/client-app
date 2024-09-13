@@ -1,3 +1,7 @@
+## 2.1.9-beta.1
+* Improved the publish button progress bar
+* Fixed a bug caused by clicking links in your goat's descriptions
+
 ## 2.1.8-beta.1
 * Moved the `Switch Website's` button to the settings page
 * Made the ID Blacklist hidden by default

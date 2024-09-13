@@ -11,7 +11,7 @@ export class MarkdownDirective implements OnInit {
 
   async ngOnInit() {
     this.markdownEl = this.el.nativeElement.ownerDocument.createElement('div');
-    this.markdownEl.className = this.el.nativeElement.className; // + ' text-center';
+    this.markdownEl.className = this.el.nativeElement.className + ' blocked-link'; // + ' text-center';
     this.markdownEl.style.cursor = 'text';
     this.el.nativeElement.insertAdjacentElement('afterend', this.markdownEl);
     this.markdownEl.style.display = 'none';

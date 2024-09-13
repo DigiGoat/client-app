@@ -80,3 +80,11 @@
   pointer-events: none !important;
   cursor: default !important;
 }
+
+.blocked-link>p>a {
+  cursor: not-allowed !important;
+}
+
+.blocked-link>p>a:focus {
+  pointer-events: none !important;
+}
