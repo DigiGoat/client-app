@@ -47,6 +47,8 @@ export class GitService {
     } else if (err.message.includes('a git process\nmay have crashed in this repository earlier')) {
       await this.dialogService.showMessageBox({ message: title, type: 'error', detail: 'Something Crashed When Saving Files Earlier. A Relaunch is Required', buttons: ['Exit and Relaunch'] });
       await this.windowService.quit(true);
+    } else if (err.message.includes('Personal Access Token') || err.message.includes('could not read Password')) {
+      await this.dialogService.showMessageBox({ message: title, type: 'warning', detail: 'Invalid Refresh Token, Please Contact Support For a New One' });
     } else {
       await this.dialogService.showMessageBox({ message: title, type: 'error', detail: err.message.split('fatal:').pop() });
     }
