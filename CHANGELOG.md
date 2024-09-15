@@ -1,3 +1,7 @@
+## 2.1.9-beta.2
+* Fixed a bug when calculating the progress while publishing
+  * The progress bar also appears for 1 second after publishing
+
 ## 2.1.9-beta.1
 * Improved the publish button progress bar
 * Fixed a bug caused by clicking links in your goat's descriptions

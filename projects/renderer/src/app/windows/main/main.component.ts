@@ -21,18 +21,23 @@ export class MainComponent implements OnInit {
     };
     this.gitService.onprogress = (event) => {
       if (event.method === 'push') {
+        const stages = 5;
+        const stage = 100 / stages;
         switch (event.stage) {
+          case 'enumerating':
+            this.publishProgress.set(event.progress / stages);
+            break;
           case 'counting':
-            this.publishProgress.set(event.progress / 25);
+            this.publishProgress.set(stage + event.progress / stages);
             break;
           case 'compressing':
-            this.publishProgress.set(25 + event.progress / 25);
+            this.publishProgress.set(stage * 2 + event.progress / stages);
             break;
           case 'writing':
-            this.publishProgress.set(50 + event.progress / 25);
+            this.publishProgress.set(stage * 3 + event.progress / stages);
             break;
           case 'remote:':
-            this.publishProgress.set(75 + event.progress / 25);
+            this.publishProgress.set(stage * 4 + event.progress / stages);
             break;
         }
       }
@@ -46,6 +51,7 @@ export class MainComponent implements OnInit {
     if ((await this.gitService.getSetup()).token) {
       try {
         await this.gitService.push();
+        this.publishProgress.set(100);
       } catch (err) {
         console.warn(err);
         await this.gitService.handleError('Publish Failed!', err as Error);
@@ -57,8 +63,9 @@ export class MainComponent implements OnInit {
         await this.windowService.close();
       }
     }
-    this.publishing = false;
-    this.publishProgress.set(0);
+    setTimeout(() => {
+      this.publishing = false;
+    }, 1000);
   }
   async reset() {
     const action = await this.dialogService.showMessageBox({ message: 'Are you sure you want to reset?', detail: 'This will permanently reset ALL unpublished changes. This cannot be undone', type: 'warning', buttons: ['Reset Changes', 'Cancel'] });
