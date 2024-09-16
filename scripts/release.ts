@@ -82,7 +82,8 @@ use the id of that release to update the release
     body: process.env['GITHUB_REF_NAME'] === 'main' ? `# v${version}\n${changes}` : changes,
     draft: false,
     tag_name: tag,
-    prerelease: process.env['GITHUB_REF_NAME'] === 'beta'
+    prerelease: process.env['GITHUB_REF_NAME'] === 'beta',
+    target_commitish: process.env['GITHUB_SHA']
   });
   log.success('Updated release');
 })();
