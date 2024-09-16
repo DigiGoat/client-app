@@ -38,12 +38,12 @@ let success = true;
 const summary = ['## Pre Check Summary:', ''];
 
 async function checkBranch() {
-  if (process.env['GITHUB_HEAD_REF'] === 'main' && process.env['GITHUB_REF_NAME'] !== 'beta') {
+  if (process.env['GITHUB_HEAD_REF'] === 'main' && process.env['GITHUB_BASE_REF'] !== 'beta') {
     log.error('Only the beta branch may merge into the main branch!');
-    summary.push(`- [ ] Branch Check: Only the beta branch may merge into the main branch! (${process.env['GITHUB_HEAD_REF']} === 'main' && ${process.env['GITHUB_REF_NAME']} !== 'beta')`);
+    summary.push(`- [ ] Branch Check: Only the beta branch may merge into the main branch! (\`${process.env['GITHUB_HEAD_REF']} === 'main' && ${process.env['GITHUB_BASE_REF']} !== 'beta')\``);
     success = false;
   } else {
-    summary.push(`- [x] Branch Check: Branches are compatible (${process.env['GITHUB_HEAD_REF']} --> ${process.env['GITHUB_REF_NAME']})`);
+    summary.push(`- [x] Branch Check: Branches are compatible (\`${process.env['GITHUB_HEAD_REF']} --> ${process.env['GITHUB_BASE_REF']}\`)`);
   }
 }
 async function checkVersion() {
