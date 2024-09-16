@@ -17,9 +17,9 @@
               *ngIf="changes"> {{changes}}<span class="visually-hidden">unread messages</span>
             </span>
             <div class="progress position-absolute start-0 end-0" role="progressbar" aria-label="Animated striped example"
-              [attr.aria-valuenow]="publishProgress" aria-valuemin="0" aria-valuemax="100" *ngIf="publishProgress"
+              [attr.aria-valuenow]="publishProgress()" aria-valuemin="0" aria-valuemax="100" *ngIf="publishing"
               style="bottom: 7.5px; height: 7.5px">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" [style]="'width: '+publishProgress+'%'"></div>
+              <div class="progress-bar progress-bar-striped progress-bar-animated" [style]="'width: '+publishProgress()+'%'"></div>
             </div>
           </button>
         </li>
