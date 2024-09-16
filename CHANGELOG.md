@@ -1,3 +1,6 @@
+## 2.1.10-beta.1
+* Fixed a bug causing the commit assosciated with releases to be unrelated
+
 ## 2.1.9-beta.2
 * Fixed a bug when calculating the progress while publishing
   * The progress bar also appears for 1 second after publishing
