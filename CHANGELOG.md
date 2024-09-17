@@ -1,3 +1,6 @@
+## 2.1.14-beta.1
+* Fixed the version reported when installing web-ui updates
+
 ## 2.1.13-beta.1
 * Added support for spell check!
 

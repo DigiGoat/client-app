@@ -220,8 +220,14 @@ export class GitService {
       console.debug('Fetching upstream...');
       await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
       console.debug('Checking for updates...');
-      const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
-      const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
+      let unparsedNewVersion = JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version;
+      let unparsedOldVersion = (await readJSON(join(this.base, 'package.json'))).version;
+      if (!app.getVersion().includes('beta')) {
+        unparsedNewVersion = unparsedNewVersion.split('-')[0];
+        unparsedOldVersion = unparsedOldVersion.split('-')[0];
+      }
+      const newVersion = parse(unparsedNewVersion);
+      const oldVersion = parse(unparsedOldVersion);
       const appVersion = parse(app.getVersion());
       if (app.isReady()) {
         this.determineUpdates(oldVersion, newVersion, appVersion);
