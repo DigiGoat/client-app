@@ -26,6 +26,7 @@ export class AppService {
         return true;
       }
     },
+    openMarkdown: async () => shell.openExternal('https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'),
     inspectDirectory: async (_event, path) => {
       return await readdir(path);
     }

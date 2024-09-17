@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
@@ -53,9 +53,13 @@ export class GitService {
         exec('start cmd /k "winget install Git.Git --source winget"');
       } else if (process.platform === 'darwin') {
         exec('open -a Terminal $(which git)');
+        execSync('osascript -e \'tell app "Terminal" to activate\' -e \'tell app "Terminal" to do script "$(which git)"\'');
       } else {
         return Promise.reject('Unsupported platform');
       }
+    },
+    trust: async () => {
+      execSync('osascript -e \'tell app "Terminal" to activate\' -e \'tell app "Terminal" to do script "sudo xcodebuild -license && exit"\'');
     },
     getPublishedDoes: async () => {
       return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));
@@ -216,8 +220,14 @@ export class GitService {
       console.debug('Fetching upstream...');
       await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
       console.debug('Checking for updates...');
-      const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
-      const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
+      let unparsedNewVersion = JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version;
+      let unparsedOldVersion = (await readJSON(join(this.base, 'package.json'))).version;
+      if (!app.getVersion().includes('beta')) {
+        unparsedNewVersion = unparsedNewVersion.split('-')[0];
+        unparsedOldVersion = unparsedOldVersion.split('-')[0];
+      }
+      const newVersion = parse(unparsedNewVersion);
+      const oldVersion = parse(unparsedOldVersion);
       const appVersion = parse(app.getVersion());
       if (app.isReady()) {
         this.determineUpdates(oldVersion, newVersion, appVersion);

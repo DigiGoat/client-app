@@ -1,3 +1,26 @@
+## 2.1.14-beta.1
+* Fixed the version reported when installing web-ui updates
+
+## 2.1.13-beta.1
+* Added support for spell check!
+
+## 2.1.12-beta.1
+* Fixed a bug on Mac caused by Apple updating their license agreement
+
+## 2.1.11-beta.1
+* Added a Markdown indicator when text will be rendered as Markdown (clicking on it opens the formatting docs)
+
+## 2.1.10-beta.1
+* Fixed a bug causing the commit assosciated with releases to be unrelated
+
+## 2.1.9-beta.2
+* Fixed a bug when calculating the progress while publishing
+  * The progress bar also appears for 1 second after publishing
+
+## 2.1.9-beta.1
+* Improved the publish button progress bar
+* Fixed a bug caused by clicking links in your goat's descriptions
+
 ## 2.1.8-beta.1
 * Moved the `Switch Website's` button to the settings page
 * Made the ID Blacklist hidden by default
