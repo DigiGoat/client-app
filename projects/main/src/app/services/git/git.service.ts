@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
 import { join } from 'path';
@@ -53,9 +53,13 @@ export class GitService {
         exec('start cmd /k "winget install Git.Git --source winget"');
       } else if (process.platform === 'darwin') {
         exec('open -a Terminal $(which git)');
+        execSync('osascript -e \'tell app "Terminal" to activate\' -e \'tell app "Terminal" to do script "$(which git)"\'');
       } else {
         return Promise.reject('Unsupported platform');
       }
+    },
+    trust: async () => {
+      execSync('osascript -e \'tell app "Terminal" to activate\' -e \'tell app "Terminal" to do script "sudo xcodebuild -license && exit"\'');
     },
     getPublishedDoes: async () => {
       return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));

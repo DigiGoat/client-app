@@ -10,6 +10,7 @@ export const GitService: GitServiceType = {
   onprogress: (callback) => ipcRenderer.on('git:progress', (_event, progress) => callback(progress)),
   version: () => ipcRenderer.invoke('git:version'),
   install: () => ipcRenderer.invoke('git:install'),
+  trust: () => ipcRenderer.invoke('git:trust'),
   getPublishedDoes: () => ipcRenderer.invoke('git:getPublishedDoes'),
   commitDoes: (message) => ipcRenderer.invoke('git:commitDoes', message),
   commitBucks: (message) => ipcRenderer.invoke('git:commitBucks', message),
