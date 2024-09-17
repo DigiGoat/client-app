@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, type BrowserWindowConstructorOptions } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, shell, type BrowserWindowConstructorOptions } from 'electron';
 import { join } from 'path';
 
 export class Window {
@@ -47,6 +47,29 @@ export class Window {
           }
         });
       }
+    });
+    this.window.webContents.on('context-menu', (_event, params) => {
+      const menu = new Menu();
+
+      // Add each spelling suggestion
+      for (const suggestion of params.dictionarySuggestions) {
+        menu.append(new MenuItem({
+          label: suggestion,
+          click: () => this.window.webContents.replaceMisspelling(suggestion)
+        }));
+      }
+
+      // Allow users to add the misspelled word to the dictionary
+      if (params.misspelledWord) {
+        menu.append(
+          new MenuItem({
+            label: `Add '${params.misspelledWord}' To Dictionary`,
+            click: () => this.window.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
+          })
+        );
+      }
+
+      menu.popup();
     });
   }
 }

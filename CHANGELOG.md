@@ -1,3 +1,6 @@
+## 2.1.13-beta.1
+* Added support for spell check!
+
 ## 2.1.12-beta.1
 * Fixed a bug on Mac caused by Apple updating their license agreement
 
