@@ -21,6 +21,7 @@ export class GitService {
     window.electron.git.onprogress(callback);
   }
   install = window.electron.git.install;
+  trust = window.electron.git.trust;
   commitDoes = window.electron.git.commitDoes;
   commitBucks = window.electron.git.commitBucks;
   commitConfig = window.electron.git.commitConfig;

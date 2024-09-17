@@ -1,3 +1,9 @@
+## 2.1.12-beta.1
+* Fixed a bug on Mac caused by Apple updating their license agreement
+
+## 2.1.11-beta.1
+* Added a Markdown indicator when text will be rendered as Markdown (clicking on it opens the formatting docs)
+
 ## 2.1.10-beta.1
 * Fixed a bug causing the commit assosciated with releases to be unrelated
 
