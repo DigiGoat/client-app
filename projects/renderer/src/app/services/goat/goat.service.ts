@@ -1,7 +1,7 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { Goat } from '../../../../../shared/services/goat/goat.service';
+import type { Goat, Kidding } from '../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../adga/adga.service';
 import { DiffService } from '../diff/diff.service';
 import { GitService } from '../git/git.service';
@@ -136,4 +136,13 @@ export class GoatService {
   async writeRelated(related: Goat[]) {
     await window.electron.goat.setRelated(related);
   }
+  getKiddingSchedule = window.electron.goat.getKiddingSchedule;
+  setKiddingSchedule = window.electron.goat.setKiddingSchedule;
+  set onKiddingScheduleChange(callback: (kiddingSchedule: Goat[]) => void) {
+    window.electron.goat.onKiddingScheduleChange(callback);
+  }
+  kiddingSchedule = new Observable<Kidding[]>(observer => {
+    window.electron.goat.getKiddingSchedule().then(kiddingSchedule => observer.next(kiddingSchedule));
+    window.electron.goat.onKiddingScheduleChange(kiddingSchedule => observer.next(kiddingSchedule));
+  });
 }

@@ -17,6 +17,7 @@ export interface GitService {
   commitBucks: (message: string[]) => Promise<void>;
   commitConfig: (message: string[]) => Promise<void>;
   commitRelated: (message: string[]) => Promise<void>;
+  commitKiddingSchedule: (message: string[]) => Promise<void>;
   push: () => Promise<void>;
   reset: () => Promise<void>;
   getStatus: () => Promise<StatusResult>;

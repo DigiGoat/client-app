@@ -8,6 +8,9 @@ export interface GoatService {
   getRelated: () => Promise<Goat[]>;
   setRelated: (related: Goat[]) => Promise<void>;
   onRelatedChange: (callback: (related: Goat[]) => void) => void;
+  getKiddingSchedule: () => Promise<Kidding[]>;
+  setKiddingSchedule: (kiddingSchedule: Kidding[]) => Promise<void>;
+  onKiddingScheduleChange: (callback: (kiddingSchedule: Kidding[]) => void) => void;
 }
 export type Goat = Partial<{
   nickname: string;
@@ -26,3 +29,11 @@ export type Goat = Partial<{
   } | null;
 }>;
 export type GoatType = 'doe' | 'buck';
+export type Kidding = Partial<{
+  dam: string;
+  sire: string;
+  exposed: string;
+  due: string;
+  kidded: string;
+  description: string;
+}>;

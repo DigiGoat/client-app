@@ -112,6 +112,18 @@ export class GitService {
         }
       }
     },
+    commitKiddingSchedule: async (_event, message) => {
+      try {
+        await this.git.commit(message, 'src/assets/resources/kidding-schedule.json');
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
+    },
     push: async () => {
       await this.git.push(['--force']);
       this.change();

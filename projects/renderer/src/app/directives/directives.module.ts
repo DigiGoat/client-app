@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AdvancedDirective } from './advanced/advanced.directive';
+import { GoatSearchDirective } from './goat-search/goat-search.directive';
 import { MarkdownDirective } from './markdown/markdown.directive';
 import { OnlineOnlyDirective } from './online-only/online-only.directive';
 import { SuggestionDirective } from './suggestion/suggestion.directive';
@@ -16,7 +17,8 @@ import { TooltipDirective } from './tooltip/tooltip.directive';
     TooltipDirective,
     OnlineOnlyDirective,
     AdvancedDirective,
-    MarkdownDirective
+    MarkdownDirective,
+    GoatSearchDirective
   ],
   imports: [
     HttpClientModule
@@ -27,7 +29,8 @@ import { TooltipDirective } from './tooltip/tooltip.directive';
     TooltipDirective,
     OnlineOnlyDirective,
     AdvancedDirective,
-    MarkdownDirective
+    MarkdownDirective,
+    GoatSearchDirective
   ]
 })
 export class DirectivesModule { }
