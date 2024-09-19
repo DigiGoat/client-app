@@ -1,6 +1,6 @@
 <h1 class="text-center flex-grow-1" [class.unsaved]="getChanges()"> Kidding Schedule: </h1>
 <div class="list-group color-scheme-secondary container pe-0" cdkDropList cdkDropListLockAxis="y" (cdkDropListDropped)="rearrange($event)"
-  style="max-height: 100vh;">
+  style="max-height: 100vh; overflow-x: hidden;">
   <span
     class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
     style="min-height: auto; z-index: 1 !important;">
