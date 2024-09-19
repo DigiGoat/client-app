@@ -15,7 +15,7 @@
     <div class="col">
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'dam')">
         <span class="input-group-text">Dam:</span>
-        <input type="text" class="form-control" [ngModel]="breeding.dam | uppercase" (ngModelChange)="breedings[i].dam = $event"
+        <input type="text" class="form-control" [ngModel]="breeding.dam | uppercase" (ngModelChange)="breeding.dam = $event"
           [goat-search]="does" #dam>
       </div>
       <div class="form-text">The ID of the dam in the breeding</div>
@@ -26,33 +26,33 @@
     <div class="col">
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'exposed')">
         <span class="input-group-text">Exposed:</span>
-        <input type="text" class="form-control" #exposed (blur)="breedings[i].exposed = exposed.value"
+        <input type="text" class="form-control" #exposed (blur)="breeding.exposed = exposed.value"
           [ngModel]="breeding.exposed | date:'longDate'"
           [suggestion]="(calculateDueDate(due.value, breeding.dam, true) | date:'longDate') ?? ''">
       </div>
       <div class="form-text">When the doe was exposed</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'due')">
         <span class="input-group-text">Due:</span>
-        <input type="text" class="form-control" #due (blur)="breedings[i].due = due.value" [ngModel]="breeding.due | date:'longDate'"
+        <input type="text" class="form-control" #due (blur)="breeding.due = due.value" [ngModel]="breeding.due | date:'longDate'"
           [suggestion]="(calculateDueDate(exposed.value, breeding.dam) | date:'longDate') ?? ''">
       </div>
       <div class="form-text">When the doe is due</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'kidded')">
         <span class="input-group-text">Kidded:</span>
-        <input type="text" class="form-control" #kidded (blur)="breedings[i].kidded = kidded.value"
+        <input type="text" class="form-control" #kidded (blur)="breeding.kidded = kidded.value"
           [ngModel]="breeding.kidded | date:'longDate'" [suggestion]="due.value">
       </div>
       <div class="form-text">When the doe kidded</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'description')">
         <span class="input-group-text">Description:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="breedings[i].description" markdown></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="breeding.description" markdown></textarea>
       </div>
       <div class="form-text">A description of the breeding</div>
     </div>
     <div class="col">
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'sire')">
         <span class="input-group-text">Sire:</span>
-        <input type="text" class="form-control" #sire [ngModel]="breeding.sire | uppercase" (ngModelChange)="breedings[i].sire = $event"
+        <input type="text" class="form-control" #sire [ngModel]="breeding.sire | uppercase" (ngModelChange)="breeding.sire = $event"
           [goat-search]="bucks">
       </div>
       <div class="form-text">The ID of the sire in the breeding</div>

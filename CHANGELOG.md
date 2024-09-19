@@ -1,3 +1,6 @@
+## 3.0.0-beta.5
+* Reverted some unnessacary changes from the previous version
+
 ## 3.0.0-beta.4
 * Fixed a bug causing the kidding schedule to not save any info within the breedings
 
