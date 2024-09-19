@@ -1,3 +1,6 @@
+## 3.0.0-beta.4
+* Fixed a bug causing the kidding schedule to not save any info within the breedings
+
 ## 3.0.0-beta.3
 * Increased the height of the breedings so that more can be seen at a time
 
