@@ -26,6 +26,7 @@ export class GitService {
   commitBucks = window.electron.git.commitBucks;
   commitConfig = window.electron.git.commitConfig;
   commitRelated = window.electron.git.commitRelated;
+  commitKiddingSchedule = window.electron.git.commitKiddingSchedule
   getPublishedDoes = window.electron.git.getPublishedDoes;
   push = window.electron.git.push;
   reset = window.electron.git.reset;
