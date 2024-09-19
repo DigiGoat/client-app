@@ -37,7 +37,10 @@ export class GoatSearchDirective implements OnInit {
         const item = this.document.createElement('li');
         const button = this.document.createElement('button');
         button.classList.add('dropdown-item', 'color-scheme-quaternary');
-        button.addEventListener('mousedown', () => this.input.value = match.normalizeId ?? '');
+        button.addEventListener('mousedown', () => {
+          this.input.value = match.normalizeId ?? '';
+          this.input.dispatchEvent(new Event('input'));
+        });
 
         const name = this.document.createElement('div');
         name.classList.add('fw-semibold', 'text-wrap');

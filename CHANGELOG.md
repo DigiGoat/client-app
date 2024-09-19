@@ -1,3 +1,12 @@
+## 3.0.0-beta.4
+* Fixed a bug causing the kidding schedule to not save any info within the breedings
+
+## 3.0.0-beta.3
+* Increased the height of the breedings so that more can be seen at a time
+
+## 3.0.0-beta.2
+* Added a separator before the 'Add "x" To Dictionary' menu item
+
 ## 3.0.0-beta.1
 * Added support for a Kidding Schedule!
   * Includes a built-in gestation calculator (currently uses 145 days for Nigerian Dwarfs & 150 days for all other breeds)
