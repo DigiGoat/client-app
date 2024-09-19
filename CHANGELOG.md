@@ -1,3 +1,6 @@
+## 3.0.0-beta.3
+* Increased the height of the breedings so that more can be seen at a time
+
 ## 3.0.0-beta.2
 * Added a separator before the 'Add "x" To Dictionary' menu item
 
