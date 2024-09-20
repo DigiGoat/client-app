@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { DirectivesModule } from '../../directives/directives.module';
+import { PipesModule } from '../../pipes/pipes.module';
 import { BasicGoatListComponent } from './elements/basic-goat-list/basic-goat-list.component';
 import { GoatListComponent } from './elements/goat-list/goat-list.component';
 import { GoatLookupComponent } from './elements/goat-lookup/goat-lookup.component';
@@ -29,6 +30,7 @@ import { SettingsComponent } from './settings/settings.component';
   imports: [
     CommonModule,
     DirectivesModule,
+    PipesModule,
     MainRoutingModule,
     FormsModule,
     DragDropModule

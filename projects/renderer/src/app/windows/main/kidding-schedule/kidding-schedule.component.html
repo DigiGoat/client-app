@@ -26,21 +26,20 @@
     <div class="col">
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'exposed')">
         <span class="input-group-text">Exposed:</span>
-        <input type="text" class="form-control" #exposed (blur)="breeding.exposed = exposed.value"
-          [ngModel]="breeding.exposed | date:'longDate'"
-          [suggestion]="(calculateDueDate(due.value, breeding.dam, true) | date:'longDate') ?? ''">
+        <input type="text" class="form-control" #exposed (blur)="breeding.exposed = exposed.value" [ngModel]="breeding.exposed | longDate"
+          [suggestion]="(calculateDueDate(due.value, breeding.dam, true) | longDate) ?? ''">
       </div>
       <div class="form-text">When the doe was exposed</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'due')">
         <span class="input-group-text">Due:</span>
-        <input type="text" class="form-control" #due (blur)="breeding.due = due.value" [ngModel]="breeding.due | date:'longDate'"
-          [suggestion]="(calculateDueDate(exposed.value, breeding.dam) | date:'longDate') ?? ''">
+        <input type="text" class="form-control" #due (blur)="breeding.due = due.value" [ngModel]="breeding.due | longDate"
+          [suggestion]="(calculateDueDate(exposed.value, breeding.dam) | longDate) ?? ''">
       </div>
       <div class="form-text">When the doe is due</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'kidded')">
         <span class="input-group-text">Kidded:</span>
-        <input type="text" class="form-control" #kidded (blur)="breeding.kidded = kidded.value"
-          [ngModel]="breeding.kidded | date:'longDate'" [suggestion]="due.value">
+        <input type="text" class="form-control" #kidded (blur)="breeding.kidded = kidded.value" [ngModel]="breeding.kidded | longDate"
+          [suggestion]="due.value">
       </div>
       <div class="form-text">When the doe kidded</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'description')">
