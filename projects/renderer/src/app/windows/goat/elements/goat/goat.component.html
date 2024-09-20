@@ -48,7 +48,7 @@
       <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
       <div class="input-group" [class.unsaved]="isDirty('dateOfBirth')">
         <span class="input-group-text">Date Of Birth:</span>
-        <input type="text" class="form-control" [ngModel]="dateOfBirth | date:'longDate'" #dateOfBirthEl
+        <input type="text" class="form-control" [ngModel]="dateOfBirth | longDate" #dateOfBirthEl
           (blur)="goat = {dateOfBirth: dateOfBirthEl.value }">
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
