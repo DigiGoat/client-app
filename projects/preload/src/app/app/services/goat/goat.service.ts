@@ -11,4 +11,7 @@ export const GoatService: GoatServiceType = {
   getRelated: () => ipcRenderer.invoke('goat:getRelated'),
   setRelated: (related) => ipcRenderer.invoke('goat:setRelated', related),
   onRelatedChange: (callback) => ipcRenderer.on('goat:relatedChange', (_event, related) => callback(related)),
+  getKiddingSchedule: () => ipcRenderer.invoke('goat:getKiddingSchedule'),
+  setKiddingSchedule: (kiddingSchedule) => ipcRenderer.invoke('goat:setKiddingSchedule', kiddingSchedule),
+  onKiddingScheduleChange: (callback) => ipcRenderer.on('goat:kiddingScheduleChange', (_event, kiddingSchedule) => callback(kiddingSchedule)),
 };

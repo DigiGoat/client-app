@@ -9,6 +9,7 @@ export class GoatService {
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
   related = join(this.base, 'src/assets/resources/related.json');
+  kiddingSchedule = join(this.base, 'src/assets/resources/kidding-schedule.json');
   async getDoes() {
     try {
       this.watchDoes();
@@ -36,6 +37,15 @@ export class GoatService {
       return [];
     }
   }
+  async getKiddingSchedule() {
+    try {
+      this.watchKiddingSchedule();
+      return await readJson(this.kiddingSchedule);
+    } catch (err) {
+      console.warn('Error Reading Kidding Schedule:', err);
+      return [];
+    }
+  }
   api: BackendService<GoatServiceType> = {
     getDoes: async () => {
       return await this.getDoes();
@@ -54,7 +64,13 @@ export class GoatService {
     },
     setRelated: async (_event, related) => {
       await writeJSON(this.related, related, { spaces: 2 });
-    }
+    },
+    getKiddingSchedule: async () => {
+      return await this.getKiddingSchedule();
+    },
+    setKiddingSchedule: async (_event, kiddingSchedule) => {
+      await writeJSON(this.kiddingSchedule, kiddingSchedule, { spaces: 2 });
+    },
   };
   watchingDoes = false;
   watchDoes() {
@@ -149,9 +165,41 @@ export class GoatService {
       }
     });
   }
+  watchingKiddingSchedule = false;
+  watchKiddingSchedule() {
+    if (this.watchingKiddingSchedule || !existsSync(this.kiddingSchedule)) return;
+    ensureFileSync(this.kiddingSchedule);
+    this.watchingKiddingSchedule = true;
+    watch(this.kiddingSchedule, async (event) => {
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newSchedule = await this.getKiddingSchedule();
+        console.log('Kidding Schedule updated', event, newSchedule);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:kiddingScheduleChange', newSchedule);
+          }
+        });
+      } catch (err) {
+        console.warn('Error Updating Kidding Schedule:', err);
+      }
+      if (event === 'rename') {
+        this.watchingRelated = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchRelated();
+        }
+      }
+    }).on('error', async () => {
+      this.watchingRelated = false;
+      if (await exists(join(this.base, '.git'))) {
+        this.watchRelated();
+      }
+    });
+  }
   constructor() {
     this.watchDoes();
     this.watchBucks();
     this.watchRelated();
+    this.watchKiddingSchedule();
   }
 }

@@ -61,6 +61,9 @@ export class Window {
 
       // Allow users to add the misspelled word to the dictionary
       if (params.misspelledWord) {
+        menu.append(new MenuItem({
+          type: 'separator'
+        }));
         menu.append(
           new MenuItem({
             label: `Add '${params.misspelledWord}' To Dictionary`,

@@ -50,15 +50,17 @@ export class ConfigService {
       console.log('Config Updated', this._oldConfig, this.unsavedChanges);
     });
     windowService.onsave = async () => {
-      const action = (await this.dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Close Without Saving', 'Cancel'], defaultId: 0 })).response;
-      switch (action) {
-        case 0:
-          await this.saveChanges();
-          await this.windowService.close();
-          break;
-        case 1:
-          await this.windowService.close(true);
-          break;
+      if (this.unsavedChanges) {
+        const action = (await this.dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Close Without Saving', 'Cancel'], defaultId: 0 })).response;
+        switch (action) {
+          case 0:
+            await this.saveChanges();
+            await this.windowService.close();
+            break;
+          case 1:
+            await this.windowService.close(true);
+            break;
+        }
       }
     };
   }
@@ -159,6 +161,12 @@ export class ConfigService {
         colors: colors
       };
     }
+  }
+  get kiddingSchedule(): boolean {
+    return this.config['kiddingSchedule'] as boolean ?? false;
+  }
+  set kiddingSchedule(kiddingSchedule: boolean) {
+    this.config = { kiddingSchedule: kiddingSchedule };
   }
 }
 

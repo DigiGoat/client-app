@@ -9,7 +9,7 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
 @Component({
   selector: 'app-goats',
   templateUrl: './goats.component.html',
-  styleUrl: './goats.component.scss'
+  styleUrl: './goats.component.scss',
 })
 export class GoatsComponent {
   does = this.goatService.does;

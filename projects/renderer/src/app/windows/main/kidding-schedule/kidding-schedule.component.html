@@ -1,0 +1,68 @@
+<h1 class="text-center flex-grow-1" [class.unsaved]="getChanges()"> Kidding Schedule: </h1>
+<div class="list-group color-scheme-secondary container pe-0" cdkDropList cdkDropListLockAxis="y" (cdkDropListDropped)="rearrange($event)"
+  style="max-height: 100vh; overflow-x: hidden;">
+  <span
+    class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
+    style="min-height: auto; z-index: 1 !important;">
+    <label class="form-check-label" for="kiddingScheduleSwitch">Kidding Schedule: <span class="fw-bold text-success"
+        *ngIf="enabled">Enabled</span><span class="fw-bold text-danger" *ngIf="!enabled">Disabled</span></label>
+    <input class="form-check-input ms-1" type="checkbox" role="switch" id="kiddingScheduleSwitch" [(ngModel)]="enabled">
+  </span>
+  <span *ngIf="!breedings.length" class="list-group-item color-scheme-tertiary text-center">No Schedule Found!</span>
+  <div *ngFor="let breeding of breedings; index as i" class="list-group-item row row-cols-3 color-scheme-tertiary justify-content-around"
+    style="display: flex;" cdkDrag>
+    <div class="drag-placeholder color-scheme-quaternary" *cdkDragPlaceholder></div>
+    <div class="col">
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'dam')">
+        <span class="input-group-text">Dam:</span>
+        <input type="text" class="form-control" [ngModel]="breeding.dam | uppercase" (ngModelChange)="breeding.dam = $event"
+          [goat-search]="does" #dam>
+      </div>
+      <div class="form-text">The ID of the dam in the breeding</div>
+      <div class="position-absolute" style="top: 55%; width: 30%" [innerHTML]="formatGoat(dam.value, does, exposed.value, due.value)"></div>
+    </div>
+    <i class="bi bi-list parent-hover position-absolute h3 translate-middle-y top-50 draggable" style="left: 5px; cursor: grab; width: auto"
+      cdkDragHandle></i>
+    <div class="col">
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'exposed')">
+        <span class="input-group-text">Exposed:</span>
+        <input type="text" class="form-control" #exposed (blur)="breeding.exposed = exposed.value" [ngModel]="breeding.exposed | longDate"
+          [suggestion]="(calculateDueDate(due.value, breeding.dam, true) | longDate) ?? ''">
+      </div>
+      <div class="form-text">When the doe was exposed</div>
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'due')">
+        <span class="input-group-text">Due:</span>
+        <input type="text" class="form-control" #due (blur)="breeding.due = due.value" [ngModel]="breeding.due | longDate"
+          [suggestion]="(calculateDueDate(exposed.value, breeding.dam) | longDate) ?? ''">
+      </div>
+      <div class="form-text">When the doe is due</div>
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'kidded')">
+        <span class="input-group-text">Kidded:</span>
+        <input type="text" class="form-control" #kidded (blur)="breeding.kidded = kidded.value" [ngModel]="breeding.kidded | longDate"
+          [suggestion]="due.value">
+      </div>
+      <div class="form-text">When the doe kidded</div>
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'description')">
+        <span class="input-group-text">Description:</span>
+        <textarea type="text" class="form-control" [(ngModel)]="breeding.description" markdown></textarea>
+      </div>
+      <div class="form-text">A description of the breeding</div>
+    </div>
+    <div class="col">
+      <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'sire')">
+        <span class="input-group-text">Sire:</span>
+        <input type="text" class="form-control" #sire [ngModel]="breeding.sire | uppercase" (ngModelChange)="breeding.sire = $event"
+          [goat-search]="bucks">
+      </div>
+      <div class="form-text">The ID of the sire in the breeding</div>
+      <div class="position-absolute" style="top: 55%; width: 30%" [innerHTML]="formatGoat(sire.value, bucks)"></div>
+    </div>
+    <div class="btn-group position-absolute translate-middle-y top-50 parent-hover" style="right: 5px; width: auto">
+      <button class="  btn btn-outline-danger btn-sm" (click)="breedings.splice(i, 1)" tooltip="Delete Breeding">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </div>
+  <button class="list-group-item list-group-item-action color-scheme-tertiary text-center position-sticky bottom-0 border-top"
+    (click)="breedings.push({})">Add a Breeding <i class="bi bi-plus-lg ps-1 pt-2"></i></button>
+</div>
