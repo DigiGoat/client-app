@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { KiddingScheduleComponent } from './kidding-schedule/kidding-schedule.component';
 import { MainComponent } from './main.component';
 import { SettingsComponent } from './settings/settings.component';
+import { HistoryComponent } from './history/history.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
       { path: 'goats', component: GoatsComponent },
       { path: 'settings', component: SettingsComponent },
       { path: 'kidding-schedule', component: KiddingScheduleComponent, canDeactivate: [kiddingSaverGuard] },
+      { path: 'history', component: HistoryComponent },
       { path: '', redirectTo: '/main/home', pathMatch: 'full' }
     ]
   }

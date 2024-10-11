@@ -1,0 +1,15 @@
+:host ::ng-deep pre {
+  white-space: pre-wrap !important;
+}
+
+:host ::ng-deep a:not([href^="mailto:"]) {
+  cursor: not-allowed !important;
+}
+
+:host ::ng-deep a:not([href^="mailto:"]):focus {
+  pointer-events: none !important;
+}
+
+:host ::ng-deep .unsaved>a {
+  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1)) !important;
+}
