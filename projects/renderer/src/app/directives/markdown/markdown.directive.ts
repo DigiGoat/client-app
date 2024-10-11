@@ -14,7 +14,7 @@ export class MarkdownDirective implements OnInit {
     this.markdownEl = this.el.nativeElement.ownerDocument.createElement('div');
     this.markdownEl.className = this.el.nativeElement.className + ' blocked-link'; // + ' text-center';
     this.markdownEl.style.cursor = 'text';
-    this.el.nativeElement.insertAdjacentElement('afterend', this.markdownEl);
+    this.el.nativeElement.insertAdjacentElement('beforebegin', this.markdownEl);
     this.markdownEl.style.display = 'none';
     this.markdownEl.addEventListener('click', () => this.hideMarkdown());
     //Wait 100ms so that Angular has a chance to bind to `ngModel`
@@ -28,7 +28,7 @@ export class MarkdownDirective implements OnInit {
     iconEl.style.zIndex = '1';
     iconEl.style.cursor = 'help';
     iconEl.addEventListener('click', () => this.appService.openMarkdown());
-    this.el.nativeElement.insertAdjacentElement('afterend', iconEl);
+    this.el.nativeElement.insertAdjacentElement('beforebegin', iconEl);
     bootstrap.Tooltip.getOrCreateInstance(iconEl);
     setTimeout(() => this.showMarkdown(), 100);
   }

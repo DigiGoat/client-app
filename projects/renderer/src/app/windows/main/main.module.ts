@@ -14,6 +14,7 @@ import { KiddingScheduleComponent } from './kidding-schedule/kidding-schedule.co
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 import { SettingsComponent } from './settings/settings.component';
+import { HistoryComponent } from './history/history.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { SettingsComponent } from './settings/settings.component';
     SettingsComponent,
     GoatLookupComponent,
     BasicGoatListComponent,
-    KiddingScheduleComponent
+    KiddingScheduleComponent,
+    HistoryComponent
   ],
   imports: [
     CommonModule,

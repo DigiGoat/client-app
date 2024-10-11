@@ -209,6 +209,13 @@ export class GitService {
         console.warn('Error Getting Setup:', err);
         return {};
       }
+    },
+    getHistory: async () => {
+      const upstreams = (await this.git.branch(['-r'])).all.filter(branch => branch.includes('upstream'));
+      return {
+        local: await this.git.log(['@{u}..', ...upstreams.map(branch => `^${branch}`)]),
+        remote: await this.git.log(['@{u}', ...upstreams.map(branch => `^${branch}`)]),
+      };
     }
   };
   git: SimpleGit;

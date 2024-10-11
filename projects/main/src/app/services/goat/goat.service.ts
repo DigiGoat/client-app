@@ -184,15 +184,15 @@ export class GoatService {
         console.warn('Error Updating Kidding Schedule:', err);
       }
       if (event === 'rename') {
-        this.watchingRelated = false;
+        this.watchingKiddingSchedule = false;
         if (await exists(join(this.base, '.git'))) {
-          this.watchRelated();
+          this.watchKiddingSchedule();
         }
       }
     }).on('error', async () => {
-      this.watchingRelated = false;
+      this.watchingKiddingSchedule = false;
       if (await exists(join(this.base, '.git'))) {
-        this.watchRelated();
+        this.watchKiddingSchedule();
       }
     });
   }

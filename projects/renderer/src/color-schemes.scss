@@ -23,6 +23,10 @@
   --bs-link-hover-color-rgb: 61, 213, 243 !important;
 }
 
+.table {
+  --bs-table-bg: var(--secondary-color);
+}
+
 .nav-tabs {
   --bs-nav-tabs-link-active-bg: var(--main-color) !important;
 }
@@ -72,6 +76,10 @@ input.color-scheme-quaternary.disabled {
 /**Colors for devices in light mode*/
 @include color-mode(light) {
   --bs-link-color-rgb: 10, 85, 195 !important;
+
+  .table {
+    --bs-table-bg: var(--secondary-light-color);
+  }
 
   .nav-tabs {
     --bs-nav-tabs-link-active-bg: var(--main-light-color) !important;
