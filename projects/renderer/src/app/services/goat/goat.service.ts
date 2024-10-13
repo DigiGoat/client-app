@@ -27,13 +27,13 @@ export class GoatService {
   async setDoes(oldDoes: Goat[], newDoes: Goat[]) {
     const diffMessage = ['Synced Does'];
     for (let i = 0; i < oldDoes.length; i++) {
-      const diff = this.diffService.commitMsg(oldDoes[i], newDoes[i]).map(msg => `      ${msg}`);
+      const diff = this.diffService.commitMsg(oldDoes[i], newDoes[i]).map(msg => `${this.diffService.spaces}${msg}`);
       if (diff.length) {
         diffMessage.push(`Updated ${newDoes[i].nickname || newDoes[i].name || newDoes[i].normalizeId || oldDoes[i].nickname || oldDoes[i].name || oldDoes[i].normalizeId || 'Unknown'}`, ...diff);
       }
     }
     for (let i = oldDoes.length; i < newDoes.length; i++) {
-      diffMessage.push(`Added ${newDoes[i].nickname || newDoes[i].name || newDoes[i].normalizeId}`, ...this.diffService.commitMsg({}, newDoes[i]).map(msg => `      ${msg}`));
+      diffMessage.push(`Added ${newDoes[i].nickname || newDoes[i].name || newDoes[i].normalizeId}`, ...this.diffService.commitMsg({}, newDoes[i]).map(msg => `${this.diffService.spaces}${msg}`));
     }
     await window.electron.goat.setDoes(newDoes);
     await this.gitService.commitDoes(diffMessage);
@@ -54,7 +54,7 @@ export class GoatService {
     const does = await this.getDoes();
     does.push(doe);
     await window.electron.goat.setDoes(does);
-    await this.gitService.commitDoes([`Added ${doe.nickname || doe.name || doe.normalizeId}`, ...this.diffService.commitMsg({}, doe).map(msg => `      ${msg}`)]);
+    await this.gitService.commitDoes([`Added ${doe.nickname || doe.name || doe.normalizeId}`, ...this.diffService.commitMsg({}, doe).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   bucks = new Observable<Goat[]>(observer => {
     window.electron.goat.getBucks().then(bucks => observer.next(bucks));
@@ -78,13 +78,13 @@ export class GoatService {
   async setBucks(oldBucks: Goat[], newBucks: Goat[]) {
     const diffMessage = ['Synced Bucks'];
     for (let i = 0; i < oldBucks.length; i++) {
-      const diff = this.diffService.commitMsg(oldBucks[i], newBucks[i]).map(msg => `      ${msg}`);
+      const diff = this.diffService.commitMsg(oldBucks[i], newBucks[i]).map(msg => `${this.diffService.spaces}${msg}`);
       if (diff.length) {
         diffMessage.push(`Updated ${newBucks[i].nickname || newBucks[i].name || newBucks[i].normalizeId || oldBucks[i].nickname || oldBucks[i].name || oldBucks[i].normalizeId || 'Unknown'}`, ...diff);
       }
     }
     for (let i = oldBucks.length; i < newBucks.length; i++) {
-      diffMessage.push(`Added ${newBucks[i].nickname || newBucks[i].name || newBucks[i].normalizeId}`, ...this.diffService.commitMsg({}, newBucks[i]).map(msg => `      ${msg}`));
+      diffMessage.push(`Added ${newBucks[i].nickname || newBucks[i].name || newBucks[i].normalizeId}`, ...this.diffService.commitMsg({}, newBucks[i]).map(msg => `${this.diffService.spaces}${msg}`));
     }
     await window.electron.goat.setBucks(newBucks);
     await this.gitService.commitBucks(diffMessage);
@@ -105,7 +105,7 @@ export class GoatService {
     const bucks = await this.getBucks();
     bucks.push(buck);
     await window.electron.goat.setBucks(bucks);
-    await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck).map(msg => `      ${msg}`)]);
+    await this.gitService.commitBucks([`Added ${buck.nickname || buck.name || buck.normalizeId}`, ...this.diffService.commitMsg({}, buck).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   async rearrangeBucks(event: CdkDragDrop<Goat[]>) {
     const bucks = await this.getBucks();
@@ -122,13 +122,13 @@ export class GoatService {
   async setRelated(oldRelated: Goat[], newRelated: Goat[]) {
     const diffMessage = ['Synced Related Goats'];
     for (let i = 0; i < oldRelated.length; i++) {
-      const diff = this.diffService.commitMsg(oldRelated[i], newRelated[i]).map(msg => `      ${msg}`);
+      const diff = this.diffService.commitMsg(oldRelated[i], newRelated[i]).map(msg => `${this.diffService.spaces}${msg}`);
       if (diff.length) {
         diffMessage.push(`Updated ${newRelated[i].nickname || newRelated[i].name || newRelated[i].normalizeId || oldRelated[i].nickname || oldRelated[i].name || oldRelated[i].normalizeId || 'Unknown'}`, ...diff);
       }
     }
     for (let i = oldRelated.length; i < newRelated.length; i++) {
-      diffMessage.push(`Added ${newRelated[i].nickname || newRelated[i].name || newRelated[i].normalizeId}`, ...this.diffService.commitMsg({}, newRelated[i]).map(msg => `      ${msg}`));
+      diffMessage.push(`Added ${newRelated[i].nickname || newRelated[i].name || newRelated[i].normalizeId}`, ...this.diffService.commitMsg({}, newRelated[i]).map(msg => `${this.diffService.spaces}${msg}`));
     }
     await window.electron.goat.setRelated(newRelated);
     await this.gitService.commitRelated(diffMessage);

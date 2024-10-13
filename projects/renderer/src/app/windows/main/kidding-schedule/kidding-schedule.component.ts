@@ -85,11 +85,11 @@ export class KiddingScheduleComponent implements OnInit {
     const oldBreedingLength = this.oldBreedings.length;
     for (let i = 0; i < breedingLength; i++) {
       if (i >= oldBreedingLength) {
-        diffMessage.push(`Added Breeding ${i}`, ...this.diffService.commitMsg({}, this.breedings[i]).map(d => `      ${d}`));
+        diffMessage.push(`Added Breeding ${i}`, ...this.diffService.commitMsg({}, this.breedings[i]).map(d => `${this.diffService.spaces}${d}`));
       } else {
         const diff = this.diffService.commitMsg(this.oldBreedings[i], this.breedings[i]);
         if (diff.length) {
-          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `      ${d}`));
+          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `${this.diffService.spaces}${d}`));
         }
       }
     }
@@ -99,7 +99,7 @@ export class KiddingScheduleComponent implements OnInit {
       } else {
         const diff = this.diffService.commitMsg(this.oldBreedings[i], this.breedings[i]);
         if (diff.length) {
-          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `      ${d}`));
+          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `${this.diffService.spaces}${d}`));
         }
       }
     }

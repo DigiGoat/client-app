@@ -1,3 +1,6 @@
+## 3.0.0-beta.1
+* Added a History tab!
+
 ## 3.0.0-beta.6
 * Fixed a bug causing the kidding schedule to not show dates if the date is invalid
 

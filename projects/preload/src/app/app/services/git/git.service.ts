@@ -27,4 +27,5 @@ export const GitService: GitServiceType = {
   commitImages: (paths, message) => ipcRenderer.invoke('git:commitImages', paths, message),
   commitFavicon: () => ipcRenderer.invoke('git:commitFavicon'),
   getSetup: () => ipcRenderer.invoke('git:getSetup'),
+  getHistory: () => ipcRenderer.invoke('git:getHistory'),
 };

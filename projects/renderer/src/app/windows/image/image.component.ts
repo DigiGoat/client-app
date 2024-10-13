@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Image } from '../../../../../shared/services/image/image.service';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
 import { ImageService } from '../../services/image/image.service';
 
@@ -14,7 +15,7 @@ import { ImageService } from '../../services/image/image.service';
 export class ImageComponent implements OnInit {
   queries: string[] = [];
   images: (Image & { src: string; })[] = [];
-  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService, private httpClient: HttpClient) {
+  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService, private httpClient: HttpClient, private diffService: DiffService) {
   }
   async ngOnInit() {
     this.queries = this.route.snapshot.queryParamMap.keys;
@@ -46,7 +47,7 @@ export class ImageComponent implements OnInit {
       i++;
     }
     await this.imageService.setImageMap(map);
-    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `      Added ${path}`)]);
+    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
   }
 
   //Handle the drop event
@@ -68,7 +69,7 @@ export class ImageComponent implements OnInit {
       i++;
     }
     await this.imageService.setImageMap(map);
-    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `      Added ${path}`)]);
+    await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
   }
 
   async downloadImage(input: HTMLInputElement, button: HTMLButtonElement) {

@@ -26,7 +26,7 @@ export class GitService {
   commitBucks = window.electron.git.commitBucks;
   commitConfig = window.electron.git.commitConfig;
   commitRelated = window.electron.git.commitRelated;
-  commitKiddingSchedule = window.electron.git.commitKiddingSchedule
+  commitKiddingSchedule = window.electron.git.commitKiddingSchedule;
   getPublishedDoes = window.electron.git.getPublishedDoes;
   push = window.electron.git.push;
   reset = window.electron.git.reset;
@@ -58,4 +58,5 @@ export class GitService {
   commitImages = window.electron.git.commitImages;
   commitFavicon = window.electron.git.commitFavicon;
   getSetup = window.electron.git.getSetup;
+  getHistory = window.electron.git.getHistory;
 }
