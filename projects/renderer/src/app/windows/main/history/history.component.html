@@ -1,6 +1,6 @@
 <h1 class="text-center">History</h1>
 <br>
-<table class="table table-hover border container mb-0" style="table-layout: fixed;">
+<table class="table table-hover border container mb-0" style="table-layout: fixed;" *ngIf="history?.local?.total || !history">
   <colgroup>
     <col style="width: 20%">
     <col style="width: 20%">
@@ -33,6 +33,9 @@
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
       </td>
     </tr>
+    <tr *ngIf="!history">
+      <th class="text-center" colspan="100">Loading...</th>
+    </tr>
   </tbody>
 </table>
 <table class="table table-hover border container" style="table-layout: fixed;">
@@ -44,7 +47,7 @@
   </colgroup>
   <thead>
     <tr style="position: sticky; top: 44px">
-      <th class="text-center h3" colspan="100">Previous Changes:</th>
+      <th class="text-center h3" colspan="100">All Changes:</th>
     </tr>
     <tr style="position: sticky; top: 84px">
       <th scope="col">Date</th>
@@ -67,6 +70,9 @@
       <td>
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
       </td>
+    </tr>
+    <tr *ngIf="!history">
+      <th class="text-center" colspan="100">Loading...</th>
     </tr>
   </tbody>
 </table>

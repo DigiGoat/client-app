@@ -1,4 +1,8 @@
-## 3.0.0-beta.1
+## 3.0.1-beta.3
+* Added a loading animation to the history page
+* Fixed the local changes section showing up even if there are no changes
+
+## 3.0.1-beta.1
 * Added a History tab!
 
 ## 3.0.0-beta.6
