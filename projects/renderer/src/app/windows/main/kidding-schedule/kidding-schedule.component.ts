@@ -55,7 +55,7 @@ export class KiddingScheduleComponent implements OnInit {
   }
 
   calculateDueDate(date?: string, dam?: string, invert?: boolean) {
-    if (!date) {
+    if (!date || !Date.parse(date)) {
       return;
     }
     let days = 150;
