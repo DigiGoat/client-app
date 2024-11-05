@@ -1,3 +1,7 @@
+## 3.0.2-beta.1
+* Fixed the kidding schedule suggesting `Invalid Date` if the date bred or due are not proper dates
+* Updated the kidding schedule to show the gestation duration for the due & kidded dates
+
 ## 3.0.1-beta.3
 * Added a loading animation to the history page
 * Fixed the local changes section showing up even if there are no changes

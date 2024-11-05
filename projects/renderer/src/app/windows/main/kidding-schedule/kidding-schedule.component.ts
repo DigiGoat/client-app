@@ -55,7 +55,7 @@ export class KiddingScheduleComponent implements OnInit {
   }
 
   calculateDueDate(date?: string, dam?: string, invert?: boolean) {
-    if (!date) {
+    if (!date || !Date.parse(date)) {
       return;
     }
     let days = 150;
@@ -69,6 +69,16 @@ export class KiddingScheduleComponent implements OnInit {
     const oldDate = new Date(date);
     const newDate = new Date(oldDate.getTime() + days * 24 * 60 * 60 * 1000);
     return newDate.toString();
+  }
+  calculateGestation(firstDate?: string, secondDate?: string) {
+    if (!firstDate || !Date.parse(firstDate) || !secondDate || !Date.parse(secondDate)) {
+      return;
+    }
+    const first = new Date(firstDate);
+    const second = new Date(secondDate);
+    const diff = Math.abs(first.getTime() - second.getTime());
+    const days = Math.round(diff / (1000 * 60 * 60 * 24));
+    return `(${days} days)`;
   }
   getDiff(index: number, param: keyof Kidding) {
     if (this.oldBreedings[index] === undefined) return true;

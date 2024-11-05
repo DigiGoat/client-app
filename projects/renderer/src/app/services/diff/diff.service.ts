@@ -83,10 +83,13 @@ export class DiffService {
     'rmi': 'RMI',
     'ats': 'ATS',
     'ags': 'AGS',
-    'riseupfromtheash': 'RiseUpFromTheAsh',
+    'risesupfromtheash': 'RisesUpFromTheAsh',
     '8sr': '8SR',
     'likea': 'LikeA',
-    'famfarm': 'FamFarm'
+    'famfarm': 'FamFarm',
+    'ilenesrascals': 'IlenesRascals',
+    'teachmesomethin\'': 'TeachMeSomethin\'',
+    'justn\'smoke': 'Justn\'Smoke',
   };
 
   private parseCase(word: string) {
