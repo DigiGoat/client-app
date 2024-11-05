@@ -35,13 +35,13 @@
         <input type="text" class="form-control" #due (blur)="breeding.due = due.value" [ngModel]="breeding.due | longDate"
           [suggestion]="(calculateDueDate(exposed.value, breeding.dam) | longDate) ?? ''">
       </div>
-      <div class="form-text">When the doe is due</div>
+      <div class="form-text">When the doe is due {{calculateGestation(exposed.value, due.value)}}</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'kidded')">
         <span class="input-group-text">Kidded:</span>
         <input type="text" class="form-control" #kidded (blur)="breeding.kidded = kidded.value" [ngModel]="breeding.kidded | longDate"
           [suggestion]="due.value">
       </div>
-      <div class="form-text">When the doe kidded</div>
+      <div class="form-text">When the doe kidded {{calculateGestation(exposed.value, kidded.value)}}</div>
       <div class="input-group mt-3" [class.unsaved]="getDiff(i, 'description')">
         <span class="input-group-text">Description:</span>
         <textarea type="text" class="form-control" [(ngModel)]="breeding.description" markdown></textarea>
