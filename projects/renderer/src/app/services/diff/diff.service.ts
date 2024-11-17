@@ -12,6 +12,7 @@ export class DiffService {
   deletedDiff = deletedDiff;
   updatedDiff = updatedDiff;
   detailedDiff = detailedDiff;
+  spaces = '      ';
   /* -------------------- Message Parsing -------------------- */
   commitMsg(original: Record<string, unknown>, current: Record<string, unknown>) {
     const diff = this.detailedDiff(original, current);
@@ -23,7 +24,7 @@ export class DiffService {
       if (typeof current[addition] !== 'object') {
         body.push(`Set ${this.prettyCase(addition)} To ${JSON.stringify(current[addition] as string)}`);
       } else {
-        body.push(`Added ${this.prettyCase(addition)}`);
+        body.push(`Added ${this.prettyCase(addition)}`, ...this.commitMsg({}, current[addition] as Record<string, unknown>).map(line => `${this.spaces}${line}`));
       }
     }
 
@@ -40,7 +41,7 @@ export class DiffService {
           body.push(`Deleted ${this.prettyCase(update)}`);
         }
       } else {
-        body.push(`Updated ${this.prettyCase(update)}`);
+        body.push(`Updated ${this.prettyCase(update)}`, ...this.commitMsg(original[update] as Record<string, unknown>, current[update] as Record<string, unknown>).map(line => `${this.spaces}${line}`));
       }
     }
     return body;
@@ -82,10 +83,13 @@ export class DiffService {
     'rmi': 'RMI',
     'ats': 'ATS',
     'ags': 'AGS',
-    'riseupfromtheash': 'RiseUpFromTheAsh',
+    'risesupfromtheash': 'RisesUpFromTheAsh',
     '8sr': '8SR',
     'likea': 'LikeA',
-    'famfarm': 'FamFarm'
+    'famfarm': 'FamFarm',
+    'ilenesrascals': 'IlenesRascals',
+    'teachmesomethin\'': 'TeachMeSomethin\'',
+    'justn\'smoke': 'Justn\'Smoke',
   };
 
   private parseCase(word: string) {

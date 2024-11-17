@@ -1,0 +1,78 @@
+<h1 class="text-center">History</h1>
+<br>
+<table class="table table-hover border container mb-0" style="table-layout: fixed;" *ngIf="history?.local?.total || !history">
+  <colgroup>
+    <col style="width: 20%">
+    <col style="width: 20%">
+    <col style="width: 50%">
+    <col style="width: 10%">
+  </colgroup>
+  <thead>
+    <tr style="position: sticky; top: 44px">
+      <th class="text-center h3" colspan="100">Unpublished Changes:</th>
+    </tr>
+    <tr style="position: sticky; top: 84px">
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+      <th scope="col">Changes</th>
+      <th scope="col">Author</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let entry of (history?.local?.all)">
+      <th scope="row">
+        {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
+      </th>
+      <td>
+        {{entry.message}}
+      </td>
+      <td>
+        <p [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;"></p>
+      </td>
+      <td>
+        <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
+      </td>
+    </tr>
+    <tr *ngIf="!history">
+      <th class="text-center" colspan="100">Loading...</th>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-hover border container" style="table-layout: fixed;">
+  <colgroup>
+    <col style="width: 20%">
+    <col style="width: 20%">
+    <col style="width: 50%">
+    <col style="width: 10%">
+  </colgroup>
+  <thead>
+    <tr style="position: sticky; top: 44px">
+      <th class="text-center h3" colspan="100">All Changes:</th>
+    </tr>
+    <tr style="position: sticky; top: 84px">
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+      <th scope="col">Changes</th>
+      <th scope="col">Author</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let entry of (history?.remote?.all)">
+      <th scope="row">
+        {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
+      </th>
+      <td>
+        {{entry.message}}
+      </td>
+      <td>
+        <p [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;"></p>
+      </td>
+      <td>
+        <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
+      </td>
+    </tr>
+    <tr *ngIf="!history">
+      <th class="text-center" colspan="100">Loading...</th>
+    </tr>
+  </tbody>
+</table>
