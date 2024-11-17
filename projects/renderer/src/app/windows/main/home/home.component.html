@@ -114,6 +114,44 @@
       <div class="form-text">The Analytics Settings For Your Website</div>
     </div>
     <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
+        [class.unsaved]="configService.isDirty('socials')"> View Socials <i class="bi bi-share"></i> </button>
+      <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
+        <div class="input-group ">
+          <span class="input-group-text">Facebook:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.facebook"
+            (ngModelChange)="configService.socials = {facebook: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://facebook.com/{{configService.socials.facebook}}" type="button" *ngIf="configService.socials.facebook">
+            <i class="bi bi-facebook"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Facebook Username</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Instagram:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.instagram"
+            (ngModelChange)="configService.socials = {instagram: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://instagram.com/{{configService.socials.instagram}}" type="button" *ngIf="configService.socials.instagram">
+            <i class="bi bi-instagram"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Instagram Username (Don't include &#64;)</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Threads:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.threads"
+            (ngModelChange)="configService.socials = {threads: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://threads.net/@{{configService.socials.threads}}" type="button" *ngIf="configService.socials.threads">
+            <i class="bi bi-threads"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
+      </div>
+      <div class="form-text">Your Farm's Social Media Associations</div>
+    </div>
+    <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"> Change Favicon <i
           class="bi bi-bookmark-star"></i></button>
       <div class="form-text">This is the logo that browsers will use for the tab, bookmarks, and app. Use <a
