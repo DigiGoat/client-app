@@ -168,6 +168,20 @@ export class ConfigService {
   set kiddingSchedule(kiddingSchedule: boolean) {
     this.config = { kiddingSchedule: kiddingSchedule };
   }
+  get socials(): Socials {
+    if (this.config['socials']) {
+      return this.config['socials'] as Socials;
+    }
+    return {};
+  }
+  set socials(socials: Socials) {
+    this.config = {
+      socials: {
+        ...(typeof this.config['socials'] === 'object' ? this.config['socials'] : {}),
+        ...socials
+      }
+    };
+  }
 }
 
 
@@ -185,3 +199,4 @@ type ColorScheme = {
     quaternary?: string;
   };
 };
+type Socials = { facebook?: string, instagram?: string, threads?: string; };
