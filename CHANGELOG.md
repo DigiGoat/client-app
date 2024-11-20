@@ -1,3 +1,7 @@
+## 3.1.0-beta.1
+* Added support for socials!
+  * This currently includes [Facebook](https://facebook.com), [Instagram](https://instagram.com), and [Threads](https://threads.net)
+
 ## 3.0.2-beta.1
 * Fixed the kidding schedule suggesting `Invalid Date` if the date bred or due are not proper dates
 * Updated the kidding schedule to show the gestation duration for the due & kidded dates
