@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
+import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
@@ -15,6 +15,7 @@ export class GoatComponent implements OnInit {
   @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
+  @Input({ transform: booleanAttribute }) related = false;
   constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
@@ -68,7 +69,7 @@ export class GoatComponent implements OnInit {
   async syncDetails() {
     this.syncingDetails = true;
     try {
-      const goat = await this.adgaService.getGoat(this.goat.id!);
+      const goat = (this.related ? (await this.adgaService.getGoats([this.goat.id!]))[0] : await this.adgaService.getGoat(this.goat.id!));
       this.goat = this.diffService.softMerge(this.goat, goat);
     } catch (error) {
       await this.adgaService.handleError(error as Error, 'Error Syncing Details!');
@@ -139,6 +140,24 @@ export class GoatComponent implements OnInit {
   }
   set tattoos(animalTattoo) {
     this.goat = { animalTattoo: animalTattoo };
+  }
+  get damId() {
+    return this.goat.damId;
+  }
+  set damId(damId) {
+    this.goat = { damId: damId };
+  }
+  get sireId() {
+    return this.goat.sireId;
+  }
+  set sireId(sireId) {
+    this.goat = { sireId: sireId };
+  }
+  get owner() {
+    return this.goat.ownerAccount?.displayName;
+  }
+  set owner(owner) {
+    this.goat = { ownerAccount: { displayName: owner } };
   }
   setTattooLocation(index: number, location: string) {
     const tattoos = this.goat.animalTattoo ?? [];

@@ -139,6 +139,9 @@ export class GoatsComponent {
           }
         }
         related.push(...(await this.adgaService.getGoats(newIds)));
+        for (const goat in related) {
+          related[goat] = this.diffService.softMerge(oldRelated[goat], related[goat]);
+        }
         await this.goatService.setRelated(oldRelated, related);
       } catch (err) {
         await this.goatService.writeRelated(oldRelated);
