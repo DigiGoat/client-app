@@ -136,6 +136,13 @@ export class GoatService {
   async writeRelated(related: Goat[]) {
     await window.electron.goat.setRelated(related);
   }
+  async updateRelated(index: number, goat: Goat) {
+    const related = await window.electron.goat.getRelated();
+    const diffMessage = this.diffService.commitMsg(related[index], goat);
+    related[index] = goat;
+    await window.electron.goat.setRelated(related);
+    await this.gitService.commitRelated([`Updated ${goat.nickname || goat.name || goat.normalizeId}`, ...diffMessage]);
+  }
   getKiddingSchedule = window.electron.goat.getKiddingSchedule;
   setKiddingSchedule = window.electron.goat.setKiddingSchedule;
   set onKiddingScheduleChange(callback: (kiddingSchedule: Goat[]) => void) {

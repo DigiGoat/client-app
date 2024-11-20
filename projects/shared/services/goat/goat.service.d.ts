@@ -28,7 +28,7 @@ export type Goat = Partial<{
     displayName?: string;
   } | null;
 }>;
-export type GoatType = 'doe' | 'buck';
+export type GoatType = 'doe' | 'buck' | 'related';
 export type Kidding = Partial<{
   dam: string;
   sire: string;

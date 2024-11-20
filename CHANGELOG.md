@@ -1,3 +1,8 @@
+## 3.1.1-beta.1
+* Redesigned the windows for editing goats
+  * It's now easier to modify the goats info without it being overidden by the next sync
+  * You can now edit the capatalization of the name and owner of related goats
+
 ## 3.1.0-beta.1
 * Added support for socials!
   * This currently includes [Facebook](https://facebook.com), [Instagram](https://instagram.com), and [Threads](https://threads.net)

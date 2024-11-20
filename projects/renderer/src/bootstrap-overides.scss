@@ -4,11 +4,20 @@
 }
 
 .input-group>*,
-.input-group>*,
-div:has(.form-label)>*,
 div:has(.form-label)>* {
   background-color: var(--quaternary-color);
   color: var(--text-color);
+}
+
+.input-group>*:disabled,
+.input-group>*:focus,
+div:has(.form-label)>*:disabled,
+div:has(.form-label)>*:focus {
+  background-color: var(--secondary-color);
+}
+
+:disabled {
+  cursor: not-allowed;
 }
 
 [data-bs-theme=light] {
@@ -18,11 +27,16 @@ div:has(.form-label)>* {
   }
 
   .input-group>*,
-  .input-group>*,
-  div:has(.form-label)>*,
   div:has(.form-label)>* {
     background-color: var(--quaternary-light-color);
     color: var(--text-light-color);
+  }
+
+  .input-group>*:disabled,
+  .input-group>*:focus,
+  div:has(.form-label)>*:disabled,
+  div:has(.form-label)>*:focus {
+    background-color: var(--secondary-light-color);
   }
 }
 
