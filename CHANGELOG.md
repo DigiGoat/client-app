@@ -1,3 +1,6 @@
+## 3.2.0-beta.2
+* Fixed a bug causing changes to be lost when saving too much at a time on Windows
+
 ## 3.2.0-beta.1
 * Added Support To Sync Linear Appraisals!
   * Currently, you can only sync appraisals from ADGA, manual entry will be added in the future
