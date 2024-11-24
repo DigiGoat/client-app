@@ -1,3 +1,7 @@
+## 3.2.0-beta.1
+* Added Support To Sync Linear Appraisals!
+  * Currently, you can only sync appraisals from ADGA, manual entry will be added in the future
+
 ## 3.1.1-beta.1
 * Redesigned the windows for editing goats
   * It's now easier to modify the goats info without it being overidden by the next sync

@@ -55,7 +55,7 @@ export class GoatComponent implements OnInit {
     } else {
       shown = true;
     }
-    await Promise.all([this.syncDetails()]);
+    await Promise.all([this.syncDetails(), this.syncLA()]);
     if (this.dropdown.nativeElement.classList.contains('show')) {
       if (!shown) {
         this.dropdownButton.nativeElement.click();
@@ -75,6 +75,18 @@ export class GoatComponent implements OnInit {
       await this.adgaService.handleError(error as Error, 'Error Syncing Details!');
     } finally {
       this.syncingDetails = false;
+    }
+  }
+  syncingLA = false;
+  async syncLA() {
+    this.syncingLA = true;
+    try {
+      const linear = await this.adgaService.getLinearAppraisal(this.goat.id!);
+      this.goat.linearAppraisals = linear;
+    } catch (error) {
+      await this.adgaService.handleError(error as Error, 'Error Syncing Linear Appraisal!');
+    } finally {
+      this.syncingLA = false;
     }
   }
   /* ------------------------------ Object Handlers ------------------------------*/
@@ -158,6 +170,12 @@ export class GoatComponent implements OnInit {
   }
   set owner(owner) {
     this.goat = { ownerAccount: { displayName: owner } };
+  }
+  get linearAppraisals() {
+    return this.goat.linearAppraisals;
+  }
+  set linearAppraisals(linear) {
+    this.goat = { linearAppraisals: linear };
   }
   setTattooLocation(index: number, location: string) {
     const tattoos = this.goat.animalTattoo ?? [];
