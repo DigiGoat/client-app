@@ -1,4 +1,4 @@
-import type { Goat, Goats, OwnedGoats } from 'adga';
+import type { Goat, Goats, LinearAppraisal, OwnedGoats } from 'adga';
 
 export interface ADGAService {
   getAccount: () => Promise<Account>;
@@ -12,6 +12,7 @@ export interface ADGAService {
   lookupGoatsByName: (name: string) => Promise<Goats['result']['items']>;
   blacklistOwnedGoat: (id: number) => Promise<void>;
   getBlacklist: () => Promise<number[]>;
+  getLinearAppraisal: (id: number) => Promise<LinearAppraisal['result']['items']>;
 }
 export interface Account {
   name: string;

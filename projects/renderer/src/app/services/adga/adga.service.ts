@@ -46,7 +46,7 @@ export class ADGAService {
     return (await window.electron.adga.getGoats(ids)).items.map(goat => this.parseGoat(goat));
   }
   private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId, ownerAccount }: Goat): Goat {
-    const parsedGoat = {
+    const parsedGoat: Goat = {
       nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, damId, sireId, ownerAccount: { displayName: this.diffService.titleCase(ownerAccount?.displayName ?? '') }, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
     };
     Object.keys(parsedGoat).forEach(key => {
@@ -69,4 +69,19 @@ export class ADGAService {
   }
   blacklistOwnedGoat = window.electron.adga.blacklistOwnedGoat;
   getBlacklist = window.electron.adga.getBlacklist;
+  async getLinearAppraisal(id: number): Promise<Goat['linearAppraisals']> {
+    const linearAppraisal = await window.electron.adga.getLinearAppraisal(id);
+    /*
+    lactationNumber: number;
+    lactationStart: '2' | string;
+    generalAppearance: LAClassifications;
+    dairyStrength: LAClassifications;
+    bodyCapacity: LAClassifications;
+    mammarySystem: LAClassifications;
+    finalScore: number;
+    isPermanent: boolean;
+    id: number;
+    */
+    return linearAppraisal.map(({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }) => ({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }));
+  }
 }

@@ -27,6 +27,17 @@ export type Goat = Partial<{
   ownerAccount: {
     displayName?: string;
   } | null;
+  linearAppraisals: Partial<{
+    lactationNumber: number;
+    appraisalDate: string;
+    generalAppearance: LAClassifications;
+    dairyStrength: LAClassifications;
+    bodyCapacity: LAClassifications;
+    mammarySystem: LAClassifications;
+    finalScore: number;
+    isPermanent: boolean;
+    id: number;
+  }>[];
 }>;
 export type GoatType = 'doe' | 'buck' | 'related';
 export type Kidding = Partial<{

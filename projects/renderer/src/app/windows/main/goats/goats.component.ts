@@ -65,7 +65,11 @@ export class GoatsComponent {
           this.syncingDoes = i;
           const doe = does[i];
           if (doe.id) {
-            does[i] = this.diffService.softMerge(doe, await this.adgaService.getGoat(doe.id));
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))()]);
+            does![i] = this.diffService.softMerge(doe, goat!);
+            does![i].linearAppraisals = linearAppraisals;
           }
         }
         await this.goatService.setDoes(oldDoes, does);
@@ -92,7 +96,11 @@ export class GoatsComponent {
           this.syncingBucks = i;
           const buck = bucks[i];
           if (buck.id) {
-            bucks[i] = this.diffService.softMerge(buck, await this.adgaService.getGoat(buck.id));
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(buck.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck.id!))()]);
+            bucks[i] = this.diffService.softMerge(buck, goat!);
+            bucks[i].linearAppraisals = linearAppraisals;
           }
         }
         await this.goatService.setBucks(oldBucks, bucks);
@@ -129,7 +137,6 @@ export class GoatsComponent {
       try {
         const newIds: number[] = [];
         for (let i = 0; i < related.length; i++) {
-          this.syncingRelated = i;
           const goat = related[i];
           if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
             newIds.push(goat.damId);
@@ -139,8 +146,13 @@ export class GoatsComponent {
           }
         }
         related.push(...(await this.adgaService.getGoats(newIds)));
-        for (const goat in related) {
-          related[goat] = this.diffService.softMerge(oldRelated[goat], related[goat]);
+        for (let i = 0; i < related.length; i++) {
+          this.syncingRelated = i;
+          related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
+
+          let linearAppraisals: Goat['linearAppraisals'];
+          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))()]);
+          related[i].linearAppraisals = linearAppraisals;
         }
         await this.goatService.setRelated(oldRelated, related);
       } catch (err) {

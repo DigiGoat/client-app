@@ -161,6 +161,17 @@ export class ADGAService {
     getBlacklist: async () => {
       return await readJSON(this.blacklistPath).catch(() => []);
     },
+    getLinearAppraisal: async (_event, id) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return (await this.adga.getLinearAppraisal(id)).items;
+      } catch (err) {
+        console.warn('Error Fetching Linear Appraisal:', err);
+        return this.handleError(err);
+      }
+    },
   };
   constructor() {
     const init = () => {
