@@ -7,11 +7,13 @@
       data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
       <span class="visually-hidden">Toggle Dropdown</span>
     </button>
-    <ul #dropdown class="dropdown-menu color-scheme-quaternary">
+    <ul #dropdown class="dropdown-menu color-scheme-quaternary" style="width: 125%">
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncDoes()">Sync Does <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingDoes !== false"></i></button></li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncBucks()">Sync Bucks <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingBucks !== false"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncReferences()">Sync
+          References <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingReferences !== false"></i></button></li>
       <li tooltip="The goats used for the pedigrees of your does and bucks"><button type="button"
           class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncRelated()">Sync Related <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingRelated !== false"></i></button></li>
@@ -29,6 +31,11 @@
       <h3>Bucks:</h3>
       <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)" (addGoat)="addBuck($event)"
         [filter]="filters.buck" (rearranged)="rearrangeBucks($event)"></app-goat-list>
+    </div>
+    <div class="mb-3 col">
+      <h3>References:</h3>
+      <app-goat-list type="reference" [goats]="references" [syncing]="syncingReferences" (deleteIndex)="deleteReference($event)"
+        (addGoat)="addReference($event)" (rearranged)="rearrangeReferences($event)" [(enabled)]="referencesEnabled"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Related:</h3>

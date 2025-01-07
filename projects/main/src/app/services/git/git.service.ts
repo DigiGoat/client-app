@@ -12,6 +12,7 @@ export class GitService {
   base = join(app.getPath('userData'), 'repo');
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
+  references = join(this.base, 'src/assets/resources/references.json');
   change() {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('git:change'));
   }
@@ -97,6 +98,18 @@ export class GitService {
         }
       }
     },
+    commitReferences: async (_event, message) => {
+      try {
+        await this.commit(message, this.references);
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
+    },
     commitConfig: async (_event, message) => {
       try {
         await this.commit(message, 'src/assets/resources/config.json');
@@ -138,6 +151,7 @@ export class GitService {
       this.change();
     },
     reset: async () => {
+      await this.git.clean(CleanOptions.FORCE);
       await this.git.reset(ResetMode.HARD, ['@{upstream}']);
       this.change();
       this.checkForUpdates();

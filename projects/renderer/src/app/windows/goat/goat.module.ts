@@ -10,6 +10,7 @@ import { CaseInputComponent } from './elements/case-input/case-input.component';
 import { GoatComponent } from './elements/goat/goat.component';
 import { GoatRoutingModule } from './goat-routing.module';
 import { RelatedComponent } from './related/related.component';
+import { ReferenceComponent } from './reference/reference.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { RelatedComponent } from './related/related.component';
     GoatComponent,
     BuckComponent,
     CaseInputComponent,
-    RelatedComponent
+    RelatedComponent,
+    ReferenceComponent
   ],
   imports: [
     CommonModule,

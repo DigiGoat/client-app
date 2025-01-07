@@ -168,6 +168,12 @@ export class ConfigService {
   set kiddingSchedule(kiddingSchedule: boolean) {
     this.config = { kiddingSchedule: kiddingSchedule };
   }
+  get references(): boolean {
+    return this.config['references'] as boolean ?? false;
+  }
+  set references(references: boolean) {
+    this.config = { references: references };
+  }
   get socials(): Socials {
     if (this.config['socials']) {
       return this.config['socials'] as Socials;

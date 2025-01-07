@@ -1,5 +1,5 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
+import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../../../../services/dialog/dialog.service';
@@ -15,6 +15,8 @@ export class GoatListComponent implements OnInit {
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input({ required: true }) type!: GoatType;
   @Input() syncing?: boolean | number = false;
+  @Input({ transform: booleanAttribute }) enabled?: boolean;
+  @Output() enabledChange = new EventEmitter<boolean>();
   @Output() deleteIndex = new EventEmitter<number>;
   @Output() addGoat = new EventEmitter<Goat>();
   @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
