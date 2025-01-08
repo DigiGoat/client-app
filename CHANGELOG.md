@@ -1,3 +1,6 @@
+## 4.1.1-beta.1
+* Fixed a bug that would cause the search results for adding a goat to be hidden
+
 ## 4.1.0-beta.1
 * The kidding schedule now acceses reference goats when identifying dams and sires
   * This currently works even if you have disabled the references page on your site, that behavior may change in the future
