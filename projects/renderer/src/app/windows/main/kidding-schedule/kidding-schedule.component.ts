@@ -17,8 +17,8 @@ import { WindowService } from '../../../services/window/window.service';
 export class KiddingScheduleComponent implements OnInit {
   private oldBreedings: Kidding[] = [];
   public breedings: Kidding[] = [];
-  public does?: Goat[];
-  public bucks?: Goat[];
+  public does: Goat[] = [];
+  public bucks: Goat[] = [];
   constructor(private configService: ConfigService, private diffService: DiffService, private goatService: GoatService, private cdr: ChangeDetectorRef, private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
   get enabled() {
     return this.configService.kiddingSchedule;
@@ -47,8 +47,12 @@ export class KiddingScheduleComponent implements OnInit {
           break;
       }
     };
-    this.goatService.getDoes().then(does => this.does = does);
-    this.goatService.getBucks().then(bucks => this.bucks = bucks);
+    this.goatService.getDoes().then(does => this.does.push(...does));
+    this.goatService.getBucks().then(bucks => this.bucks.push(...bucks));
+    this.goatService.getReferences().then(references => {
+      this.does.push(...references.filter(goat => goat.sex === 'Female'));
+      this.bucks.push(...references.filter(goat => goat.sex === 'Male'));
+    });
   }
   rearrange(event: CdkDragDrop<Kidding[]>) {
     moveItemInArray(this.breedings, event.previousIndex, event.currentIndex);
