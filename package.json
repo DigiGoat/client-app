@@ -113,5 +113,8 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
