@@ -8,6 +8,9 @@ permissions:
 jobs:
   macos_release:
     runs-on: macos-latest
+    env:
+      YARN_IGNORE_ENGINES: true
+
     steps:
       - name: Github checkout
         uses: actions/checkout@v4
@@ -31,6 +34,9 @@ jobs:
 
   windows_release:
     runs-on: windows-latest
+    env:
+      YARN_IGNORE_ENGINES: true
+
     steps:
       - name: Github checkout
         uses: actions/checkout@v4
@@ -54,6 +60,9 @@ jobs:
   publish_release:
     needs: [macos_release, windows_release]
     runs-on: ubuntu-latest
+    env:
+      YARN_IGNORE_ENGINES: true
+
 
     steps:
       - name: Checkout code

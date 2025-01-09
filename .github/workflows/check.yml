@@ -11,6 +11,8 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Checkout code
