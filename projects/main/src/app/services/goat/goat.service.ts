@@ -8,6 +8,7 @@ export class GoatService {
   base = join(app.getPath('userData'), 'repo');
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
+  references = join(this.base, 'src/assets/resources/references.json');
   related = join(this.base, 'src/assets/resources/related.json');
   kiddingSchedule = join(this.base, 'src/assets/resources/kidding-schedule.json');
   async getDoes() {
@@ -25,6 +26,15 @@ export class GoatService {
       return await readJson(this.bucks);
     } catch (err) {
       console.warn('Error Reading Bucks:', err);
+      return [];
+    }
+  }
+  async getReferences() {
+    try {
+      this.watchReferences();
+      return await readJson(this.references);
+    } catch (err) {
+      console.warn('Error Reading References:', err);
       return [];
     }
   }
@@ -58,6 +68,12 @@ export class GoatService {
     },
     setBucks: async (_event, bucks) => {
       await writeJSON(this.bucks, bucks, { spaces: 2 });
+    },
+    getReferences: async () => {
+      return await this.getReferences();
+    },
+    setReferences: async (_event, references) => {
+      await writeJSON(this.references, references, { spaces: 2 });
     },
     getRelated: async () => {
       return await this.getRelated();
@@ -134,6 +150,37 @@ export class GoatService {
       }
     });
   }
+  watchingReferences = false;
+  watchReferences() {
+    if (this.watchingReferences || !existsSync(this.references)) return;
+    ensureFileSync(this.references);
+    this.watchingReferences = true;
+    watch(this.references, async (event) => {
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newReferences = await this.getReferences();
+        console.log('References updated', event, newReferences);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:referencesChange', newReferences);
+          }
+        });
+      } catch (err) {
+        console.warn('Error Updating References:', err);
+      }
+      if (event === 'rename') {
+        this.watchingReferences = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchReferences();
+        }
+      }
+    }).on('error', async () => {
+      this.watchingReferences = false;
+      if (await exists(join(this.base, '.git'))) {
+        this.watchReferences();
+      }
+    });
+  }
   watchingRelated = false;
   watchRelated() {
     if (this.watchingRelated || !existsSync(this.related)) return;
@@ -199,6 +246,7 @@ export class GoatService {
   constructor() {
     this.watchDoes();
     this.watchBucks();
+    this.watchReferences();
     this.watchRelated();
     this.watchKiddingSchedule();
   }

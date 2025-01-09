@@ -1,3 +1,11 @@
+## 4.1.0-beta.1
+* The kidding schedule now acceses reference goats when identifying dams and sires
+  * This currently works even if you have disabled the references page on your site, that behavior may change in the future
+
+## 4.0.0-beta.1
+* Added Support for references!
+  * This is intended for animals that are not in the herd but are related to the herd (animals you have on lease, deceased animals that still have a genetic impact on your herd, etc.)
+
 ## 3.2.0-beta.2
 * Fixed a bug causing changes to be lost when saving too much at a time on Windows
 

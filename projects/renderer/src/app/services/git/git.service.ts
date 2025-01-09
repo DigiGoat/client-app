@@ -24,6 +24,7 @@ export class GitService {
   trust = window.electron.git.trust;
   commitDoes = window.electron.git.commitDoes;
   commitBucks = window.electron.git.commitBucks;
+  commitReferences = window.electron.git.commitReferences;
   commitConfig = window.electron.git.commitConfig;
   commitRelated = window.electron.git.commitRelated;
   commitKiddingSchedule = window.electron.git.commitKiddingSchedule;

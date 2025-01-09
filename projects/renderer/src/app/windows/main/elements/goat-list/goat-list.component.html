@@ -1,5 +1,13 @@
 <div class="list-group color-scheme-secondary position-relative" cdkDropList cdkDropListLockAxis="y"
   (cdkDropListDropped)="rearrange($event)">
+  <span
+    class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
+    style="min-height: auto; z-index: 1 !important;" *ngIf="enabled !== undefined">
+    <label class="form-check-label" for="enabledSwitch"> <span class="fw-bold text-success" *ngIf="enabled">Enabled</span><span
+        class="fw-bold text-danger" *ngIf="!enabled">Disabled</span></label>
+    <input class="form-check-input ms-1" type="checkbox" role="switch" id="enabledSwitch" [ngModel]="enabled"
+      (ngModelChange)="enabledChange.emit($event)">
+  </span>
   <span *ngIf="!goats.length" class="list-group-item color-scheme-tertiary">No Goats Found!</span>
   <button *ngFor="let goat of goats; index as i" class="list-group-item list-group-item-action color-scheme-tertiary" (click)="openGoat(i)"
     cdkDrag>{{goat.nickname || goat.name || goat.normalizeId}} <i *ngIf="syncing === i" class="bi bi-arrow-repeat spin position-absolute"

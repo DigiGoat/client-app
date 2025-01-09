@@ -14,6 +14,7 @@ export const GitService: GitServiceType = {
   getPublishedDoes: () => ipcRenderer.invoke('git:getPublishedDoes'),
   commitDoes: (message) => ipcRenderer.invoke('git:commitDoes', message),
   commitBucks: (message) => ipcRenderer.invoke('git:commitBucks', message),
+  commitReferences: (message) => ipcRenderer.invoke('git:commitReferences', message),
   commitRelated: (message) => ipcRenderer.invoke('git:commitRelated', message),
   commitConfig: (message) => ipcRenderer.invoke('git:commitConfig', message),
   commitKiddingSchedule: (message) => ipcRenderer.invoke('git:commitKiddingSchedule', message),

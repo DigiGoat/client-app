@@ -5,6 +5,7 @@ import { ADGAService } from '../../../services/adga/adga.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
+import { ConfigService } from '../../../services/config/config.service';
 
 @Component({
   selector: 'app-goats',
@@ -14,15 +15,16 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
 export class GoatsComponent {
   does = this.goatService.does;
   bucks = this.goatService.bucks;
+  references = this.goatService.references;
   related = this.goatService.related;
   filters = {
     doe: DoeFilter,
     buck: BuckFilter,
   };
-  constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService) { }
+  constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService, private configService: ConfigService) { }
 
   get syncing() {
-    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingAll || this.syncingRelated !== false;
+    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false;
   }
   syncingAll = false;
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
@@ -35,8 +37,12 @@ export class GoatsComponent {
       shown = true;
     } this.syncingAll = true;
     try {
-      const goats = await this.adgaService.getOwnedGoats();
-      await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
+      await Promise.all([(async () => {
+        this.syncingDoes = true;
+        this.syncingBucks = true;
+        const goats = await this.adgaService.getOwnedGoats();
+        await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
+      })(), this.syncReferences()]);
       await this.syncRelated();
     } catch (err) {
       await this.adgaService.handleError(err as Error, 'Sync Failed!');
@@ -72,7 +78,9 @@ export class GoatsComponent {
             does![i].linearAppraisals = linearAppraisals;
           }
         }
-        await this.goatService.setDoes(oldDoes, does);
+        if (oldDoes.length || does.length) {
+          await this.goatService.setDoes(oldDoes, does);
+        }
       } catch (err) {
         await this.goatService.writeDoes(oldDoes);
         await this.adgaService.handleError(err as Error, 'Does Sync Failed!');
@@ -103,7 +111,9 @@ export class GoatsComponent {
             bucks[i].linearAppraisals = linearAppraisals;
           }
         }
-        await this.goatService.setBucks(oldBucks, bucks);
+        if (oldBucks.length || bucks.length) {
+          await this.goatService.setBucks(oldBucks, bucks);
+        }
       } catch (err) {
         await this.goatService.writeBucks(oldBucks);
         await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
@@ -112,6 +122,37 @@ export class GoatsComponent {
       await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
     } finally {
       this.syncingBucks = false;
+    }
+  }
+  syncingReferences: boolean | number = false;
+  async syncReferences() {
+    this.syncingReferences = true;
+    try {
+      const oldReferences = await this.goatService.getReferences();
+      const references = structuredClone(oldReferences);
+      try {
+        for (let i = 0; i < references.length; i++) {
+          this.syncingReferences = i;
+          const reference = references[i];
+          if (reference.id) {
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(reference.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference.id!))()]);
+            references[i] = this.diffService.softMerge(reference, goat!);
+            references[i].linearAppraisals = linearAppraisals;
+          }
+        }
+        if (oldReferences.length || references.length) {
+          await this.goatService.setReferences(oldReferences, references);
+        }
+      } catch (err) {
+        await this.goatService.writeReferences(oldReferences);
+        await this.adgaService.handleError(err as Error, 'References Sync Failed!');
+      }
+    } catch (err) {
+      await this.adgaService.handleError(err as Error, 'References Sync Failed!');
+    } finally {
+      this.syncingReferences = false;
     }
   }
   syncingRelated: boolean | number = false;
@@ -154,7 +195,9 @@ export class GoatsComponent {
           await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))()]);
           related[i].linearAppraisals = linearAppraisals;
         }
-        await this.goatService.setRelated(oldRelated, related);
+        if (oldRelated.length || related.length) {
+          await this.goatService.setRelated(oldRelated, related);
+        }
       } catch (err) {
         await this.goatService.writeRelated(oldRelated);
         await this.adgaService.handleError(err as Error, 'Related Goats Sync Failed!');
@@ -172,17 +215,33 @@ export class GoatsComponent {
   deleteBuck(index: number) {
     this.goatService.deleteBuck(index);
   }
-  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
-    this.goatService.rearrangeDoes(event);
+  deleteReference(index: number) {
+    this.goatService.deleteReference(index);
   }
-
   addDoe(doe: Goat) {
     this.goatService.addDoe(doe);
   }
   addBuck(buck: Goat) {
     this.goatService.addBuck(buck);
   }
+  addReference(reference: Goat) {
+    this.goatService.addReference(reference);
+  }
+  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeDoes(event);
+  }
   rearrangeBucks(event: CdkDragDrop<Goat[]>) {
     this.goatService.rearrangeBucks(event);
+  }
+  rearrangeReferences(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeReferences(event);
+  }
+
+  get referencesEnabled() {
+    return this.configService.references;
+  }
+  set referencesEnabled(enabled: boolean) {
+    this.configService.references = enabled;
+    this.configService.saveChanges();
   }
 }
