@@ -12,7 +12,8 @@ import { WindowService } from '../../../services/window/window.service';
 @Component({
   selector: 'app-kidding-schedule',
   templateUrl: './kidding-schedule.component.html',
-  styleUrl: './kidding-schedule.component.scss'
+  styleUrl: './kidding-schedule.component.scss',
+  standalone: false
 })
 export class KiddingScheduleComponent implements OnInit {
   private oldBreedings: Kidding[] = [];

@@ -6,7 +6,8 @@ import { GoatService } from '../../../services/goat/goat.service';
 @Component({
   selector: 'app-doe',
   templateUrl: './doe.component.html',
-  styleUrl: './doe.component.scss'
+  styleUrl: './doe.component.scss',
+  standalone: false
 })
 export class DoeComponent implements OnInit {
   index = -1;

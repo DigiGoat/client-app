@@ -4,7 +4,8 @@ import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../services/goat/goat.service';
 
 @Directive({
-  selector: 'input[goat-search]'
+  selector: 'input[goat-search]',
+  standalone: false
 })
 export class GoatSearchDirective implements OnInit {
 

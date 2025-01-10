@@ -2,7 +2,8 @@ import { Directive, HostBinding, HostListener, Input, booleanAttribute } from '@
 import { AppService } from '../../services/app/app.service';
 
 @Directive({
-  selector: '[advanced]'
+  selector: '[advanced]',
+  standalone: false
 })
 export class AdvancedDirective {
   @Input({ transform: booleanAttribute }) advanced: boolean = true;

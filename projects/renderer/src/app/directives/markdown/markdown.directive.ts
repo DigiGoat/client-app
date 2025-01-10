@@ -3,7 +3,8 @@ import { Directive, ElementRef, HostListener, type OnInit } from '@angular/core'
 import { AppService } from '../../services/app/app.service';
 
 @Directive({
-  selector: 'textarea[markdown]'
+  selector: 'textarea[markdown]',
+  standalone: false
 })
 export class MarkdownDirective implements OnInit {
 

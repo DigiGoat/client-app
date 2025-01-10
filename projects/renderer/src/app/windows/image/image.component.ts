@@ -10,7 +10,8 @@ import { ImageService } from '../../services/image/image.service';
 @Component({
   selector: 'app-image',
   templateUrl: './image.component.html',
-  styleUrl: './image.component.scss'
+  styleUrl: './image.component.scss',
+  standalone: false
 })
 export class ImageComponent implements OnInit {
   queries: string[] = [];

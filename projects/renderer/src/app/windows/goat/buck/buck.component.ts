@@ -6,7 +6,8 @@ import { GoatService } from '../../../services/goat/goat.service';
 @Component({
   selector: 'app-buck',
   templateUrl: './buck.component.html',
-  styleUrl: './buck.component.scss'
+  styleUrl: './buck.component.scss',
+  standalone: false
 })
 export class BuckComponent implements OnInit {
   index = -1;

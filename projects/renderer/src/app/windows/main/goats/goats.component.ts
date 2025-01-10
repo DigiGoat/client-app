@@ -11,6 +11,7 @@ import { ConfigService } from '../../../services/config/config.service';
   selector: 'app-goats',
   templateUrl: './goats.component.html',
   styleUrl: './goats.component.scss',
+  standalone: false
 })
 export class GoatsComponent {
   does = this.goatService.does;

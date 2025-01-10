@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostListener, type OnInit } from '@angular/core';
 
 @Directive({
-  selector: '[online-only]'
+  selector: '[online-only]',
+  standalone: false
 })
 export class OnlineOnlyDirective implements OnInit {
   @HostListener('window:offline') onOffline() {
