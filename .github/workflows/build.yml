@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, windows-latest]
-        node-version: [18.x, 20.x, 22.x]  # specify the Node.js versions you want to test against
+        node-version: [18.x, 20.x, ${{ vars.NODE_ENGINE }}, 22.x]  # specify the Node.js versions you want to test against
     env:
-      YARN_IGNORE_ENGINES: ${{ matrix .node-version != '20.x'}}
+      YARN_IGNORE_ENGINES: ${{ matrix .node-version != vars.NODE_ENGINE}}
 
 
     steps:

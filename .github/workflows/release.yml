@@ -5,8 +5,6 @@ on:
     branches: [main, beta]
 permissions:
   contents: write
-env:
-  YARN_IGNORE_ENGINES: true
 
 jobs:
   macos_release:
@@ -18,7 +16,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ vars.NODE_ENGINE}}
           cache: yarn
           cache-dependency-path: yarn.lock
 
@@ -42,7 +40,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ vars.NODE_ENGINE}}
           cache: yarn
           cache-dependency-path: yarn.lock
 
@@ -59,6 +57,8 @@ jobs:
   publish_release:
     needs: [macos_release, windows_release]
     runs-on: ubuntu-latest
+    env:
+      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Checkout code
