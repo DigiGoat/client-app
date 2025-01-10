@@ -17,7 +17,8 @@ jobs:
         os: [macos-latest, windows-latest]
         node-version: [18.x, 20.x, 22.x]  # specify the Node.js versions you want to test against
     env:
-      YARN_IGNORE_ENGINES: true
+      YARN_IGNORE_ENGINES: ${{ matrix .node-version != '20.x'}}
+
 
     steps:
       - name: Checkout

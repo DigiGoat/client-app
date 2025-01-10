@@ -5,11 +5,12 @@ on:
     branches: [main, beta]
 permissions:
   contents: write
+env:
+  YARN_IGNORE_ENGINES: true
+
 jobs:
   macos_release:
     runs-on: macos-latest
-    env:
-      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Github checkout
@@ -34,8 +35,6 @@ jobs:
 
   windows_release:
     runs-on: windows-latest
-    env:
-      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Github checkout
@@ -60,9 +59,6 @@ jobs:
   publish_release:
     needs: [macos_release, windows_release]
     runs-on: ubuntu-latest
-    env:
-      YARN_IGNORE_ENGINES: true
-
 
     steps:
       - name: Checkout code

@@ -1,3 +1,10 @@
+## 4.1.2-beta.1
+* A lot of behind-the-scenes changes to improve the performance & security of the app
+  * Updated Angular from v17 to v19
+  * Updated Typescript
+  * Preparing to update Node.js
+  * Preparing to update Electron
+
 ## 4.1.1-beta.1
 * Fixed a bug that would cause the search results for adding a goat to be hidden
 

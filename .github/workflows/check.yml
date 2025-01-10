@@ -7,12 +7,12 @@ on:
 permissions:
   contents: read
   pull-requests:   write
+env:
+  YARN_IGNORE_ENGINES: true
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    env:
-      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Checkout code
