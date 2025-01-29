@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'app-case-input',
   templateUrl: './case-input.component.html',
-  styleUrl: './case-input.component.scss'
+  styleUrl: './case-input.component.scss',
+  standalone: false
 })
 export class CaseInputComponent {
   @Input() value?: string;

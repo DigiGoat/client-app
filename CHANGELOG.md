@@ -1,3 +1,17 @@
+## 4.1.2-beta.2
+* Updated Electron to v34
+* Updated Node.js to v20.11
+
+## 4.1.2-beta.1
+* A lot of behind-the-scenes changes to improve the performance & security of the app
+  * Updated Angular from v17 to v19
+  * Updated Typescript
+  * Preparing to update Node.js
+  * Preparing to update Electron
+
+## 4.1.1-beta.1
+* Fixed a bug that would cause the search results for adding a goat to be hidden
+
 ## 4.1.0-beta.1
 * The kidding schedule now acceses reference goats when identifying dams and sires
   * This currently works even if you have disabled the references page on your site, that behavior may change in the future

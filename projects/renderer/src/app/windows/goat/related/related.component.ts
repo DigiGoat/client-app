@@ -6,7 +6,8 @@ import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 @Component({
   selector: 'app-related',
   templateUrl: './related.component.html',
-  styleUrl: './related.component.scss'
+  styleUrl: './related.component.scss',
+  standalone: false
 })
 export class RelatedComponent implements OnInit {
   index = -1;

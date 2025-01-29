@@ -100,7 +100,7 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        const blacklist = await readJSON(this.blacklistPath).catch(() => []);
+        const blacklist = await readJSON(this.blacklistPath).catch(() => [] as string[]);
         const goats = await this.adga.getOwnedGoats(this.account?.id);
         goats.items = goats.items.filter(goat => !blacklist.includes(goat.id));
         return goats;
@@ -154,12 +154,12 @@ export class ADGAService {
       }
     },
     blacklistOwnedGoat: async (_event, id) => {
-      const blacklist = await readJSON(this.blacklistPath).catch(() => []);
+      const blacklist = await readJSON(this.blacklistPath).catch(() => [] as string[]);
       blacklist.push(id);
       await writeJSON(this.blacklistPath, blacklist);
     },
     getBlacklist: async () => {
-      return await readJSON(this.blacklistPath).catch(() => []);
+      return await readJSON(this.blacklistPath).catch(() => [] as string[]);
     },
     getLinearAppraisal: async (_event, id) => {
       if (!this.adga) {

@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostBinding, HostListener, type AfterViewChecked } from '@angular/core';
 
 @Directive({
-  selector: 'textarea'
+  selector: 'textarea',
+  standalone: false
 })
 export class TextareaDirective implements AfterViewChecked {
   @HostBinding('style.resize') resize = 'none';

@@ -11,7 +11,8 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class HomeComponent {
   constructor(private windowService: WindowService, public configService: ConfigService, public suggestionService: SuggestionService, private dialogService: DialogService, private appService: AppService, private repoService: RepoService, private gitService: GitService) { }

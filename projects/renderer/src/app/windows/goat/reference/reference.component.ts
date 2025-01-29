@@ -6,7 +6,8 @@ import { GoatService } from '../../../services/goat/goat.service';
 @Component({
   selector: 'app-reference',
   templateUrl: './reference.component.html',
-  styleUrl: './reference.component.scss'
+  styleUrl: './reference.component.scss',
+  standalone: false
 })
 export class ReferenceComponent implements OnInit {
   index = -1;

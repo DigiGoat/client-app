@@ -9,7 +9,8 @@ import { WindowService } from '../../../../services/window/window.service';
 @Component({
   selector: 'app-goat',
   templateUrl: './goat.component.html',
-  styleUrl: './goat.component.scss'
+  styleUrl: './goat.component.scss',
+  standalone: false
 })
 export class GoatComponent implements OnInit {
   @Input({ required: true }) getter!: Observable<Goat[]>;

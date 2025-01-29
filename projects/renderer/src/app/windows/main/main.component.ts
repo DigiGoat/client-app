@@ -7,7 +7,8 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class MainComponent implements OnInit {
   changes = 0;
