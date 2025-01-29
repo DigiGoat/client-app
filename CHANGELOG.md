@@ -1,3 +1,7 @@
+## 4.1.2-beta.2
+* Updated Electron to v34
+* Updated Node.js to v20.11
+
 ## 4.1.2-beta.1
 * A lot of behind-the-scenes changes to improve the performance & security of the app
   * Updated Angular from v17 to v19
