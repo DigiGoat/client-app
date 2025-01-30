@@ -1,3 +1,6 @@
+## 4.1.2-beta.3
+* Updated Electron Forge to v7.6 to comply with Electron v34
+
 ## 4.1.2-beta.2
 * Updated Electron to v34
 * Updated Node.js to v20.11
