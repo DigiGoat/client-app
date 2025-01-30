@@ -1,3 +1,6 @@
+## 4.1.3-beta.1
+* Updated the history page so that it will automatically refresh when changes are detected
+
 ## 4.1.2-beta.3
 * Updated Electron Forge to v7.6 to comply with Electron v34
 
