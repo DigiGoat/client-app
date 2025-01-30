@@ -5,16 +5,18 @@ on:
     branches: [main, beta]
 permissions:
   contents: write
+
 jobs:
   macos_release:
     runs-on: macos-latest
+
     steps:
       - name: Github checkout
         uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ vars.NODE_ENGINE}}
           cache: yarn
           cache-dependency-path: yarn.lock
 
@@ -31,13 +33,14 @@ jobs:
 
   windows_release:
     runs-on: windows-latest
+
     steps:
       - name: Github checkout
         uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ vars.NODE_ENGINE}}
           cache: yarn
           cache-dependency-path: yarn.lock
 
@@ -54,6 +57,8 @@ jobs:
   publish_release:
     needs: [macos_release, windows_release]
     runs-on: ubuntu-latest
+    env:
+      YARN_IGNORE_ENGINES: true
 
     steps:
       - name: Checkout code

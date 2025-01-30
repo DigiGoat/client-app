@@ -6,7 +6,8 @@ import { WindowService } from '../../services/window/window.service';
 @Component({
   selector: 'app-git',
   templateUrl: './git.component.html',
-  styleUrl: './git.component.scss'
+  styleUrl: './git.component.scss',
+  standalone: false
 })
 export class GitComponent {
   constructor(private gitService: GitService, private dialogService: DialogService, private windowService: WindowService) { }

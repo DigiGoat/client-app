@@ -13,4 +13,5 @@ export const ADGAService: ADGAServiceType = {
   lookupGoatsByName: (name) => ipcRenderer.invoke('adga:lookupGoatsByName', name),
   blacklistOwnedGoat: (id) => ipcRenderer.invoke('adga:blacklistOwnedGoat', id),
   getBlacklist: () => ipcRenderer.invoke('adga:getBlacklist'),
+  getLinearAppraisal: (id) => ipcRenderer.invoke('adga:getLinearAppraisal', id),
 };

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { DirectivesModule } from '../../directives/directives.module';
 import { ImageRoutingModule } from './image-routing.module';
 import { ImageComponent } from './image.component';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -16,8 +16,10 @@ import { HttpClientModule } from '@angular/common/http';
     CommonModule,
     ImageRoutingModule,
     DirectivesModule,
-    FormsModule,
-    HttpClientModule
+    FormsModule
+  ],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class ImageModule { }

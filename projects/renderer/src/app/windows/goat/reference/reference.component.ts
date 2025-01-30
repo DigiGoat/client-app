@@ -4,15 +4,15 @@ import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
 
 @Component({
-  selector: 'app-buck',
-  templateUrl: './buck.component.html',
-  styleUrl: './buck.component.scss',
+  selector: 'app-reference',
+  templateUrl: './reference.component.html',
+  styleUrl: './reference.component.scss',
   standalone: false
 })
-export class BuckComponent implements OnInit {
+export class ReferenceComponent implements OnInit {
   index = -1;
-  bucks = this.goatService.bucks;
-  setter = (index: number, buck: Goat) => this.goatService.setBuck(index, buck);
+  references = this.goatService.references;
+  setter = (index: number, buck: Goat) => this.goatService.setReference(index, buck);
   constructor(private route: ActivatedRoute, private goatService: GoatService) {
   }
   async ngOnInit() {

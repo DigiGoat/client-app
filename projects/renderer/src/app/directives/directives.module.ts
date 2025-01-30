@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AdvancedDirective } from './advanced/advanced.directive';
 import { GoatSearchDirective } from './goat-search/goat-search.directive';
@@ -20,9 +20,6 @@ import { TooltipDirective } from './tooltip/tooltip.directive';
     MarkdownDirective,
     GoatSearchDirective
   ],
-  imports: [
-    HttpClientModule
-  ],
   exports: [
     SuggestionDirective,
     TextareaDirective,
@@ -31,6 +28,9 @@ import { TooltipDirective } from './tooltip/tooltip.directive';
     AdvancedDirective,
     MarkdownDirective,
     GoatSearchDirective
+  ],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class DirectivesModule { }

@@ -5,24 +5,27 @@ import { ADGAService } from '../../../services/adga/adga.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
+import { ConfigService } from '../../../services/config/config.service';
 
 @Component({
   selector: 'app-goats',
   templateUrl: './goats.component.html',
   styleUrl: './goats.component.scss',
+  standalone: false
 })
 export class GoatsComponent {
   does = this.goatService.does;
   bucks = this.goatService.bucks;
+  references = this.goatService.references;
   related = this.goatService.related;
   filters = {
     doe: DoeFilter,
     buck: BuckFilter,
   };
-  constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService) { }
+  constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService, private configService: ConfigService) { }
 
   get syncing() {
-    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingAll || this.syncingRelated !== false;
+    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false;
   }
   syncingAll = false;
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
@@ -35,8 +38,12 @@ export class GoatsComponent {
       shown = true;
     } this.syncingAll = true;
     try {
-      const goats = await this.adgaService.getOwnedGoats();
-      await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
+      await Promise.all([(async () => {
+        this.syncingDoes = true;
+        this.syncingBucks = true;
+        const goats = await this.adgaService.getOwnedGoats();
+        await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
+      })(), this.syncReferences()]);
       await this.syncRelated();
     } catch (err) {
       await this.adgaService.handleError(err as Error, 'Sync Failed!');
@@ -65,10 +72,16 @@ export class GoatsComponent {
           this.syncingDoes = i;
           const doe = does[i];
           if (doe.id) {
-            does[i] = this.diffService.softMerge(doe, await this.adgaService.getGoat(doe.id));
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))()]);
+            does![i] = this.diffService.softMerge(doe, goat!);
+            does![i].linearAppraisals = linearAppraisals;
           }
         }
-        await this.goatService.setDoes(oldDoes, does);
+        if (oldDoes.length || does.length) {
+          await this.goatService.setDoes(oldDoes, does);
+        }
       } catch (err) {
         await this.goatService.writeDoes(oldDoes);
         await this.adgaService.handleError(err as Error, 'Does Sync Failed!');
@@ -92,10 +105,16 @@ export class GoatsComponent {
           this.syncingBucks = i;
           const buck = bucks[i];
           if (buck.id) {
-            bucks[i] = this.diffService.softMerge(buck, await this.adgaService.getGoat(buck.id));
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(buck.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck.id!))()]);
+            bucks[i] = this.diffService.softMerge(buck, goat!);
+            bucks[i].linearAppraisals = linearAppraisals;
           }
         }
-        await this.goatService.setBucks(oldBucks, bucks);
+        if (oldBucks.length || bucks.length) {
+          await this.goatService.setBucks(oldBucks, bucks);
+        }
       } catch (err) {
         await this.goatService.writeBucks(oldBucks);
         await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
@@ -104,6 +123,37 @@ export class GoatsComponent {
       await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
     } finally {
       this.syncingBucks = false;
+    }
+  }
+  syncingReferences: boolean | number = false;
+  async syncReferences() {
+    this.syncingReferences = true;
+    try {
+      const oldReferences = await this.goatService.getReferences();
+      const references = structuredClone(oldReferences);
+      try {
+        for (let i = 0; i < references.length; i++) {
+          this.syncingReferences = i;
+          const reference = references[i];
+          if (reference.id) {
+            let goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(reference.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference.id!))()]);
+            references[i] = this.diffService.softMerge(reference, goat!);
+            references[i].linearAppraisals = linearAppraisals;
+          }
+        }
+        if (oldReferences.length || references.length) {
+          await this.goatService.setReferences(oldReferences, references);
+        }
+      } catch (err) {
+        await this.goatService.writeReferences(oldReferences);
+        await this.adgaService.handleError(err as Error, 'References Sync Failed!');
+      }
+    } catch (err) {
+      await this.adgaService.handleError(err as Error, 'References Sync Failed!');
+    } finally {
+      this.syncingReferences = false;
     }
   }
   syncingRelated: boolean | number = false;
@@ -129,7 +179,6 @@ export class GoatsComponent {
       try {
         const newIds: number[] = [];
         for (let i = 0; i < related.length; i++) {
-          this.syncingRelated = i;
           const goat = related[i];
           if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
             newIds.push(goat.damId);
@@ -139,7 +188,17 @@ export class GoatsComponent {
           }
         }
         related.push(...(await this.adgaService.getGoats(newIds)));
-        await this.goatService.setRelated(oldRelated, related);
+        for (let i = 0; i < related.length; i++) {
+          this.syncingRelated = i;
+          related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
+
+          let linearAppraisals: Goat['linearAppraisals'];
+          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))()]);
+          related[i].linearAppraisals = linearAppraisals;
+        }
+        if (oldRelated.length || related.length) {
+          await this.goatService.setRelated(oldRelated, related);
+        }
       } catch (err) {
         await this.goatService.writeRelated(oldRelated);
         await this.adgaService.handleError(err as Error, 'Related Goats Sync Failed!');
@@ -157,17 +216,33 @@ export class GoatsComponent {
   deleteBuck(index: number) {
     this.goatService.deleteBuck(index);
   }
-  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
-    this.goatService.rearrangeDoes(event);
+  deleteReference(index: number) {
+    this.goatService.deleteReference(index);
   }
-
   addDoe(doe: Goat) {
     this.goatService.addDoe(doe);
   }
   addBuck(buck: Goat) {
     this.goatService.addBuck(buck);
   }
+  addReference(reference: Goat) {
+    this.goatService.addReference(reference);
+  }
+  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeDoes(event);
+  }
   rearrangeBucks(event: CdkDragDrop<Goat[]>) {
     this.goatService.rearrangeBucks(event);
+  }
+  rearrangeReferences(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeReferences(event);
+  }
+
+  get referencesEnabled() {
+    return this.configService.references;
+  }
+  set referencesEnabled(enabled: boolean) {
+    this.configService.references = enabled;
+    this.configService.saveChanges();
   }
 }

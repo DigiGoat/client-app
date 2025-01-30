@@ -1,11 +1,13 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
+import { Component, Input, OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
+import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
+import { WindowService } from '../../../../services/window/window.service';
 
 @Component({
   selector: 'app-basic-goat-list',
   templateUrl: './basic-goat-list.component.html',
-  styleUrl: './basic-goat-list.component.scss'
+  styleUrl: './basic-goat-list.component.scss',
+  standalone: false
 })
 export class BasicGoatListComponent implements OnInit {
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
@@ -13,7 +15,7 @@ export class BasicGoatListComponent implements OnInit {
 
   goats: Goat[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private windowService: WindowService) { }
 
   ngOnInit() {
     this._goats.subscribe({
@@ -21,5 +23,8 @@ export class BasicGoatListComponent implements OnInit {
         this.goats = goats;
       }
     });
+  }
+  async openGoat(index: number) {
+    this.windowService.openGoat('related', index);
   }
 }

@@ -12,6 +12,8 @@
     <ul #dropdown class="dropdown-menu color-scheme-quaternary">
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingDetails" (click)="syncDetails()">Sync
           Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLA" (click)="syncLA()">Sync LA <i
+            class="bi bi-arrow-repeat float-end" [class.spin]="syncingLA"></i></button></li>
       <!--
     <li><button type="button" class="dropdown-item" (click)="syncShows()" [disabled]="syncing">Sync Shows <i
           class="bi bi-arrow-repeat float-end" [class.spin]="syncingShows"></i></button>
@@ -30,7 +32,7 @@
 </div>
 <div class="container">
   <div class="row  row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
-    <div class="mb-3 col">
+    <div class="mb-3 col" *ngIf="!related">
       <div class="input-group" [class.unsaved]="isDirty('nickname')">
         <span class="input-group-text">Nickname:</span>
         <input type="text" class="form-control" [(ngModel)]="nickname" [suggestion]="name?.split(' ')?.pop() ?? ''">
@@ -40,7 +42,8 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('name')">
         <span class="input-group-text">Name:</span>
-        <input type="text" class="form-control" [(ngModel)]="name">
+        <input *ngIf="!id" type="text" class="form-control" [(ngModel)]="name">
+        <app-case-input *ngIf="id" [(value)]="name" class="form-control"></app-case-input>
       </div>
       <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
     </div>
@@ -49,42 +52,152 @@
       <div class="input-group" [class.unsaved]="isDirty('dateOfBirth')">
         <span class="input-group-text">Date Of Birth:</span>
         <input type="text" class="form-control" [ngModel]="dateOfBirth | longDate" #dateOfBirthEl
-          (blur)="goat = {dateOfBirth: dateOfBirthEl.value }">
+          (blur)="goat = {dateOfBirth: dateOfBirthEl.value }" [disabled]="!!id">
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD">
+        <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD" [disabled]="!!id">
       </div>
       <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
     </div>
-    <div class="mb-3 col">
+    <div class="mb-3 col" *ngIf="!related">
       <div class="input-group" [class.unsaved]="isDirty('description')">
         <span class="input-group-text">Description:</span>
         <textarea type="text" class="form-control" [(ngModel)]="description" markdown></textarea>
       </div>
       <div class="form-text">Some Information About Your Goat</div>
     </div>
-    <div class="mb-3 col">
+    <div class="mb-3 col" *ngIf="!related">
       <div class="input-group" [class.unsaved]="isDirty('colorAndMarking')">
         <span class="input-group-text">Color And Markings:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"
-          (ngModelChange)="goat = {colorAndMarking: $event}"></textarea>
+        <textarea *ngIf="!id" type="text" class="form-control" [(ngModel)]="colorAndMarking"></textarea>
+        <app-case-input *ngIf="id" [(value)]="colorAndMarking" class="form-control"></app-case-input>
       </div>
       <div class="form-text">What Your Goat Looks Like</div>
     </div>
+    <div class="mb-3 col" *ngIf="!related">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#tattoos"
+        aria-expanded="false" aria-controls="tattoos" [class.unsaved]="false"> Tattoos <i class="bi bi-ear"></i>
+      </button>
+      <div class="collapse p-3 color-scheme-secondary" id="tattoos">
+        <span *ngFor="let tattoo of tattoos; index as i">
+          <div class="input-group mb-1">
+            <span class="input-group-text">Tattoo:</span>
+            <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
+              (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!id"><span class="input-group-text">:</span>
+            <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)"
+              [disabled]="!!id">
+          </div>
+        </span>
+      </div>
+    </div>
     <div class="mb-3 col">
-      <span *ngFor="let tattoo of tattoos; index as i">
-        <div class="input-group">
-          <span class="input-group-text">Tattoo(s):</span>
-          <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
-            (ngModelChange)="setTattooLocation(i, $event)"><span class="input-group-text">:</span>
-          <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)">
+      <div class="input-group" [class.unsaved]="isDirty('damId')">
+        <span class="input-group-text">Dam's ID:</span>
+        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!id">
+      </div>
+      <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="isDirty('sireId')">
+        <span class="input-group-text">Sire's ID:</span>
+        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!id">
+      </div>
+      <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
+    </div>
+    <div class="mb-3 col" *ngIf="related">
+      <div class="input-group" [class.unsaved]="isDirty('ownerAccount')">
+        <span class="input-group-text">Owner:</span>
+        <app-case-input class="form-control" [(value)]="owner"></app-case-input>
+      </div>
+      <div class="form-text">The Current Owner of this Goat</div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#linear"
+        aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard-data"></i>
+      </button>
+      <!--<div class="collapse p-3 color-scheme-secondary" id="linear">
+        <div class="row">
+          <div class="col">Appraisal Year</div>
+          <div class="col">General Appearance</div>
+          <div class="col">Dairy Strength</div>
+          <div class="col">Body Capacity</div>
+          <div class="col" *ngIf="goat.sex === 'Female'"> Mammary System</div>
+          <div class="col">Final Score</div>
         </div>
-        <div class="form-text">TODO: MAKE NEATER</div>
-      </span>
+        <div class="row" *ngFor="let appraisal of linear; index as i">
+          <div class="col input-group">
+            <input type="text" class="form-control" placeholder="Unknown" aria-label="Appraisal Date"
+              [ngModel]="appraisal.appraisalDate | date:'YYYY'" disabled>
+          </div>
+          <div class="col input-group">
+            <input type="text" class="form-control" aria-label="General Appearance" [(ngModel)]="appraisal.generalAppearance" disabled>
+          </div>
+          <div class="col input-group">
+            <input type="text" class="form-control" aria-label="Dairy Strength" [(ngModel)]="appraisal.dairyStrength" disabled>
+          </div>
+          <div class="col input-group">
+            <input type="text" class="form-control" aria-label="Body Capacity" [(ngModel)]="appraisal.bodyCapacity" disabled>
+          </div>
+          <div class="col input-group" *ngIf="goat.sex === 'Female'">
+            <input type="text" class="form-control" aria-label="Mammary System" [(ngModel)]="appraisal.mammarySystem" disabled>
+          </div>
+          <div class="col input-group">
+            <input type="number" class="form-control" placeholder="Unknown" aria-label="Final Score" [(ngModel)]="appraisal.finalScore"
+              disabled>
+          </div>
+        </div>-->
+      <div class="collapse p-3 color-scheme-secondary" id="linear">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col" tooltip="General Appearance">GA</th>
+              <th scope="col" tooltip="Dairy Strength">DS</th>
+              <th scope="col" tooltip="Body Capacity">BC</th>
+              <th scope="col" *ngIf="goat.sex === 'Female'" tooltip="Mammary System">MS</th>
+              <th scope="col" tooltip="Final Score">FS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!linearAppraisals || !linearAppraisals.length">
+              <td colspan="100" class="text-center"> No Linear Appraisal History Found </td>
+            </tr>
+            <tr *ngFor="let appraisal of linearAppraisals; index as i">
+              <th scope="row">{{appraisal.appraisalDate | longDate}}
+              </th>
+              <td>
+                {{appraisal.generalAppearance}}
+              </td>
+              <td>
+                {{appraisal.dairyStrength}}
+              </td>
+              <td>
+                {{appraisal.bodyCapacity}}
+              </td>
+              <td *ngIf="goat.sex === 'Female'">
+                {{appraisal.mammarySystem}}
+              </td>
+              <td [class.fst-italic]="appraisal.isPermanent" [class.fw-bold]="appraisal.isPermanent"
+                [tooltip]="appraisal.isPermanent ? 'Permanent Score' : ''">
+                {{appraisal.finalScore}}
+              </td>
+            </tr>
+          </tbody>
+          <!--<tfoot>
+            <tr>
+              <td colspan="100" class="text-end">
+                <button class="btn btn-outline-secondary" type="button"
+                  (click)="doe.linearAppraisal ? doe.linearAppraisal.push({custom: true}) : doe.linearAppraisal = [{custom: true}]">Add
+                  Entry <i class="bi bi-plus-lg"></i></button>
+              </td>
+            </tr>
+          </tfoot>-->
+        </table>
+      </div>
     </div>
   </div>
 </div>

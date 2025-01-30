@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core';
 
 @Directive({
-  selector: 'input[suggestion], textarea[suggestion]'
+  selector: 'input[suggestion], textarea[suggestion]',
+  standalone: false
 })
 export class SuggestionDirective {
   /** What to display as a placeholder and autofill if selected */

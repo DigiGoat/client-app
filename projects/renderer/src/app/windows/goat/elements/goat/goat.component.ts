@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
+import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
@@ -9,12 +9,14 @@ import { WindowService } from '../../../../services/window/window.service';
 @Component({
   selector: 'app-goat',
   templateUrl: './goat.component.html',
-  styleUrl: './goat.component.scss'
+  styleUrl: './goat.component.scss',
+  standalone: false
 })
 export class GoatComponent implements OnInit {
   @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
+  @Input({ transform: booleanAttribute }) related = false;
   constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
@@ -54,7 +56,7 @@ export class GoatComponent implements OnInit {
     } else {
       shown = true;
     }
-    await Promise.all([this.syncDetails()]);
+    await Promise.all([this.syncDetails(), this.syncLA()]);
     if (this.dropdown.nativeElement.classList.contains('show')) {
       if (!shown) {
         this.dropdownButton.nativeElement.click();
@@ -68,12 +70,24 @@ export class GoatComponent implements OnInit {
   async syncDetails() {
     this.syncingDetails = true;
     try {
-      const goat = await this.adgaService.getGoat(this.goat.id!);
+      const goat = (this.related ? (await this.adgaService.getGoats([this.goat.id!]))[0] : await this.adgaService.getGoat(this.goat.id!));
       this.goat = this.diffService.softMerge(this.goat, goat);
     } catch (error) {
       await this.adgaService.handleError(error as Error, 'Error Syncing Details!');
     } finally {
       this.syncingDetails = false;
+    }
+  }
+  syncingLA = false;
+  async syncLA() {
+    this.syncingLA = true;
+    try {
+      const linear = await this.adgaService.getLinearAppraisal(this.goat.id!);
+      this.goat.linearAppraisals = linear;
+    } catch (error) {
+      await this.adgaService.handleError(error as Error, 'Error Syncing Linear Appraisal!');
+    } finally {
+      this.syncingLA = false;
     }
   }
   /* ------------------------------ Object Handlers ------------------------------*/
@@ -139,6 +153,30 @@ export class GoatComponent implements OnInit {
   }
   set tattoos(animalTattoo) {
     this.goat = { animalTattoo: animalTattoo };
+  }
+  get damId() {
+    return this.goat.damId;
+  }
+  set damId(damId) {
+    this.goat = { damId: damId };
+  }
+  get sireId() {
+    return this.goat.sireId;
+  }
+  set sireId(sireId) {
+    this.goat = { sireId: sireId };
+  }
+  get owner() {
+    return this.goat.ownerAccount?.displayName;
+  }
+  set owner(owner) {
+    this.goat = { ownerAccount: { displayName: owner } };
+  }
+  get linearAppraisals() {
+    return this.goat.linearAppraisals;
+  }
+  set linearAppraisals(linear) {
+    this.goat = { linearAppraisals: linear };
   }
   setTattooLocation(index: number, location: string) {
     const tattoos = this.goat.animalTattoo ?? [];

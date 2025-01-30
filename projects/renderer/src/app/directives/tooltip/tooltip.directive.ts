@@ -2,7 +2,8 @@ import { Directive, ElementRef, HostBinding, HostListener, Input, type AfterView
 import type { Tooltip } from 'bootstrap';
 
 @Directive({
-  selector: '[tooltip]'
+  selector: '[tooltip]',
+  standalone: false
 })
 export class TooltipDirective implements AfterViewInit, OnDestroy {
   private bsTooltip?: Tooltip;

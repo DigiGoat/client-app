@@ -1,18 +1,18 @@
 import { Component, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
+import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 
 @Component({
-  selector: 'app-buck',
-  templateUrl: './buck.component.html',
-  styleUrl: './buck.component.scss',
+  selector: 'app-related',
+  templateUrl: './related.component.html',
+  styleUrl: './related.component.scss',
   standalone: false
 })
-export class BuckComponent implements OnInit {
+export class RelatedComponent implements OnInit {
   index = -1;
-  bucks = this.goatService.bucks;
-  setter = (index: number, buck: Goat) => this.goatService.setBuck(index, buck);
+  related = this.goatService.related;
+  setter = (index: number, goat: Goat) => this.goatService.updateRelated(index, goat);
   constructor(private route: ActivatedRoute, private goatService: GoatService) {
   }
   async ngOnInit() {

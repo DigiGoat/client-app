@@ -5,7 +5,8 @@ import { ADGAService } from '../../../../services/adga/adga.service';
 @Component({
   selector: 'app-goat-lookup',
   templateUrl: './goat-lookup.component.html',
-  styleUrl: './goat-lookup.component.scss'
+  styleUrl: './goat-lookup.component.scss',
+  standalone: false
 })
 export class GoatLookupComponent {
   nameGoats?: Goat[] = [];

@@ -6,7 +6,8 @@ import { MarkedService } from '../../../services/marked/marked.service';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
-  styleUrl: './history.component.scss'
+  styleUrl: './history.component.scss',
+  standalone: false
 })
 export class HistoryComponent implements OnInit {
   constructor(private gitService: GitService, public marked: MarkedService) { }

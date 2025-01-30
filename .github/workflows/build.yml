@@ -15,7 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, windows-latest]
-        node-version: [18.x, 20.x]  # specify the Node.js versions you want to test against
+        node-version: [18.x, 20.x, 22.x]  # specify the Node.js versions you want to test against
+    env:
+      YARN_IGNORE_ENGINES: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,6 +27,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build Project (Mac)
+        if: matrix.os == 'macos-latest'
+        run: yarn package
+
+      - name: Build Project (Windows)
+        if: matrix.os == 'windows-latest'
+        run: yarn package:windows
+
+  build-prod:
+    name: Build (Production)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ vars.NODE_ENGINE }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_ENGINE }}
           cache: yarn
           cache-dependency-path: yarn.lock
 

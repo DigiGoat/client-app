@@ -1,3 +1,40 @@
+## 4.1.2-beta.3
+* Updated Electron Forge to v7.6 to comply with Electron v34
+
+## 4.1.2-beta.2
+* Updated Electron to v34
+* Updated Node.js to v20.11
+
+## 4.1.2-beta.1
+* A lot of behind-the-scenes changes to improve the performance & security of the app
+  * Updated Angular from v17 to v19
+  * Updated Typescript
+  * Preparing to update Node.js
+  * Preparing to update Electron
+
+## 4.1.1-beta.1
+* Fixed a bug that would cause the search results for adding a goat to be hidden
+
+## 4.1.0-beta.1
+* The kidding schedule now acceses reference goats when identifying dams and sires
+  * This currently works even if you have disabled the references page on your site, that behavior may change in the future
+
+## 4.0.0-beta.1
+* Added Support for references!
+  * This is intended for animals that are not in the herd but are related to the herd (animals you have on lease, deceased animals that still have a genetic impact on your herd, etc.)
+
+## 3.2.0-beta.2
+* Fixed a bug causing changes to be lost when saving too much at a time on Windows
+
+## 3.2.0-beta.1
+* Added Support To Sync Linear Appraisals!
+  * Currently, you can only sync appraisals from ADGA, manual entry will be added in the future
+
+## 3.1.1-beta.1
+* Redesigned the windows for editing goats
+  * It's now easier to modify the goats info without it being overidden by the next sync
+  * You can now edit the capatalization of the name and owner of related goats
+
 ## 3.1.0-beta.1
 * Added support for socials!
   * This currently includes [Facebook](https://facebook.com), [Instagram](https://instagram.com), and [Threads](https://threads.net)

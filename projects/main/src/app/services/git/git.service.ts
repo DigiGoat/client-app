@@ -1,6 +1,6 @@
 import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
-import { emptyDirSync, ensureDirSync, exists, readJSON } from 'fs-extra';
+import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-extra';
 import { join } from 'path';
 import type { SemVer } from 'semver';
 import parse from 'semver/functions/parse';
@@ -12,8 +12,18 @@ export class GitService {
   base = join(app.getPath('userData'), 'repo');
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
+  references = join(this.base, 'src/assets/resources/references.json');
   change() {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('git:change'));
+  }
+  commit(message: string | string[], files: string | string[]) {
+    const commitPath = join(app.getPath('temp'), `commit-${Date.now()}.txt`);
+    if (message instanceof Array) {
+      message[0] += '\n';
+      message = message.join('\n');
+    }
+    writeFile(commitPath, message);
+    return this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
   }
   api: BackendService<GitServiceType> = {
     isRepo: async () => {
@@ -66,7 +76,7 @@ export class GitService {
     },
     commitDoes: async (_event, message) => {
       try {
-        await this.git.commit(message, this.does);
+        await this.commit(message, this.does);
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -78,7 +88,19 @@ export class GitService {
     },
     commitBucks: async (_event, message) => {
       try {
-        await this.git.commit(message, this.bucks);
+        await this.commit(message, this.bucks);
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
+    },
+    commitReferences: async (_event, message) => {
+      try {
+        await this.commit(message, this.references);
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -90,7 +112,7 @@ export class GitService {
     },
     commitConfig: async (_event, message) => {
       try {
-        await this.git.commit(message, 'src/assets/resources/config.json');
+        await this.commit(message, 'src/assets/resources/config.json');
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -102,7 +124,7 @@ export class GitService {
     },
     commitRelated: async (_event, message) => {
       try {
-        await this.git.commit(message, 'src/assets/resources/related.json');
+        await this.commit(message, 'src/assets/resources/related.json');
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -114,7 +136,7 @@ export class GitService {
     },
     commitKiddingSchedule: async (_event, message) => {
       try {
-        await this.git.commit(message, 'src/assets/resources/kidding-schedule.json');
+        await this.commit(message, 'src/assets/resources/kidding-schedule.json');
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -129,6 +151,7 @@ export class GitService {
       this.change();
     },
     reset: async () => {
+      await this.git.clean(CleanOptions.FORCE);
       await this.git.reset(ResetMode.HARD, ['@{upstream}']);
       this.change();
       this.checkForUpdates();
@@ -172,7 +195,7 @@ export class GitService {
       }
       paths.push('src/assets/images/map.json');
       try {
-        await this.git.commit(message, paths);
+        await this.commit(message, paths);
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {
@@ -185,7 +208,7 @@ export class GitService {
     commitFavicon: async () => {
       try {
         await this.git.add(join(this.base, 'src/assets/icons/'));
-        await this.git.commit('Updated favicon', 'src/assets/icons/');
+        await this.commit('Updated favicon', 'src/assets/icons/');
         this.change();
       } catch (err) {
         if ((err as Error).message.includes('nothing to commit')) {

@@ -6,7 +6,8 @@ import { WindowService } from '../../services/window/window.service';
 @Component({
   selector: 'app-setup',
   templateUrl: './setup.component.html',
-  styleUrl: './setup.component.scss'
+  styleUrl: './setup.component.scss',
+  standalone: false
 })
 export class SetupComponent implements OnInit {
   id = '';
