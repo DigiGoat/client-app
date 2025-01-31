@@ -1,3 +1,12 @@
+## 4.1.5-beta.1
+* Added the ability to customize the text at the top of the kidding schedule
+
+## 4.1.4-beta.1
+* Fixed a bug that caused related goats not to be fetched for references (currently currently fetches related goats for references even if the references page is disabled)
+
+## 4.1.3-beta.1
+* Updated the history page so that it will automatically refresh when changes are detected
+
 ## 4.1.2-beta.3
 * Updated Electron Forge to v7.6 to comply with Electron v34
 
