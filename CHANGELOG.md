@@ -1,4 +1,7 @@
 ## 4.1.5-beta.1
+* Fixed a styling issue when scrolling through the kidding schedule
+
+## 4.1.5-beta.1
 * Added the ability to customize the text at the top of the kidding schedule
 
 ## 4.1.4-beta.1
