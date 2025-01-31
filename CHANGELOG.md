@@ -1,3 +1,6 @@
+## 4.1.4-beta.1
+* Fixed a bug that caused related goats not to be fetched for references (currently currently fetches related goats for references even if the references page is disabled)
+
 ## 4.1.3-beta.1
 * Updated the history page so that it will automatically refresh when changes are detected
 
