@@ -2,10 +2,10 @@ import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, ViewChild, type ElementRef } from '@angular/core';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
+import { ConfigService } from '../../../services/config/config.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
-import { ConfigService } from '../../../services/config/config.service';
 
 @Component({
   selector: 'app-goats',
@@ -165,7 +165,7 @@ export class GoatsComponent {
 
       const ids: number[] = [];
       const goats: Goat[] = [];
-      (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks()])).forEach(_goats => goats.push(..._goats));
+      (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks(), this.goatService.getReferences()])).forEach(_goats => goats.push(..._goats));
       for (const goat of goats) {
         if (goat.damId && !ids.includes(goat.damId)) {
           ids.push(goat.damId);

@@ -20,14 +20,7 @@ export class KiddingScheduleComponent implements OnInit {
   public breedings: Kidding[] = [];
   public does: Goat[] = [];
   public bucks: Goat[] = [];
-  constructor(private configService: ConfigService, private diffService: DiffService, private goatService: GoatService, private cdr: ChangeDetectorRef, private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
-  get enabled() {
-    return this.configService.kiddingSchedule;
-  }
-  set enabled(enabled: boolean) {
-    this.configService.kiddingSchedule = enabled;
-    this.configService.saveChanges();
-  }
+  constructor(public configService: ConfigService, private diffService: DiffService, private goatService: GoatService, private cdr: ChangeDetectorRef, private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
   async ngOnInit() {
     this.breedings = await this.goatService.getKiddingSchedule();
     this.goatService.kiddingSchedule.subscribe({
@@ -90,11 +83,26 @@ export class KiddingScheduleComponent implements OnInit {
     return param in this.diffService.diff(this.oldBreedings[index], this.breedings[index]);
   }
   getChanges() {
-    const changes = JSON.stringify(this.oldBreedings) !== JSON.stringify(this.breedings);
+    const changes = this.getKiddingScheduleChanges() || this.getConfigChanges();
     this.windowService.setUnsavedChanges(changes);
     return changes;
   }
+
+  getKiddingScheduleChanges() {
+    const changes = JSON.stringify(this.oldBreedings) !== JSON.stringify(this.breedings);
+    return changes;
+  }
+  getConfigChanges() {
+    const changes = this.configService.unsavedChanges;
+    return changes;
+  }
   async saveChanges() {
+    if (this.configService.unsavedChanges) {
+      await this.configService.saveChanges();
+    }
+    if (!this.getKiddingScheduleChanges()) {
+      return;
+    }
     const diffMessage = ['Updated Kidding Schedule'];
     const breedingLength = this.breedings.length;
     const oldBreedingLength = this.oldBreedings.length;

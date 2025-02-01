@@ -4,9 +4,19 @@
   <span
     class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
     style="min-height: auto; z-index: 1 !important;">
-    <label class="form-check-label" for="kiddingScheduleSwitch">Kidding Schedule: <span class="fw-bold text-success"
-        *ngIf="enabled">Enabled</span><span class="fw-bold text-danger" *ngIf="!enabled">Disabled</span></label>
-    <input class="form-check-input ms-1" type="checkbox" role="switch" id="kiddingScheduleSwitch" [(ngModel)]="enabled">
+    <label class="form-check-label" for="kiddingScheduleSwitch"><span [class.unsaved]="configService.isDirty('kiddingSchedule')">Kidding
+        Schedule: </span>
+      <span class="fw-bold text-success" *ngIf="configService.kiddingSchedule">Enabled</span><span class="fw-bold text-danger"
+        *ngIf="!configService.kiddingSchedule">Disabled</span></label>
+    <input class="form-check-input ms-1" type="checkbox" role="switch" id="kiddingScheduleSwitch"
+      [(ngModel)]="configService.kiddingSchedule">
+  </span>
+  <span class="list-group-item color-scheme-tertiary d-flex justify-content-center border-0" style="min-height: auto;">
+    <div class="input-group" [class.unsaved]="configService.isDirty('kiddingScheduleDescription')">
+      <span class="input-group-text">Kidding Schedule Description:</span>
+      <textarea type="text" class="form-control" [(ngModel)]="configService.kiddingScheduleDescription" markdown
+        suggestion="Click on a Goat Below For More Info"></textarea>
+    </div>
   </span>
   <span *ngIf="!breedings.length" class="list-group-item color-scheme-tertiary text-center">No Schedule Found!</span>
   <div *ngFor="let breeding of breedings; index as i" class="list-group-item row row-cols-3 color-scheme-tertiary justify-content-around"
