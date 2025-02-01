@@ -9,6 +9,7 @@ export class GoatService {
   does = join(this.base, 'src/assets/resources/does.json');
   bucks = join(this.base, 'src/assets/resources/bucks.json');
   references = join(this.base, 'src/assets/resources/references.json');
+  forSale = join(this.base, 'src/assets/resources/for-sale.json');
   related = join(this.base, 'src/assets/resources/related.json');
   kiddingSchedule = join(this.base, 'src/assets/resources/kidding-schedule.json');
   async getDoes() {
@@ -35,6 +36,15 @@ export class GoatService {
       return await readJson(this.references);
     } catch (err) {
       console.warn('Error Reading References:', err);
+      return [];
+    }
+  }
+  async getForSale() {
+    try {
+      this.watchForSale();
+      return await readJson(this.forSale);
+    } catch (err) {
+      console.warn('Error Reading For Sale:', err);
       return [];
     }
   }
@@ -74,6 +84,12 @@ export class GoatService {
     },
     setReferences: async (_event, references) => {
       await writeJSON(this.references, references, { spaces: 2 });
+    },
+    getForSale: async () => {
+      return await this.getForSale();
+    },
+    setForSale: async (_event, forSale) => {
+      await writeJSON(this.forSale, forSale, { spaces: 2 });
     },
     getRelated: async () => {
       return await this.getRelated();
@@ -178,6 +194,37 @@ export class GoatService {
       this.watchingReferences = false;
       if (await exists(join(this.base, '.git'))) {
         this.watchReferences();
+      }
+    });
+  }
+  watchingForSale = false;
+  watchForSale() {
+    if (this.watchingForSale || !existsSync(this.forSale)) return;
+    ensureFileSync(this.forSale);
+    this.watchingForSale = true;
+    watch(this.forSale, async (event) => {
+      try {
+        const windows = BrowserWindow.getAllWindows();
+        const newForSale = await this.getForSale();
+        console.log('For Sale updated', event, newForSale);
+        windows.forEach(window => {
+          if (!window.isDestroyed()) {
+            window.webContents.send('goat:forSaleChange', newForSale);
+          }
+        });
+      } catch (err) {
+        console.warn('Error Updating Goats For Sale:', err);
+      }
+      if (event === 'rename') {
+        this.watchingForSale = false;
+        if (await exists(join(this.base, '.git'))) {
+          this.watchForSale();
+        }
+      }
+    }).on('error', async () => {
+      this.watchingForSale = false;
+      if (await exists(join(this.base, '.git'))) {
+        this.watchForSale();
       }
     });
   }

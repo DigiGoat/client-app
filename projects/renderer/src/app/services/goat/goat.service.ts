@@ -166,6 +166,54 @@ export class GoatService {
     await window.electron.goat.setReferences(references);
     await this.gitService.commitReferences([`Moved ${reference.nickname || reference.name || reference.normalizeId} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
+  forSale = new Observable<Goat[]>(observer => {
+    window.electron.goat.getForSale().then(forSale => observer.next(forSale));
+    window.electron.goat.onForSaleChange(forSale => observer.next(forSale));
+  });
+  getForSale = window.electron.goat.getForSale;
+  async setForSale(oldForSale: Goat[], newForSale: Goat[]) {
+    const diffMessage = ['Synced Goats For Sale'];
+    for (let i = 0; i < oldForSale.length; i++) {
+      const diff = this.diffService.commitMsg(oldForSale[i], newForSale[i]).map(msg => `${this.diffService.spaces}${msg}`);
+      if (diff.length) {
+        diffMessage.push(`Updated ${newForSale[i].nickname || newForSale[i].name || newForSale[i].normalizeId || oldForSale[i].nickname || oldForSale[i].name || oldForSale[i].normalizeId || 'Unknown'}`, ...diff);
+      }
+    }
+    for (let i = oldForSale.length; i < newForSale.length; i++) {
+      diffMessage.push(`Added ${newForSale[i].nickname || newForSale[i].name || newForSale[i].normalizeId}`, ...this.diffService.commitMsg({}, newForSale[i]).map(msg => `${this.diffService.spaces}${msg}`));
+    }
+    await window.electron.goat.setForSale(newForSale);
+    await this.gitService.commitForSale(diffMessage);
+  }
+  async writeForSale(forSale: Goat[]) {
+    await window.electron.goat.setForSale(forSale);
+  }
+  async updateForSale(index: number, goat: Goat) {
+    const forSale = await window.electron.goat.getForSale();
+    const diffMessage = this.diffService.commitMsg(forSale[index], goat);
+    forSale[index] = goat;
+    await window.electron.goat.setForSale(forSale);
+    await this.gitService.commitForSale([`Updated ${goat.nickname || goat.name || goat.normalizeId}`, ...diffMessage]);
+  }
+  async deleteForSale(index: number) {
+    const forSale = await this.getForSale();
+    const goat = forSale.splice(index, 1)[0];
+    await window.electron.goat.setForSale(forSale);
+    await this.gitService.commitForSale([`Deleted ${goat.nickname || goat.name || goat.normalizeId}`]);
+  }
+  async addForSale(goat: Goat) {
+    const forSale = await this.getForSale();
+    forSale.push(goat);
+    await window.electron.goat.setForSale(forSale);
+    await this.gitService.commitForSale([`Added ${goat.nickname || goat.name || goat.normalizeId}`, ...this.diffService.commitMsg({}, goat).map(msg => `${this.diffService.spaces}${msg}`)]);
+  }
+  async rearrangeForSale(event: CdkDragDrop<Goat[]>) {
+    const forSale = await this.getForSale();
+    moveItemInArray(forSale, event.previousIndex, event.currentIndex);
+    const goat = forSale[event.currentIndex];
+    await window.electron.goat.setForSale(forSale);
+    await this.gitService.commitForSale([`Moved ${goat.nickname || goat.name || goat.normalizeId} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+  }
   related = new Observable<Goat[]>(observer => {
     window.electron.goat.getRelated().then(related => observer.next(related));
     window.electron.goat.onRelatedChange(related => observer.next(related));
