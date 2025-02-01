@@ -11,8 +11,7 @@
     <input class="form-check-input ms-1" type="checkbox" role="switch" id="kiddingScheduleSwitch"
       [(ngModel)]="configService.kiddingSchedule">
   </span>
-  <span class="list-group-item color-scheme-tertiary d-flex justify-content-center border-0"
-    style="min-height: auto; z-index: 1 !important; ">
+  <span class="list-group-item color-scheme-tertiary d-flex justify-content-center border-0" style="min-height: auto;">
     <div class="input-group" [class.unsaved]="configService.isDirty('kiddingScheduleDescription')">
       <span class="input-group-text">Kidding Schedule Description:</span>
       <textarea type="text" class="form-control" [(ngModel)]="configService.kiddingScheduleDescription" markdown
