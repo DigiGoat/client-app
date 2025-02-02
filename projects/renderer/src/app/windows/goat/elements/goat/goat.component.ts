@@ -148,6 +148,12 @@ export class GoatComponent implements OnInit {
   set colorAndMarking(colorAndMarking) {
     this.goat = { colorAndMarking: colorAndMarking };
   }
+  get sex(): 'Male' | 'Female' | undefined {
+    return this.goat.sex;
+  }
+  set sex(sex: 'Male' | 'Female' | 'undefined') {
+    this.goat = { sex: sex === 'undefined' ? undefined : sex };
+  }
   get tattoos() {
     return this.goat.animalTattoo;
   }

@@ -95,6 +95,17 @@
       </div>
     </div>
     <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="isDirty('sex')">
+        <span class="input-group-text">Sex:</span>
+        <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!id">
+          <option value="undefined">Unspecified</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
+    </div>
+    <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('damId')">
         <span class="input-group-text">Dam's ID:</span>
         <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!id" goat-search="does">
