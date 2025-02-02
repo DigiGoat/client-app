@@ -97,14 +97,14 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('damId')">
         <span class="input-group-text">Dam's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!id">
+        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!id" goat-search="does">
       </div>
       <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('sireId')">
         <span class="input-group-text">Sire's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!id">
+        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!id" goat-search="bucks">
       </div>
       <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
     </div>
