@@ -44,6 +44,7 @@ export type Goat = Partial<{
     isPermanent: boolean;
     id: number;
   }>[];
+  pet: boolean;
 }>;
 export type GoatType = 'doe' | 'buck' | 'reference' | 'related' | 'for-sale';
 export type Kidding = Partial<{

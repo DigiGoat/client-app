@@ -17,6 +17,7 @@ export class GoatComponent implements OnInit {
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
   @Input({ transform: booleanAttribute }) related = false;
+  @Input({ transform: booleanAttribute, alias: 'for-sale' }) forSale = false;
   constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
@@ -183,6 +184,12 @@ export class GoatComponent implements OnInit {
   }
   set linearAppraisals(linear) {
     this.goat = { linearAppraisals: linear };
+  }
+  get pet(): boolean | undefined {
+    return this.goat.pet;
+  }
+  set pet(pet: 'true' | 'false' | 'undefined') {
+    this.goat = { pet: pet === 'undefined' ? undefined : pet === 'true' };
   }
   setTattooLocation(index: number, location: string) {
     const tattoos = this.goat.animalTattoo ?? [];

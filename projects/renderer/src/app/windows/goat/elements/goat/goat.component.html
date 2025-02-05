@@ -59,7 +59,7 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="id" suggestion="PD" [disabled]="!!id">
+        <input type="text" class="form-control" [(ngModel)]="id" placeholder="PD1234" [disabled]="!!id">
       </div>
       <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
     </div>
@@ -98,12 +98,23 @@
       <div class="input-group" [class.unsaved]="isDirty('sex')">
         <span class="input-group-text">Sex:</span>
         <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!id">
-          <option value="undefined">Unspecified</option>
+          <option value="undefined" *ngIf="sex === undefined">Unspecified (Female)</option>
           <option value="Male">Male</option>
-          <option value="Female">Female</option>
+          <option value="Female" *ngIf="sex !== undefined">Female</option>
         </select>
       </div>
-      <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
+      <div class="form-text">Your Goat's Gender (Defualt's to 'Female' if needed)</div>
+    </div>
+    <div class="mb-3 col" *ngIf="forSale">
+      <div class="input-group" [class.unsaved]="isDirty('pet')">
+        <span class="input-group-text">Sale Type:</span>
+        <select class="form-select" aria-label="Sale Type Select Dropdown" [(ngModel)]="pet" [disabled]="!!id">
+          <option value="undefined" *ngIf="pet === undefined">Unspecified (Registered)</option>
+          <option value="true">Pet</option>
+          <option value="false" *ngIf="pet !== undefined">Registered</option>
+        </select>
+      </div>
+      <div class="form-text">Wether or not you're selling this animal with papers (Defualt's to 'Registered' if needed)</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('damId')">

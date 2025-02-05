@@ -1,6 +1,7 @@
 ## 5.0.1-beta.1
 * Added a gender dropdown for unregistered goats
 * Added suggestions when looking up a goat's dam or sire
+* Added a dropdown for goats for sale to specify them as pets
 
 ## 5.0.0-beta.1
 * Added support for a For Sale page
