@@ -1,3 +1,6 @@
+## 5.0.2-beta.1
+* Added a fallback markdown compiler for when the GitHub API rate limit is reached or you are offline
+
 ## 5.0.1-beta.1
 * Added a gender dropdown for unregistered goats
 * Added suggestions when looking up a goat's dam or sire

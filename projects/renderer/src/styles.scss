@@ -42,7 +42,7 @@
 }
 
 .unsaved,
-.unsaved>* {
+.unsaved>*:not(i) {
   color: var(--bs-teal) !important;
   //font-style: italic !important;
 }
