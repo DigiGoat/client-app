@@ -116,6 +116,14 @@
       </div>
       <div class="form-text">Wether or not you're selling this animal with papers (Defualt's to 'Registered' if needed)</div>
     </div>
+    <div class="mb-3 col" *ngIf="forSale">
+      <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+      <div class="input-group" [class.unsaved]="isDirty('price')">
+        <span class="input-group-text">Price:</span>
+        <input type="text" class="form-control" [ngModel]="price" #priceEl (blur)="price = priceEl.value">
+      </div>
+      <div class="form-text">The Price to Display for this Goat</div>
+    </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('damId')">
         <span class="input-group-text">Dam's ID:</span>
