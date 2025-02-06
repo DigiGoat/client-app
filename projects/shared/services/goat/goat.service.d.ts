@@ -8,6 +8,9 @@ export interface GoatService {
   getReferences: () => Promise<Goat[]>;
   setReferences: (references: Goat[]) => Promise<void>;
   onReferencesChange: (callback: (references: Goat[]) => void) => void;
+  getForSale: () => Promise<Goat[]>;
+  setForSale: (forSale: Goat[]) => Promise<void>;
+  onForSaleChange: (callback: (forSale: Goat[]) => void) => void;
   getRelated: () => Promise<Goat[]>;
   setRelated: (related: Goat[]) => Promise<void>;
   onRelatedChange: (callback: (related: Goat[]) => void) => void;
@@ -41,8 +44,10 @@ export type Goat = Partial<{
     isPermanent: boolean;
     id: number;
   }>[];
+  pet: boolean;
+  price: number | string;
 }>;
-export type GoatType = 'doe' | 'buck' | 'reference' | 'related';
+export type GoatType = 'doe' | 'buck' | 'reference' | 'related' | 'for-sale';
 export type Kidding = Partial<{
   dam: string;
   sire: string;

@@ -1,3 +1,14 @@
+## 5.0.1-beta.1
+* Added a gender dropdown for unregistered goats
+* Added suggestions when looking up a goat's dam or sire
+* Added a dropdown for goats for sale to specify them as pets
+* Added the ability to specify a price for goats for sale
+* Added the ability to specify sale terms for goats for sale
+
+## 5.0.0-beta.1
+* Added support for a For Sale page
+  * TODO: Add a designated price section and sale terms popup
+
 ## 4.1.5-beta.1
 * Fixed a styling issue when scrolling through the kidding schedule
 

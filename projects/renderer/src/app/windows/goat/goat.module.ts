@@ -11,6 +11,7 @@ import { GoatComponent } from './elements/goat/goat.component';
 import { GoatRoutingModule } from './goat-routing.module';
 import { RelatedComponent } from './related/related.component';
 import { ReferenceComponent } from './reference/reference.component';
+import { ForSaleComponent } from './for-sale/for-sale.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { ReferenceComponent } from './reference/reference.component';
     BuckComponent,
     CaseInputComponent,
     RelatedComponent,
-    ReferenceComponent
+    ReferenceComponent,
+    ForSaleComponent
   ],
   imports: [
     CommonModule,

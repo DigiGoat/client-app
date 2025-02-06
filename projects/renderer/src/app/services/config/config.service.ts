@@ -183,6 +183,21 @@ export class ConfigService {
   set references(references: boolean) {
     this.config = { references: references };
   }
+  get forSale(): boolean {
+    return this.config['forSale'] as boolean ?? false;
+  }
+  set forSale(forSale: boolean) {
+    this.config = { forSale: forSale };
+  }
+  get saleTerms(): string {
+    if (this.config['saleTerms']) {
+      return this.config['saleTerms'] as string;
+    }
+    return '';
+  }
+  set saleTerms(saleTerms: string) {
+    this.config = { saleTerms: saleTerms };
+  }
   get socials(): Socials {
     if (this.config['socials']) {
       return this.config['socials'] as Socials;

@@ -14,6 +14,8 @@
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingBucks !== false"></i></button></li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncReferences()">Sync
           References <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingReferences !== false"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncForSale()">Sync For Sale
+          <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingForSale !== false"></i></button></li>
       <li tooltip="The goats used for the pedigrees of your does and bucks"><button type="button"
           class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncRelated()">Sync Related <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingRelated !== false"></i></button></li>
@@ -33,13 +35,18 @@
         [filter]="filters.buck" (rearranged)="rearrangeBucks($event)"></app-goat-list>
     </div>
     <div class="mb-3 col">
+      <h3>Related:</h3>
+      <app-basic-goat-list [goats]="related" [syncing]="syncingRelated"></app-basic-goat-list>
+    </div>
+    <div class="mb-3 col">
       <h3>References:</h3>
       <app-goat-list type="reference" [goats]="references" [syncing]="syncingReferences" (deleteIndex)="deleteReference($event)"
         (addGoat)="addReference($event)" (rearranged)="rearrangeReferences($event)" [(enabled)]="referencesEnabled"></app-goat-list>
     </div>
     <div class="mb-3 col">
-      <h3>Related:</h3>
-      <app-basic-goat-list [goats]="related" [syncing]="syncingRelated"></app-basic-goat-list>
+      <h3>For Sale:</h3>
+      <app-goat-list type="for-sale" [goats]="forSale" [syncing]="syncingForSale" (deleteIndex)="deleteForSale($event)"
+        (addGoat)="addForSale($event)" (rearranged)="rearrangeForSale($event)" [(enabled)]="forSaleEnabled"></app-goat-list>
     </div>
   </div>
 </div>
