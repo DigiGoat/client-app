@@ -3,6 +3,7 @@
 * Added suggestions when looking up a goat's dam or sire
 * Added a dropdown for goats for sale to specify them as pets
 * Added the ability to specify a price for goats for sale
+* Added the ability to specify sale terms for goats for sale
 
 ## 5.0.0-beta.1
 * Added support for a For Sale page
