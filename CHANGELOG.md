@@ -1,3 +1,32 @@
+## 5.1.0-beta.1
+* Simplified the farm names required to be configured. Instead of a menubar, home, and tab name, there is now just a full name and a short name
+
+## 5.0.2-beta.1
+* Added a fallback markdown compiler for when the GitHub API rate limit is reached or you are offline
+
+## 5.0.1-beta.1
+* Added a gender dropdown for unregistered goats
+* Added suggestions when looking up a goat's dam or sire
+* Added a dropdown for goats for sale to specify them as pets
+* Added the ability to specify a price for goats for sale
+* Added the ability to specify sale terms for goats for sale
+
+## 5.0.0-beta.1
+* Added support for a For Sale page
+  * TODO: Add a designated price section and sale terms popup
+
+## 4.1.5-beta.1
+* Fixed a styling issue when scrolling through the kidding schedule
+
+## 4.1.5-beta.1
+* Added the ability to customize the text at the top of the kidding schedule
+
+## 4.1.4-beta.1
+* Fixed a bug that caused related goats not to be fetched for references (currently currently fetches related goats for references even if the references page is disabled)
+
+## 4.1.3-beta.1
+* Updated the history page so that it will automatically refresh when changes are detected
+
 ## 4.1.2-beta.3
 * Updated Electron Forge to v7.6 to comply with Electron v34
 

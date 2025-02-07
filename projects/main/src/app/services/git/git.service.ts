@@ -110,6 +110,18 @@ export class GitService {
         }
       }
     },
+    commitForSale: async (_event, message) => {
+      try {
+        await this.commit(message, 'src/assets/resources/for-sale.json');
+        this.change();
+      } catch (err) {
+        if ((err as Error).message.includes('nothing to commit')) {
+          console.warn('Nothing to commit');
+        } else {
+          return Promise.reject(err);
+        }
+      }
+    },
     commitConfig: async (_event, message) => {
       try {
         await this.commit(message, 'src/assets/resources/config.json');

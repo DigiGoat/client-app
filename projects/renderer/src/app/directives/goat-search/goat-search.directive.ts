@@ -13,7 +13,7 @@ export class GoatSearchDirective implements OnInit {
   private list = this.document.createElement('ul');
   private input = this.el.nativeElement;
   private dropdown?: Dropdown;
-  @Input({ alias: 'goat-search' }) goats?: Goat[];
+  @Input({ alias: 'goat-search' }) goats?: Goat[] | 'does' | 'bucks';
   constructor(private el: ElementRef<HTMLInputElement>, private goatService: GoatService) { }
   async ngOnInit() {
     this.input.setAttribute('data-bs-toggle', 'dropdown');
@@ -29,8 +29,15 @@ export class GoatSearchDirective implements OnInit {
     this.input.addEventListener('focus', () => this.updateList());
     this.input.addEventListener('blur', () => this.dropdown?.hide());
   }
-  updateList() {
+  async updateList() {
     this.list.innerHTML = '';
+    if (this.goats === 'does') {
+      this.goats = [];
+      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getDoes()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Female')))()]);
+    } else if (this.goats === 'bucks') {
+      this.goats = [];
+      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getBucks()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Male')))()]);
+    }
     if (this.goats?.length) {
       const matches = this.goats.filter(doe => doe.normalizeId?.toLowerCase().includes(this.input.value.toLowerCase()));
       matches.push(...this.goats.filter(doe => doe.name?.toLowerCase().includes(this.input.value.toLowerCase())).filter(goat => !matches.includes(goat)));

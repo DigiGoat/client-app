@@ -22,13 +22,10 @@ export class SuggestionService {
   email = '';
 
   private herdName = '';
-  get homeTitle() {
+  get title() {
     return this.diffService.titleCase((this.herdName.endsWith('FARM') || !this.herdName) ? this.herdName : `${this.herdName} FARM`);
   }
-  get menubarTitle() {
-    return this.homeTitle;
-  }
-  get tabTitle() {
+  get shortTitle() {
     return this.diffService.titleCase(this.herdName.endsWith('FARM') ? this.herdName.slice(0, -5) : this.herdName);
   }
 }

@@ -2,10 +2,10 @@ import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, ViewChild, type ElementRef } from '@angular/core';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
+import { ConfigService } from '../../../services/config/config.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
-import { ConfigService } from '../../../services/config/config.service';
 
 @Component({
   selector: 'app-goats',
@@ -17,6 +17,7 @@ export class GoatsComponent {
   does = this.goatService.does;
   bucks = this.goatService.bucks;
   references = this.goatService.references;
+  forSale = this.goatService.forSale;
   related = this.goatService.related;
   filters = {
     doe: DoeFilter,
@@ -25,7 +26,7 @@ export class GoatsComponent {
   constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService, private configService: ConfigService) { }
 
   get syncing() {
-    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false;
+    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false || this.syncingForSale !== false;
   }
   syncingAll = false;
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
@@ -43,7 +44,7 @@ export class GoatsComponent {
         this.syncingBucks = true;
         const goats = await this.adgaService.getOwnedGoats();
         await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
-      })(), this.syncReferences()]);
+      })(), this.syncReferences(), this.syncForSale()]);
       await this.syncRelated();
     } catch (err) {
       await this.adgaService.handleError(err as Error, 'Sync Failed!');
@@ -156,6 +157,35 @@ export class GoatsComponent {
       this.syncingReferences = false;
     }
   }
+  syncingForSale: boolean | number = false;
+  async syncForSale() {
+    try {
+      this.syncingForSale = true;
+      const oldForSale = await this.goatService.getForSale();
+      const forSale = structuredClone(oldForSale);
+      await this.goatService.writeForSale(forSale);
+      try {
+        for (let i = 0; i < forSale.length; i++) {
+          this.syncingForSale = i;
+          forSale[i] = this.diffService.softMerge(oldForSale[i], forSale[i]);
+
+          let linearAppraisals: Goat['linearAppraisals'];
+          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(forSale[i].id!))()]);
+          forSale[i].linearAppraisals = linearAppraisals;
+        }
+        if (oldForSale.length || forSale.length) {
+          await this.goatService.setForSale(oldForSale, forSale);
+        }
+      } catch (err) {
+        await this.goatService.writeForSale(oldForSale);
+        await this.adgaService.handleError(err as Error, 'For Sale Sync Failed!');
+      }
+    } catch (err) {
+      await this.adgaService.handleError(err as Error, 'For Sale Sync Failed!');
+    } finally {
+      this.syncingForSale = false;
+    }
+  }
   syncingRelated: boolean | number = false;
   async syncRelated() {
     try {
@@ -165,7 +195,7 @@ export class GoatsComponent {
 
       const ids: number[] = [];
       const goats: Goat[] = [];
-      (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks()])).forEach(_goats => goats.push(..._goats));
+      (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks(), this.goatService.getReferences(), this.goatService.getForSale()])).forEach(_goats => goats.push(..._goats));
       for (const goat of goats) {
         if (goat.damId && !ids.includes(goat.damId)) {
           ids.push(goat.damId);
@@ -219,6 +249,9 @@ export class GoatsComponent {
   deleteReference(index: number) {
     this.goatService.deleteReference(index);
   }
+  deleteForSale(index: number) {
+    this.goatService.deleteForSale(index);
+  }
   addDoe(doe: Goat) {
     this.goatService.addDoe(doe);
   }
@@ -227,6 +260,9 @@ export class GoatsComponent {
   }
   addReference(reference: Goat) {
     this.goatService.addReference(reference);
+  }
+  addForSale(forSale: Goat) {
+    this.goatService.addForSale(forSale);
   }
   rearrangeDoes(event: CdkDragDrop<Goat[]>) {
     this.goatService.rearrangeDoes(event);
@@ -237,12 +273,22 @@ export class GoatsComponent {
   rearrangeReferences(event: CdkDragDrop<Goat[]>) {
     this.goatService.rearrangeReferences(event);
   }
+  rearrangeForSale(event: CdkDragDrop<Goat[]>) {
+    this.goatService.rearrangeForSale(event);
+  }
 
   get referencesEnabled() {
     return this.configService.references;
   }
   set referencesEnabled(enabled: boolean) {
     this.configService.references = enabled;
+    this.configService.saveChanges();
+  }
+  get forSaleEnabled() {
+    return this.configService.forSale;
+  }
+  set forSaleEnabled(enabled: boolean) {
+    this.configService.forSale = enabled;
     this.configService.saveChanges();
   }
 }

@@ -14,6 +14,8 @@ export class HistoryComponent implements OnInit {
   history?: History;
   async ngOnInit() {
     this.history = await this.gitService.getHistory();
+
+    this.gitService.onchange = async () => this.history = await this.gitService.getHistory();
   }
   formatBody(body: string) {
     body = body.replace(/"([^"]*)"/g, (match, p1) => `<span class="unsaved">"${this.marked.parseInline(p1.replaceAll('\\n', '\n'))}"</span>`);

@@ -64,14 +64,24 @@ export class ConfigService {
       }
     };
   }
-  get homeTitle(): string {
-    if (this.config['homeTitle']) {
+  get title(): string {
+    if (this.config['title']) {
+      return this.config['title'] as string;
+    } else if (this.config['homeTitle']) {
       return this.config['homeTitle'] as string;
+    } else if (this.config['menubarTitle']) {
+      return this.config['menubarTitle'] as string;
     }
     return '';
   }
-  set homeTitle(homeTitle: string) {
-    this.config = { homeTitle: homeTitle };
+  set title(title: string) {
+    if ('homeTitle' in this._config) {
+      delete this._config['homeTitle'];
+    }
+    if ('menubarTitle' in this._config) {
+      delete this._config['menubarTitle'];
+    }
+    this.config = { title: title };
   }
   get owner(): string {
     if (this.config['owner']) {
@@ -100,23 +110,19 @@ export class ConfigService {
   set homeDescription(homeDescription: string) {
     this.config = { homeDescription: homeDescription };
   }
-  get menubarTitle(): string {
-    if (this.config['menubarTitle']) {
-      return this.config['menubarTitle'] as string;
-    }
-    return '';
-  }
-  set menubarTitle(menubarTitle: string) {
-    this.config = { menubarTitle: menubarTitle };
-  }
-  get tabTitle(): string {
-    if (this.config['tabTitle']) {
+  get shortTitle(): string {
+    if (this.config['shortTitle']) {
+      return this.config['shortTitle'] as string;
+    } else if (this.config['tabTitle']) {
       return this.config['tabTitle'] as string;
     }
     return '';
   }
-  set tabTitle(tabTitle: string) {
-    this.config = { tabTitle: tabTitle };
+  set shortTitle(shortTitle: string) {
+    if ('tabTitle' in this._config) {
+      delete this._config['tabTitle'];
+    }
+    this.config = { shortTitle: shortTitle };
   }
   get link(): string {
     if (this.config['link']) {
@@ -168,11 +174,35 @@ export class ConfigService {
   set kiddingSchedule(kiddingSchedule: boolean) {
     this.config = { kiddingSchedule: kiddingSchedule };
   }
+  get kiddingScheduleDescription(): string {
+    if (this.config['kiddingScheduleDescription']) {
+      return this.config['kiddingScheduleDescription'] as string;
+    }
+    return '';
+  }
+  set kiddingScheduleDescription(kiddingScheduleDescription: string) {
+    this.config = { kiddingScheduleDescription: kiddingScheduleDescription };
+  }
   get references(): boolean {
     return this.config['references'] as boolean ?? false;
   }
   set references(references: boolean) {
     this.config = { references: references };
+  }
+  get forSale(): boolean {
+    return this.config['forSale'] as boolean ?? false;
+  }
+  set forSale(forSale: boolean) {
+    this.config = { forSale: forSale };
+  }
+  get saleTerms(): string {
+    if (this.config['saleTerms']) {
+      return this.config['saleTerms'] as string;
+    }
+    return '';
+  }
+  set saleTerms(saleTerms: string) {
+    this.config = { saleTerms: saleTerms };
   }
   get socials(): Socials {
     if (this.config['socials']) {
