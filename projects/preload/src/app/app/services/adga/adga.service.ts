@@ -14,4 +14,5 @@ export const ADGAService: ADGAServiceType = {
   blacklistOwnedGoat: (id) => ipcRenderer.invoke('adga:blacklistOwnedGoat', id),
   getBlacklist: () => ipcRenderer.invoke('adga:getBlacklist'),
   getLinearAppraisal: (id) => ipcRenderer.invoke('adga:getLinearAppraisal', id),
+  getAwards: (id) => ipcRenderer.invoke('adga:getAwards', id),
 };

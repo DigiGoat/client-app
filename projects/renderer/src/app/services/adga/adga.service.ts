@@ -84,4 +84,8 @@ export class ADGAService {
     */
     return linearAppraisal.map(({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }) => ({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }));
   }
+  async getAwards(id: number): Promise<Goat['awards']> {
+    const awards = await window.electron.adga.getAwards(id);
+    return awards.map(({ awardCode, awardDescription, awardYear, awardCount }) => ({ awardCode, awardDescription: this.diffService.titleCase(awardDescription), awardYear, awardCount }));//.filter(award => !(award.awardCode.includes('CH') || award.awardCode.includes('SG')));
+  }
 }

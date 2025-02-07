@@ -46,6 +46,12 @@ export type Goat = Partial<{
   }>[];
   pet: boolean;
   price: number | string;
+  awards: Partial<{
+    awardCode: string;
+    awardDescription: string;
+    awardYear: number;
+    awardCount: number;
+  }>[];
 }>;
 export type GoatType = 'doe' | 'buck' | 'reference' | 'related' | 'for-sale';
 export type Kidding = Partial<{
