@@ -4,23 +4,16 @@
 <div class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('homeTitle')">
-        <span class="input-group-text">Home Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.homeTitle" [suggestion]="suggestionService.homeTitle">
+      <div class="input-group" [class.unsaved]="configService.isDirty('title')">
+        <span class="input-group-text">Farm Name:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.title" [suggestion]="suggestionService.title">
       </div>
-      <div class="form-text">Your Farm's Name To Be Displayed On The Home Page</div>
+      <div class="form-text">Your Farm's Name To Be Displayed On The Home Page and in the Menubar</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('menubarTitle')">
-        <span class="input-group-text">Menubar Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.menubarTitle" [suggestion]="suggestionService.menubarTitle">
-      </div>
-      <div class="form-text">Your Farm's Name To Be Displayed In The Menubar</div>
-    </div>
-    <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('tabTitle')">
-        <span class="input-group-text">Tab Title:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.tabTitle" [suggestion]="suggestionService.tabTitle">
+      <div class="input-group" [class.unsaved]="configService.isDirty('shortTitle')">
+        <span class="input-group-text">Short Farm Name:</span>
+        <input type="text" class="form-control" [(ngModel)]="configService.shortTitle" [suggestion]="suggestionService.shortTitle">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
     </div>
