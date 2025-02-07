@@ -172,6 +172,17 @@ export class ADGAService {
         return this.handleError(err);
       }
     },
+    getAwards: async (_event, id) => {
+      if (!this.adga) {
+        return this.noADGAMessage;
+      }
+      try {
+        return (await this.adga.getAwards(id)).items;
+      } catch (err) {
+        console.warn('Error Fetching Awards:', err);
+        return this.handleError(err);
+      }
+    },
   };
   constructor() {
     const init = () => {

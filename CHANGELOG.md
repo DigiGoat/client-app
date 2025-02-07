@@ -1,3 +1,6 @@
+## 5.2.0-beta.1
+* Added support for Awards!
+
 ## 5.1.0-beta.1
 * Simplified the farm names required to be configured. Instead of a menubar, home, and tab name, there is now just a full name and a short name
 

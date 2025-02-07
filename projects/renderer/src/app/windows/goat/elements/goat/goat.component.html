@@ -14,6 +14,8 @@
           Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLA" (click)="syncLA()">Sync LA <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingLA"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingAwards" (click)="syncAwards()">Sync
+          Awards <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button></li>
       <!--
     <li><button type="button" class="dropdown-item" (click)="syncShows()" [disabled]="syncing">Sync Shows <i
           class="bi bi-arrow-repeat float-end" [class.spin]="syncingShows"></i></button>
@@ -226,6 +228,41 @@
               </td>
             </tr>
           </tfoot>-->
+        </table>
+      </div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#awards"
+        aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-clipboard2-data"></i>
+      </button>
+      <div class="collapse p-3 color-scheme-secondary" id="awards">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Year</th>
+              <th scope="col">Count</th>
+              <th scope="col" tooltip="Award Code">Code</th>
+              <th scope="col" tooltip="Award Description">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!awards || !awards.length">
+              <td colspan="100" class="text-center"> No Awards Found </td>
+            </tr>
+            <tr *ngFor="let award of awards; index as i">
+              <th scope="row">{{award.awardYear}}
+              </th>
+              <td>
+                {{award.awardCount}}
+              </td>
+              <td>
+                {{award.awardCode}}
+              </td>
+              <td>
+                {{award.awardDescription}}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

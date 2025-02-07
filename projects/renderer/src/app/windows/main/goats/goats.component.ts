@@ -75,9 +75,11 @@ export class GoatsComponent {
           if (doe.id) {
             let goat: Goat;
             let linearAppraisals: Goat['linearAppraisals'];
-            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))()]);
+            let awards: Goat['awards'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))(), (async () => awards = await this.adgaService.getAwards(doe.id!))()]);
             does![i] = this.diffService.softMerge(doe, goat!);
             does![i].linearAppraisals = linearAppraisals;
+            does![i].awards = awards;
           }
         }
         if (oldDoes.length || does.length) {
@@ -108,9 +110,11 @@ export class GoatsComponent {
           if (buck.id) {
             let goat: Goat;
             let linearAppraisals: Goat['linearAppraisals'];
-            await Promise.all([(async () => goat = await this.adgaService.getGoat(buck.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck.id!))()]);
+            let awards: Goat['awards'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(buck.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck.id!))(), (async () => awards = await this.adgaService.getAwards(buck.id!))()]);
             bucks[i] = this.diffService.softMerge(buck, goat!);
             bucks[i].linearAppraisals = linearAppraisals;
+            bucks[i].awards = awards;
           }
         }
         if (oldBucks.length || bucks.length) {
@@ -139,9 +143,11 @@ export class GoatsComponent {
           if (reference.id) {
             let goat: Goat;
             let linearAppraisals: Goat['linearAppraisals'];
-            await Promise.all([(async () => goat = await this.adgaService.getGoat(reference.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference.id!))()]);
+            let awards: Goat['awards'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(reference.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference.id!))(), (async () => awards = await this.adgaService.getAwards(reference.id!))()]);
             references[i] = this.diffService.softMerge(reference, goat!);
             references[i].linearAppraisals = linearAppraisals;
+            references[i].awards = awards;
           }
         }
         if (oldReferences.length || references.length) {
@@ -163,15 +169,19 @@ export class GoatsComponent {
       this.syncingForSale = true;
       const oldForSale = await this.goatService.getForSale();
       const forSale = structuredClone(oldForSale);
-      await this.goatService.writeForSale(forSale);
       try {
         for (let i = 0; i < forSale.length; i++) {
           this.syncingForSale = i;
-          forSale[i] = this.diffService.softMerge(oldForSale[i], forSale[i]);
-
-          let linearAppraisals: Goat['linearAppraisals'];
-          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(forSale[i].id!))()]);
-          forSale[i].linearAppraisals = linearAppraisals;
+          const goat = forSale[i];
+          if (goat.id) {
+            let _goat: Goat;
+            let linearAppraisals: Goat['linearAppraisals'];
+            let awards: Goat['awards'];
+            await Promise.all([(async () => _goat = await this.adgaService.getGoat(goat.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(goat.id!))(), (async () => awards = await this.adgaService.getAwards(goat.id!))()]);
+            forSale[i] = this.diffService.softMerge(goat, _goat!);
+            forSale[i].linearAppraisals = linearAppraisals;
+            forSale[i].awards = awards;
+          }
         }
         if (oldForSale.length || forSale.length) {
           await this.goatService.setForSale(oldForSale, forSale);
@@ -223,8 +233,10 @@ export class GoatsComponent {
           related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
 
           let linearAppraisals: Goat['linearAppraisals'];
-          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))()]);
+          let awards: Goat['awards'];
+          await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))(), (async () => awards = await this.adgaService.getAwards(related[i].id!))()]);
           related[i].linearAppraisals = linearAppraisals;
+          related[i].awards = awards;
         }
         if (oldRelated.length || related.length) {
           await this.goatService.setRelated(oldRelated, related);
