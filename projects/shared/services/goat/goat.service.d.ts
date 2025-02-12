@@ -24,6 +24,7 @@ export type Goat = Partial<{
   description: string;
   normalizeId: string;
   dateOfBirth: string;
+  dateOfDeath: string | null;
   colorAndMarking: string;
   animalTattoo: { tattoo?: string; tattooLocation?: { name?: string; }; }[];
   id: number;

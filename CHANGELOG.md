@@ -1,3 +1,6 @@
+## 5.3.0-beta.1
+* Added Death Dates to Goats that are deceased
+
 ## 5.2.0-beta.1
 * Added support for Awards!
 * Significant improvements to the Title Case algorithm
