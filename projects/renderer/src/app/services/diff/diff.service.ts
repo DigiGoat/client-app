@@ -117,7 +117,7 @@ export class DiffService {
     for (const key in obj2) {
       if (typeof obj2[key] === 'string' && (obj2[key] as string | never)?.toLowerCase() === (obj1[key] as string | never)?.toLowerCase()) {
         continue;
-      } else if (typeof obj2[key] === 'object') {
+      } else if (typeof obj2[key] === 'object' && obj2[key] !== null) {
         obj3[key] = this.softMerge(obj1[key] ?? {}, obj2[key] ?? {}) as T[Extract<keyof T, string>];
       } else {
         obj3[key] = obj2[key];

@@ -144,6 +144,12 @@ export class GoatComponent implements OnInit {
   set dateOfBirth(dateOfBirth) {
     this.goat = { dateOfBirth: dateOfBirth };
   }
+  get dateOfDeath() {
+    return this.goat.dateOfDeath;
+  }
+  set dateOfDeath(dateOfDeath) {
+    this.goat = { dateOfDeath: dateOfDeath };
+  }
   get id() {
     return this.goat.normalizeId;
   }

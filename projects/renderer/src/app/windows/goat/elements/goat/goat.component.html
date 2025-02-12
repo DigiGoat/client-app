@@ -58,6 +58,15 @@
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
+    <div class="mb-3 col" *ngIf="!id || dateOfDeath">
+      <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+      <div class="input-group" [class.unsaved]="isDirty('dateOfDeath')">
+        <span class="input-group-text">Deceased:</span>
+        <input type="text" class="form-control" [ngModel]="dateOfDeath | longDate" #dateOfDeathEl
+          (blur)="goat = {dateOfBirth: dateOfDeathEl.value }" [disabled]="!!id">
+      </div>
+      <div class="form-text">Your Goat's Date of Death (Formatted Automatically)</div>
+    </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
