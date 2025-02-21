@@ -169,6 +169,7 @@ export class MarkdownDirective implements OnInit {
         }
         await this.gitService.commitImages(paths, ['Uploaded Images', ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
       }
+      this.el.nativeElement.dispatchEvent(new Event('input'));
       this.hideMarkdown();
     }
   }
