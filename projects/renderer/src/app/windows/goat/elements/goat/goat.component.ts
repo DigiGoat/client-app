@@ -58,7 +58,7 @@ export class GoatComponent implements OnInit {
     } else {
       shown = true;
     }
-    await Promise.all([this.syncDetails(), this.syncLA()]);
+    await Promise.all([this.syncDetails(), this.syncLA(), this.syncAwards()]);
     if (this.dropdown.nativeElement.classList.contains('show')) {
       if (!shown) {
         this.dropdownButton.nativeElement.click();
@@ -90,6 +90,18 @@ export class GoatComponent implements OnInit {
       await this.adgaService.handleError(error as Error, 'Error Syncing Linear Appraisal!');
     } finally {
       this.syncingLA = false;
+    }
+  }
+  syncingAwards = false;
+  async syncAwards() {
+    this.syncingAwards = true;
+    try {
+      const awards = await this.adgaService.getAwards(this.goat.id!);
+      this.goat.awards = awards;
+    } catch (error) {
+      await this.adgaService.handleError(error as Error, 'Error Syncing Awards!');
+    } finally {
+      this.syncingAwards = false;
     }
   }
   /* ------------------------------ Object Handlers ------------------------------*/
@@ -131,6 +143,12 @@ export class GoatComponent implements OnInit {
   }
   set dateOfBirth(dateOfBirth) {
     this.goat = { dateOfBirth: dateOfBirth };
+  }
+  get dateOfDeath() {
+    return this.goat.dateOfDeath;
+  }
+  set dateOfDeath(dateOfDeath) {
+    this.goat = { dateOfDeath: dateOfDeath };
   }
   get id() {
     return this.goat.normalizeId;
@@ -201,6 +219,12 @@ export class GoatComponent implements OnInit {
   }
   set price(price) {
     this.goat = { price: price };
+  }
+  get awards() {
+    return this.goat.awards;
+  }
+  set awards(awards) {
+    this.goat = { awards: awards };
   }
   setTattooLocation(index: number, location: string) {
     const tattoos = this.goat.animalTattoo ?? [];

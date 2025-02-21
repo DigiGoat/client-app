@@ -24,6 +24,7 @@ export type Goat = Partial<{
   description: string;
   normalizeId: string;
   dateOfBirth: string;
+  dateOfDeath: string | null;
   colorAndMarking: string;
   animalTattoo: { tattoo?: string; tattooLocation?: { name?: string; }; }[];
   id: number;
@@ -46,6 +47,12 @@ export type Goat = Partial<{
   }>[];
   pet: boolean;
   price: number | string;
+  awards: Partial<{
+    awardCode: string;
+    awardDescription: string;
+    awardYear: number;
+    awardCount: number;
+  }>[];
 }>;
 export type GoatType = 'doe' | 'buck' | 'reference' | 'related' | 'for-sale';
 export type Kidding = Partial<{

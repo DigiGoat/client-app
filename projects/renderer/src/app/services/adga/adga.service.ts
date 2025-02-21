@@ -45,9 +45,9 @@ export class ADGAService {
   async getGoats(ids: number[]) {
     return (await window.electron.adga.getGoats(ids)).items.map(goat => this.parseGoat(goat));
   }
-  private parseGoat({ nickname, name, description, dateOfBirth, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId, ownerAccount }: Goat): Goat {
+  private parseGoat({ nickname, name, description, dateOfBirth, dateOfDeath, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId, ownerAccount }: Goat): Goat {
     const parsedGoat: Goat = {
-      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, normalizeId, id, sex, damId, sireId, ownerAccount: { displayName: this.diffService.titleCase(ownerAccount?.displayName ?? '') }, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
+      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, dateOfDeath, normalizeId, id, sex, damId, sireId, ownerAccount: { displayName: this.diffService.titleCase(ownerAccount?.displayName ?? '') }, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
     };
     Object.keys(parsedGoat).forEach(key => {
       if ((parsedGoat[key as keyof Goat]) === undefined) {
@@ -83,5 +83,9 @@ export class ADGAService {
     id: number;
     */
     return linearAppraisal.map(({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }) => ({ lactationNumber, appraisalDate, generalAppearance, dairyStrength, bodyCapacity, mammarySystem, finalScore, isPermanent, id }));
+  }
+  async getAwards(id: number): Promise<Goat['awards']> {
+    const awards = await window.electron.adga.getAwards(id);
+    return awards.map(({ awardCode, awardDescription, awardYear, awardCount }) => ({ awardCode, awardDescription: this.diffService.titleCase(awardDescription), awardYear, awardCount }));//.filter(award => !(award.awardCode.includes('CH') || award.awardCode.includes('SG')));
   }
 }

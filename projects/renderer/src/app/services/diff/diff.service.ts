@@ -103,9 +103,12 @@ export class DiffService {
     }
   }
   titleCase(str: string) {
-    str = str.toLowerCase();
-    str = str.split(' ').map(str => str.split(',').map(_str => _str.split('/').map(__str => __str.split('-').map(___str => ___str.split('.').map(word => this.parseCase(word)).join('.')).join('-')).join('/')).join(',')).join(' ');
-    return str;
+    const dividers = /([^a-zA-Z])/;
+    const parts = str.split(dividers);
+    for (let i = 0; i < parts.length; i += 2) {
+      parts[i] = this.parseCase(parts[i]);
+    }
+    return parts.join('');
   }
   softMerge<T extends Record<string, unknown>>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
     obj1 = structuredClone(obj1 ?? {});
@@ -114,7 +117,7 @@ export class DiffService {
     for (const key in obj2) {
       if (typeof obj2[key] === 'string' && (obj2[key] as string | never)?.toLowerCase() === (obj1[key] as string | never)?.toLowerCase()) {
         continue;
-      } else if (typeof obj2[key] === 'object') {
+      } else if (typeof obj2[key] === 'object' && obj2[key] !== null) {
         obj3[key] = this.softMerge(obj1[key] ?? {}, obj2[key] ?? {}) as T[Extract<keyof T, string>];
       } else {
         obj3[key] = obj2[key];
