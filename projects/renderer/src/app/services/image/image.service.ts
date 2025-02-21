@@ -19,4 +19,6 @@ export class ImageService {
   readImage = window.electron.image.readImage;
   stringToBase64 = window.electron.image.stringToBase64;
   getExtension = window.electron.image.getExtension;
+  uploadImages = window.electron.image.uploadImages;
+  getUploadDir = window.electron.image.getUploadDir;
 }
