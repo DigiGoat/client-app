@@ -12,4 +12,6 @@ export const ImageService: ImageServiceType = {
   readImage: (path) => ipcRenderer.invoke('image:readImage', path),
   stringToBase64: (string) => Buffer.from(string as string).toString('base64'),
   getExtension: (path) => ipcRenderer.invoke('image:getExtension', path),
+  uploadImages: (...images) => ipcRenderer.invoke('image:uploadImages', ...images),
+  getUploadDir: () => ipcRenderer.invoke('image:getUploadDir')
 };

@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
-import { ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
+import { app, BrowserWindow, protocol } from 'electron';
+import { net } from 'electron/main';
+import { copyFile, ensureDir, ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
 import { extname, join } from 'path';
 import { ImageService as ImageServiceType, type ImageMap } from '../../../../../shared/services/image/image.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -7,6 +8,7 @@ import type { BackendService } from '../../../../../shared/shared.module';
 export class ImageService {
   base = join(app.getPath('userData'), 'repo');
   imageMap = join(this.base, 'src/assets/images/map.json');
+  uploadDir = join(this.base, 'src/assets/images/uploads');
   async getImageMap(): Promise<ImageMap> {
     try {
       this.watchImages();
@@ -60,6 +62,23 @@ export class ImageService {
     },
     getExtension: async (_event, path) => {
       return extname(path);
+    },
+    uploadImages: async (_event, ...images) => {
+      await ensureDir(this.uploadDir);
+      let i = 0;
+      const timestamp = Date.now();
+      const paths = [];
+      for (const image of images) {
+        const name = `${timestamp}-${i}${extname(image)}`;
+        await copyFile(image, join(this.uploadDir, name));
+        paths.push('uploads/' + name);
+        i++;
+      }
+      return paths;
+    },
+    getUploadDir: async () => {
+      await ensureDir(this.uploadDir);
+      return this.uploadDir;
     }
   };
   watchingImages = false;
@@ -95,5 +114,14 @@ export class ImageService {
   }
   constructor() {
     this.watchImages();
+
+    app.once('ready', () => {
+      protocol.handle('image', req => {
+        const path = req.url.replace('image:', '');
+        const image = join(this.base, 'src', path);
+        console.log('image:', image);
+        return net.fetch(`file://${image}`);
+      });
+    });
   }
 }

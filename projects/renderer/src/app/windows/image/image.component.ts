@@ -33,7 +33,7 @@ export class ImageComponent implements OnInit {
   }
 
   async uploadImage() {
-    const images = await this.dialogService.showOpenDialog({ properties: ['openFile', 'multiSelections'], filters: [{ name: 'Images', extensions: ['apng', 'png', 'avif', 'gif', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'svg', 'webp', 'bmp', 'iso', 'cur', 'tif', 'tiff'] }, { name: 'All Files', extensions: ['*'] }] });
+    const images = await this.dialogService.showOpenDialog({ properties: ['openFile', 'multiSelections'], filters: [this.dialogService.FILTERS.IMAGES, this.dialogService.FILTERS.ALL] });
     const map = await this.imageService.getImageMap();
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
     const paths: string[] = [];
