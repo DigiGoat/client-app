@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
+import { PreviewService } from '../../services/preview/preview.service';
 import { WindowService } from '../../services/window/window.service';
 
 @Component({
@@ -12,7 +13,7 @@ import { WindowService } from '../../services/window/window.service';
 })
 export class MainComponent implements OnInit {
   changes = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService) { }
+  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService) { }
 
   async ngOnInit() {
     this.changes = (await this.gitService.getStatus()).ahead;
@@ -43,6 +44,8 @@ export class MainComponent implements OnInit {
         }
       }
     };
+    this.previewService.onchange = () => this.updatePreview();
+    this.updatePreview();
   }
   publishing = false;
   publishProgress = signal(0);
@@ -74,5 +77,24 @@ export class MainComponent implements OnInit {
       await this.gitService.reset();
       await this.windowService.refreshMain();
     }
+  }
+
+  previewStatus: 'loading' | 'active' | 'inactive' = 'inactive';
+  async togglePreview() {
+    switch (this.previewStatus) {
+      case 'active':
+        await this.previewService.stopPreview();
+        break;
+      case 'inactive':
+        await this.previewService.startPreview();
+        break;
+      case 'loading':
+        this.previewService.stopPreview();
+        break;
+    }
+  }
+  async updatePreview() {
+    this.previewStatus = await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : 'loading') : 'inactive';
+    this.cdr.detectChanges();
   }
 }

@@ -15,7 +15,7 @@ export class AppModule {
     const template: MenuItemConstructorOptions[] = [
       { role: 'fileMenu' },
       { role: 'editMenu' },
-      /*app.isPackaged ? {
+      (app.isPackaged && !app.getVersion().includes('beta')) ? {
         label: 'View',
         submenu: [
           { role: 'resetZoom' },
@@ -24,7 +24,7 @@ export class AppModule {
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]
-      } : */{ role: 'viewMenu' },
+      } : { role: 'viewMenu' },
       { role: 'windowMenu' },
       {
         role: 'help',

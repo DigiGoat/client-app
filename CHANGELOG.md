@@ -1,3 +1,6 @@
+## 5.3.2-beta.1
+* Added Support for the Live Preview!
+
 ## 5.3.1-beta.3
 * Fixed a bug that would cause images to sometimes not be inserted correctly on Windows
 
