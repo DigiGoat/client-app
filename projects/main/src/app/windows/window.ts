@@ -10,7 +10,7 @@ export class Window {
       backgroundColor: 'hsl(230, 100%, 10%)',
       useContentSize: true,
       webPreferences: {
-        preload: join(this.base, 'preload/bundle.js')
+        preload: join(this.base, 'preload/bundle.js'),
       },
       ...options
     });
