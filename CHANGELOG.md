@@ -1,3 +1,13 @@
+## 5.3.1-beta.3
+* Fixed a bug that would cause images to sometimes not be inserted correctly on Windows
+
+## 5.3.1-beta.2
+* Fixed a bug that would cause images added to not show up as unsaved changes
+
+## 5.3.1-beta.1
+* Added the ability to upload images! This is currently supported on the homepage and in the sale terms popup
+  * Let me know if you would like this feature added to other areas of the website
+
 ## 5.3.0-beta.1
 * Added Death Dates to Goats that are deceased
 

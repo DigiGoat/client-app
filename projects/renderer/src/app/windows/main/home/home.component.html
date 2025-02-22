@@ -34,14 +34,14 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
         <span class="input-group-text">Homepage Content:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" markdown></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" markdown markdown-images></textarea>
       </div>
       <div class="form-text">The Content To Be Displayed On The Homepage</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('saleTerms')">
         <span class="input-group-text">Sale Terms & Pricing:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="configService.saleTerms" markdown></textarea>
+        <textarea type="text" class="form-control" [(ngModel)]="configService.saleTerms" markdown markdown-images></textarea>
       </div>
       <div class="form-text">The Content To Be In The Sale Terms & Pricing Popup</div>
     </div>

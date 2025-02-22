@@ -9,6 +9,8 @@ export interface ImageService {
   readImage: (path: string) => Promise<string>;
   stringToBase64: (string: string | ArrayBuffer) => string;
   getExtension: (path: string) => Promise<string>;
+  uploadImages: (...images: string[]) => Promise<string[]>;
+  getUploadDir: () => Promise<string>;
 }
 export type Image = { file: string, alt?: string; };
 export type ImageMap = { [directory: string]: Image[]; };
