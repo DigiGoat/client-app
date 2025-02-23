@@ -77,7 +77,12 @@ export class PreviewWindow {
       await this.checkYarn();
       await this.installDependencies();
 
-      this.server = spawn('yarn', ['start'], this.spawnOptions);
+      console.log('Starting server');
+
+      this.server = spawn('yarn', ['start'], {
+        shell: process.platform === 'win32',
+        ...this.spawnOptions
+      });
 
       this.server.stdout.on('data', data => {
         console.log('>', data.toString());
@@ -99,6 +104,11 @@ export class PreviewWindow {
       });
       this.server.on('exit', () => {
         console.log('Server exited');
+        this.window?.close();
+      });
+      this.server.on('error', error => {
+        console.error('Server error:', error);
+        dialog.showErrorBox('Failed To Start Preview:', error.message);
         this.window?.close();
       });
     } catch (error) {
