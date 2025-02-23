@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit } 
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { PreviewService } from '../../services/preview/preview.service';
+import { StdioService } from '../../services/stdio/stdio.service';
 import { WindowService } from '../../services/window/window.service';
 
 @Component({
@@ -13,9 +14,11 @@ import { WindowService } from '../../services/window/window.service';
 })
 export class MainComponent implements OnInit {
   changes = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService) { }
+  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService, private stdioService: StdioService) {
+  }
 
   async ngOnInit() {
+    this.stdioService.pipeConsole();
     this.changes = (await this.gitService.getStatus()).ahead;
     this.gitService.onchange = async () => {
       this.changes = (await this.gitService.getStatus()).ahead;
