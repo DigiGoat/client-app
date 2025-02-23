@@ -1,3 +1,6 @@
+## 5.3.2-beta.2
+* Some backend changes to make it easier to debug the app on windows
+
 ## 5.3.2-beta.1
 * Added Support for the Live Preview!
 

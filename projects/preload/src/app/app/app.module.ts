@@ -9,6 +9,7 @@ import { GoatService } from './services/goat/goat.service';
 import { ImageService } from './services/image/image.service';
 import { PreviewService } from './services/preview/preview.service';
 import { RepoService } from './services/repo/repo.service';
+import { StdioService } from './services/stdio/stdio.service';
 import { WindowService } from './services/window/window.service';
 
 export class AppModule {
@@ -22,7 +23,8 @@ export class AppModule {
     repo: RepoService,
     app: AppService,
     image: ImageService,
-    preview: PreviewService
+    preview: PreviewService,
+    stdio: StdioService
   };
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);
