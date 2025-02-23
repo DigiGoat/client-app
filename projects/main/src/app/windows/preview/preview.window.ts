@@ -51,7 +51,7 @@ export class PreviewWindow {
     this.window.on('close', event => {
       if (this.server && !this.server.killed) {
         event.preventDefault();
-        this.server.kill();
+        this.server.kill('SIGINT');
       }
     });
     this.window.webContents.setWindowOpenHandler(({ url }) => {
