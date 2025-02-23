@@ -86,9 +86,10 @@ export class PreviewWindow {
 
       this.server.stdout.on('data', data => {
         console.log('>', data.toString());
-        const match = data.toString().match(/Local:\s+(http:\/\/\S+)/);
-        if (match) {
-          const url = match[1];
+        if (data.toString().includes('Local')) {
+          const match = (data.toString() as string).match(/Local:\s+(http:\/\/\S+)/);
+          //On windows, the characters get decoded real funky so you can't match the URL
+          const url = match ? match[1] : 'http://localhost:4000';
           this.window.loadURL(url);
           this.window.on('ready-to-show', () => {
             if (!this.window.isVisible()) {
