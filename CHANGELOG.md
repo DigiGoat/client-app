@@ -1,3 +1,7 @@
+## 5.3.2-beta.5
+* Added a progress bar while the live preview is loading
+* implemented a temporary fix for the live preview only working once per boot on Windows
+
 ## 5.3.2-beta.4
 * Fixed a bug causing the live preview to not work on Windows
   * The good news is it was actually working, it just didn't know it

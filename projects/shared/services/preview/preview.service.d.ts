@@ -4,4 +4,5 @@ export interface PreviewService {
   startPreview: () => Promise<void>;
   stopPreview: () => Promise<void>;
   onchange: (callback: () => void) => void;
+  onprogress: (callback: (progress: number) => void) => void;
 }

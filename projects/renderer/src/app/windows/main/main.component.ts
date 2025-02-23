@@ -47,6 +47,7 @@ export class MainComponent implements OnInit {
         }
       }
     };
+    this.previewService.onprogress = (progress) => this.previewProgress.set(progress * 100);
     this.previewService.onchange = () => this.updatePreview();
     this.updatePreview();
   }
@@ -83,6 +84,7 @@ export class MainComponent implements OnInit {
   }
 
   previewStatus: 'loading' | 'active' | 'inactive' = 'inactive';
+  previewProgress = signal(0);
   async togglePreview() {
     switch (this.previewStatus) {
       case 'active':

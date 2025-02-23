@@ -6,5 +6,6 @@ export const PreviewService: PreviewServiceType = {
   getPreviewVisible: () => ipcRenderer.invoke('preview:getPreviewVisible'),
   startPreview: () => ipcRenderer.invoke('preview:startPreview'),
   stopPreview: () => ipcRenderer.invoke('preview:stopPreview'),
-  onchange: (callback) => ipcRenderer.on('preview:change', () => callback())
+  onchange: (callback) => ipcRenderer.on('preview:change', () => callback()),
+  onprogress: (callback) => ipcRenderer.on('preview:progress', (_, progress) => callback(progress)),
 };
