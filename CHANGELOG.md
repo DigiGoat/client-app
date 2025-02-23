@@ -1,3 +1,7 @@
+## 5.3.2-beta.4
+* Fixed a bug causing the live preview to not work on Windows
+  * The good news is it was actually working, it just didn't know it
+
 ## 5.3.2-beta.3
 * Hopefully fixed the bug preventing the live preview from working on Windows
 
