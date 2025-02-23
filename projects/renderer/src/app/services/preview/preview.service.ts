@@ -15,4 +15,8 @@ export class PreviewService {
   set onchange(callback: () => void) {
     window.electron.preview.onchange(callback);
   }
+
+  set onprogress(callback: (progress: number) => void) {
+    window.electron.preview.onprogress(callback);
+  }
 }

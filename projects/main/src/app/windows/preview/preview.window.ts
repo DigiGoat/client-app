@@ -78,6 +78,7 @@ export class PreviewWindow {
       await this.installDependencies();
 
       console.log('Starting server');
+      this.notifyProgress(Progress.START_SERVER);
 
       this.server = spawn('yarn', ['start'], {
         shell: process.platform === 'win32',
@@ -86,7 +87,7 @@ export class PreviewWindow {
 
       this.server.stdout.on('data', data => {
         console.log('>', data.toString());
-        if (data.toString().includes('Local')) {
+        if (data.toString().includes('Local') || data.toString().includes('is already in use')) {
           const match = (data.toString() as string).match(/Local:\s+(http:\/\/\S+)/);
           //On windows, the characters get decoded real funky so you can't match the URL
           const url = match ? match[1] : 'http://localhost:4000';
@@ -123,6 +124,7 @@ export class PreviewWindow {
 
   async checkNode() {
     console.log('Checking node version');
+    this.notifyProgress(Progress.CHECK_NODE);
     if (!await exists(this.nodeBinary)) {
       const result = await dialog.showMessageBox({
         type: 'error',
@@ -158,6 +160,7 @@ export class PreviewWindow {
     }
   }
   async downloadNode() {
+    this.notifyProgress(Progress.DOWNLOAD_NODE);
     try {
       await rm(this.nodeBinary, { recursive: true, force: true });
 
@@ -196,6 +199,7 @@ export class PreviewWindow {
       }
 
       console.log('Unzipping node');
+      this.notifyProgress(Progress.UNPACK_NODE);
       if (PLATFORM === 'win') {
         // Use unzipper to unzip on Windows
         await (await Open.file(archive)).extract({ path: this.cache });
@@ -221,6 +225,7 @@ export class PreviewWindow {
 
   async checkYarn() {
     console.log('Checking yarn version');
+    this.notifyProgress(Progress.CHECK_YARN);
     try {
       const yarnVersion = await exec('yarn -v', this.spawnOptions);
       console.log(`Yarn found (${yarnVersion})`);
@@ -230,6 +235,7 @@ export class PreviewWindow {
   }
 
   async enableYarn() {
+    this.notifyProgress(Progress.ENABLE_YARN);
     try {
       console.log('Enabling yarn');
       await exec('corepack enable yarn', this.spawnOptions);
@@ -241,6 +247,7 @@ export class PreviewWindow {
     }
   }
   async installDependencies() {
+    this.notifyProgress(Progress.INSTALL_DEPENDENCIES);
     try {
       console.log('Installing dependencies');
       await exec('yarn install --prefer-offline', this.spawnOptions);
@@ -254,6 +261,21 @@ export class PreviewWindow {
   notifyChanges() {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('preview:change'));
   }
+  notifyProgress(progress: Progress) {
+    BrowserWindow.getAllWindows().forEach(window => window.webContents.send('preview:progress', progress / Progress.DONE));
+  }
+}
+enum Progress {
+  NONE,
+  CHECK_NODE,
+  DOWNLOAD_NODE,
+  UNPACK_NODE,
+  CHECK_YARN,
+  ENABLE_YARN,
+  INSTALL_DEPENDENCIES,
+  START_SERVER,
+  SPACER,
+  DONE
 }
 async function exec(command: string, options?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject) => {

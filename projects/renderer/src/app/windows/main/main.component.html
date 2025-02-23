@@ -43,6 +43,11 @@
             <div *ngIf="previewStatus === 'loading'" class="spinner-grow position-absolute top-50 start-50 translate-middle" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
+            <div class="progress position-absolute start-0 end-0" role="progressbar" aria-label="Animated striped example"
+              [attr.aria-valuenow]="previewProgress()" aria-valuemin="0" aria-valuemax="100" *ngIf=" previewStatus === 'loading'"
+              style="bottom: 7.5px; height: 7.5px">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" [style]="'width: '+previewProgress()+'%'"></div>
+            </div>
           </button>
         </li>
         <li class="nav-item" tooltip="Settings">
