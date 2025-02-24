@@ -27,7 +27,8 @@ export class PreviewWindow {
       COREPACK_HOME: this.corepack,
       YARN_CACHE_FOLDER: this.yarnCache,
       COREPACK_ENABLE_AUTO_PIN: '0',
-      PATH: this.nodeBin
+      PATH: this.nodeBin,
+      CI: '1', //Force windows not to use colors
     },
   };
 
@@ -50,7 +51,7 @@ export class PreviewWindow {
     });
 
     this.window.on('close', event => {
-      if (this.server && !this.server.killed) {
+      if (this.server && !this.server.stdout.closed) {
         event.preventDefault();
         if (process.platform === 'win32') {
           treeKill(this.server.pid, 'SIGINT');
@@ -109,8 +110,8 @@ export class PreviewWindow {
       this.server.stderr.on('data', data => {
         console.error('>', data.toString());
       });
-      this.server.on('exit', () => {
-        console.log('Server exited');
+      this.server.on('close', () => {
+        console.log('Server closed');
         this.window?.close();
       });
       this.server.on('error', error => {

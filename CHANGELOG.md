@@ -1,3 +1,7 @@
+## 5.3.2-beta.7
+* Updated how the app detects if the live preview is running
+  * This will fix a bug causing the window to remain open on Windows
+
 ## 5.3.2-beta.6
 * Hopefully fixed a bug causing the live preview to not quit after closing it on Windows
 
