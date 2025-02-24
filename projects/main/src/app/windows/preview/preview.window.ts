@@ -28,7 +28,6 @@ export class PreviewWindow {
       YARN_CACHE_FOLDER: this.yarnCache,
       COREPACK_ENABLE_AUTO_PIN: '0',
       PATH: this.nodeBin,
-      CI: '1', //Force windows not to use colors
     },
   };
 
@@ -278,6 +277,7 @@ enum Progress {
   UNPACK_NODE,
   CHECK_YARN,
   ENABLE_YARN,
+  CHECK_DEPENDENCIES,
   INSTALL_DEPENDENCIES,
   START_SERVER,
   SPACER,
