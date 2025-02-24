@@ -5,6 +5,7 @@ import { dialog } from 'electron/main';
 import { createWriteStream, ensureDir, exists, move, readJSON, rm } from 'fs-extra';
 import { join } from 'path';
 import { satisfies } from 'semver';
+import stripAnsi from 'strip-ansi';
 import { extract } from 'tar';
 import treeKill from 'tree-kill';
 import { Open } from 'unzipper';
@@ -27,8 +28,7 @@ export class PreviewWindow {
       COREPACK_HOME: this.corepack,
       YARN_CACHE_FOLDER: this.yarnCache,
       COREPACK_ENABLE_AUTO_PIN: '0',
-      PATH: this.nodeBin,
-      CI: '1', //Force windows not to use colors
+      PATH: this.nodeBin
     },
   };
 
@@ -92,11 +92,14 @@ export class PreviewWindow {
       });
 
       this.server.stdout.on('data', data => {
-        console.log('>', data.toString());
-        if (data.toString().includes('Local') || data.toString().includes('is already in use')) {
-          const match = (data.toString() as string).match(/Local:\s+(http:\/\/\S+)/);
+        data = stripAnsi(data.toString());
+        console.log('>', data);
+        if (data.includes('Local')) {
+          const match = data.match(/Local:\s+(http:\/\/\S+)/);
+          console.log('Match:', match);
           //On windows, the characters get decoded real funky so you can't match the URL
           const url = match ? match[1] : 'http://localhost:4000';
+          console.log('Preview URL:', url);
           this.window.loadURL(url);
           this.window.on('ready-to-show', () => {
             if (!this.window.isVisible()) {
@@ -105,6 +108,9 @@ export class PreviewWindow {
               this.window.center();
             }
           });
+        } else if (data.includes('is already in use')) {
+          console.log('Port Busy, retrying...');
+          this.server.stdin.write('\r\n');
         }
       });
       this.server.stderr.on('data', data => {
@@ -278,6 +284,7 @@ enum Progress {
   UNPACK_NODE,
   CHECK_YARN,
   ENABLE_YARN,
+  CHECK_DEPENDENCIES,
   INSTALL_DEPENDENCIES,
   START_SERVER,
   SPACER,
