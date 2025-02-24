@@ -1,3 +1,6 @@
+## 5.3.2-beta.8
+* Enhanced the parsing of the Live Preview logs on Windows
+
 ## 5.3.2-beta.7
 * Updated how the app detects if the live preview is running
   * This will fix a bug causing the window to remain open on Windows
