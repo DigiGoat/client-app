@@ -6,6 +6,7 @@ import { createWriteStream, ensureDir, exists, move, readJSON, rm } from 'fs-ext
 import { join } from 'path';
 import { satisfies } from 'semver';
 import { extract } from 'tar';
+import treeKill from 'tree-kill';
 import { Open } from 'unzipper';
 
 export class PreviewWindow {
@@ -36,7 +37,7 @@ export class PreviewWindow {
       show: false,
       backgroundColor: 'grey',
       useContentSize: true,
-      minWidth: 320,
+      minWidth: 401,
       minHeight: 500,
     });
 
@@ -51,7 +52,11 @@ export class PreviewWindow {
     this.window.on('close', event => {
       if (this.server && !this.server.killed) {
         event.preventDefault();
-        this.server.kill('SIGINT');
+        if (process.platform === 'win32') {
+          treeKill(this.server.pid, 'SIGINT');
+        } else {
+          this.server.kill('SIGINT');
+        }
       }
     });
     this.window.webContents.setWindowOpenHandler(({ url }) => {
