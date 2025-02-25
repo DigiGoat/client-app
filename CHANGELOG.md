@@ -1,3 +1,8 @@
+## 5.3.2-beta.10
+* Users are now warned if dependencies need to be installed as it takes a while to install them
+* Improved the progress bar when starting the live preview
+* Fixed a bug causing the preview not to quit on Mac
+
 ## 5.3.2-beta.9
 * Updated the Live Preview parsing to use built-in functions
 

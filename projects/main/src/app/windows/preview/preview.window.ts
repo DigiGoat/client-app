@@ -53,11 +53,7 @@ export class PreviewWindow {
     this.window.on('close', event => {
       if (this.server && !this.server.stdout.closed) {
         event.preventDefault();
-        if (process.platform === 'win32') {
-          treeKill(this.server.pid, 'SIGINT');
-        } else {
-          this.server.kill('SIGINT');
-        }
+        treeKill(this.server.pid, 'SIGINT');
       }
     });
     this.window.webContents.setWindowOpenHandler(({ url }) => {
@@ -81,7 +77,7 @@ export class PreviewWindow {
     try {
       await this.checkNode();
       await this.checkYarn();
-      await this.installDependencies();
+      await this.checkDependencies();
 
       console.log('Starting server');
       this.notifyProgress(Progress.START_SERVER);
@@ -108,7 +104,7 @@ export class PreviewWindow {
               this.window.center();
             }
           });
-        } else if (data.includes('is already in use')) {
+        } else if (data.includes('Would you like to use a different port? (Y/n)')) {
           console.log('Port Busy, retrying...');
           this.server.stdin.write('\r\n');
         }
@@ -161,7 +157,7 @@ export class PreviewWindow {
       const result = await dialog.showMessageBox({
         type: 'error',
         message: 'Incompatible Node.js Installation',
-        detail: 'This is required to run the preview server',
+        detail: 'This is required to run the preview server. This will REQUIRE an internet connection',
         buttons: ['Update', 'Cancel'],
       });
       if (result.response === 0) {
@@ -258,11 +254,31 @@ export class PreviewWindow {
       throw 'Close Window';
     }
   }
+  async checkDependencies() {
+    this.notifyProgress(Progress.CHECK_DEPENDENCIES);
+    try {
+      console.log('Checking dependencies');
+      await exec('yarn install --offline', this.spawnOptions);
+    } catch (error) {
+      const result = await dialog.showMessageBox({
+        type: 'error',
+        message: 'Dependencies Incomplete',
+        detail: 'They are required to run the preview server. This will REQUIRE an internet connection and may take some time',
+        buttons: ['Install', 'Cancel'],
+      });
+      if (result.response === 0) {
+        await this.installDependencies();
+      } else {
+        throw 'Close Window';
+      }
+    }
+  }
   async installDependencies() {
     this.notifyProgress(Progress.INSTALL_DEPENDENCIES);
     try {
       console.log('Installing dependencies');
-      await exec('yarn install --prefer-offline', this.spawnOptions);
+      await exec('yarn install', this.spawnOptions);
+      await this.checkDependencies();
     } catch (error) {
       console.error(error);
       dialog.showErrorBox('Failed To Install Dependencies', 'Please check your internet connection and try again');
@@ -274,7 +290,7 @@ export class PreviewWindow {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('preview:change'));
   }
   notifyProgress(progress: Progress) {
-    BrowserWindow.getAllWindows().forEach(window => window.webContents.send('preview:progress', progress / Progress.DONE));
+    BrowserWindow.getAllWindows().forEach(window => window.webContents.send('preview:progress', progress / Progress.START_SERVER));
   }
 }
 enum Progress {
@@ -286,9 +302,7 @@ enum Progress {
   ENABLE_YARN,
   CHECK_DEPENDENCIES,
   INSTALL_DEPENDENCIES,
-  START_SERVER,
-  SPACER,
-  DONE
+  START_SERVER
 }
 async function exec(command: string, options?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject) => {
