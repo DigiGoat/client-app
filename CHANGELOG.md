@@ -1,3 +1,6 @@
+## 5.3.2-beta.9
+* Updated the Live Preview parsing to use built-in functions
+
 ## 5.3.2-beta.8
 * Enhanced the parsing of the Live Preview logs on Windows
 
