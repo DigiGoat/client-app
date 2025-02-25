@@ -5,10 +5,10 @@ import { dialog } from 'electron/main';
 import { createWriteStream, ensureDir, exists, move, readJSON, rm } from 'fs-extra';
 import { join } from 'path';
 import { satisfies } from 'semver';
-import stripAnsi from 'strip-ansi';
 import { extract } from 'tar';
 import treeKill from 'tree-kill';
 import { Open } from 'unzipper';
+import { stripVTControlCharacters } from 'util';
 
 export class PreviewWindow {
   protected window?: BrowserWindow;
@@ -92,7 +92,7 @@ export class PreviewWindow {
       });
 
       this.server.stdout.on('data', data => {
-        data = stripAnsi(data.toString());
+        data = stripVTControlCharacters(data.toString());
         console.log('>', data);
         if (data.includes('Local')) {
           const match = data.match(/Local:\s+(http:\/\/\S+)/);
