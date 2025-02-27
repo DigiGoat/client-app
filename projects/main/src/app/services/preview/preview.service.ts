@@ -15,6 +15,11 @@ export class PreviewService {
       const previewWindow = windows.find(window => window.getBackgroundColor() === '#FFFFFF');
       return previewWindow?.isVisible();
     },
+    getPreviewCloseable: async () => {
+      const windows = BrowserWindow.getAllWindows();
+      const previewWindow = windows.find(window => window.getBackgroundColor() === '#FFFFFF');
+      return previewWindow?.closable;
+    },
     startPreview: async () => {
       const windows = BrowserWindow.getAllWindows();
       const previewWindow = windows.find(window => window.getBackgroundColor() === '#FFFFFF');

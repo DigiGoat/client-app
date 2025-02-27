@@ -9,6 +9,7 @@ export class PreviewService {
 
   getPreviewActive = window.electron.preview.getPreviewActive;
   getPreviewVisible = window.electron.preview.getPreviewVisible;
+  getPreviewCloseable = window.electron.preview.getPreviewCloseable;
   startPreview = window.electron.preview.startPreview;
   stopPreview = window.electron.preview.stopPreview;
 

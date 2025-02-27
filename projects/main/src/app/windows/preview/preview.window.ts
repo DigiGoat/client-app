@@ -40,6 +40,7 @@ export class PreviewWindow {
       useContentSize: true,
       minWidth: 401,
       minHeight: 500,
+      closable: false,
     });
 
     this.notifyChanges();
@@ -79,8 +80,10 @@ export class PreviewWindow {
       await this.checkYarn();
       await this.checkDependencies();
 
+      this.window.setClosable(true);
       console.log('Starting server');
       this.notifyProgress(Progress.START_SERVER);
+      this.notifyChanges();
 
       this.server = spawn('yarn', ['start'], {
         shell: process.platform === 'win32',
@@ -88,12 +91,11 @@ export class PreviewWindow {
       });
 
       this.server.stdout.on('data', data => {
-        data = stripVTControlCharacters(data.toString());
-        console.log('>', data);
+        data = stripVTControlCharacters(data.toString()); //Strip out the ANSI color characters that are outputted on Windows
+        console.log('yarn start:', data);
         if (data.includes('Local')) {
           const match = data.match(/Local:\s+(http:\/\/\S+)/);
           console.log('Match:', match);
-          //On windows, the characters get decoded real funky so you can't match the URL
           const url = match ? match[1] : 'http://localhost:4000';
           console.log('Preview URL:', url);
           this.window.loadURL(url);
@@ -110,7 +112,7 @@ export class PreviewWindow {
         }
       });
       this.server.stderr.on('data', data => {
-        console.error('>', data.toString());
+        console.error('yarn start:', data.toString());
       });
       this.server.on('close', () => {
         console.log('Server closed');
@@ -126,6 +128,7 @@ export class PreviewWindow {
         console.error('Error starting server:', error);
         dialog.showErrorBox('Failed To Start Preview:', error);
       }
+      this.window.setClosable(true);
       this.window?.close();
     }
   }
@@ -306,12 +309,14 @@ enum Progress {
 }
 async function exec(command: string, options?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject) => {
-    _exec(command, { ...options, encoding: 'utf8' }, (error, stdout: string) => {
+    const server = _exec(command, { ...options, encoding: 'utf8' }, (error, stdout: string) => {
       if (error) {
         reject(error);
       } else {
         resolve(stdout.trim());
       }
     });
+    server.stdout.on('data', data => console.log(`${command}:`, data));
+    server.stderr.on('data', data => console.error(`${command}:`, data));
   });
 }
