@@ -83,23 +83,22 @@ export class MainComponent implements OnInit {
     }
   }
 
-  previewStatus: 'loading' | 'active' | 'inactive' = 'inactive';
+  previewStatus: 'loading' | 'active' | 'inactive' | 'starting' = 'inactive';
   previewProgress = signal(0);
   async togglePreview() {
     switch (this.previewStatus) {
       case 'active':
+      case 'starting':
+      case 'loading':
         await this.previewService.stopPreview();
         break;
       case 'inactive':
         await this.previewService.startPreview();
         break;
-      case 'loading':
-        this.previewService.stopPreview();
-        break;
     }
   }
   async updatePreview() {
-    this.previewStatus = await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : 'loading') : 'inactive';
+    this.previewStatus = await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : (await this.previewService.getPreviewCloseable() ? 'starting' : 'loading')) : 'inactive';
     this.cdr.detectChanges();
   }
 }

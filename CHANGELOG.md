@@ -1,3 +1,6 @@
+## 5.3.2-beta.11
+* Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
+
 ## 5.3.2-beta.10
 * Users are now warned if dependencies need to be installed as it takes a while to install them
 * Improved the progress bar when starting the live preview

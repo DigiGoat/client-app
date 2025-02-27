@@ -4,6 +4,7 @@ import { PreviewService as PreviewServiceType } from '../../../../../../shared/s
 export const PreviewService: PreviewServiceType = {
   getPreviewActive: () => ipcRenderer.invoke('preview:getPreviewActive'),
   getPreviewVisible: () => ipcRenderer.invoke('preview:getPreviewVisible'),
+  getPreviewCloseable: () => ipcRenderer.invoke('preview:getPreviewCloseable'),
   startPreview: () => ipcRenderer.invoke('preview:startPreview'),
   stopPreview: () => ipcRenderer.invoke('preview:stopPreview'),
   onchange: (callback) => ipcRenderer.on('preview:change', () => callback()),
