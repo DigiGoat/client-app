@@ -1,3 +1,6 @@
+## 5.3.3-beta.1
+* Fixed a bug causing related goats to not be synced for goats for sale
+
 ## 5.3.2-beta.11
 * Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
 

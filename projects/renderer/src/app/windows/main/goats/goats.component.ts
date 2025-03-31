@@ -205,10 +205,18 @@ export class GoatsComponent {
 
       const ids: number[] = [];
       const goats: Goat[] = [];
+      const does = await this.goatService.getDoes();
+      const bucks = await this.goatService.getBucks();
       (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks(), this.goatService.getReferences(), this.goatService.getForSale()])).forEach(_goats => goats.push(..._goats));
       for (const goat of goats) {
+        if (typeof goat.damId === 'string') {
+          goat.damId = does.find(d => d.normalizeId === goat.damId)?.id;
+        }
         if (goat.damId && !ids.includes(goat.damId)) {
           ids.push(goat.damId);
+        }
+        if (typeof goat.sireId === 'string') {
+          goat.sireId = bucks.find(b => b.normalizeId === goat.sireId)?.id;
         }
         if (goat.sireId && !ids.includes(goat.sireId)) {
           ids.push(goat.sireId);
