@@ -6,7 +6,9 @@ import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
 import type { GoatService } from './services/goat/goat.service';
 import type { ImageService } from './services/image/image.service';
+import type { PreviewService } from './services/preview/preview.service';
 import type { RepoService } from './services/repo/repo.service';
+import type { StdioService } from './services/stdio/stdio.service';
 import type { WindowService } from './services/window/window.service';
 
 export interface SharedModule {
@@ -19,6 +21,8 @@ export interface SharedModule {
   repo: RepoService;
   app: AppService;
   image: ImageService;
+  preview: PreviewService;
+  stdio: StdioService;
 }
 
 type WithoutOnKeys<T> = {

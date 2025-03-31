@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
+import { PreviewService } from '../../services/preview/preview.service';
+import { StdioService } from '../../services/stdio/stdio.service';
 import { WindowService } from '../../services/window/window.service';
 
 @Component({
@@ -12,9 +14,11 @@ import { WindowService } from '../../services/window/window.service';
 })
 export class MainComponent implements OnInit {
   changes = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService) { }
+  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService, private stdioService: StdioService) {
+  }
 
   async ngOnInit() {
+    this.stdioService.pipeConsole();
     this.changes = (await this.gitService.getStatus()).ahead;
     this.gitService.onchange = async () => {
       this.changes = (await this.gitService.getStatus()).ahead;
@@ -43,6 +47,9 @@ export class MainComponent implements OnInit {
         }
       }
     };
+    this.previewService.onprogress = (progress) => this.previewProgress.set(progress * 100);
+    this.previewService.onchange = () => this.updatePreview();
+    this.updatePreview();
   }
   publishing = false;
   publishProgress = signal(0);
@@ -74,5 +81,24 @@ export class MainComponent implements OnInit {
       await this.gitService.reset();
       await this.windowService.refreshMain();
     }
+  }
+
+  previewStatus: 'loading' | 'active' | 'inactive' | 'starting' = 'inactive';
+  previewProgress = signal(0);
+  async togglePreview() {
+    switch (this.previewStatus) {
+      case 'active':
+      case 'starting':
+      case 'loading':
+        await this.previewService.stopPreview();
+        break;
+      case 'inactive':
+        await this.previewService.startPreview();
+        break;
+    }
+  }
+  async updatePreview() {
+    this.previewStatus = await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : (await this.previewService.getPreviewCloseable() ? 'starting' : 'loading')) : 'inactive';
+    this.cdr.detectChanges();
   }
 }

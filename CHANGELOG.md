@@ -1,3 +1,41 @@
+## 5.3.2-beta.11
+* Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
+
+## 5.3.2-beta.10
+* Users are now warned if dependencies need to be installed as it takes a while to install them
+* Improved the progress bar when starting the live preview
+* Fixed a bug causing the preview not to quit on Mac
+
+## 5.3.2-beta.9
+* Updated the Live Preview parsing to use built-in functions
+
+## 5.3.2-beta.8
+* Enhanced the parsing of the Live Preview logs on Windows
+
+## 5.3.2-beta.7
+* Updated how the app detects if the live preview is running
+  * This will fix a bug causing the window to remain open on Windows
+
+## 5.3.2-beta.6
+* Hopefully fixed a bug causing the live preview to not quit after closing it on Windows
+
+## 5.3.2-beta.5
+* Added a progress bar while the live preview is loading
+* implemented a temporary fix for the live preview only working once per boot on Windows
+
+## 5.3.2-beta.4
+* Fixed a bug causing the live preview to not work on Windows
+  * The good news is it was actually working, it just didn't know it
+
+## 5.3.2-beta.3
+* Hopefully fixed the bug preventing the live preview from working on Windows
+
+## 5.3.2-beta.2
+* Some backend changes to make it easier to debug the app on Windows
+
+## 5.3.2-beta.1
+* Added Support for the Live Preview!
+
 ## 5.3.1-beta.3
 * Fixed a bug that would cause images to sometimes not be inserted correctly on Windows
 

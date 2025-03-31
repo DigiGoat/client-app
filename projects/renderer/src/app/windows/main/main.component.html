@@ -18,8 +18,11 @@
           <button online-only type="button" class="nav-link position-relative" [disabled]="publishing || !changes" (click)="publish()"> <i
               class="bi bi-cloud-upload h4"></i>
             <span class="position-absolute translate-middle badge rounded-pill bg-success opacity-75" style="top: 25% !important;"
-              *ngIf="changes"> {{changes}}<span class="visually-hidden">unread messages</span>
+              *ngIf="changes"> {{changes}}<span class="visually-hidden">changes</span>
             </span>
+            <div *ngIf="publishing" class="spinner-grow position-absolute top-50 start-50 translate-middle" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
             <div class="progress position-absolute start-0 end-0" role="progressbar" aria-label="Animated striped example"
               [attr.aria-valuenow]="publishProgress()" aria-valuemin="0" aria-valuemax="100" *ngIf="publishing"
               style="bottom: 7.5px; height: 7.5px">
@@ -37,9 +40,18 @@
         <li class="nav-item" tooltip="History">
           <a class="nav-link" routerLink="history" routerLinkActive="active"> <i class="bi bi-clock-history h4"></i></a>
         </li>
-        <li class="nav-item" tooltip="Launch Preview (Coming Soon!)">
-          <button class="nav-link" disabled>
-            <i class="bi {{false ? 'bi-pause' : 'bi-play'}} h3"></i></button>
+        <li class="nav-item" tooltip="{{previewStatus === 'active' ? 'Stop' : previewStatus === 'loading' ? 'Loading' : 'Start'}} Preview">
+          <button class="nav-link position-relative" (click)="togglePreview()" [disabled]="previewStatus === 'loading'">
+            <i class="bi {{previewStatus === 'inactive' ? 'bi-play' : 'bi-stop'}} h3"></i>
+            <div *ngIf="previewStatus === 'loading'" class="spinner-grow position-absolute top-50 start-50 translate-middle" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="progress position-absolute start-0 end-0" role="progressbar" aria-label="Animated striped example"
+              [attr.aria-valuenow]="previewProgress()" aria-valuemin="0" aria-valuemax="100"
+              *ngIf="previewStatus === 'loading' || previewStatus === 'starting'" style="bottom: 7.5px; height: 7.5px">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" [style]="'width: '+previewProgress()+'%'"></div>
+            </div>
+          </button>
         </li>
         <li class="nav-item" tooltip="Settings">
           <a class="nav-link" routerLink="settings" routerLinkActive="active">
