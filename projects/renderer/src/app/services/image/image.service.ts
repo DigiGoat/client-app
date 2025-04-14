@@ -21,4 +21,5 @@ export class ImageService {
   getExtension = window.electron.image.getExtension;
   uploadImages = window.electron.image.uploadImages;
   getUploadDir = window.electron.image.getUploadDir;
+  getImportPath = window.electron.image.getImportPath;
 }

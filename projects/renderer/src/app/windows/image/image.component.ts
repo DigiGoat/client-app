@@ -62,6 +62,7 @@ export class ImageComponent implements OnInit {
     let i = 0;
     const timestamp = Date.now();
     for (const file of files) {
+      file.path = this.imageService.getImportPath(file);
       const name = `${timestamp}-${i}${await this.imageService.getExtension(file.path)}`;
       const path = `${this.queries[0]}/${name}`;
       this.imageService.writeImage(path, await this.imageService.readImage(file.path));

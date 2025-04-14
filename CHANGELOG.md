@@ -1,3 +1,6 @@
+## 5.3.4-beta.1
+* Fixed a bug causing drag-and-drop to not work for uploading images
+
 ## 5.3.3-beta.1
 * Fixed a bug causing related goats to not be synced for goats for sale
 

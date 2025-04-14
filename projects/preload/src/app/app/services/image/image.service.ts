@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, webUtils } from 'electron';
 import { ImageService as ImageServiceType } from '../../../../../../shared/services/image/image.service';
 
 export const ImageService: ImageServiceType = {
@@ -13,5 +13,6 @@ export const ImageService: ImageServiceType = {
   stringToBase64: (string) => Buffer.from(string as string).toString('base64'),
   getExtension: (path) => ipcRenderer.invoke('image:getExtension', path),
   uploadImages: (...images) => ipcRenderer.invoke('image:uploadImages', ...images),
-  getUploadDir: () => ipcRenderer.invoke('image:getUploadDir')
+  getUploadDir: () => ipcRenderer.invoke('image:getUploadDir'),
+  getImportPath: (file) => webUtils.getPathForFile(file),
 };
