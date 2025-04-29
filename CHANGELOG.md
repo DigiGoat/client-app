@@ -1,3 +1,7 @@
+## 5.3.5-beta.1
+* Improved Markdown rendering
+  * It now uses the built-in compiler to immediately show a rendered output, then it updates it with the gfm once downloaded
+
 ## 5.3.4-beta.1
 * Fixed a bug causing drag-and-drop to not work for uploading images
 
