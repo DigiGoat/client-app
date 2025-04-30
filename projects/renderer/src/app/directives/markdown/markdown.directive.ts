@@ -81,11 +81,10 @@ export class MarkdownDirective implements OnInit {
             this.oldValue = value;
           } catch (error) {
             console.warn('Failed to render markdown', error);
-            this.markdownEl.innerHTML = this.markedService.parse(value);
           }
         } else {
-          this.iconEl.classList.remove('text-danger', 'text-warning');
-          this.iconEl.classList.add('text-success');
+          this.iconEl.classList.remove('text-danger', 'text-warning', 'text-success');
+          this.iconEl.classList.add('text-info');
           this.markdownEl.style.display = 'block';
           this.el.nativeElement.style.display = 'none';
         }

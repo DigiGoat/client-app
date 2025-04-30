@@ -1,3 +1,8 @@
+## 5.3.5-beta.2
+* Some minor changes to the Markdown rendering
+  * It now uses a different color when restoring markdown from the cache
+  * Fixed a bug causing the markdown to be double rendered
+
 ## 5.3.5-beta.1
 * Improved Markdown rendering
   * It now uses the built-in compiler to immediately show a rendered output, then it updates it with the gfm once downloaded
