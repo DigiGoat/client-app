@@ -1,3 +1,6 @@
+## 5.3.6-beta.2
+* Fixed a typeerror bug
+
 ## 5.3.6-beta.1
 * Updated electron to v36
 
