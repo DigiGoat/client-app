@@ -39,6 +39,8 @@ export class PreviewWindow {
       backgroundColor: 'grey',
       useContentSize: true,
       minWidth: 401,
+      width: 992,
+      height: 600,
       minHeight: 500,
       closable: false,
     });
