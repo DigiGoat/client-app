@@ -1,3 +1,6 @@
+## 5.3.7-beta.1
+* The live preview now automatically reloads when goats are edited!
+
 ## 5.3.6-beta.2
 * Fixed a typeerror bug
 
