@@ -1,3 +1,6 @@
+## 5.3.8-beta.1
+* Fixed node version inconsistency when releasing the app
+
 ## 5.3.7-beta.1
 * The live preview now automatically reloads when goats are edited!
 
