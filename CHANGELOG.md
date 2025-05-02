@@ -1,3 +1,12 @@
+## 5.3.7-beta.1
+* The live preview now automatically reloads when goats are edited!
+
+## 5.3.6-beta.2
+* Fixed a typeerror bug
+
+## 5.3.6-beta.1
+* Updated electron to v36
+
 ## 5.3.5-beta.3
 * Updated the marked dependency to match the one used in the live preview (v15.0.11)
 
