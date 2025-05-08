@@ -1,3 +1,33 @@
+## 5.3.8-beta.1
+* Fixed node version inconsistency when releasing the app
+
+## 5.3.7-beta.1
+* The live preview now automatically reloads when goats are edited!
+
+## 5.3.6-beta.2
+* Fixed a typeerror bug
+
+## 5.3.6-beta.1
+* Updated electron to v36
+
+## 5.3.5-beta.3
+* Updated the marked dependency to match the one used in the live preview (v15.0.11)
+
+## 5.3.5-beta.2
+* Some minor changes to the Markdown rendering
+  * It now uses a different color when restoring markdown from the cache
+  * Fixed a bug causing the markdown to be double rendered
+
+## 5.3.5-beta.1
+* Improved Markdown rendering
+  * It now uses the built-in compiler to immediately show a rendered output, then it updates it with the gfm once downloaded
+
+## 5.3.4-beta.1
+* Fixed a bug causing drag-and-drop to not work for uploading images
+
+## 5.3.3-beta.1
+* Fixed a bug causing related goats to not be synced for goats for sale
+
 ## 5.3.2-beta.11
 * Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
 

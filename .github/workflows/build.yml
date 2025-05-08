@@ -53,10 +53,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node ${{ vars.NODE_ENGINE }}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ vars.NODE_ENGINE }}
+          node-version-file: .nvmrc
           cache: yarn
           cache-dependency-path: yarn.lock
 

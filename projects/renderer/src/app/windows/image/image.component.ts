@@ -53,7 +53,7 @@ export class ImageComponent implements OnInit {
 
   //Handle the drop event
   async importImage(event: DragEvent) {
-    const files = Array.from(event.dataTransfer!.files);
+    const files = Array.from(event.dataTransfer!.files) as (File & { path: string; })[];
     event.preventDefault();
     event.stopPropagation();
     const map = await this.imageService.getImageMap();
@@ -62,6 +62,7 @@ export class ImageComponent implements OnInit {
     let i = 0;
     const timestamp = Date.now();
     for (const file of files) {
+      file.path = this.imageService.getImportPath(file);
       const name = `${timestamp}-${i}${await this.imageService.getExtension(file.path)}`;
       const path = `${this.queries[0]}/${name}`;
       this.imageService.writeImage(path, await this.imageService.readImage(file.path));

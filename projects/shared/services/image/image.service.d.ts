@@ -11,6 +11,7 @@ export interface ImageService {
   getExtension: (path: string) => Promise<string>;
   uploadImages: (...images: string[]) => Promise<string[]>;
   getUploadDir: () => Promise<string>;
+  getImportPath: (file: File) => string;
 }
 export type Image = { file: string, alt?: string; };
 export type ImageMap = { [directory: string]: Image[]; };

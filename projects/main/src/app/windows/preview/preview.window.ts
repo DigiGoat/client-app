@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { exec as _exec, spawn, type ChildProcess, type ExecOptions } from 'child_process';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { dialog } from 'electron/main';
 import { createWriteStream, ensureDir, exists, move, readJSON, rm } from 'fs-extra';
 import { join } from 'path';
@@ -39,6 +39,8 @@ export class PreviewWindow {
       backgroundColor: 'grey',
       useContentSize: true,
       minWidth: 401,
+      width: 992,
+      height: 600,
       minHeight: 500,
       closable: false,
     });
@@ -84,6 +86,7 @@ export class PreviewWindow {
       console.log('Starting server');
       this.notifyProgress(Progress.START_SERVER);
       this.notifyChanges();
+      this.watchChanges();
 
       this.server = spawn('yarn', ['start'], {
         shell: process.platform === 'win32',
@@ -287,6 +290,33 @@ export class PreviewWindow {
       dialog.showErrorBox('Failed To Install Dependencies', 'Please check your internet connection and try again');
       throw 'Close Window';
     }
+  }
+
+  async watchChanges() {
+    ipcMain.on('goat:doesChange', () => {
+      console.log('Does change detected');
+      this.window?.reload();
+    });
+    ipcMain.on('goat:bucksChange', () => {
+      console.log('Bucks change detected');
+      this.window?.reload();
+    });
+    ipcMain.on('goat:referencesChange', () => {
+      console.log('References change detected');
+      this.window?.reload();
+    });
+    ipcMain.on('goat:forSaleChange', () => {
+      console.log('For Sale change detected');
+      this.window?.reload();
+    });
+    ipcMain.on('goat:relatedChange', () => {
+      console.log('Related change detected');
+      this.window?.reload();
+    });
+    ipcMain.on('goat:kiddingScheduleChange', () => {
+      console.log('Kidding Schedule change detected');
+      this.window?.reload();
+    });
   }
 
   notifyChanges() {

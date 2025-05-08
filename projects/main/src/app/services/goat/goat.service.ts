@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, ipcMain } from 'electron';
 import { ensureFileSync, exists, existsSync, readJson, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import type { GoatService as GoatServiceType } from '../../../../../shared/services/goat/goat.service';
@@ -114,6 +114,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newDoes = await this.getDoes();
         console.log('Does updated', event, newDoes);
+        ipcMain.emit('goat:doesChange', newDoes);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:doesChange', newDoes);
@@ -145,6 +146,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newBucks = await this.getBucks();
         console.log('Bucks updated', event, newBucks);
+        ipcMain.emit('goat:bucksChange', newBucks);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:bucksChange', newBucks);
@@ -176,6 +178,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newReferences = await this.getReferences();
         console.log('References updated', event, newReferences);
+        ipcMain.emit('goat:referencesChange', newReferences);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:referencesChange', newReferences);
@@ -207,6 +210,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newForSale = await this.getForSale();
         console.log('For Sale updated', event, newForSale);
+        ipcMain.emit('goat:forSaleChange', newForSale);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:forSaleChange', newForSale);
@@ -238,6 +242,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newRelated = await this.getRelated();
         console.log('Related updated', event, newRelated);
+        ipcMain.emit('goat:relatedChange', newRelated);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:relatedChange', newRelated);
@@ -269,6 +274,7 @@ export class GoatService {
         const windows = BrowserWindow.getAllWindows();
         const newSchedule = await this.getKiddingSchedule();
         console.log('Kidding Schedule updated', event, newSchedule);
+        ipcMain.emit('goat:kiddingScheduleChange', newSchedule);
         windows.forEach(window => {
           if (!window.isDestroyed()) {
             window.webContents.send('goat:kiddingScheduleChange', newSchedule);

@@ -67,27 +67,32 @@ export class MarkdownDirective implements OnInit {
     if (value) {
       try {
         if (value !== this.oldValue) {
-          this.markdownEl.innerHTML = await this.renderMarkdown(value);
-          this.oldValue = value;
-        }
-        this.renderImages();
-        this.markdownEl.style.display = 'block';
-        this.el.nativeElement.style.display = 'none';
-        this.iconEl.classList.remove('text-danger', 'text-warning');
-        this.iconEl.classList.add('text-success');
-      } catch (error) {
-        try {
           this.iconEl.classList.remove('text-success', 'text-warning');
           this.iconEl.classList.add('text-danger');
           this.markdownEl.innerHTML = this.markedService.parse(value);
-          this.renderImages();
           this.markdownEl.style.display = 'block';
           this.el.nativeElement.style.display = 'none';
           this.iconEl.classList.remove('text-danger', 'text-success');
           this.iconEl.classList.add('text-warning');
-        } catch (error2) {
-          console.error('Failed to render markdown', error, error2);
+          try {
+            this.markdownEl.innerHTML = await this.renderMarkdown(value);
+            this.iconEl.classList.remove('text-danger', 'text-warning');
+            this.iconEl.classList.add('text-success');
+            this.oldValue = value;
+          } catch (error) {
+            console.warn('Failed to render markdown', error);
+          }
+        } else {
+          this.iconEl.classList.remove('text-danger', 'text-warning', 'text-success');
+          this.iconEl.classList.add('text-info');
+          this.markdownEl.style.display = 'block';
+          this.el.nativeElement.style.display = 'none';
         }
+        this.renderImages();
+      } catch (error) {
+        this.iconEl.classList.remove('text-success', 'text-warning');
+        this.iconEl.classList.add('text-danger');
+        this.hideMarkdown();
       }
     }
   }
