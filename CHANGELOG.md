@@ -1,3 +1,6 @@
+## 5.4.0-beta.1
+* Added the ability to configure firebase
+
 ## 5.3.8-beta.1
 * Fixed node version inconsistency when releasing the app
 
