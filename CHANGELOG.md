@@ -1,3 +1,6 @@
+## 5.4.1-beta.2
+* Fixed a bug causing the publish status not to be displayed
+
 ## 5.4.1-beta.1
 * Added more detailed statuses when cloning and publishing
 

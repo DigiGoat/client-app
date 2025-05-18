@@ -26,7 +26,7 @@ export class MainComponent implements OnInit {
     };
     this.gitService.onprogress = (event) => {
       if (event.method === 'push') {
-        this.publishStatus.set(`${event.stage} ${event.processed}/${event.total}`);
+        this.publishStatus.set(`${event.stage.charAt(0).toUpperCase() + event.stage.slice(1)} ${event.processed}/${event.total}`);
         const stages = 5;
         const stage = 100 / stages;
         switch (event.stage) {
