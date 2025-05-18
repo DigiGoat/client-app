@@ -26,6 +26,7 @@ export class MainComponent implements OnInit {
     };
     this.gitService.onprogress = (event) => {
       if (event.method === 'push') {
+        this.publishStatus.set(`${event.stage} ${event.processed}/${event.total}`);
         const stages = 5;
         const stage = 100 / stages;
         switch (event.stage) {
@@ -53,6 +54,7 @@ export class MainComponent implements OnInit {
   }
   publishing = false;
   publishProgress = signal(0);
+  publishStatus = signal('');
   async publish() {
     this.publishing = true;
     this.publishProgress.set(5);
@@ -60,6 +62,7 @@ export class MainComponent implements OnInit {
       try {
         await this.gitService.push();
         this.publishProgress.set(100);
+        this.publishStatus.set('');
       } catch (err) {
         console.warn(err);
         await this.gitService.handleError('Publish Failed!', err as Error);
