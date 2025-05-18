@@ -1,5 +1,5 @@
 <div *ngIf="cloning" class="container text-center d-flex flex-column justify-content-center vh-100">
-  <h4>{{resolvingProgress() === 100 ? 'Done' : ('Cloning'+dots) }}</h4>
+  <h4>{{resolvingProgress() === 100 ? 'Done' : ('Cloning'+dots) }} ({{cloningProgress()}})</h4>
   <div class="progress-stacked mb-5">
     <div class="progress" role="progressbar" [style.width]=" (receivingProgress() === 0.5 ? (remoteProgress() + 33) : 100)+ '%'"
       [attr.aria-valuenow]="remoteProgress()" aria-valuemin="0" aria-valuemax="100">

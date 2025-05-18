@@ -1,3 +1,6 @@
+## 5.4.1-beta.1
+* Added more detailed statuses when cloning and publishing
+
 ## 5.4.0-beta.1
 * Added the ability to configure firebase
 

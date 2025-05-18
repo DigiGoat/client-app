@@ -73,9 +73,11 @@ export class SetupComponent implements OnInit {
   remoteProgress = signal(0);
   receivingProgress = signal(0.5);
   resolvingProgress = signal(0.5);
+  cloningProgress = signal('');
   async ngOnInit() {
     this.gitService.onprogress = event => {
       if (event.method == 'clone') {
+        this.cloningProgress.set(`${event.stage} ${event.processed}/${event.total}`);
         switch (event.stage) {
           case 'remote:':
             this.remoteProgress.set(event.progress);
