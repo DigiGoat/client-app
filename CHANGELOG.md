@@ -1,3 +1,6 @@
+## 5.4.2-beta.1
+* Optimized the cloning process to only download the current state of the website, and not the entire history
+
 ## 5.4.1-beta.2
 * Fixed a bug causing the publish status not to be displayed
 
