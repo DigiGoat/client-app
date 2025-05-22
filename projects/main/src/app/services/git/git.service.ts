@@ -31,7 +31,7 @@ export class GitService {
     },
     setup: async (_event, repo, name, email, token) => {
       emptyDirSync(this.base);
-      await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
+      await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.', ['--depth=1']);
       await this.git.addConfig('user.name', name || 'Digi');
       await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
       await this.checkForUpdates();
