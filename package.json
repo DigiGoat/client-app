@@ -41,7 +41,8 @@
     "lint:preload": "eslint projects/preload",
     "pull-check": "ts-node ./scripts/check.ts",
     "release": "ts-node ./scripts/release.ts",
-    "fix-version": "ts-node ./scripts/version.ts"
+    "fix-version": "ts-node ./scripts/version.ts",
+    "rebuild": "tsc -m commonjs --esModuleInterop forge.config.ts && (echo '//GENERATED CODE, RUN `yarn rebuild` TO UPDATE\n' && cat forge.config.js) > forge.config.js.tmp && mv forge.config.js.tmp forge.config.js"
   },
   "private": true,
   "dependencies": {
