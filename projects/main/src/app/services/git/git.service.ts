@@ -168,6 +168,10 @@ export class GitService {
       this.change();
       this.checkForUpdates();
     },
+    clean: async () => {
+      await this.git.clean(CleanOptions.FORCE);
+      this.change();
+    },
     getStatus: async () => {
       const status = await this.git.status();
       delete status.isClean;

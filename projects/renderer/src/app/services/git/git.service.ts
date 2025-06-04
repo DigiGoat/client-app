@@ -32,6 +32,7 @@ export class GitService {
   getPublishedDoes = window.electron.git.getPublishedDoes;
   push = window.electron.git.push;
   reset = window.electron.git.reset;
+  clean = window.electron.git.clean;
   getStatus = window.electron.git.getStatus;
   set onchange(callback: () => void) {
     window.electron.git.onchange(callback);

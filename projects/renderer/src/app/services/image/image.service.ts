@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { ImageMap } from '../../../../../shared/services/image/image.service';
+import type { ImageMap, OptimizeProgress } from '../../../../../shared/services/image/image.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,4 +22,11 @@ export class ImageService {
   uploadImages = window.electron.image.uploadImages;
   getUploadDir = window.electron.image.getUploadDir;
   getImportPath = window.electron.image.getImportPath;
+  optimizeImages = window.electron.image.optimizeImages;
+  set onOptimizeProgress(callback: (progress: OptimizeProgress) => void) {
+    window.electron.image.onOptimizeProgress(callback);
+  }
+  set onOptimizeFail(callback: (file: string) => void) {
+    window.electron.image.onOptimizeFail(callback);
+  }
 }

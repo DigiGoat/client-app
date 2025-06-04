@@ -4,6 +4,7 @@ import type { BackendService } from '../../../../../shared/shared.module';
 import { GitWindow } from '../../windows/git/git.window';
 import { GoatWindow } from '../../windows/goat/goat.window';
 import { ImageWindow } from '../../windows/image/image.window';
+import { ImageOptimizeWindow } from '../../windows/image/optimize/optimize.window';
 import { LoginWindow } from '../../windows/login/login.window';
 import { MainWindow } from '../../windows/main/main.window';
 import { SetupWindow } from '../../windows/setup/setup.window';
@@ -149,5 +150,17 @@ export class WindowService {
         window.close();
       }
     },
+    openImageOptimizer: async () => {
+      const windows = BrowserWindow.getAllWindows();
+      const window = windows.find(window => window.webContents.getURL().includes('#/image/optimize'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else {
+        new ImageOptimizeWindow();
+      }
+    }
   };
 }

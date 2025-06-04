@@ -62,10 +62,11 @@ export class MainComponent implements OnInit {
       try {
         await this.gitService.push();
         this.publishProgress.set(100);
-        this.publishStatus.set('');
       } catch (err) {
         console.warn(err);
         await this.gitService.handleError('Publish Failed!', err as Error);
+      } finally {
+        this.publishStatus.set('');
       }
     } else {
       const action = await this.dialogService.showMessageBox({ message: 'No Access Token Configured!', type: 'warning', detail: 'Please Configure A Access Token Before Publishing', buttons: ['Open Setup', 'Cancel'] });

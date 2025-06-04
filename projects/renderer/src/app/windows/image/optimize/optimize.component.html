@@ -1,0 +1,31 @@
+<div class="container text-center d-flex flex-column justify-content-center vh-100">
+  <h4>{{ done ? 'Done' : ('Optimizing' + dots) }}</h4>
+  <div class="progress-stacked mb-5">
+    <div class="progress" role="progressbar"
+      [style.width]="progress.totalDirectories ? ((progress.directoryIndex / progress.totalDirectories) * 100) + '%' : '0%'"
+      [attr.aria-valuenow]="progress.directoryIndex" aria-valuemin="0" [attr.aria-valuemax]="progress.totalDirectories">
+      <div class="progress-bar text-bg-warning" [class.progress-bar-striped]="optimizing" [class.progress-bar-animated]="optimizing">
+        {{ optimizing ? 'Directories: ' + progress.directoryIndex + '/' + progress.totalDirectories : 'Directories Done' }}
+      </div>
+    </div>
+    <div class="progress" role="progressbar"
+      [style.width]="progress.totalFiles ? ((progress.fileIndex / progress.totalFiles) * 100) + '%' : '0%'"
+      [attr.aria-valuenow]="progress.fileIndex" aria-valuemin="0" [attr.aria-valuemax]="progress.totalFiles">
+      <div class="progress-bar text-bg-info" [class.progress-bar-striped]="optimizing" [class.progress-bar-animated]="optimizing">
+        {{ optimizing ? 'Files: ' + progress.fileIndex + '/' + progress.totalFiles : 'Files Done' }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="optimizing">
+    <div>Current Directory: <b>{{progress.directory}}</b></div>
+    <div>Current File: <b>{{progress.file}}</b></div>
+  </div>
+  <div *ngIf="done">
+    <div class="text-success h5">All images optimized!</div>
+    <div class="text-muted">You may now close this window.</div>
+    <div class="text-warning" *ngIf="failedImages.length">Some images failed to optimize: <ul>
+        <li *ngFor="let image of failedImages">{{ image }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

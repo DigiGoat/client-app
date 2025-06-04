@@ -1,9 +1,11 @@
 import { app, BrowserWindow, protocol } from 'electron';
-import { net } from 'electron/main';
+import { dialog, net } from 'electron/main';
 import { copyFile, ensureDir, ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
 import { extname, join } from 'path';
-import { ImageService as ImageServiceType, type ImageMap } from '../../../../../shared/services/image/image.service';
+import sharp from 'sharp';
+import { ImageService as ImageServiceType, type ImageMap, type OptimizeProgress } from '../../../../../shared/services/image/image.service';
 import type { BackendService } from '../../../../../shared/shared.module';
+import { ImageOptimizeWindow } from '../../windows/image/optimize/optimize.window';
 
 export class ImageService {
   base = join(app.getPath('userData'), 'repo');
@@ -79,6 +81,63 @@ export class ImageService {
     getUploadDir: async () => {
       await ensureDir(this.uploadDir);
       return this.uploadDir;
+    },
+    optimizeImages: async (_event, imageMap) => {
+      const assetsDir = join(this.base, 'src/assets/images');
+      const newImageMap: ImageMap = {};
+
+      for (const [directory, files] of Object.entries(imageMap)) {
+        this.notifyOptimizeProgress({
+          directory,
+          directoryIndex: Object.keys(imageMap).indexOf(directory),
+          totalDirectories: Object.keys(imageMap).length,
+          file: '',
+          fileIndex: 0,
+          totalFiles: files.length
+        });
+        newImageMap[directory] = [];
+        for (const fileObj of files) {
+          this.notifyOptimizeProgress({
+            file: fileObj.file,
+            fileIndex: files.indexOf(fileObj),
+          });
+          const originalFile = fileObj.file;
+          const originalPath = join(assetsDir, directory, originalFile);
+
+          // Skip if file doesn't exist
+          if (!(await exists(originalPath))) continue;
+
+          // Build optimized filename
+          const baseName = originalFile.replace(/\.[^/.]+$/, ''); // remove extension
+          const optimizedFile = `${baseName}+.webp`;
+          const optimizedPath = join(assetsDir, directory, optimizedFile);
+
+          // Skip if already optimized
+          if (originalFile.endsWith('+.webp')) {
+            newImageMap[directory].push(fileObj);
+            continue;
+          }
+
+          // Optimize with sharp
+          try {
+            await sharp(originalPath)
+              .resize({ height: 400 })
+              .webp()
+              .withMetadata()
+              .toFile(optimizedPath);
+
+            // Delete the original image after optimizing
+            await rm(originalPath);
+
+            newImageMap[directory].push({ ...fileObj, file: optimizedFile });
+          } catch (err) {
+            console.warn(`Failed to optimize ${originalPath}:`, err);
+            newImageMap[directory].push(fileObj); // Keep original if optimization fails
+            this.notifyOptimizeFail(`${directory}/${originalFile}`);
+          }
+        }
+      }
+      return newImageMap;
     }
   };
   watchingImages = false;
@@ -114,7 +173,6 @@ export class ImageService {
   }
   constructor() {
     this.watchImages();
-
     app.once('ready', () => {
       protocol.handle('image', req => {
         const path = req.url.replace('image:', '');
@@ -122,6 +180,72 @@ export class ImageService {
         console.log('image:', image);
         return net.fetch(`file://${image}`);
       });
+    });
+    this.checkForOptimizations();
+  }
+  async checkForOptimizations() {
+    console.log('Checking for image optimizations...');
+    console.debug('Checking image map at:', this.imageMap);
+    if (await exists(this.imageMap)) {
+      const imageMap = await readJson(this.imageMap) as ImageMap;
+
+      // Check for any optimized images
+      let hasOptimized = false;
+      console.debug('Checking for optimized images in the image map');
+      for (const files of Object.values(imageMap)) {
+        if (files.some(fileObj => fileObj.file.endsWith('+.webp'))) {
+          hasOptimized = true;
+          break;
+        }
+      }
+      console.debug('Has optimized images:', hasOptimized);
+      // If none are optimized, prompt the user
+      if (!hasOptimized) {
+        if (app.isReady()) {
+          this.askForOptimizations();
+        } else {
+          app.once('ready', () => this.askForOptimizations());
+        }
+      }
+    }
+  }
+  async askForOptimizations() {
+    const result = await dialog.showMessageBox({
+      type: 'question',
+      buttons: ['Optimize', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Optimize Images',
+      detail: 'Optimizing images will reduce their file size and improve loading times. Would you like to optimize your images now? (You can always do this later in the settings.)',
+    });
+    if (result.response === 0) {
+      new ImageOptimizeWindow();
+    }
+  }
+  lastOptimizeProgress: OptimizeProgress = {
+    directory: '',
+    directoryIndex: 0,
+    totalDirectories: 0,
+    file: '',
+    fileIndex: 0,
+    totalFiles: 0
+  };
+  notifyOptimizeProgress(progress: Partial<OptimizeProgress>) {
+    Object.assign(this.lastOptimizeProgress, progress);
+    const windows = BrowserWindow.getAllWindows();
+    windows.forEach(window => {
+      if (!window.isDestroyed()) {
+        window.webContents.send('image:optimizeProgress', this.lastOptimizeProgress);
+      }
+    });
+
+  }
+  notifyOptimizeFail(file: string) {
+    const windows = BrowserWindow.getAllWindows();
+    windows.forEach(window => {
+      if (!window.isDestroyed()) {
+        window.webContents.send('image:optimizeFail', file);
+      }
     });
   }
 }
