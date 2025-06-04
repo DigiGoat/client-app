@@ -71,8 +71,12 @@ export class ImageService {
       const timestamp = Date.now();
       const paths = [];
       for (const image of images) {
-        const name = `${timestamp}-${i}${extname(image)}`;
-        await copyFile(image, join(this.uploadDir, name));
+        const name = `${timestamp}-${i}+.webp`;
+        await sharp(image)
+          .resize({ height: 400, withoutEnlargement: true })
+          .webp()
+          .withMetadata()
+          .toFile(join(this.uploadDir, name));
         paths.push('uploads/' + name);
         i++;
       }
@@ -121,7 +125,7 @@ export class ImageService {
           // Optimize with sharp
           try {
             await sharp(originalPath)
-              .resize({ height: 400 })
+              .resize({ height: 400, withoutEnlargement: true })
               .webp()
               .withMetadata()
               .toFile(optimizedPath);

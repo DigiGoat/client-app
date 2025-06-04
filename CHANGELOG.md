@@ -1,3 +1,6 @@
+## 5.4.3-beta.2
+* Uploaded images are now auto-resized to a max height of 400px (not to be confused with images uploaded for the goats themselves)
+
 ## 5.4.3-beta.1
 * Added an "Optimize Images" feature that significantly reduces the size of images, making the website load faster
 
