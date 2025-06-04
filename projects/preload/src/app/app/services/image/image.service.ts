@@ -15,4 +15,7 @@ export const ImageService: ImageServiceType = {
   uploadImages: (...images) => ipcRenderer.invoke('image:uploadImages', ...images),
   getUploadDir: () => ipcRenderer.invoke('image:getUploadDir'),
   getImportPath: (file) => webUtils.getPathForFile(file),
+  optimizeImages: (imageMap) => ipcRenderer.invoke('image:optimizeImages', imageMap),
+  onOptimizeProgress: (callback) => ipcRenderer.on('image:optimizeProgress', (_event, progress) => callback(progress)),
+  onOptimizeFail: (callback) => ipcRenderer.on('image:optimizeFail', (_event, file) => callback(file))
 };

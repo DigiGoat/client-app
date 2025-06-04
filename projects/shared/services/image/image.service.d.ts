@@ -12,6 +12,12 @@ export interface ImageService {
   uploadImages: (...images: string[]) => Promise<string[]>;
   getUploadDir: () => Promise<string>;
   getImportPath: (file: File) => string;
+  optimizeImages: (imageMap: ImageMap) => Promise<ImageMap>;
+  onOptimizeProgress: (callback: (progress: OptimizeProgress) => void) => void;
+  onOptimizeFail: (callback: (file: string) => void) => void;
 }
 export type Image = { file: string, alt?: string; };
 export type ImageMap = { [directory: string]: Image[]; };
+export type OptimizeProgress = {
+  directory: string, directoryIndex: number, totalDirectories: number, file: string, fileIndex: number, totalFiles: number;
+};

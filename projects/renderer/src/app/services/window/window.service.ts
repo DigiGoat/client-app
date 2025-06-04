@@ -21,4 +21,5 @@ export class WindowService {
   setTitle = window.electron.window.setTitle;
   openImages = window.electron.window.openImages;
   refreshMain = window.electron.window.refreshMain;
+  openImageOptimizer = window.electron.window.openImageOptimizer;
 }
