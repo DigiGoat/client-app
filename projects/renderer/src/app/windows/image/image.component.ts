@@ -1,7 +1,8 @@
+import { moveItemInArray, transferArrayItem, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Image } from '../../../../../shared/services/image/image.service';
+import { type ImageMap } from '../../../../../shared/services/image/image.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
@@ -15,61 +16,40 @@ import { ImageService } from '../../services/image/image.service';
 })
 export class ImageComponent implements OnInit {
   queries: string[] = [];
-  images: (Image & { src: string; })[] = [];
-  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private gitService: GitService, private httpClient: HttpClient, private diffService: DiffService) {
+  imageMap: ImageMap = {};
+  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private gitService: GitService, private httpClient: HttpClient, private diffService: DiffService) {
   }
   async ngOnInit() {
     this.queries = this.route.snapshot.queryParamMap.keys;
     this.updateImages();
-    this.imageService.onchange = () => this.updateImages();
+    this.imageService.onchange = (imageMap) => this.updateImages(imageMap);
   }
-  async updateImages() {
-    const images = await this.imageService.getImages(this.queries) as (Image & { src: string; })[];
-    for (const image of images) {
-      image.src = await this.imageService.readLocalImage(image.file);
-    }
-    this.images = images;
-    //this.cdr.detectChanges();
+  async updateImages(imageMap?: ImageMap) {
+    this.imageMap = imageMap ?? await this.imageService.getImageMap();
   }
 
   async uploadImage() {
     const images = await this.dialogService.showOpenDialog({ properties: ['openFile', 'multiSelections'], filters: [this.dialogService.FILTERS.IMAGES, this.dialogService.FILTERS.ALL] });
     const map = await this.imageService.getImageMap();
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
-    const paths: string[] = [];
-    let i = 0;
-    const timestamp = Date.now();
-    for (const image of images.filePaths) {
-      const name = `${timestamp}-${i}${await this.imageService.getExtension(image)}`;
-      const path = `${this.queries[0]}/${name}`;
-      this.imageService.writeImage(path, await this.imageService.readImage(image));
-      map[this.queries[0]].push({ file: name });
-      paths.push(path);
-      i++;
-    }
+    const names = await this.imageService.addImages(this.queries[0], ...images.filePaths);
+    map[this.queries[0]].unshift(...names.map(name => ({ file: name })));
+    const paths = names.map(name => `${this.queries[0]}/${name}`);
     await this.imageService.setImageMap(map);
     await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
   }
 
   //Handle the drop event
   async importImage(event: DragEvent) {
-    const files = Array.from(event.dataTransfer!.files) as (File & { path: string; })[];
+    const files = Array.from(event.dataTransfer!.files);
     event.preventDefault();
     event.stopPropagation();
     const map = await this.imageService.getImageMap();
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
-    const paths: string[] = [];
-    let i = 0;
-    const timestamp = Date.now();
-    for (const file of files) {
-      file.path = this.imageService.getImportPath(file);
-      const name = `${timestamp}-${i}${await this.imageService.getExtension(file.path)}`;
-      const path = `${this.queries[0]}/${name}`;
-      this.imageService.writeImage(path, await this.imageService.readImage(file.path));
-      map[this.queries[0]].push({ file: name });
-      paths.push(path);
-      i++;
-    }
+    const names = await this.imageService.addImages(this.queries[0], ...files);
+    map[this.queries[0]].unshift(...names.map(name => ({ file: name })));
+
+    const paths = names.map(name => `${this.queries[0]}/${name}`);
     await this.imageService.setImageMap(map);
     await this.gitService.commitImages(paths, [`Added Images To ${this.queries[this.queries.length - 1]}`, ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
   }
@@ -79,15 +59,12 @@ export class ImageComponent implements OnInit {
     button.disabled = true;
     this.httpClient.get(input.value, { responseType: 'arraybuffer' }).subscribe({
       next: async response => {
-        const base64Data = this.imageService.stringToBase64(response);
-        const name = `${Date.now()}${this.imageService.getExtension(input.value)}`;
-        const path = `${this.queries[0]}/${name}`;
-        this.imageService.writeImage(path, base64Data);
+        const image = (await this.imageService.addImages(this.queries[0], response))[0];
         const map = await this.imageService.getImageMap();
         if (!map[this.queries[0]]) map[this.queries[0]] = [];
-        map[this.queries[0]].push({ file: name });
+        map[this.queries[0]].unshift({ file: image });
         await this.imageService.setImageMap(map);
-        await this.gitService.commitImages([path], [`Downloaded Image To ${this.queries[0]}`, `Downloaded ${path}`]);
+        await this.gitService.commitImages([image], [`Downloaded Image To ${this.queries[0]}`, `Downloaded ${image}`]);
         button.disabled = false;
       },
       error: error => {
@@ -98,32 +75,32 @@ export class ImageComponent implements OnInit {
     });
     input.value = '';
   }
-  async deleteImage(file: string) {
+  async deleteImage(directory: string, image: string) {
     const map = await this.imageService.getImageMap();
-    for (const query of this.queries) {
-      if (map[query]) {
-        map[query].splice(map[query].findIndex(image => file.endsWith(image.file)), 1);
-      }
-    }
+    map[directory] = map[directory].filter(file => file.file !== image);
     await this.imageService.setImageMap(map);
-    await this.imageService.deleteImage(file);
-    await this.gitService.commitImages([file], [`Deleted Image From ${this.queries[this.queries.length - 1]}`, `Deleted ${file}`]);
+    await this.imageService.deleteImages(directory, [image]);
+    await this.gitService.commitImages([`${directory}/${image}`], [`Deleted Image From ${this.queries[this.queries.length - 1]}`, `Deleted ${image} From ${directory}`]);
   }
-  async setImage(image: (Image & { src: string; })) {
-    const map = await this.imageService.getImageMap();
-    const keys = Object.keys(map).filter(directory => this.queries.includes(directory));
-    let oldAlt;
-    for (const key of keys) {
-      if (map[key].length) {
-        const index = map[key].findIndex(_image => image.file.endsWith(_image.file));
-        if (index !== -1) {
-          oldAlt = map[key][index].alt;
-          map[key][index].alt = image.alt;
-        }
-      }
+  async moveImage(event: CdkDragDrop<string, string, string>) {
+    const oldQuery = event.previousContainer.data;
+    const newQuery = event.container.data;
+    if (event.previousContainer === event.container) {
+      if (event.previousIndex === event.currentIndex) return;
+      moveItemInArray(this.imageMap[newQuery], event.previousIndex, event.currentIndex);
+      await this.imageService.setImageMap(this.imageMap);
+      await this.gitService.commitImages([], [`Moved Image For ${this.queries[this.queries.length - 1]}`, `Moved ${event.item.data} From Position ${event.previousIndex} To ${event.currentIndex}`]);
+    } else {
+      await this.imageService.mvImage(oldQuery, newQuery, event.item.data);
+      transferArrayItem(
+        this.imageMap[oldQuery],
+        this.imageMap[newQuery],
+        event.previousIndex,
+        event.currentIndex,
+      );
+      await this.imageService.setImageMap(this.imageMap);
+      await this.gitService.commitImages([`${oldQuery}/${event.item.data}`], [`Moved Image For ${this.queries[this.queries.length - 1]}`, `Moved ${event.item.data} From ${oldQuery} To ${newQuery}`]);
     }
-    await this.imageService.setImageMap(map);
-    await this.gitService.commitImages([], [`Updated Image Alt For ${this.queries[this.queries.length - 1]}`, oldAlt ? `Updated Image Alt From "${oldAlt}" To "${image.alt}"` : `Set Image Alt To "${image.alt}"`]);
   }
   paste(element: HTMLInputElement, event: ClipboardEvent) {
     event.preventDefault();
@@ -137,24 +114,5 @@ export class ImageComponent implements OnInit {
     const clipboard = await navigator.clipboard.readText();
     element[param] = clipboard;
     if (param === 'value') element.focus();
-  }
-  async makePrimary(image: (Image & { src: string; })) {
-    const map = await this.imageService.getImageMap();
-    for (const query of this.queries) {
-      if (map[query]) {
-        const index = map[query].findIndex(_image => image.file.endsWith(_image.file));
-        if (index !== -1) {
-          map[query].splice(index, 1);
-        }
-      }
-    }
-    await this.imageService.deleteImage(image.file);
-    if (!map[this.queries[0]]) map[this.queries[0]] = [];
-    image.file = image.file.split('/').slice(2).join('/');
-    this.imageService.writeImage(`${this.queries[0]}/${image.file}`, image.src);
-    delete (image as { src?: string; }).src;
-    map[this.queries[0]].unshift(image);
-    await this.imageService.setImageMap(map);
-    await this.gitService.commitImages([`${this.queries[0]}/${image.file}`], [`Made Image Primary For ${this.queries[this.queries.length - 1]}`, `Made ${image.file} Primary`]);
   }
 }

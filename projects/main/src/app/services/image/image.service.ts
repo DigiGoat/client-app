@@ -1,7 +1,6 @@
-import { app, BrowserWindow, protocol } from 'electron';
-import { dialog, net } from 'electron/main';
-import { copyFile, ensureDir, ensureFile, ensureFileSync, exists, readFile, readJson, rm, watch, writeFile, writeJSON } from 'fs-extra';
-import { extname, join } from 'path';
+import { app, BrowserWindow, dialog, net, protocol } from 'electron';
+import { ensureDir, ensureFile, ensureFileSync, exists, move, readJson, rm, watch, writeJSON } from 'fs-extra';
+import { join } from 'path';
 import sharp from 'sharp';
 import { ImageService as ImageServiceType, type ImageMap, type OptimizeProgress } from '../../../../../shared/services/image/image.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -38,20 +37,6 @@ export class ImageService {
     }
   }
   api: BackendService<ImageServiceType> = {
-    getImages: async (_event, searchQueries) => {
-      return await this.getImages(searchQueries);
-    },
-    readLocalImage: async (_event, path) => {
-      return `${await readFile(join(this.base, 'src/assets/images', path), 'base64')}`;
-    },
-    writeImage: async (_event, path, base64) => {
-      await ensureFile(join(this.base, 'src/assets/images', path));
-      await writeFile(join(this.base, 'src/assets/images', path), base64, 'base64');
-    },
-    deleteImage: async (_event, path) => {
-      await ensureFile(join(this.base, 'src/assets/images', path));
-      await rm(join(this.base, 'src/assets/images', path));
-    },
     getImageMap: async () => {
       return await this.getImageMap();
     },
@@ -59,24 +44,56 @@ export class ImageService {
       await ensureFile(this.imageMap);
       await writeJSON(this.imageMap, imageMap);
     },
-    readImage: async (_event, path) => {
-      return await readFile(path, 'base64');
-    },
-    getExtension: async (_event, path) => {
-      return extname(path);
-    },
     uploadImages: async (_event, ...images) => {
       await ensureDir(this.uploadDir);
       let i = 0;
       const timestamp = Date.now();
       const paths = [];
       for (const image of images) {
-        const name = `${timestamp}-${i}${extname(image)}`;
-        await copyFile(image, join(this.uploadDir, name));
+        const name = `${timestamp}-${i}+.webp`;
+        await sharp(image)
+          .resize({ height: 400, withoutEnlargement: true })
+          .webp()
+          .withMetadata()
+          .toFile(join(this.uploadDir, name));
         paths.push('uploads/' + name);
         i++;
       }
       return paths;
+    },
+    addImages: async (_event, directory, ...images) => {
+      const assetsDir = join(this.base, 'src/assets/images');
+      await ensureDir(join(assetsDir, directory));
+      let i = 0;
+      const timestamp = Date.now();
+      const names = [];
+      for (const image of images) {
+        const name = `${timestamp}-${i}+.webp`;
+        await sharp(image as string | ArrayBuffer)
+          .resize({ height: 400, withoutEnlargement: true })
+          .webp()
+          .withMetadata()
+          .toFile(join(assetsDir, directory, name));
+        names.push(name);
+        i++;
+      }
+      return names;
+    },
+    mvImage: async (_event, oldDir, newDir, image) => {
+      const assetsDir = join(this.base, 'src/assets/images');
+      const oldPath = join(assetsDir, oldDir, image);
+      const newPath = join(assetsDir, newDir, image);
+      await ensureDir(join(newPath, '..'));
+      await ensureFile(oldPath);
+      await move(oldPath, newPath);
+    },
+    deleteImages: async (_event, directory, images) => {
+      const assetsDir = join(this.base, 'src/assets/images');
+      for (const image of images) {
+        const imagePath = join(assetsDir, directory, image);
+        await ensureFile(imagePath);
+        await rm(imagePath);
+      }
     },
     getUploadDir: async () => {
       await ensureDir(this.uploadDir);
@@ -121,7 +138,7 @@ export class ImageService {
           // Optimize with sharp
           try {
             await sharp(originalPath)
-              .resize({ height: 400 })
+              .resize({ height: 400, withoutEnlargement: true })
               .webp()
               .withMetadata()
               .toFile(optimizedPath);
@@ -176,8 +193,8 @@ export class ImageService {
     app.once('ready', () => {
       protocol.handle('image', req => {
         const path = req.url.replace('image:', '');
-        const image = join(this.base, 'src', path);
-        console.log('image:', image);
+        const image = join(this.base, 'src/assets/images', path);
+        console.debug('image:', image);
         return net.fetch(`file://${image}`);
       });
     });

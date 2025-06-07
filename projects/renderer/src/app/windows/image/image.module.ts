@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DirectivesModule } from '../../directives/directives.module';
@@ -18,7 +19,8 @@ import { OptimizeComponent } from './optimize/optimize.component';
     CommonModule,
     ImageRoutingModule,
     DirectivesModule,
-    FormsModule
+    FormsModule,
+    DragDropModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())

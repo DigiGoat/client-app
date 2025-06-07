@@ -1,3 +1,17 @@
+## 5.4.4-beta.1
+* Fixed a bug causing an unregistered goat to become locked
+
+## 5.4.3-beta.3
+* Completely redesigned how images are managed for the goats
+  * Images are now automatically optimized when uploaded
+  * Simplified the UI so that it's just the image and an X to delete it
+  * You can now rearrange images by dragging and dropping them
+  * Images are now loaded in parallel and without blocking the UI
+  * Images added are now put at the start of the list, not the end
+
+## 5.4.3-beta.2
+* Uploaded images are now auto-resized to a max height of 400px (not to be confused with images uploaded for the goats themselves)
+
 ## 5.4.3-beta.1
 * Added an "Optimize Images" feature that significantly reduces the size of images, making the website load faster
 
