@@ -54,7 +54,7 @@
       <div class="input-group" [class.unsaved]="isDirty('dateOfBirth')">
         <span class="input-group-text">Date Of Birth:</span>
         <input type="text" class="form-control" [ngModel]="dateOfBirth | longDate" #dateOfBirthEl
-          (blur)="goat = {dateOfBirth: dateOfBirthEl.value }" [disabled]="!!id">
+          (blur)="goat = {dateOfBirth: dateOfBirthEl.value }" [disabled]="!!goat.id">
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
@@ -63,14 +63,14 @@
       <div class="input-group" [class.unsaved]="isDirty('dateOfDeath')">
         <span class="input-group-text">Deceased:</span>
         <input type="text" class="form-control" [ngModel]="dateOfDeath | longDate" #dateOfDeathEl
-          (blur)="goat = {dateOfBirth: dateOfDeathEl.value }" [disabled]="!!id">
+          (blur)="goat = {dateOfBirth: dateOfDeathEl.value }" [disabled]="!!goat.id">
       </div>
       <div class="form-text">Your Goat's Date of Death (Formatted Automatically)</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="id" placeholder="PD1234" [disabled]="!!id">
+        <input type="text" class="form-control" [(ngModel)]="id" placeholder="PD1234" [disabled]="!!goat.id">
       </div>
       <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
     </div>
@@ -98,9 +98,9 @@
           <div class="input-group mb-1">
             <span class="input-group-text">Tattoo:</span>
             <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
-              (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!id"><span class="input-group-text">:</span>
+              (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!goat.id"><span class="input-group-text">:</span>
             <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)"
-              [disabled]="!!id">
+              [disabled]="!!goat.id">
           </div>
         </span>
       </div>
@@ -108,7 +108,7 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('sex')">
         <span class="input-group-text">Sex:</span>
-        <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!id">
+        <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!goat.id">
           <option value="undefined" *ngIf="sex === undefined">Unspecified (Female)</option>
           <option value="Male">Male</option>
           <option value="Female" *ngIf="sex !== undefined">Female</option>
@@ -119,7 +119,7 @@
     <div class="mb-3 col" *ngIf="forSale">
       <div class="input-group" [class.unsaved]="isDirty('pet')">
         <span class="input-group-text">Sale Type:</span>
-        <select class="form-select" aria-label="Sale Type Select Dropdown" [(ngModel)]="pet" [disabled]="!!id">
+        <select class="form-select" aria-label="Sale Type Select Dropdown" [(ngModel)]="pet" [disabled]="!!goat.id">
           <option value="undefined" *ngIf="pet === undefined">Unspecified (Registered)</option>
           <option value="true">Pet</option>
           <option value="false" *ngIf="pet !== undefined">Registered</option>
@@ -138,14 +138,14 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('damId')">
         <span class="input-group-text">Dam's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!id" goat-search="does">
+        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!goat.id" goat-search="does">
       </div>
       <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('sireId')">
         <span class="input-group-text">Sire's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!id" goat-search="bucks">
+        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!goat.id" goat-search="bucks">
       </div>
       <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
     </div>

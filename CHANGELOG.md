@@ -1,3 +1,6 @@
+## 5.4.4-beta.1
+* Fixed a bug causing an unregistered goat to become locked
+
 ## 5.4.3-beta.3
 * Completely redesigned how images are managed for the goats
   * Images are now automatically optimized when uploaded
