@@ -144,45 +144,47 @@ export class ADGAService {
     },
     getLactations: async (_event, usdaId, animalKey) => {
       try {
-        const records: LactationRecord[] = [];
         const lactations = await this.cdcb.getAnimalLactations(usdaId, animalKey);
-        for (const lactation of lactations) {
-          const lactationTests = await this.cdcb.getLactationsTestDate(usdaId, animalKey, lactation.calvPdate, lactation.herdCode);
-          const stats: LactationRecord['stats'] = { milk: {}, butterfat: {}, protein: {} };
-          for (const stat of lactationTests.lactationStds) {
-            if (stat.typeName === 'Actual') {
-              stats.milk.projected = stat.mlk;
-              stats.butterfat.projected = stat.fat;
-              stats.protein.projected = stat.pro;
-            } else if (stat.typeName === 'Standard') {
-              stats.milk.achieved = stat.mlk;
-              stats.butterfat.achieved = stat.fat;
-              stats.protein.achieved = stat.pro;
+        // Run all per-lactation requests in parallel, preserving order
+        const records: LactationRecord[] = await Promise.all(
+          lactations.map(async (lactation) => {
+            const lactationTests = await this.cdcb.getLactationsTestDate(usdaId, animalKey, lactation.calvPdate, lactation.herdCode);
+            const stats: LactationRecord['stats'] = { milk: {}, butterfat: {}, protein: {} };
+            for (const stat of lactationTests.lactationStds) {
+              if (stat.typeName === 'Actual') {
+                stats.milk.projected = stat.mlk;
+                stats.butterfat.projected = stat.fat;
+                stats.protein.projected = stat.pro;
+              } else if (stat.typeName === 'Standard') {
+                stats.milk.achieved = stat.mlk;
+                stats.butterfat.achieved = stat.fat;
+                stats.protein.achieved = stat.pro;
+              }
             }
-          }
-          const tests: LactationRecord['tests'] = [];
-          for (const test of lactationTests.testDates) {
-            tests.push({
-              testNumber: test.testNo,
-              testDate: test.testDate,
-              milk: test.milk,
-              butterfatPct: test.fatPct,
-              proteinPct: test.proPct,
-              daysInMilk: test.dim,
-            });
-
-          }
-          const record: LactationRecord = {
-            startDate: lactation.freshDate,
-            isCurrent: lactation.lt === LactationType.IN_PROGRESS,
-            lactationNumber: lactation.lactNum,
-            daysInMilk: lactation.dim,
-            stats: stats,
-            tests: tests,
-          };
-          records.unshift(record);
-        }
-        return records;
+            const tests: LactationRecord['tests'] = [];
+            for (const test of lactationTests.testDates) {
+              tests.push({
+                testNumber: test.testNo,
+                testDate: test.testDate,
+                milk: test.milk,
+                butterfatPct: test.fatPct,
+                proteinPct: test.proPct,
+                daysInMilk: test.dim,
+              });
+            }
+            const record: LactationRecord = {
+              startDate: lactation.freshDate,
+              isCurrent: lactation.lt === LactationType.IN_PROGRESS,
+              lactationNumber: lactation.lactNum,
+              daysInMilk: lactation.dim,
+              stats: stats,
+              tests: tests,
+            };
+            return record;
+          })
+        );
+        // CDCB returns lactations in reverse order, so reverse to match original unshift logic
+        return records.reverse();
       } catch (err) {
         console.warn('Error Fetching Lactations:', err);
         return this.handleError(err);
