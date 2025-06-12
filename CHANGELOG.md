@@ -1,3 +1,6 @@
+## 5.5.1-beta.1
+* You can now view the price of your goats for sale from the goats page
+
 ## 5.5.0-beta.2
 * Optimized lactation syncing by fetching the tests for each lactation in parallel
   * This significantly reduces the time it takes to sync lactations, especially for goats with many lactations (originally ~7 seconds for a goat with 7 lactations, now ~3 seconds)
