@@ -76,9 +76,22 @@ export class GoatsComponent {
             let goat: Goat;
             let linearAppraisals: Goat['linearAppraisals'];
             let awards: Goat['awards'];
-            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))(), (async () => awards = await this.adgaService.getAwards(doe.id!))()]);
+            let usdaId = doe.usdaId;
+            let usdaKey = doe.usdaKey;
+            let lactationRecords: Goat['lactationRecords'];
+            await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))(), (async () => {
+              if (!usdaId! || !usdaKey!) {
+                const cdcbGoat = await this.adgaService.getCDCBGoat(doe.normalizeId!);
+                usdaId = cdcbGoat.animalId;
+                usdaKey = cdcbGoat.animKey;
+              }
+              lactationRecords = await this.adgaService.getLactations(usdaId, usdaKey);
+            })(), (async () => awards = await this.adgaService.getAwards(doe.id!))()]);
             does![i] = this.diffService.softMerge(doe, goat!);
             does![i].linearAppraisals = linearAppraisals;
+            does![i].usdaId = usdaId;
+            does![i].usdaKey = usdaKey;
+            does![i].lactationRecords = lactationRecords;
             does![i].awards = awards;
           }
         }

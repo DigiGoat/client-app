@@ -1,3 +1,9 @@
+## 5.5.0-beta.1
+* Added CDCB Support!
+  * This allows you to sync your milk test data straight from the CDCB website
+  * Currently, all lactations from milk test are synced, as well as the individual tests and the performance of each lactation (Somatic cell count is not currently synced)
+  * This is currently only available for does, but may be added for pedigrees in the future
+
 ## 5.4.4-beta.1
 * Fixed a bug causing an unregistered goat to become locked
 
