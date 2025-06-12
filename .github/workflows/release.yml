@@ -54,8 +54,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn publish:windows
+  windows_arm_release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Set Build Architecture
+        run: set npm_config_arch=arm64
+
+      - run: yarn install
+
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
+      - name: Publish app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn publish:windows:arm
   publish_release:
-    needs: [macos_release, windows_release]
+    needs: [macos_release, windows_release, windows_arm_release]
     runs-on: ubuntu-latest
     env:
       YARN_IGNORE_ENGINES: true

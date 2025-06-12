@@ -7,7 +7,7 @@
     "url": "https://github.com/DigiGoat"
   },
   "description": "An app to merge the gap between ADGA, your farm, and the internet.",
-  "version": "5.5.1-beta.1",
+  "version": "5.5.2-beta.1",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -27,6 +27,7 @@
     "make": "(rm -r out || rmdir out) ; run-p build:* && electron-forge make",
     "publish:mac": "run-p build:* && electron-forge publish --arch universal",
     "publish:windows": "run-p build:windows:* && electron-forge publish",
+    "publish:windows:arm": "run-p build:windows:* && electron-forge publish --arch arm64",
     "test": "(rm -r coverage || rmdir coverage) ; run-p --continue-on-error 'test:* {@}' --",
     "test:main": "jest --config projects/main/jest.config.ts -w 6",
     "test:renderer": "ng test -w 6",

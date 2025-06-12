@@ -41,6 +41,10 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: yarn package:windows
 
+      - name: Build Project (Windows)
+        if: matrix.os == 'windows-latest'
+        run: yarn package:windows:arm
+
   build-prod:
     name: Build (Production)
     runs-on: ${{ matrix.os }}
