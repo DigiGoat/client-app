@@ -9,11 +9,14 @@
       data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
       <span class="visually-hidden">Toggle Dropdown</span>
     </button>
-    <ul #dropdown class="dropdown-menu color-scheme-quaternary">
+    <ul #dropdown class="dropdown-menu color-scheme-quaternary" style="width: 125%">
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingDetails" (click)="syncDetails()">Sync
           Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLA" (click)="syncLA()">Sync LA <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingLA"></i></button></li>
+      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLactations"
+          (click)="syncLactations()">Sync Lactations <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingLactations"></i></button>
+      </li>
       <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingAwards" (click)="syncAwards()">Sync
           Awards <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button></li>
       <!--
@@ -158,7 +161,7 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#linear"
-        aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard-data"></i>
+        aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard2-data"></i>
       </button>
       <!--<div class="collapse p-3 color-scheme-secondary" id="linear">
         <div class="row">
@@ -241,8 +244,97 @@
       </div>
     </div>
     <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#lactationHistory" aria-expanded="false" aria-controls="lactationHistory" [class.unsaved]="false"> Lactation History
+        <i class="bi bi-clipboard2-pulse"></i>
+      </button>
+      <div class="collapse p-3 color-scheme-secondary" id="lactationHistory">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Start Date</th>
+              <th scope="col">Lactation</th>
+              <th scope="col" tooltip="Days in Milk">DIM</th>
+              <th scope="col" tooltip="Achieved/Projected (lbs)">Milk</th>
+              <th scope="col" tooltip="Achieved/Projected (lbs)">Butter Fat</th>
+              <th scope="col" tooltip="Achieved/Projected (lbs)">Protein</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!lactationRecords?.length">
+              <td colspan="100" class="text-center"> No Lactation History Found </td>
+            </tr>
+            <tr *ngFor="let record of lactationRecords; index as i">
+              <th scope="row" [class.fst-italic]="record.isCurrent" [class.fw-bold]="record.isCurrent"
+                [tooltip]="record.isCurrent ? 'Active Lactation' : ''">{{record.startDate | longDate}}
+              </th>
+              <td>
+                {{record.lactationNumber}}
+              </td>
+              <td>
+                {{record.daysInMilk}}
+              </td>
+              <td>
+                {{record.stats?.milk?.achieved}} / {{record.stats?.milk?.projected}}
+              </td>
+              <td>
+                {{record.stats?.butterfat?.achieved}} / {{record.stats?.butterfat?.projected}}
+              </td>
+              <td>
+                {{record.stats?.protein?.achieved}} / {{record.stats?.protein?.projected}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#currentLactation" aria-expanded="false" aria-controls="currentLactation" [class.unsaved]="false"> Current Lactation
+        <i class="bi bi-clipboard-pulse"></i>
+      </button>
+      <div class="collapse p-3 color-scheme-secondary" id="currentLactation">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Test #:</th>
+              <th scope="col">Test Date</th>
+              <th scope="col" tooltip="Days in Milk">DIM</th>
+              <th scope="col">Milk</th>
+              <th scope="col" tooltip="Butter Fat Percent">Fat Pct.</th>
+              <th scope="col" tooltip="Protein Percent">Protein Pct.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!currentLactation?.tests?.length">
+              <td colspan="100" class="text-center"> No Tests Found For the Current Lactation </td>
+            </tr>
+            <tr *ngFor="let test of currentLactation?.tests; index as i">
+              <th scope="row">{{test.testNumber}}
+              </th>
+              <td>
+                {{test.testDate | longDate}}
+              </td>
+              <td>
+                {{test.daysInMilk}}
+              </td>
+              <td>
+                {{test.milk}}
+              </td>
+              <td>
+                {{test.butterfatPct}}%
+              </td>
+              <td>
+                {{test.proteinPct}}%
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#awards"
-        aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-clipboard2-data"></i>
+        aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-award"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="awards">
         <table class="table table-hover">

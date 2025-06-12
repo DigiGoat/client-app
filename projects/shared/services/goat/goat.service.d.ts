@@ -1,3 +1,5 @@
+import type { LAClassifications } from 'adga';
+
 export interface GoatService {
   getDoes: () => Promise<Goat[]>;
   setDoes: (does: Goat[]) => Promise<void>;
@@ -53,7 +55,39 @@ export type Goat = Partial<{
     awardYear: number;
     awardCount: number;
   }>[];
+  usdaId: string;
+  usdaKey: number;
+  lactationRecords: LactationRecord[];
 }>;
+export type LactationRecord = Partial<{
+  startDate: string;
+  isCurrent: boolean;
+  daysInMilk: string;
+  lactationNumber: string;
+  stats: Partial<{
+    milk: Partial<{
+      achieved: string;
+      projected: string;
+    }>;
+    butterfat: Partial<{
+      achieved: string;
+      projected: string;
+    }>;
+    protein: Partial<{
+      achieved: string;
+      projected: string;
+    }>;
+  }>;
+  tests: Partial<{
+    testNumber: number;
+    daysInMilk: string;
+    milk: string;
+    butterfatPct: string;
+    proteinPct: string;
+    testDate: string;
+  }>[];
+}>;
+
 export type GoatType = 'doe' | 'buck' | 'reference' | 'related' | 'for-sale';
 export type Kidding = Partial<{
   dam: string;

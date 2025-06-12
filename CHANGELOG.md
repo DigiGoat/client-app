@@ -1,3 +1,16 @@
+## 5.5.0-beta.2
+* Optimized lactation syncing by fetching the tests for each lactation in parallel
+  * This significantly reduces the time it takes to sync lactations, especially for goats with many lactations (originally ~7 seconds for a goat with 7 lactations, now ~3 seconds)
+
+## 5.5.0-beta.1
+* Added CDCB Support!
+  * This allows you to sync your milk test data straight from the CDCB website
+  * Currently, all lactations from milk test are synced, as well as the individual tests and the performance of each lactation (Somatic cell count is not currently synced)
+  * This is currently only available for does, but may be added for pedigrees in the future
+
+## 5.4.5-beta.1
+* The history page now color-codes any numbers or boolean (true/false) values
+
 ## 5.4.4-beta.1
 * Fixed a bug causing an unregistered goat to become locked
 

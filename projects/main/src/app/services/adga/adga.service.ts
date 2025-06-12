@@ -1,13 +1,16 @@
 import ADGA from 'adga';
+import CDCB, { LactationType } from 'adga/cdcb';
 import { AxiosError } from 'axios';
 import { BrowserWindow, app, safeStorage } from 'electron';
 import { ensureFile, ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import { ADGAService as ADGAServiceType, type Account } from '../../../../../shared/services/adga/adga.service';
+import type { LactationRecord } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
 export class ADGAService {
   adga?: ADGA;
+  cdcb: CDCB;
   accountPath = join(app.getPath('userData'), 'ADGA Account');
   blacklistPath = join(app.getPath('userData'), 'ADGA Blacklist');
   account?: Account;
@@ -131,6 +134,62 @@ export class ADGAService {
         return this.handleError(err);
       }
     },
+    getCDCBGoat: async (_event, normalizeId) => {
+      try {
+        return await this.cdcb.searchAnimal(normalizeId);
+      } catch (err) {
+        console.warn('Error Fetching CDCB Goat:', err);
+        return this.handleError(err);
+      }
+    },
+    getLactations: async (_event, usdaId, animalKey) => {
+      try {
+        const lactations = await this.cdcb.getAnimalLactations(usdaId, animalKey);
+        // Run all per-lactation requests in parallel, preserving order
+        const records: LactationRecord[] = await Promise.all(
+          lactations.map(async (lactation) => {
+            const lactationTests = await this.cdcb.getLactationsTestDate(usdaId, animalKey, lactation.calvPdate, lactation.herdCode);
+            const stats: LactationRecord['stats'] = { milk: {}, butterfat: {}, protein: {} };
+            for (const stat of lactationTests.lactationStds) {
+              if (stat.typeName === 'Actual') {
+                stats.milk.projected = stat.mlk;
+                stats.butterfat.projected = stat.fat;
+                stats.protein.projected = stat.pro;
+              } else if (stat.typeName === 'Standard') {
+                stats.milk.achieved = stat.mlk;
+                stats.butterfat.achieved = stat.fat;
+                stats.protein.achieved = stat.pro;
+              }
+            }
+            const tests: LactationRecord['tests'] = [];
+            for (const test of lactationTests.testDates) {
+              tests.push({
+                testNumber: test.testNo,
+                testDate: test.testDate,
+                milk: test.milk,
+                butterfatPct: test.fatPct,
+                proteinPct: test.proPct,
+                daysInMilk: test.dim,
+              });
+            }
+            const record: LactationRecord = {
+              startDate: lactation.freshDate,
+              isCurrent: lactation.lt === LactationType.IN_PROGRESS,
+              lactationNumber: lactation.lactNum,
+              daysInMilk: lactation.dim,
+              stats: stats,
+              tests: tests,
+            };
+            return record;
+          })
+        );
+        // CDCB returns lactations in reverse order, so reverse to match original unshift logic
+        return records.reverse();
+      } catch (err) {
+        console.warn('Error Fetching Lactations:', err);
+        return this.handleError(err);
+      }
+    },
     lookupGoatsById: async (_event, normalizeId) => {
       if (!this.adga) {
         return this.noADGAMessage;
@@ -185,6 +244,7 @@ export class ADGAService {
     },
   };
   constructor() {
+    this.cdcb = new CDCB();
     const init = () => {
       try {
         this.account = this.readAccountSync();
