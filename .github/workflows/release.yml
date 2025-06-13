@@ -22,6 +22,10 @@ jobs:
 
       - run: yarn install
 
+      - name: Install Sharp Libraries
+        run: |
+          yarn add @img/sharp-libvips-darwin-arm64 @img/sharp-libvips-darwin-x64 --ignore-platform
+
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
@@ -46,6 +50,10 @@ jobs:
 
       - run: yarn install
 
+      - name: Install Sharp Libraries
+        run: |
+          yarn add @img/sharp-win32-arm64 @img/sharp-win32-ia32 @img/sharp-win32-x64 --ignore-platform
+
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
@@ -54,6 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn publish:windows
+
   publish_release:
     needs: [macos_release, windows_release]
     runs-on: ubuntu-latest

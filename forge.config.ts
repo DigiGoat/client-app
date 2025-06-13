@@ -9,7 +9,7 @@ const config: ForgeConfig = {
     asar: {
       unpack: '**/node_modules/{sharp,@img}/**/*'
     },
-    icon: './assets/AppIcon'
+    icon: './assets/AppIcon',
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel({

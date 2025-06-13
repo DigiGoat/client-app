@@ -1,3 +1,9 @@
+## 5.5.3-beta.2
+* Configured the deploy process to manually download extra dependencies
+
+## 5.5.3-beta.1
+* Added an arm build mode for arm-based windows systems
+
 ## 5.5.1-beta.1
 * You can now view the price of your goats for sale from the goats page
 
