@@ -41,10 +41,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: yarn package:windows
 
-      - name: Build Project (Windows)
-        if: matrix.os == 'windows-latest'
-        run: yarn package:windows:arm
-
   build-prod:
     name: Build (Production)
     runs-on: ${{ matrix.os }}
@@ -66,6 +62,16 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Install Sharp Libraries (Mac)
+        if: matrix.os == 'macos-latest'
+        run: |
+          yarn add @img/sharp-libvips-darwin-arm64 @img/sharp-libvips-darwin-x64 --force
+
+      - name: Install Sharp Libraries (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          yarn add @img/sharp-win32-arm64 @img/sharp-win32-ia32 @img/sharp-win32-x64 --force
 
       - name: Build Project (Mac)
         if: matrix.os == 'macos-latest'
