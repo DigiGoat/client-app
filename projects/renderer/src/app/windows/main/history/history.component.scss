@@ -13,3 +13,11 @@
 :host ::ng-deep .unsaved>a {
   color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1)) !important;
 }
+
+.text-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 20;
+  line-clamp: 20;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
