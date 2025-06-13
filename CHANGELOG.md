@@ -1,3 +1,7 @@
+## 5.5.3-beta.3
+* Identified the root cause of the bug, which actually was caused by the lactation history update.
+* I am going to keep these previous fixes though, as they are still useful
+
 ## 5.5.3-beta.2
 * Configured the deploy process to manually download extra dependencies
 
