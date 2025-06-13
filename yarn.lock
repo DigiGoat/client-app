@@ -1584,9 +1584,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -4163,10 +4163,10 @@ acorn@^8.1.0, acorn@^8.11.0, acorn@^8.14.0, acorn@^8.4.1, acorn@^8.8.1, acorn@^8
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
 
-adga@^3.7.0-beta.1:
-  version "3.7.0-beta.1"
-  resolved "https://registry.yarnpkg.com/adga/-/adga-3.7.0-beta.1.tgz#c7c9dcad5c95148a5993b524cba08c61a400e5a5"
-  integrity sha512-OQ7e2PksrsqDvTo18tQqV+vcHglznzxjR8TWDPf0GJEka3v5MlY0SW+wvUluluOUf2zVVSu5DWFr/Ll65z31vQ==
+adga@^3.7.1-beta.1:
+  version "3.7.1-beta.1"
+  resolved "https://registry.yarnpkg.com/adga/-/adga-3.7.1-beta.1.tgz#bf391b0a86394ff9b8062b915a236ff99f90c47d"
+  integrity sha512-Clo6AG2DEk5lzjyDUJ4gpph2xXaxr3j0XVWoJhkiT1fDmehWg2qxyDJPfN4xdpfigXka3gtsglJr3xzBde3/Gg==
   dependencies:
     axios "^0.26.1"
 
