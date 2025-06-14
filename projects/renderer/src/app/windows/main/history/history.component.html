@@ -1,4 +1,5 @@
 <h1 class="text-center">History</h1>
+<h6 class="text-center">(Click a change to expand details)</h6>
 <br>
 <table class="table table-hover border container mb-0" style="table-layout: fixed;" *ngIf="history?.local?.total || !history">
   <colgroup>
@@ -57,7 +58,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let entry of (history?.remote?.all)">
+    <tr *ngFor="let entry of (history?.remote?.all)" (click)="bodyText.classList.toggle('text-truncate')" style="cursor: pointer">
       <th scope="row">
         {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
       </th>
@@ -65,7 +66,7 @@
         {{entry.message}}
       </td>
       <td>
-        <p [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;"></p>
+        <div [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;" #bodyText class="text-truncate"></div>
       </td>
       <td>
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>

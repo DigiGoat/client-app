@@ -1,3 +1,11 @@
+## 5.5.4-beta.1
+* The history page now limits the changes displayed to 30 lines
+  * This makes it significantly easier to navigate - the full list of changes can still be viewed by clicking
+
+## 5.5.3-beta.4
+* Removed the extra dependencies that were downloaded manually for Mac as they caused issues when constructing the `universal` build of the app
+* Fully reverted `5.5.3-beta.2` as it was not needed
+
 ## 5.5.3-beta.3
 * Identified the root cause of the bug, which actually was caused by the lactation history update.
 * I am going to keep these previous fixes though, as they are still useful
