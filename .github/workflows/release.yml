@@ -7,8 +7,32 @@ permissions:
   contents: write
 
 jobs:
-  macos_release:
+  macos_arm_release:
     runs-on: macos-latest
+
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install
+
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
+      - name: Publish app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn publish:mac
+
+  macos_release:
+    runs-on: macos-13
 
     steps:
       - name: Github checkout
@@ -56,7 +80,7 @@ jobs:
         run: yarn publish:windows
 
   publish_release:
-    needs: [macos_release, windows_release]
+    needs: [macos_release, macos_arm_release, windows_release]
     runs-on: ubuntu-latest
     env:
       YARN_IGNORE_ENGINES: true
