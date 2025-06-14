@@ -1,3 +1,7 @@
+## 5.5.5-beta.1
+* Removed the universal mac build as it was causing issues with the app
+  * You now need to select the correct build for your system
+
 ## 5.5.4-beta.1
 * The history page now limits the changes displayed to 30 lines
   * This makes it significantly easier to navigate - the full list of changes can still be viewed by clicking
