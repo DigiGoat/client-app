@@ -1,3 +1,6 @@
+## 5.5.7-beta.1
+* Fixed a bug causing the sync to fail if a goat isn't present in the CDCB database
+
 ## 5.5.6-beta.1
 * Fixed a warning that would appear when syncing goats on a windows system after syncing on a Mac system
 

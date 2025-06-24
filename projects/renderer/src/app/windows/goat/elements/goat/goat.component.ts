@@ -98,6 +98,9 @@ export class GoatComponent implements OnInit {
     try {
       if (!this.goat.usdaId || !this.goat.usdaKey) {
         const cdcbGoat = await this.adgaService.getCDCBGoat(this.goat.normalizeId!);
+        if (!cdcbGoat) {
+          return;
+        }
         this.goat = { usdaId: cdcbGoat.animalId, usdaKey: cdcbGoat.animKey };
       }
       const lactationRecords = await this.adgaService.getLactations(this.goat.usdaId!, this.goat.usdaKey!);

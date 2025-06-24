@@ -82,6 +82,9 @@ export class GoatsComponent {
             await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))(), (async () => {
               if (!usdaId! || !usdaKey!) {
                 const cdcbGoat = await this.adgaService.getCDCBGoat(doe.normalizeId!);
+                if (!cdcbGoat) {
+                  return;
+                }
                 usdaId = cdcbGoat.animalId;
                 usdaKey = cdcbGoat.animKey;
               }
