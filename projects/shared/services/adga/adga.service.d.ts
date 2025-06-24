@@ -9,7 +9,7 @@ export interface ADGAService {
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
   getGoat: (id: number) => Promise<Goat['result']>;
   getGoats: (ids: number[]) => Promise<Goats['result']>;
-  getCDCBGoat: (normalizeId: string) => Promise<Animal>;
+  getCDCBGoat: (normalizeId: string) => Promise<Animal | undefined>;
   getLactations: (usdaId: string, animalKey: number) => Promise<LactationRecord[]>;
   onchange: (callback: () => void) => void;
   lookupGoatsById: (normalizeId: string) => Promise<Goats['result']['items']>;
