@@ -112,7 +112,7 @@ export class MarkdownDirective implements OnInit {
         images.forEach(img => {
           const src = img.getAttribute('src');
           if (src && !/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(src)) {
-            img.setAttribute('src', `image:${src}`);
+            img.setAttribute('src', `image:${src.replace('./assets/images', '')}`);
           }
         });
         if (images.length) {
@@ -160,7 +160,7 @@ export class MarkdownDirective implements OnInit {
         const endPos = this.el.nativeElement.selectionEnd;
         const text = this.el.nativeElement.value;
         const formattedPath = path.replace(uploadDir, '').replace(/\\/g, '/');
-        this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](/uploads${formattedPath})` + text.substring(endPos);
+        this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](./assets/images/uploads${formattedPath})` + text.substring(endPos);
       }
       const newPaths = images.filePaths.filter(filePath => !existingPaths.includes(filePath));
       if (newPaths.length) {
@@ -170,7 +170,7 @@ export class MarkdownDirective implements OnInit {
           const startPos = this.el.nativeElement.selectionStart;
           const endPos = this.el.nativeElement.selectionEnd;
           const text = this.el.nativeElement.value;
-          this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](/${path})` + text.substring(endPos);
+          this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](./assets/images/${path})` + text.substring(endPos);
           //this.el.nativeElement.value = `![Image Description Here](${path})\n` + this.el.nativeElement.value;
         }
         await this.gitService.commitImages(paths, ['Uploaded Images', ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);
