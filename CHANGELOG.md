@@ -1,3 +1,6 @@
+## 5.5.9-beta.1
+* This is the proper implementation of the bug fixes in `5.5.6-beta.1`
+
 ## 5.5.8-beta.1
 * Fixed a bug causing uploaded images to not be displayed on the homepage
 

@@ -16,7 +16,7 @@ export class GitService {
   change() {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('git:change'));
   }
-  commit(message: string | string[], files: string | string[]) {
+  async commit(message: string | string[], files: string | string[]) {
     const commitPath = join(app.getPath('temp'), `commit-${Date.now()}.txt`);
     if (message instanceof Array) {
       message[0] += '\n';
@@ -24,7 +24,7 @@ export class GitService {
     }
     writeFile(commitPath, message);
     try {
-      return this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
+      return await this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
     } catch (err) {
       if ((err as Error).message.includes('nothing to commit')) {
         console.warn('Nothing to commit');
