@@ -17,10 +17,13 @@ export class MarkdownDirective implements OnInit {
   private markdownEl!: HTMLElement;
   private iconEl!: HTMLElement;
   private imageIconEl?: HTMLElement;
+  private descriptor?: HTMLElement;
 
   @Input({ alias: 'markdown-images', transform: booleanAttribute }) imagesUploads = false;
 
   async ngOnInit() {
+    this.descriptor = this.el.nativeElement.previousElementSibling as HTMLElement;
+
     this.markdownEl = this.el.nativeElement.ownerDocument.createElement('div');
     this.markdownEl.className = this.el.nativeElement.className + ' blocked-link' + ' text-center';
     this.markdownEl.style.cursor = 'text';
@@ -56,6 +59,7 @@ export class MarkdownDirective implements OnInit {
       bootstrap.Tooltip.getOrCreateInstance(this.imageIconEl);
     }
 
+    this.el.nativeElement.style.whiteSpace = 'pre';
     this.iconEl.addEventListener('click', () => this.appService.openMarkdown());
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.iconEl);
     bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
@@ -89,6 +93,7 @@ export class MarkdownDirective implements OnInit {
           this.el.nativeElement.style.display = 'none';
         }
         this.renderImages();
+        this.descriptor?.classList.remove('d-none');
       } catch (error) {
         this.iconEl.classList.remove('text-success', 'text-warning');
         this.iconEl.classList.add('text-danger');
@@ -99,6 +104,7 @@ export class MarkdownDirective implements OnInit {
   async hideMarkdown() {
     this.el.nativeElement.style.display = 'block';
     this.markdownEl.style.display = 'none';
+    this.descriptor?.classList.add('d-none');
     this.iconEl.classList.remove('text-success', 'text-danger', 'text-warning');
     this.imageIconEl?.classList.remove('text-success', 'text-danger');
     this.el.nativeElement.focus();

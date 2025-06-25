@@ -1,3 +1,8 @@
+## 5.5.10-beta.1
+* Made markdown easier to read
+  * It now scrolls instead of wrapping
+  * The box description is now hidden when editing to provide more space for the markdown editor
+
 ## 5.5.9-beta.1
 * This is the proper implementation of the bug fixes in `5.5.6-beta.1`
 
