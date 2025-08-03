@@ -1,3 +1,6 @@
+## 5.5.15-beta.1
+* Fixed a bug causing the status checks to not fix the version correctly when merging into main
+
 ## 5.5.14-beta.1
 * Added support for multiple devices!
   * The app now checks for changes at boot and before publishing
