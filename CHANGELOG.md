@@ -1,3 +1,6 @@
+## 5.5.12-beta.1
+* Fixed a bug causing changes to not be truncated on the history page for unpublished changes
+
 ## 5.5.11-beta.1
 * Updated the ADGA dependency
   * This significantly speeds up the syncing process when fetching the goats you own
