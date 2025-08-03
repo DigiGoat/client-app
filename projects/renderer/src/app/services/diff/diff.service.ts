@@ -90,6 +90,7 @@ export class DiffService {
     'ilenesrascals': 'IlenesRascals',
     'teachmesomethin\'': 'TeachMeSomethin\'',
     'justn\'smoke': 'Justn\'Smoke',
+    'redhouse': 'RedHouse',
   };
 
   private parseCase(word: string) {

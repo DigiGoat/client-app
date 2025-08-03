@@ -38,9 +38,9 @@ let success = true;
 const summary = ['## Pre Check Summary:', ''];
 
 async function checkBranch() {
-  if (process.env['GITHUB_HEAD_REF'] === 'main' && process.env['GITHUB_BASE_REF'] !== 'beta') {
+  if (process.env['GITHUB_BASE_REF'] === 'main' && process.env['GITHUB_HEAD_REF'] !== 'beta') {
     log.error('Only the beta branch may merge into the main branch!');
-    summary.push(`- [ ] Branch Check: Only the beta branch may merge into the main branch! (\`${process.env['GITHUB_HEAD_REF']} === 'main' && ${process.env['GITHUB_BASE_REF']} !== 'beta')\``);
+    summary.push(`- [ ] Branch Check: Only the beta branch may merge into the main branch! (\`${process.env['GITHUB_BASE_REF']} === 'main' && ${process.env['GITHUB_HEAD_REF']} !== 'beta')\``);
     success = false;
   } else {
     summary.push(`- [x] Branch Check: Branches are compatible (\`${process.env['GITHUB_HEAD_REF']} --> ${process.env['GITHUB_BASE_REF']}\`)`);
@@ -72,6 +72,22 @@ async function checkVersion() {
     summary.push(`- [x] Version Check: web-ui major version matches! (\`v${major(webVersion)} === v${major(packageJson.version)}\`)`);
   }
 }
+async function checkDependencyVersions() {
+  const adgaVersion = packageJson.dependencies?.adga;
+  if (!adgaVersion) {
+    log.warn('ADGA dependency not found in package.json');
+    summary.push('- [ ] Dependency Check: ADGA dependency not found');
+    success = false;
+    return;
+  }
+  if (process.env['GITHUB_BASE_REF'] === 'main' && /beta/i.test(adgaVersion)) {
+    log.error('ADGA dependency has a beta tag but is being merged into main');
+    summary.push(`- [ ] Dependency Check: ADGA dependency has a beta tag (\`${adgaVersion}\`) but is being merged into main`);
+    success = false;
+  } else {
+    summary.push(`- [x] Dependency Check: ADGA dependency version is valid for branch (\`${adgaVersion}\`)`);
+  }
+}
 async function checkChangelog() {
   const oldChangelog = await git.show(`${origin}:CHANGELOG.md`).catch(() => {
     log.warn('The changelog is missing in the base branch');
@@ -97,6 +113,8 @@ async function checkChangelog() {
     await checkBranch();
     console.log('Checking the version...');
     await checkVersion();
+    console.log('Checking dependency versions...');
+    await checkDependencyVersions();
     console.log('Previewing the changelog...');
     await checkChangelog();
     if (success) {

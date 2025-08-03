@@ -144,6 +144,20 @@ export class ConfigService {
       }
     };
   }
+  get firebase(): Firebase {
+    if (this.config['firebase']) {
+      return this.config['firebase'] as Firebase;
+    }
+    return {};
+  }
+  set firebase(firebase: Firebase) {
+    this.config = {
+      firebase: {
+        ...(typeof this.config['firebase'] === 'object' ? this.config['firebase'] : {}),
+        ...firebase
+      }
+    };
+  }
   get colors(): ColorScheme {
     if (this.config['colors']) {
       return this.config['colors'] as ColorScheme;
@@ -236,3 +250,4 @@ type ColorScheme = {
   };
 };
 type Socials = { facebook?: string, instagram?: string, threads?: string; };
+type Firebase = { apiKey?: string, messagingSenderId?: string, appId?: string; };

@@ -56,6 +56,8 @@ export class ADGAService {
     });
     return parsedGoat;
   }
+  getCDCBGoat = window.electron.adga.getCDCBGoat;
+  getLactations = window.electron.adga.getLactations;
   set onchange(callback: () => void) {
     window.electron.adga.onchange(callback);
   }

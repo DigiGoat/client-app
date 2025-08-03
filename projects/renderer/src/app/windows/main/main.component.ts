@@ -26,6 +26,7 @@ export class MainComponent implements OnInit {
     };
     this.gitService.onprogress = (event) => {
       if (event.method === 'push') {
+        this.publishStatus.set(`${event.stage.charAt(0).toUpperCase() + event.stage.slice(1)} ${event.processed}/${event.total}`);
         const stages = 5;
         const stage = 100 / stages;
         switch (event.stage) {
@@ -53,6 +54,7 @@ export class MainComponent implements OnInit {
   }
   publishing = false;
   publishProgress = signal(0);
+  publishStatus = signal('');
   async publish() {
     this.publishing = true;
     this.publishProgress.set(5);
@@ -63,6 +65,8 @@ export class MainComponent implements OnInit {
       } catch (err) {
         console.warn(err);
         await this.gitService.handleError('Publish Failed!', err as Error);
+      } finally {
+        this.publishStatus.set('');
       }
     } else {
       const action = await this.dialogService.showMessageBox({ message: 'No Access Token Configured!', type: 'warning', detail: 'Please Configure A Access Token Before Publishing', buttons: ['Open Setup', 'Cancel'] });

@@ -19,6 +19,8 @@ export class HistoryComponent implements OnInit {
   }
   formatBody(body: string) {
     body = body.replace(/"([^"]*)"/g, (match, p1) => `<span class="unsaved">"${this.marked.parseInline(p1.replaceAll('\\n', '\n'))}"</span>`);
+    body = body.replace(/\b(\d+(\.\d+)?)\b/g, (match) => `<span class="text-info-emphasis">${match}</span>`);
+    body = body.replace(/\b(true|false)\b/g, (match) => `<span class="text-danger-emphasis">${match}</span>`);
     return body;
   }
 }

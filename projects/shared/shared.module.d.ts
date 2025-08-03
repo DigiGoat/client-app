@@ -34,6 +34,7 @@ type WithoutNonPromises<T> = {
 };
 
 export type BackendService<T> = {
+  //@ts-expect-error
   [K in keyof WithoutOnKeys<WithoutNonPromises<T>>]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
 };
 export type BackendSharedModule = Record<keyof SharedModule, BackendService<SharedModule[keyof SharedModule]>>;

@@ -6,8 +6,10 @@ import type { ForgeConfig } from '@electron-forge/shared-types';
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
-    icon: './assets/AppIcon'
+    asar: {
+      unpack: '**/node_modules/{sharp,@img}/**/*'
+    },
+    icon: './assets/AppIcon',
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel({

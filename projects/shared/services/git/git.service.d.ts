@@ -22,6 +22,7 @@ export interface GitService {
   commitKiddingSchedule: (message: string[]) => Promise<void>;
   push: () => Promise<void>;
   reset: () => Promise<void>;
+  clean: () => Promise<void>;
   getStatus: () => Promise<StatusResult>;
   onchange: (callback: () => void) => void;
   fetchUpdate: () => Promise<SemVer>;

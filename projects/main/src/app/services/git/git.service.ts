@@ -16,14 +16,24 @@ export class GitService {
   change() {
     BrowserWindow.getAllWindows().forEach(window => window.webContents.send('git:change'));
   }
-  commit(message: string | string[], files: string | string[]) {
+  async commit(message: string | string[], files: string | string[]) {
     const commitPath = join(app.getPath('temp'), `commit-${Date.now()}.txt`);
     if (message instanceof Array) {
       message[0] += '\n';
       message = message.join('\n');
     }
     writeFile(commitPath, message);
-    return this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
+    try {
+      return await this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
+    } catch (err) {
+      if ((err as Error).message.includes('nothing to commit')) {
+        console.warn('Nothing to commit');
+      } else if ((err as Error).message.includes('LF will be replaced by CRLF the next time Git touches it')) {
+        console.warn('Git will change line endings on next commit');
+      } else {
+        return Promise.reject(err);
+      }
+    }
   }
   api: BackendService<GitServiceType> = {
     isRepo: async () => {
@@ -75,88 +85,33 @@ export class GitService {
       return JSON.parse(await this.git.show('origin:./src/assets/resources/does.json'));
     },
     commitDoes: async (_event, message) => {
-      try {
-        await this.commit(message, this.does);
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, this.does);
+      this.change();
     },
     commitBucks: async (_event, message) => {
-      try {
-        await this.commit(message, this.bucks);
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, this.bucks);
+      this.change();
     },
     commitReferences: async (_event, message) => {
-      try {
-        await this.commit(message, this.references);
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, this.references);
+      this.change();
     },
     commitForSale: async (_event, message) => {
-      try {
-        await this.commit(message, 'src/assets/resources/for-sale.json');
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, 'src/assets/resources/for-sale.json');
+      this.change();
     },
     commitConfig: async (_event, message) => {
-      try {
-        await this.commit(message, 'src/assets/resources/config.json');
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, 'src/assets/resources/config.json');
+      this.change();
+
     },
     commitRelated: async (_event, message) => {
-      try {
-        await this.commit(message, 'src/assets/resources/related.json');
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, 'src/assets/resources/related.json');
+      this.change();
     },
     commitKiddingSchedule: async (_event, message) => {
-      try {
-        await this.commit(message, 'src/assets/resources/kidding-schedule.json');
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, 'src/assets/resources/kidding-schedule.json');
+      this.change();
     },
     push: async () => {
       await this.git.push(['--force']);
@@ -167,6 +122,10 @@ export class GitService {
       await this.git.reset(ResetMode.HARD, ['@{upstream}']);
       this.change();
       this.checkForUpdates();
+    },
+    clean: async () => {
+      await this.git.clean(CleanOptions.FORCE);
+      this.change();
     },
     getStatus: async () => {
       const status = await this.git.status();
@@ -206,29 +165,13 @@ export class GitService {
         }
       }
       paths.push('src/assets/images/map.json');
-      try {
-        await this.commit(message, paths);
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.commit(message, paths);
+      this.change();
     },
     commitFavicon: async () => {
-      try {
-        await this.git.add(join(this.base, 'src/assets/icons/'));
-        await this.commit('Updated favicon', 'src/assets/icons/');
-        this.change();
-      } catch (err) {
-        if ((err as Error).message.includes('nothing to commit')) {
-          console.warn('Nothing to commit');
-        } else {
-          return Promise.reject(err);
-        }
-      }
+      await this.git.add(join(this.base, 'src/assets/icons/'));
+      await this.commit('Updated favicon', 'src/assets/icons/');
+      this.change();
     },
     getSetup: async () => {
       //`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`

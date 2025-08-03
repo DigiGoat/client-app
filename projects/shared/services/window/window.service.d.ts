@@ -13,4 +13,5 @@ export interface WindowService {
   setTitle: (title: string) => Promise<void>;
   openImages: (searchQueries: string[]) => Promise<void>;
   refreshMain: () => Promise<void>;
+  openImageOptimizer: () => Promise<void>;
 }

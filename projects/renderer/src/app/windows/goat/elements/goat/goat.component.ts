@@ -58,7 +58,7 @@ export class GoatComponent implements OnInit {
     } else {
       shown = true;
     }
-    await Promise.all([this.syncDetails(), this.syncLA(), this.syncAwards()]);
+    await Promise.all([this.syncDetails(), this.syncLA(), this.syncLactations(), this.syncAwards()]);
     if (this.dropdown.nativeElement.classList.contains('show')) {
       if (!shown) {
         this.dropdownButton.nativeElement.click();
@@ -90,6 +90,25 @@ export class GoatComponent implements OnInit {
       await this.adgaService.handleError(error as Error, 'Error Syncing Linear Appraisal!');
     } finally {
       this.syncingLA = false;
+    }
+  }
+  syncingLactations = false;
+  async syncLactations() {
+    this.syncingLactations = true;
+    try {
+      if (!this.goat.usdaId || !this.goat.usdaKey) {
+        const cdcbGoat = await this.adgaService.getCDCBGoat(this.goat.normalizeId!);
+        if (!cdcbGoat) {
+          return;
+        }
+        this.goat = { usdaId: cdcbGoat.animalId, usdaKey: cdcbGoat.animKey };
+      }
+      const lactationRecords = await this.adgaService.getLactations(this.goat.usdaId!, this.goat.usdaKey!);
+      this.goat.lactationRecords = lactationRecords;
+    } catch (error) {
+      await this.adgaService.handleError(error as Error, 'Error Syncing Lactations!');
+    } finally {
+      this.syncingLactations = false;
     }
   }
   syncingAwards = false;
@@ -203,6 +222,15 @@ export class GoatComponent implements OnInit {
   }
   set linearAppraisals(linear) {
     this.goat = { linearAppraisals: linear };
+  }
+  get lactationRecords() {
+    return this.goat.lactationRecords;
+  }
+  set lactationRecords(lactationRecords) {
+    this.goat = { lactationRecords: lactationRecords };
+  }
+  get currentLactation() {
+    return this.goat.lactationRecords?.find(lactation => lactation.isCurrent);
   }
   get pet(): boolean | undefined {
     return this.goat.pet;

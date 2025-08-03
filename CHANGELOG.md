@@ -1,3 +1,94 @@
+## 5.5.10-beta.2
+* Reverted the scroll behavior as it wan't user-friendly
+* The box description is still hidden when editing to provide more space for the markdown editor
+
+## 5.5.10-beta.1
+* Made markdown easier to read
+  * It now scrolls instead of wrapping
+  * The box description is now hidden when editing to provide more space for the markdown editor
+
+## 5.5.9-beta.1
+* This is the proper implementation of the bug fixes in `5.5.6-beta.1`
+
+## 5.5.8-beta.1
+* Fixed a bug causing uploaded images to not be displayed on the homepage
+
+## 5.5.7-beta.1
+* Fixed a bug causing the sync to fail if a goat isn't present in the CDCB database
+
+## 5.5.6-beta.1
+* Fixed a warning that would appear when syncing goats on a windows system after syncing on a Mac system
+
+## 5.5.5-beta.1
+* Removed the universal mac build as it was causing issues with the app
+  * You now need to select the correct build for your system
+
+## 5.5.4-beta.1
+* The history page now limits the changes displayed to 30 lines
+  * This makes it significantly easier to navigate - the full list of changes can still be viewed by clicking
+
+## 5.5.3-beta.4
+* Removed the extra dependencies that were downloaded manually for Mac as they caused issues when constructing the `universal` build of the app
+* Fully reverted `5.5.3-beta.2` as it was not needed
+
+## 5.5.3-beta.3
+* Identified the root cause of the bug, which actually was caused by the lactation history update.
+* I am going to keep these previous fixes though, as they are still useful
+
+## 5.5.3-beta.2
+* Configured the deploy process to manually download extra dependencies
+
+## 5.5.3-beta.1
+* Added an arm build mode for arm-based windows systems
+
+## 5.5.1-beta.1
+* You can now view the price of your goats for sale from the goats page
+
+## 5.5.0-beta.2
+* Optimized lactation syncing by fetching the tests for each lactation in parallel
+  * This significantly reduces the time it takes to sync lactations, especially for goats with many lactations (originally ~7 seconds for a goat with 7 lactations, now ~3 seconds)
+
+## 5.5.0-beta.1
+* Added CDCB Support!
+  * This allows you to sync your milk test data straight from the CDCB website
+  * Currently, all lactations from milk test are synced, as well as the individual tests and the performance of each lactation (Somatic cell count is not currently synced)
+  * This is currently only available for does, but may be added for pedigrees in the future
+
+## 5.4.5-beta.1
+* The history page now color-codes any numbers or boolean (true/false) values
+
+## 5.4.4-beta.1
+* Fixed a bug causing an unregistered goat to become locked
+
+## 5.4.3-beta.3
+* Completely redesigned how images are managed for the goats
+  * Images are now automatically optimized when uploaded
+  * Simplified the UI so that it's just the image and an X to delete it
+  * You can now rearrange images by dragging and dropping them
+  * Images are now loaded in parallel and without blocking the UI
+  * Images added are now put at the start of the list, not the end
+
+## 5.4.3-beta.2
+* Uploaded images are now auto-resized to a max height of 400px (not to be confused with images uploaded for the goats themselves)
+
+## 5.4.3-beta.1
+* Added an "Optimize Images" feature that significantly reduces the size of images, making the website load faster
+
+## 5.4.2-beta.2
+* Reverted this change as it caused issues when pushing changes
+
+## 5.4.2-beta.1
+* Optimized the cloning process to only download the current state of the website, and not the entire history
+
+## 5.4.1-beta.2
+* Fixed a bug causing the publish status not to be displayed
+
+## 5.4.1-beta.1
+* Added more detailed statuses when cloning and publishing
+
+## 5.4.0-beta.1
+* Added the ability to configure firebase
+
 ## 5.3.8-beta.1
 * Fixed node version inconsistency when releasing the app
 

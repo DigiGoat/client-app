@@ -17,10 +17,13 @@ export class MarkdownDirective implements OnInit {
   private markdownEl!: HTMLElement;
   private iconEl!: HTMLElement;
   private imageIconEl?: HTMLElement;
+  private descriptor?: HTMLElement;
 
   @Input({ alias: 'markdown-images', transform: booleanAttribute }) imagesUploads = false;
 
   async ngOnInit() {
+    this.descriptor = this.el.nativeElement.previousElementSibling as HTMLElement;
+
     this.markdownEl = this.el.nativeElement.ownerDocument.createElement('div');
     this.markdownEl.className = this.el.nativeElement.className + ' blocked-link' + ' text-center';
     this.markdownEl.style.cursor = 'text';
@@ -89,6 +92,7 @@ export class MarkdownDirective implements OnInit {
           this.el.nativeElement.style.display = 'none';
         }
         this.renderImages();
+        this.descriptor?.classList.remove('d-none');
       } catch (error) {
         this.iconEl.classList.remove('text-success', 'text-warning');
         this.iconEl.classList.add('text-danger');
@@ -99,6 +103,7 @@ export class MarkdownDirective implements OnInit {
   async hideMarkdown() {
     this.el.nativeElement.style.display = 'block';
     this.markdownEl.style.display = 'none';
+    this.descriptor?.classList.add('d-none');
     this.iconEl.classList.remove('text-success', 'text-danger', 'text-warning');
     this.imageIconEl?.classList.remove('text-success', 'text-danger');
     this.el.nativeElement.focus();
@@ -112,7 +117,7 @@ export class MarkdownDirective implements OnInit {
         images.forEach(img => {
           const src = img.getAttribute('src');
           if (src && !/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(src)) {
-            img.setAttribute('src', `image:${src}`);
+            img.setAttribute('src', `image:${src.replace('./assets/images', '')}`);
           }
         });
         if (images.length) {
@@ -160,7 +165,7 @@ export class MarkdownDirective implements OnInit {
         const endPos = this.el.nativeElement.selectionEnd;
         const text = this.el.nativeElement.value;
         const formattedPath = path.replace(uploadDir, '').replace(/\\/g, '/');
-        this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](/assets/images/uploads${formattedPath})` + text.substring(endPos);
+        this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](./assets/images/uploads${formattedPath})` + text.substring(endPos);
       }
       const newPaths = images.filePaths.filter(filePath => !existingPaths.includes(filePath));
       if (newPaths.length) {
@@ -170,7 +175,7 @@ export class MarkdownDirective implements OnInit {
           const startPos = this.el.nativeElement.selectionStart;
           const endPos = this.el.nativeElement.selectionEnd;
           const text = this.el.nativeElement.value;
-          this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](/assets/images/${path})` + text.substring(endPos);
+          this.el.nativeElement.value = text.substring(0, startPos) + `${startPos === endPos ? '\n' : ''}![Image Description Here](./assets/images/${path})` + text.substring(endPos);
           //this.el.nativeElement.value = `![Image Description Here](${path})\n` + this.el.nativeElement.value;
         }
         await this.gitService.commitImages(paths, ['Uploaded Images', ...paths.map(path => `${this.diffService.spaces}Added ${path}`)]);

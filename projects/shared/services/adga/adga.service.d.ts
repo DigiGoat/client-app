@@ -1,4 +1,6 @@
 import type { Awards, Goat, Goats, LinearAppraisal, OwnedGoats } from 'adga';
+import type { Animal } from 'adga/cdcb';
+import type { LactationRecord } from '../goat/goat.service';
 
 export interface ADGAService {
   getAccount: () => Promise<Account>;
@@ -7,6 +9,8 @@ export interface ADGAService {
   getOwnedGoats: () => Promise<OwnedGoats['result']>;
   getGoat: (id: number) => Promise<Goat['result']>;
   getGoats: (ids: number[]) => Promise<Goats['result']>;
+  getCDCBGoat: (normalizeId: string) => Promise<Animal | undefined>;
+  getLactations: (usdaId: string, animalKey: number) => Promise<LactationRecord[]>;
   onchange: (callback: () => void) => void;
   lookupGoatsById: (normalizeId: string) => Promise<Goats['result']['items']>;
   lookupGoatsByName: (name: string) => Promise<Goats['result']['items']>;

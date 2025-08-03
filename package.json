@@ -7,7 +7,7 @@
     "url": "https://github.com/DigiGoat"
   },
   "description": "An app to merge the gap between ADGA, your farm, and the internet.",
-  "version": "5.3.8-beta.1",
+  "version": "5.5.10-beta.2",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -25,7 +25,7 @@
     "package": "(rm -r out || rmdir out) ; run-p build:* && electron-forge package",
     "package:windows": "run-p build:windows:* && electron-forge package",
     "make": "(rm -r out || rmdir out) ; run-p build:* && electron-forge make",
-    "publish:mac": "run-p build:* && electron-forge publish --arch universal",
+    "publish:mac": "run-p build:* && electron-forge publish",
     "publish:windows": "run-p build:windows:* && electron-forge publish",
     "test": "(rm -r coverage || rmdir coverage) ; run-p --continue-on-error 'test:* {@}' --",
     "test:main": "jest --config projects/main/jest.config.ts -w 6",
@@ -41,7 +41,8 @@
     "lint:preload": "eslint projects/preload",
     "pull-check": "ts-node ./scripts/check.ts",
     "release": "ts-node ./scripts/release.ts",
-    "fix-version": "ts-node ./scripts/version.ts"
+    "fix-version": "ts-node ./scripts/version.ts",
+    "rebuild": "tsc -m commonjs --esModuleInterop forge.config.ts && (echo '//GENERATED CODE, RUN `yarn rebuild` TO UPDATE\n' && cat forge.config.js) > forge.config.js.tmp && mv forge.config.js.tmp forge.config.js"
   },
   "private": true,
   "dependencies": {
@@ -54,7 +55,7 @@
     "@angular/platform-browser": "^19.0.6",
     "@angular/platform-browser-dynamic": "^19.0.6",
     "@angular/router": "^19.0.6",
-    "adga": "^3.5.0",
+    "adga": "^3.7.1-beta.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
@@ -64,6 +65,7 @@
     "marked": "^15.0.11",
     "rxjs": "~7.8.0",
     "semver": "^7.6.2",
+    "sharp": "^0.34.2",
     "simple-git": "^3.24.0",
     "tar": "^7.4.3",
     "tree-kill": "^1.2.2",
