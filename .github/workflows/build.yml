@@ -33,6 +33,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
+      - name: Rebuild dependencies
+        run: yarn install
+
       - name: Build Project (Mac)
         if: matrix.os == 'macos-latest'
         run: yarn package
@@ -61,6 +68,13 @@ jobs:
           cache-dependency-path: yarn.lock
 
       - name: Install dependencies
+        run: yarn install
+
+      - name: Fix version
+        if: github.ref_name == 'main'
+        run: yarn fix-version
+
+      - name: Rebuild dependencies
         run: yarn install
 
       - name: Build Project (Mac)
