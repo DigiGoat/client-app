@@ -30,7 +30,7 @@ export class GitService {
   commitRelated = window.electron.git.commitRelated;
   commitKiddingSchedule = window.electron.git.commitKiddingSchedule;
   getPublishedDoes = window.electron.git.getPublishedDoes;
-  push = window.electron.git.push;
+  publish = window.electron.git.publish;
   reset = window.electron.git.reset;
   clean = window.electron.git.clean;
   getStatus = window.electron.git.getStatus;
