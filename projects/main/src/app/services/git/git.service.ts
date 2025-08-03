@@ -113,8 +113,27 @@ export class GitService {
       await this.commit(message, 'src/assets/resources/kidding-schedule.json');
       this.change();
     },
-    push: async () => {
-      await this.git.push(['--force']);
+    publish: async () => {
+      try {
+        await this.git.pull();
+      } catch (error) {
+        const response = await dialog.showMessageBox({
+          message: 'Sync Error',
+          detail: 'Failed to download latest changes from remote repository. Please either choose to overwrite your local changes by resetting to the last published state of your website or overwrite the remote changes including any edits made on other devices',
+          type: 'warning',
+          buttons: ['Overwrite Remote Changes (Default)', 'Overwrite Local Changes', 'Cancel'],
+          defaultId: 0,
+          cancelId: 2
+        });
+        if (response.response === 0) {
+          await this.git.push(['--force']);
+        } else if (response.response === 1) {
+          await this.git.reset(ResetMode.HARD, ['@{upstream}']);
+        }
+        this.change();
+        return;
+      }
+      await this.git.push();
       this.change();
     },
     reset: async () => {
@@ -204,6 +223,8 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false'] });
+    console.debug('Attempting to pull the latest changes...');
+    this.git.pull().then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
     this.checkForUpdates();
   }
   async checkForUpdates() {

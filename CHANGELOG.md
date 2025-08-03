@@ -1,3 +1,8 @@
+## 5.5.14-beta.1
+* Added support for multiple devices!
+  * The app now checks for changes at boot and before publishing
+  * This means that you can now update the website on one device and pick up where you left off on another
+
 ## 5.5.13-beta.1
 * Tweaked the release process so that it dosen't use a beta version of the ADGA dependency when deploying a release
 
