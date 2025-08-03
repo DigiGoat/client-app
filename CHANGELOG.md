@@ -1,3 +1,7 @@
+## 5.5.11-beta.1
+* Updated the ADGA dependency
+  * This significantly speeds up the syncing process when fetching the goats you own
+
 ## 5.5.10-beta.2
 * Reverted the scroll behavior as it wan't user-friendly
 * The box description is still hidden when editing to provide more space for the markdown editor
