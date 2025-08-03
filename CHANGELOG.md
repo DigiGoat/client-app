@@ -1,3 +1,7 @@
+## 5.5.10-beta.2
+* Reverted the scroll behavior as it wan't user-friendly
+* The box description is still hidden when editing to provide more space for the markdown editor
+
 ## 5.5.10-beta.1
 * Made markdown easier to read
   * It now scrolls instead of wrapping
