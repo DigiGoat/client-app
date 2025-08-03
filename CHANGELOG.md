@@ -1,3 +1,6 @@
+## 5.5.13-beta.1
+* Tweaked the release process so that it dosen't use a beta version of the ADGA dependency when deploying a release
+
 ## 5.5.12-beta.1
 * Fixed a bug causing changes to not be truncated on the history page for unpublished changes
 
