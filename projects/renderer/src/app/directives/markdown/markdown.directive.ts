@@ -59,7 +59,6 @@ export class MarkdownDirective implements OnInit {
       bootstrap.Tooltip.getOrCreateInstance(this.imageIconEl);
     }
 
-    this.el.nativeElement.style.whiteSpace = 'pre';
     this.iconEl.addEventListener('click', () => this.appService.openMarkdown());
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.iconEl);
     bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
