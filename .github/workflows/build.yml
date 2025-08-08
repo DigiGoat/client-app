@@ -34,7 +34,7 @@ jobs:
         run: yarn install
 
       - name: Fix version
-        if: github.ref_name == 'main'
+        if: github.base_ref == 'main'
         run: yarn fix-version
 
       - name: Rebuild dependencies
@@ -71,7 +71,7 @@ jobs:
         run: yarn install
 
       - name: Fix version
-        if: github.ref_name == 'main'
+        if: github.base_ref == 'main'
         run: yarn fix-version
 
       - name: Rebuild dependencies
