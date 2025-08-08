@@ -20,11 +20,15 @@ jobs:
           cache: yarn
           cache-dependency-path: yarn.lock
 
-      - run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
+
+      - name: Rebuild dependencies
+        run: yarn install
 
       - name: Publish app
         env:
@@ -44,11 +48,15 @@ jobs:
           cache: yarn
           cache-dependency-path: yarn.lock
 
-      - run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
+
+      - name: Rebuild dependencies
+        run: yarn install
 
       - name: Publish app
         env:
@@ -68,11 +76,15 @@ jobs:
           cache: yarn
           cache-dependency-path: yarn.lock
 
-      - run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
+
+      - name: Rebuild dependencies
+        run: yarn install
 
       - name: Publish app
         env:
@@ -104,6 +116,9 @@ jobs:
       - name: Fix version
         if: github.ref_name == 'main'
         run: yarn fix-version
+
+      - name: Rebuild dependencies
+        run: yarn install
 
       - name: Run check
         run: yarn release

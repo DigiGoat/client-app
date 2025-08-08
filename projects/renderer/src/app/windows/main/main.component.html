@@ -15,11 +15,14 @@
       </ul>
       <ul class="navbar-nav nav pe-2 d-flex justify-content-end align-items-center nav-border w-25">
         <li class="nav-item" tooltip="Publish Changes" advanced="false">
-          <button online-only type="button" class="nav-link position-relative" [disabled]="publishing || !changes" (click)="publish()"> <i
-              class="bi bi-cloud-upload h4"></i>
+          <button online-only type="button" class="nav-link position-relative" [disabled]="publishing || (!localChanges && !remoteChanges)"
+            (click)="publish()"> <i class="bi bi-cloud-upload h4"></i>
             <span class="position-absolute translate-middle badge rounded-pill bg-success opacity-75" style="top: 25% !important;"
-              *ngIf="changes"> {{publishStatus() ||  changes}}<span class="visually-hidden">changes</span>
-            </span>
+              *ngIf="publishStatus() || localChanges || remoteChanges">
+              <span *ngIf="publishStatus()">{{publishStatus()}}</span>
+              <span *ngIf="!publishStatus() && localChanges"><i class="bi bi-arrow-up" *ngIf="remoteChanges"></i>{{localChanges}}</span>
+              <span *ngIf="!publishStatus() && remoteChanges"><i class="bi bi-arrow-down"></i>{{remoteChanges}}</span>
+              <span class="visually-hidden">changes</span></span>
             <div *ngIf="publishing" class="spinner-grow position-absolute top-50 start-50 translate-middle" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
@@ -33,7 +36,7 @@
         <li class="nav-item" tooltip="Reset Changes" advanced>
           <button type="button" class="nav-link position-relative" (click)="reset()"> <i class="bi bi-cloud-slash h4 text-danger"></i>
             <span class="position-absolute translate-middle badge rounded-pill bg-danger opacity-75" style="top: 25% !important;">
-              {{changes}}<span class="visually-hidden">unread messages</span>
+              {{localChanges}}<span class="visually-hidden">unread messages</span>
             </span>
           </button>
         </li>

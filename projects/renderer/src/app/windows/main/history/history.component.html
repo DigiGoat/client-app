@@ -20,7 +20,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let entry of (history?.local?.all)">
+    <tr *ngFor="let entry of (history?.local?.all)" (click)="otherBodyText.classList.toggle('text-truncate')" style="cursor: pointer">
       <th scope="row">
         {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
       </th>
@@ -28,7 +28,7 @@
         {{entry.message}}
       </td>
       <td>
-        <p [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;"></p>
+        <p [innerHTML]="formatBody(entry.body)" style="white-space: pre-wrap;" #otherBodyText class="text-truncate"></p>
       </td>
       <td>
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>

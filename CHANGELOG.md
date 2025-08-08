@@ -1,3 +1,24 @@
+## 5.6.0-beta.1
+* This is the same as `5.5.15-beta.1`, but as a recommended update to go with the accompanying update to the web-ui that allows for lactation data to be synced daily
+
+## 5.5.15-beta.1
+* Fixed a bug causing the status checks to not fix the version correctly when merging into main
+
+## 5.5.14-beta.1
+* Added support for multiple devices!
+  * The app now checks for changes at boot and before publishing
+  * This means that you can now update the website on one device and pick up where you left off on another
+
+## 5.5.13-beta.1
+* Tweaked the release process so that it dosen't use a beta version of the ADGA dependency when deploying a release
+
+## 5.5.12-beta.1
+* Fixed a bug causing changes to not be truncated on the history page for unpublished changes
+
+## 5.5.11-beta.1
+* Updated the ADGA dependency
+  * This significantly speeds up the syncing process when fetching the goats you own
+
 ## 5.5.10-beta.2
 * Reverted the scroll behavior as it wan't user-friendly
 * The box description is still hidden when editing to provide more space for the markdown editor

@@ -1545,7 +1545,7 @@
   dependencies:
     chrome-trace-event "^1.0.3"
 
-"@electron/asar@^3.2.1", "@electron/asar@^3.2.13", "@electron/asar@^3.2.7", "@electron/asar@^3.3.1":
+"@electron/asar@^3.2.1", "@electron/asar@^3.2.13", "@electron/asar@^3.3.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@electron/asar/-/asar-3.4.1.tgz#4e9196a4b54fba18c56cd8d5cac67c5bdc588065"
   integrity sha512-i4/rNPRS84t0vSRa2HorerGRXWyF4vThfHesw0dmcWHp+cspK743UanA0suA5Q5y8kzY2y6YKrvbIUn69BCAiA==
@@ -1584,9 +1584,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -1664,19 +1664,6 @@
     semver "^7.3.5"
     tar "^6.0.5"
     yargs "^17.0.1"
-
-"@electron/universal@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@electron/universal/-/universal-2.0.1.tgz#7b070ab355e02957388f3dbd68e2c3cd08c448ae"
-  integrity sha512-fKpv9kg4SPmt+hY7SVBnIYULE9QJl8L3sCfcBsnqbJwwBwAeTLokJ9TRt9y7bK0JAzIW2y78TVVjvnQEms/yyA==
-  dependencies:
-    "@electron/asar" "^3.2.7"
-    "@malept/cross-spawn-promise" "^2.0.0"
-    debug "^4.3.1"
-    dir-compare "^4.2.0"
-    fs-extra "^11.1.1"
-    minimatch "^9.0.3"
-    plist "^3.1.0"
 
 "@electron/universal@^2.0.1":
   version "2.0.3"
@@ -4176,10 +4163,10 @@ acorn@^8.1.0, acorn@^8.11.0, acorn@^8.14.0, acorn@^8.4.1, acorn@^8.8.1, acorn@^8
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
 
-adga@^3.7.1-beta.1:
-  version "3.7.1-beta.1"
-  resolved "https://registry.yarnpkg.com/adga/-/adga-3.7.1-beta.1.tgz#bf391b0a86394ff9b8062b915a236ff99f90c47d"
-  integrity sha512-Clo6AG2DEk5lzjyDUJ4gpph2xXaxr3j0XVWoJhkiT1fDmehWg2qxyDJPfN4xdpfigXka3gtsglJr3xzBde3/Gg==
+adga@^3.7.2-beta.1:
+  version "3.7.2-beta.1"
+  resolved "https://registry.yarnpkg.com/adga/-/adga-3.7.2-beta.1.tgz#f0d4a8506fcad6f8286b08e9fbf007401d1c17bd"
+  integrity sha512-aORwxU0WHTLHK8JaHnpKyu6QqtzRRfACCcLQIFPLGIhOl6AI1Bs9Vqc5jl48bsjakEA6CGBtxn0xdTrDsD6Gog==
   dependencies:
     axios "^0.26.1"
 
