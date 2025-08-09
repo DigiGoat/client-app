@@ -223,11 +223,12 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false'] });
-    console.debug('Attempting to pull the latest changes...');
-    this.git.pull().then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
     this.checkForUpdates();
   }
   async checkForUpdates() {
+    console.debug('Attempting to pull the latest changes...');
+    await this.git.pull('origin').then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
+
     try {
       console.debug('Checking for upstream remote...');
       const remotes = await this.git.getRemotes();

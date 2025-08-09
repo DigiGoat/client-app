@@ -1,3 +1,6 @@
+## 5.6.0-beta.2
+* Fixed a bug that would cause the app to accidentally (and incorrectly) install updates when checking for changes to the website
+
 ## 5.6.0-beta.1
 * This is the same as `5.5.15-beta.1`, but as a recommended update to go with the accompanying update to the web-ui that allows for lactation data to be synced daily
 
