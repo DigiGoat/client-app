@@ -1,3 +1,8 @@
+## 5.6.1-beta.1
+* The app now automatically checks for web updates every hour (for if you prefer to just leave the app running in the background)
+  * It checks every 5 minutes if the check fails, mainly for if you're offline
+* You can now view version info at the bottom of the settings page
+
 ## 5.6.0-beta.2
 * Fixed a bug that would cause the app to accidentally (and incorrectly) install updates when checking for changes to the website
 
