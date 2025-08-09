@@ -1,3 +1,6 @@
+## 5.6.1-beta.2
+* Added alert for when the app successfully downloads changes from the website
+
 ## 5.6.1-beta.1
 * The app now automatically checks for web updates every hour (for if you prefer to just leave the app running in the background)
   * It checks every 5 minutes if the check fails, mainly for if you're offline
