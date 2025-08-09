@@ -1,3 +1,6 @@
+## 5.6.2-beta.1
+* Fixed a bug with how the adga package version was managed
+
 ## 5.6.1-beta.2
 * Added alert for when the app successfully downloads changes from the website
 
