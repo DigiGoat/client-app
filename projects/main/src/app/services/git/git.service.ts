@@ -227,7 +227,12 @@ export class GitService {
   }
   async checkForUpdates() {
     console.debug('Attempting to pull the latest changes...');
-    await this.git.pull('origin').then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
+    await this.git.pull('origin').then(data => {
+      this.change();
+      if (data.files.length) {
+        dialog.showMessageBox({ message: 'Successfully downloaded changes done to your website!', detail: 'If you don\'t remember making changes on another device, then they\'re likely from lactation records syncing. Go the the history page and check for the author "Digi" to be sure' });
+      }
+    }).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
 
     try {
       console.debug('Checking for upstream remote...');
