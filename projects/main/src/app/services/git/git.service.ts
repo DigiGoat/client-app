@@ -223,11 +223,12 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false'] });
-    console.debug('Attempting to pull the latest changes...');
-    this.git.pull().then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
     this.checkForUpdates();
   }
   async checkForUpdates() {
+    console.debug('Attempting to pull the latest changes...');
+    await this.git.pull('origin').then(() => this.change()).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
+
     try {
       console.debug('Checking for upstream remote...');
       const remotes = await this.git.getRemotes();
@@ -254,6 +255,7 @@ export class GitService {
       }
     } catch (e) {
       console.warn('Failed to Check For Updates (Non-Fatal):', e);
+      this.scheduleUpdateCheck(true);
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {
@@ -277,9 +279,18 @@ export class GitService {
         await this.installUpdates(oldVersion.toString(), newVersion.toString());
       }
     }
+    this.scheduleUpdateCheck();
   }
   async installUpdates(oldVersion: string, newVersion: string) {
     await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
     this.change();
+  }
+
+  existingCheck?: NodeJS.Timeout;
+  scheduleUpdateCheck(quickCheck?: boolean) {
+    clearTimeout(this.existingCheck);
+    this.existingCheck = setTimeout(() => {
+      this.checkForUpdates();
+    }, 1000 * 60 * (quickCheck ? 5 : 60)); // Check every hour (or every 5 minutes if this is a quick check)
   }
 }
