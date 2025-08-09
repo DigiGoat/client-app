@@ -1,3 +1,6 @@
+## 5.6.3-beta.1
+* The version details on the settings page are now updated automatically when web updates are installed
+
 ## 5.6.2-beta.1
 * Fixed a bug with how the adga package version was managed
 
