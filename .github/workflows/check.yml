@@ -34,6 +34,9 @@ jobs:
         if: github.base_ref == 'main'
         run: yarn fix-version
 
+      - name: Rebuild dependencies
+        run: yarn install
+        
       - name: Run check
         run: yarn pull-check
         env:

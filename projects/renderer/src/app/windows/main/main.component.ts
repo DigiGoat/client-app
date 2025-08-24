@@ -13,15 +13,20 @@ import { WindowService } from '../../services/window/window.service';
   standalone: false
 })
 export class MainComponent implements OnInit {
-  changes = 0;
+  localChanges = 0;
+  remoteChanges = 0;
   constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService, private stdioService: StdioService) {
   }
 
   async ngOnInit() {
     this.stdioService.pipeConsole();
-    this.changes = (await this.gitService.getStatus()).ahead;
+    const status = await this.gitService.getStatus();
+    this.localChanges = status.ahead;
+    this.remoteChanges = status.behind;
     this.gitService.onchange = async () => {
-      this.changes = (await this.gitService.getStatus()).ahead;
+      const status = await this.gitService.getStatus();
+      this.localChanges = status.ahead;
+      this.remoteChanges = status.behind;
       this.cdr.detectChanges();
     };
     this.gitService.onprogress = (event) => {
@@ -60,7 +65,7 @@ export class MainComponent implements OnInit {
     this.publishProgress.set(5);
     if ((await this.gitService.getSetup()).token) {
       try {
-        await this.gitService.push();
+        await this.gitService.publish();
         this.publishProgress.set(100);
       } catch (err) {
         console.warn(err);
