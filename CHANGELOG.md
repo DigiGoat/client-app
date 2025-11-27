@@ -1,3 +1,7 @@
+## 6.0.0-beta.2
+* When re-arranging custom pages and goats, the name now stays centered
+* If a custom page is using a default name, it is dimmed and italicized
+
 ## 6.0.0-beta.1
 * Added Support for Custom Pages!
 
