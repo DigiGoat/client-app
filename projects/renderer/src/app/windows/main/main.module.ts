@@ -15,6 +15,7 @@ import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { HistoryComponent } from './history/history.component';
+import { CustomPagesComponent } from './custom-pages/custom-pages.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { HistoryComponent } from './history/history.component';
     GoatLookupComponent,
     BasicGoatListComponent,
     KiddingScheduleComponent,
-    HistoryComponent
+    HistoryComponent,
+    CustomPagesComponent
   ],
   imports: [
     CommonModule,

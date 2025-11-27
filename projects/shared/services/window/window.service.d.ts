@@ -14,4 +14,5 @@ export interface WindowService {
   openImages: (searchQueries: string[]) => Promise<void>;
   refreshMain: () => Promise<void>;
   openImageOptimizer: () => Promise<void>;
+  openCustomPage: (index: number) => Promise<void>;
 }

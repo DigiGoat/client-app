@@ -1,0 +1,15 @@
+<div class="container">
+  <h1 class="text-center flex-grow-1" [class.unsaved]="unsavedChanges">
+    {{customPage.title || 'Custom Page ' + (index + 1)}}:
+  </h1>
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="page-name" [class.unsaved]="isDirty('title')">Custom Page Title</span>
+    <input type="text" class="form-control" aria-describedby="page-name" (ngModelChange)="setParam('title', $event)"
+      [ngModel]="customPage.title" [suggestion]="'Custom Page ' + (index+1)" />
+  </div>
+  <div class="input-group mb-5">
+    <span class="input-group-text" id="page-content" [class.unsaved]="isDirty('content')">Custom Page Content</span>
+    <textarea class="form-control" aria-describedby="page-content" (ngModelChange)="setParam('content', $event)"
+      [ngModel]="customPage.content" markdown markdown-images></textarea>
+  </div>
+</div>

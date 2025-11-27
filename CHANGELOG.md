@@ -1,3 +1,13 @@
+## 6.0.0-beta.2
+* When re-arranging custom pages and goats, the name now stays centered
+* If a custom page is using a default name, it is dimmed and italicized
+
+## 6.0.0-beta.1
+* Added Support for Custom Pages!
+
+## 5.6.3-beta.1
+* The version details on the settings page are now updated automatically when web updates are installed
+
 ## 5.6.2-beta.1
 * Fixed a bug with how the adga package version was managed
 

@@ -20,6 +20,7 @@ export interface GitService {
   commitConfig: (message: string[]) => Promise<void>;
   commitRelated: (message: string[]) => Promise<void>;
   commitKiddingSchedule: (message: string[]) => Promise<void>;
+  commitCustomPages: (message: string[]) => Promise<void>;
   publish: () => Promise<void>;
   reset: () => Promise<void>;
   clean: () => Promise<void>;

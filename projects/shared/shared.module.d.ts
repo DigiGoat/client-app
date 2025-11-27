@@ -2,6 +2,7 @@ import type { IpcMainEvent } from 'electron';
 import type { ADGAService } from './services/adga/adga.service';
 import type { AppService } from './services/app/app.service';
 import type { ConfigService } from './services/config/config.service';
+import type { CustomPagesService } from './services/custom-pages/custom-pages.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
 import type { GoatService } from './services/goat/goat.service';
@@ -23,6 +24,7 @@ export interface SharedModule {
   image: ImageService;
   preview: PreviewService;
   stdio: StdioService;
+  customPages: CustomPagesService;
 }
 
 type WithoutOnKeys<T> = {

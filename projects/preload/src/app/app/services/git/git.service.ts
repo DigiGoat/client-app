@@ -19,6 +19,7 @@ export const GitService: GitServiceType = {
   commitRelated: (message) => ipcRenderer.invoke('git:commitRelated', message),
   commitConfig: (message) => ipcRenderer.invoke('git:commitConfig', message),
   commitKiddingSchedule: (message) => ipcRenderer.invoke('git:commitKiddingSchedule', message),
+  commitCustomPages: (message) => ipcRenderer.invoke('git:commitCustomPages', message),
   publish: () => ipcRenderer.invoke('git:publish'),
   reset: () => ipcRenderer.invoke('git:reset'),
   clean: () => ipcRenderer.invoke('git:clean'),

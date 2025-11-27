@@ -89,7 +89,7 @@ export class AppModule {
         await dialog.showMessageBox({ message: 'App Update Required!', detail: 'Your app is outdated and needs to be updated to continue', type: 'error', buttons: ['OK'] });
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
         app.exit();
-      } else if (webVersion.minor > appVersion.minor && webVersion.major >= appVersion.major) {
+      } else if (webVersion.minor > appVersion.minor && webVersion.major === appVersion.major) {
         const action = await dialog.showMessageBox({ message: 'App Update Recommended!', detail: 'A new version of the app is available, would you like to update now?', type: 'question', buttons: ['Yes', 'No'] });
         if (action.response === 0) {
           shell.openExternal('https://github.com/DigiGoat/client-app/releases');

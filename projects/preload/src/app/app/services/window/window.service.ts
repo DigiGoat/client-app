@@ -15,5 +15,6 @@ export const WindowService: WindowServiceType = {
   setTitle: (title) => ipcRenderer.invoke('window:setTitle', title),
   openImages: (searchQueries) => ipcRenderer.invoke('window:openImages', searchQueries),
   refreshMain: () => ipcRenderer.invoke('window:refreshMain'),
-  openImageOptimizer: () => ipcRenderer.invoke('window:openImageOptimizer')
+  openImageOptimizer: () => ipcRenderer.invoke('window:openImageOptimizer'),
+  openCustomPage: (index) => ipcRenderer.invoke('window:openCustomPage', index)
 };
