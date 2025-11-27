@@ -1,3 +1,7 @@
+## 6.0.1-beta.1
+* Updated bootstrap from `5.3.3` to `5.3.8`
+  * This is a library used for fonts and styles
+
 ## 6.0.0-beta.2
 * When re-arranging custom pages and goats, the name now stays centered
 * If a custom page is using a default name, it is dimmed and italicized
