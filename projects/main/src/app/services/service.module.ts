@@ -11,6 +11,7 @@ import { PreviewService } from './preview/preview.service';
 import { RepoService } from './repo/repo.service';
 import { StdioService } from './stdio/stdio.service';
 import { WindowService } from './window/window.service';
+import { CustomPagesService } from './custom-pages/custom-pages.service';
 
 export class ServiceModule {
   api: BackendSharedModule = {
@@ -25,6 +26,7 @@ export class ServiceModule {
     image: new ImageService().api,
     preview: new PreviewService().api,
     stdio: new StdioService().api,
+    customPages: new CustomPagesService().api,
   };
   constructor() {
     Object.keys(this.api).forEach(service => Object.keys(this.api[service as keyof SharedModule]).forEach(key => ipcMain.handle(`${service}:${key}`, this.api[service as keyof SharedModule][key as keyof SharedModule[keyof SharedModule]])));

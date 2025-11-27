@@ -1,6 +1,7 @@
 import { BrowserWindow, app } from 'electron';
 import { WindowService as WindowServiceType } from '../../../../../shared/services/window/window.service';
 import type { BackendService } from '../../../../../shared/shared.module';
+import { CustomPageWindow } from '../../windows/custom-page/custom-page.window';
 import { GitWindow } from '../../windows/git/git.window';
 import { GoatWindow } from '../../windows/goat/goat.window';
 import { ImageWindow } from '../../windows/image/image.window';
@@ -161,6 +162,29 @@ export class WindowService {
       } else {
         new ImageOptimizeWindow();
       }
+    },
+    openCustomPage: async (_event, index) => {
+      const windows = BrowserWindow.getAllWindows();
+      const window = windows.find(window => window.webContents.getURL().endsWith(`custom-page/${index}`));
+      const otherWindow = windows.find(window => window.webContents.getURL().includes('#/custom-page'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else if (otherWindow) {
+        let attempts = 0;
+        otherWindow.on('close', () => attempts++);
+        otherWindow.on('closed', () => {
+          if (attempts < 3 /*If there are changes, it takes two attempts to close the window*/) {
+            new CustomPageWindow(index);
+          }
+        });
+        otherWindow.close();
+      } else {
+        new CustomPageWindow(index);
+      }
     }
   };
+
 }

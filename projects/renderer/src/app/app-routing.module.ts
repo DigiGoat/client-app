@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'git', loadChildren: () => import('./windows/git/git.module').then(m => m.GitModule) },
   { path: 'goat', loadChildren: () => import('./windows/goat/goat.module').then(m => m.GoatModule) },
   { path: 'login', loadChildren: () => import('./windows/login/login.module').then(m => m.LoginModule) },
-  { path: 'image', loadChildren: () => import('./windows/image/image.module').then(m => m.ImageModule) }
+  { path: 'image', loadChildren: () => import('./windows/image/image.module').then(m => m.ImageModule) },
+  { path: 'custom-page', loadChildren: () => import('./windows/custom-page/custom-page.module').then(m => m.CustomPageModule) }
 ];
 
 @NgModule({

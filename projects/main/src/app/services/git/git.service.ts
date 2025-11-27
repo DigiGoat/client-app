@@ -113,6 +113,10 @@ export class GitService {
       await this.commit(message, 'src/assets/resources/kidding-schedule.json');
       this.change();
     },
+    commitCustomPages: async (_event, message) => {
+      await this.commit(message, 'src/assets/resources/custom-pages.json');
+      this.change();
+    },
     publish: async () => {
       try {
         await this.git.pull();

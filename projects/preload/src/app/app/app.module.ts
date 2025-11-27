@@ -11,6 +11,7 @@ import { PreviewService } from './services/preview/preview.service';
 import { RepoService } from './services/repo/repo.service';
 import { StdioService } from './services/stdio/stdio.service';
 import { WindowService } from './services/window/window.service';
+import { CustomPagesService } from './services/custom-pages/custom-pages.service';
 
 export class AppModule {
   api: SharedModule = {
@@ -24,7 +25,8 @@ export class AppModule {
     app: AppService,
     image: ImageService,
     preview: PreviewService,
-    stdio: StdioService
+    stdio: StdioService,
+    customPages: CustomPagesService,
   };
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);

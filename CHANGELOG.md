@@ -1,3 +1,6 @@
+## 6.0.0-beta.1
+* Added Support for Custom Pages!
+
 ## 5.6.3-beta.1
 * The version details on the settings page are now updated automatically when web updates are installed
 
