@@ -231,12 +231,35 @@ export class GitService {
   }
   async checkForUpdates() {
     console.debug('Attempting to pull the latest changes...');
-    await this.git.pull('origin').then(data => {
+
+    try {
+      // Use rebase=merges so we don't create new merge commits, but keep existing ones.
+      const data = await this.git.pull(['--rebase=merges']);
+
       this.change();
       if (data.files.length) {
-        dialog.showMessageBox({ message: 'Successfully downloaded changes done to your website!', detail: 'If you don\'t remember making changes on another device, then they\'re likely from lactation records syncing. Go the the history page and check for the author "Digi" to be sure' });
+        dialog.showMessageBox({
+          message: 'Successfully downloaded changes done to your website!',
+          detail: 'If you don\'t remember making changes on another device, then they\'re likely from lactation records syncing. Go the the history page and check for the author "Digi" to be sure'
+        });
       }
-    }).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
+    } catch (err) {
+      console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
+
+      // If the pull left us in a conflicted state, abort so JSON files are restored.
+      try {
+        const status = await this.git.status();
+        if (status.conflicted?.length) {
+          console.warn('Conflicts detected during startup pull, aborting rebase/merge...');
+          // Prefer aborting rebase; if that fails, try merge abort.
+          await this.git.rebase((['--abort'])).catch(() =>
+            this.git.merge(['--abort']).catch()
+          );
+        }
+      } catch (abortErr) {
+        console.warn('Failed to inspect/abort conflicted state:', abortErr);
+      }
+    }
 
     try {
       console.debug('Checking for upstream remote...');

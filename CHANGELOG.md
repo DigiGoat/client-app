@@ -1,3 +1,6 @@
+## 6.0.2-beta.1
+* Added LICENSE
+
 ## 6.0.1-beta.1
 * Updated bootstrap from `5.3.3` to `5.3.8`
   * This is a library used for fonts and styles
