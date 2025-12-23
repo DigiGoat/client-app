@@ -6,10 +6,10 @@ import { MainWindow } from '../main/main.window';
 import { Window } from '../window';
 
 export class SetupWindow extends Window {
-  constructor() {
-    super({ resizable: false, width: 600, height: 600, title: 'Setup', fullscreen: false }, 'setup');
+  constructor(payload?: string) {
+    super({ resizable: false, width: 600, height: 600, title: 'Setup', fullscreen: false }, `setup${payload ? `?payload=${payload}` : ''}`);
     this.window.on('closed', async () => {
-      await this.checkVersion();
+      //await this.checkVersion();
       new MainWindow();
     });
   }
@@ -21,7 +21,7 @@ export class SetupWindow extends Window {
         await dialog.showMessageBox({ message: 'App Update Required!', detail: 'Your app is outdated and needs to be updated to continue', type: 'error', buttons: ['OK'] });
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');
         app.exit();
-      } else if (webVersion.minor > appVersion.minor) {
+      } else if (webVersion.minor > appVersion.minor && webVersion.major === appVersion.major) {
         const action = await dialog.showMessageBox({ message: 'App Update Available!', detail: 'A new version of the app is available, would you like to update now?', type: 'question', buttons: ['Yes', 'No'] });
         if (action.response === 0) {
           shell.openExternal('https://github.com/DigiGoat/client-app/releases');

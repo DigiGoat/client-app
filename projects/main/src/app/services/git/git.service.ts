@@ -44,26 +44,16 @@ export class GitService {
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
       await this.git.addConfig('user.name', name || 'Digi');
       await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
+      // Wait to run check until a window is opened since if updates need to be installed it will be handled by the setup window
+      //app.once('browser-window-created', () => {
+      this.checkForUpdates();
+      //});
     },
     updateSetup: async (_event, repo, name, email, token) => {
       await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
-      await this.git.addConfig('user.name', name || 'Digi');
-      await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
-    },
-    setupDemo: async () => {
-      emptyDirSync(this.base);
-      await this.git.clone(`https://github.com/DigiGoat/${app.getVersion().includes('beta') ? 'beta-demo' : 'demo'}.git`, '.');
-      await this.git.addConfig('user.name', 'Digi');
-      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
-    },
-    setupBlank: async () => {
-      emptyDirSync(this.base);
-      await this.git.clone('https://github.com/DigiGoat/web-ui.git', '.', ['--branch', app.getVersion().includes('beta') ? 'beta' : 'main', '--single-branch']);
-      await this.git.addConfig('user.name', 'Digi');
-      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
+      await this.git.addConfig('user.name', name);
+      await this.git.addConfig('user.email', email);
+      await this.checkForUpdates(); // Immediately pull new changes
     },
     version: async () => {
       return await this.git.version();
@@ -119,7 +109,7 @@ export class GitService {
     },
     publish: async () => {
       try {
-        await this.git.pull();
+        await this.checkForUpdates();
       } catch (error) {
         const response = await dialog.showMessageBox({
           message: 'Sync Error',
@@ -230,6 +220,38 @@ export class GitService {
     this.checkForUpdates();
   }
   async checkForUpdates() {
+    await this.pullChanges();
+
+    try {
+      console.debug('Checking for upstream remote...');
+      const remotes = await this.git.getRemotes();
+      if (!remotes.find(remote => remote.name.includes('upstream'))) {
+        console.debug('upstream remote not found, adding...');
+        await this.git.addRemote('upstream', 'https://github.com/DigiGoat/web-ui.git');
+      }
+      console.debug('Fetching upstream...');
+      await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
+      console.debug('Checking for updates...');
+      let unparsedNewVersion = JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version;
+      let unparsedOldVersion = (await readJSON(join(this.base, 'package.json'))).version;
+      if (!app.getVersion().includes('beta')) {
+        unparsedNewVersion = unparsedNewVersion.split('-')[0];
+        unparsedOldVersion = unparsedOldVersion.split('-')[0];
+      }
+      const newVersion = parse(unparsedNewVersion);
+      const oldVersion = parse(unparsedOldVersion);
+      const appVersion = parse(app.getVersion());
+      if (app.isReady()) {
+        this.determineUpdates(oldVersion, newVersion, appVersion);
+      } else {
+        app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
+      }
+    } catch (e) {
+      console.warn('Failed to Check For Updates (Non-Fatal):', e);
+      this.scheduleUpdateCheck(true);
+    }
+  }
+  async pullChanges() {
     console.debug('Attempting to pull the latest changes...');
 
     try {
@@ -259,35 +281,6 @@ export class GitService {
       } catch (abortErr) {
         console.warn('Failed to inspect/abort conflicted state:', abortErr);
       }
-    }
-
-    try {
-      console.debug('Checking for upstream remote...');
-      const remotes = await this.git.getRemotes();
-      if (!remotes.find(remote => remote.name.includes('upstream'))) {
-        console.debug('upstream remote not found, adding...');
-        await this.git.addRemote('upstream', 'https://github.com/DigiGoat/web-ui.git');
-      }
-      console.debug('Fetching upstream...');
-      await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
-      console.debug('Checking for updates...');
-      let unparsedNewVersion = JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version;
-      let unparsedOldVersion = (await readJSON(join(this.base, 'package.json'))).version;
-      if (!app.getVersion().includes('beta')) {
-        unparsedNewVersion = unparsedNewVersion.split('-')[0];
-        unparsedOldVersion = unparsedOldVersion.split('-')[0];
-      }
-      const newVersion = parse(unparsedNewVersion);
-      const oldVersion = parse(unparsedOldVersion);
-      const appVersion = parse(app.getVersion());
-      if (app.isReady()) {
-        this.determineUpdates(oldVersion, newVersion, appVersion);
-      } else {
-        app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
-      }
-    } catch (e) {
-      console.warn('Failed to Check For Updates (Non-Fatal):', e);
-      this.scheduleUpdateCheck(true);
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {

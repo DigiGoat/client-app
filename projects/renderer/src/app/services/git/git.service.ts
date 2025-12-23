@@ -14,8 +14,6 @@ export class GitService {
   isRepo = window.electron.git.isRepo;
   setup = window.electron.git.setup;
   updateSetup = window.electron.git.updateSetup;
-  setupDemo = window.electron.git.setupDemo;
-  setupBlank = window.electron.git.setupBlank;
   version: () => Promise<VersionResult> = window.electron.git.version;
   set onprogress(callback: (event: SimpleGitProgressEvent) => void) {
     window.electron.git.onprogress(callback);

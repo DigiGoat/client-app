@@ -1,4 +1,5 @@
 import { Component, HostListener, signal, type OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { WindowService } from '../../services/window/window.service';
@@ -14,6 +15,14 @@ export class SetupComponent implements OnInit {
   token = '';
   name = '';
   email = '';
+  payloadId?: string;
+  payloadToken?: string;
+  payloadName?: string;
+  payloadEmail?: string;
+  existingID?: string;
+  existingToken?: string;
+  existingName?: string;
+  existingEmail?: string;
   _cloning = false;
   set cloning(cloning: boolean | undefined) {
     if (cloning !== undefined) {
@@ -25,11 +34,11 @@ export class SetupComponent implements OnInit {
     return this._cloning;
   }
   dots = '';
-  constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
+  constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService, private route: ActivatedRoute) { }
   async setup() {
     this.cloning = true;
     try {
-      await this.gitService.setup(this.id, this.name, this.email, this.token);
+      await this.gitService.setup(this.id || 'web-ui', this.name, this.email, this.token);
     } catch (error) {
       await this.gitService.handleError('Clone Failed!', error as Error);
     } finally {
@@ -38,6 +47,7 @@ export class SetupComponent implements OnInit {
     }
   }
   async updateSetup() {
+    this.cloning = true;
     try {
       await this.gitService.updateSetup(this.id, this.name, this.email, this.token);
     } catch (error: unknown) {
@@ -45,29 +55,8 @@ export class SetupComponent implements OnInit {
       await this.dialogService.showMessageBox({ message: 'Failed To Update!', type: 'error', detail: message.split('fatal:').pop() });
       console.error(error);
     } finally {
+      this.cloning = undefined;
       this.windowService.close();
-    }
-  }
-  async setupDemo() {
-    this.cloning = true;
-    try {
-      await this.gitService.setupDemo();
-    } catch (error) {
-      await this.gitService.handleError('Clone Failed!', error as Error);
-    } finally {
-      this.cloning = undefined;
-      setTimeout(this.windowService.close, 1000);
-    }
-  }
-  async setupBlank() {
-    this.cloning = true;
-    try {
-      await this.gitService.setupBlank();
-    } catch (error) {
-      await this.gitService.handleError('Clone Failed!', error as Error);
-    } finally {
-      this.cloning = undefined;
-      setTimeout(this.windowService.close, 1000);
     }
   }
   remoteProgress = signal(0);
@@ -76,7 +65,7 @@ export class SetupComponent implements OnInit {
   cloningProgress = signal('');
   async ngOnInit() {
     this.gitService.onprogress = event => {
-      if (event.method == 'clone') {
+      if (event.method == 'clone' || event.method == 'pull') {
         this.cloningProgress.set(`${event.processed}/${event.total}`);
         switch (event.stage) {
           case 'remote:':
@@ -99,10 +88,25 @@ export class SetupComponent implements OnInit {
       }
     }, 500);
     const setup = await this.gitService.getSetup();
-    this.name = setup.name || '';
-    this.email = setup.email || '';
-    this.id = setup.repo || '';
-    this.token = setup.token || '';
+    this.existingName = setup.name;
+    this.existingEmail = setup.email;
+    this.existingID = setup.repo;
+    this.existingToken = setup.token;
+    const payload = this.route.snapshot.queryParamMap.get('payload');
+    if (payload) {
+      // The payload is encrypted base64 JSON containing repo, token, name, and email. To decrypt all numbers are flipped (1 is 9, 2 is 8, etc)
+      const decryptedPayload = payload.replace(/\d/g, (digit) => (9 - parseInt(digit)).toString());
+      const urlPayload = JSON.parse(Buffer.from(decryptedPayload, 'base64').toString('utf-8'));
+      this.payloadId = urlPayload.repo;
+      this.payloadToken = urlPayload.token;
+      this.payloadName = urlPayload.name;
+      this.payloadEmail = urlPayload.email;
+    }
+
+    this.id = this.payloadId || (this.existingID == 'web-ui' ? '' : this.existingID) || '';
+    this.token = this.payloadToken || this.existingToken || '';
+    this.name = this.existingName || this.payloadName || '';
+    this.email = this.existingEmail || this.payloadEmail || '';
   }
   advanced = false;
   @HostListener('document:keydown', ['$event']) handleKeydownEvent(event: KeyboardEvent) {

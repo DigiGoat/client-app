@@ -1,3 +1,13 @@
+## 6.0.3-beta.1
+* Improved web update checks
+  * Publishing now runs the same update check flow (pull + upstream version check) instead of a plain pull
+* Improved Setup window
+  * Added support for an optional encrypted `payload` query param to prefill Website ID, token, name, and email
+  * Website ID and token fields are only shown when updating an existing setup or when a payload is provided
+  * Removed the demo/blank setup options and default setup now falls back to cloning `web-ui` if no ID is provided
+  * Made pulling upstream changes a part of the setup/update process to ensure the latest changes are always pulled
+* Fixed the "App Update Available" prompt to only trigger when the major version matches
+
 ## 6.0.2-beta.1
 * Added LICENSE
 
