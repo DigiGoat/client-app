@@ -1,3 +1,8 @@
+## 6.0.4-beta.1
+* Added the ability to open the setup window via deep link
+  * The link format is `digigoat://setup?payload=ENCRYPTED_PAYLOAD_HERE`
+  * The payload is an optional encrypted base64 JSON object containing `repo`, `token`, `name`, and `email`
+
 ## 6.0.3-beta.1
 * Improved web update checks
   * Publishing now runs the same update check flow (pull + upstream version check) instead of a plain pull

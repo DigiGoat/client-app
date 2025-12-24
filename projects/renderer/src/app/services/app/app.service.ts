@@ -13,4 +13,5 @@ export class AppService {
   inspectDirectory = window.electron.app.inspectDirectory;
   openMarkdown = window.electron.app.openMarkdown;
   platform = window.electron.app.platform;
+  base64Decode = window.electron.app.base64Decode;
 }

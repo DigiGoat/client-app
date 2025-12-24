@@ -1,11 +1,13 @@
 import { BrowserWindow, Menu, app, dialog, shell, type MenuItemConstructorOptions } from 'electron';
 import { readJSON } from 'fs-extra';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import parse from 'semver/functions/parse';
 import { ServiceModule } from './services/service.module';
 import { MainWindow } from './windows/main/main.window';
+import { SetupWindow } from './windows/setup/setup.window';
 
 export class AppModule {
+  openedByDeepLink = false;
   constructor() {
     // Handle creating/removing shortcuts on Windows when installing/uninstalling.
     if (require('electron-squirrel-startup')) {
@@ -51,13 +53,15 @@ export class AppModule {
     Menu.setApplicationMenu(menu);
 
 
-
+    this.configureDeepLink();
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', async () => {
-      await this.checkVersion();
-      new MainWindow();
+      if (!this.openedByDeepLink) {
+        await this.checkVersion();
+        new MainWindow();
+      }
     });
 
     // Quit when all windows are closed, except on macOS. There, it's common
@@ -98,5 +102,61 @@ export class AppModule {
     } catch (e) {
       console.warn('Failed to check for updates with error:', e);
     }
+  }
+
+  configureDeepLink() {
+    if (process.defaultApp) {
+      if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient('digigoat', process.execPath, [resolve(process.argv[1])]);
+      }
+    } else {
+      app.setAsDefaultProtocolClient('digigoat');
+    }
+    app.on('open-url', (event, url) => {
+      this.handleDeepLink(new URL(url));
+    });
+    const gotTheLock = app.requestSingleInstanceLock();
+
+    if (!gotTheLock) {
+      app.quit();
+    } else {
+      const url = process.argv.find(arg => arg.startsWith('digigoat://'));
+      if (url) {
+        this.handleDeepLink(new URL(url));
+      }
+      app.on('second-instance', (event, commandLine) => {
+        const url = commandLine.find(arg => arg.startsWith('digigoat://'));
+        if (url) {
+          this.handleDeepLink(new URL(url));
+        }
+      });
+    }
+  }
+
+  handleDeepLink(url: URL) {
+    const handleUrl = () => {
+      switch (url.host) {
+        case 'setup':
+          this.prepareSetupWindow(url.searchParams.get('payload') || '');
+          break;
+        default:
+          break;
+      }
+    };
+    if (app.isReady()) {
+      handleUrl();
+    } else {
+      this.openedByDeepLink = true;
+      app.once('ready', handleUrl);
+    }
+
+  }
+
+  prepareSetupWindow(payload: string) {
+    app.once('will-quit', event => {
+      event.preventDefault();
+      new SetupWindow(payload);
+    });
+    app.quit();
   }
 }

@@ -1,5 +1,6 @@
 import { Component, HostListener, signal, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { WindowService } from '../../services/window/window.service';
@@ -34,7 +35,7 @@ export class SetupComponent implements OnInit {
     return this._cloning;
   }
   dots = '';
-  constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService, private route: ActivatedRoute) { }
+  constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService, private route: ActivatedRoute, private appService: AppService) { }
   async setup() {
     this.cloning = true;
     try {
@@ -96,7 +97,7 @@ export class SetupComponent implements OnInit {
     if (payload) {
       // The payload is encrypted base64 JSON containing repo, token, name, and email. To decrypt all numbers are flipped (1 is 9, 2 is 8, etc)
       const decryptedPayload = payload.replace(/\d/g, (digit) => (9 - parseInt(digit)).toString());
-      const urlPayload = JSON.parse(Buffer.from(decryptedPayload, 'base64').toString('utf-8'));
+      const urlPayload = JSON.parse(await this.appService.base64Decode(decryptedPayload));
       this.payloadId = urlPayload.repo;
       this.payloadToken = urlPayload.token;
       this.payloadName = urlPayload.name;
