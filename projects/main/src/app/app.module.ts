@@ -151,12 +151,15 @@ export class AppModule {
     }
 
   }
-
   prepareSetupWindow(payload: string) {
+    let activeSetup = true;
     app.once('will-quit', event => {
-      event.preventDefault();
-      new SetupWindow(payload);
+      if (activeSetup) {
+        event.preventDefault();
+        new SetupWindow(payload);
+      }
     });
     app.quit();
+    app.once('before-quit', () => app.once('before-quit', () => activeSetup = false)); //If the app is being told to quit again, then another window is at play. (Two quit's is okay though because that just means that changes are being saved)
   }
 }

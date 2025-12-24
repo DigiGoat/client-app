@@ -52,10 +52,9 @@
       <input name="email" type="email" class="form-control" [class.is-valid]="email" [class.is-invalid]="!email" id="email" required
         placeholder="Used For Identification Purposes When Publishing Changes" [(ngModel)]="email" email>
     </div>
-    <button [disabled]="!name || !email" type="button" class="btn btn-info mt-4" [advanced]="existingID" (click)="setup()">Setup <i
-        class="bi bi-cloud-download"></i></button>
-    <button (click)="updateSetup()"
-      [disabled]="!existingID || !id || (token && !token.startsWith('github_pat_')) || !name || !email || (id === existingID)" type="button"
-      class="btn btn-info mt-4" [advanced]="!existingID">Update <i class="bi bi-cloud-plus"></i></button>
+    <button [disabled]="!name || !email || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info mt-4"
+      [advanced]="existingID" (click)="setup()">Setup <i class="bi bi-cloud-download"></i></button>
+    <button (click)="updateSetup()" [disabled]="!existingID || !id || (token && !token.startsWith('github_pat_')) || !name || !email"
+      type="button" class="btn btn-info mt-4" [advanced]="!existingID">Update <i class="bi bi-cloud-plus"></i></button>
   </form>
 </div>

@@ -1,3 +1,12 @@
+## 6.0.4-beta.2
+* Fixed multiple bugs with the setup window
+  * The setup window would sometimes not do anything if it was already open and a deep link was used
+  * The app would sometimes open a main window after quitting from the setup window (this bug blocked the app from quitting)
+  * Fixed how the setup window handles multiple quit's being emitted if there are unsaved changes
+* Moved logic that blocks multiple identical windows from the window service to the window base
+* Updated the version guard to also prompt recommended updates, not just requiring major ones
+* Tweaked some bugs with the update button being disabled in the setup window
+
 ## 6.0.4-beta.1
 * Added the ability to open the setup window via deep link
   * The link format is `digigoat://setup?payload=ENCRYPTED_PAYLOAD_HERE`

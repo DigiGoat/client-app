@@ -7,10 +7,14 @@ import { Window } from '../window';
 
 export class SetupWindow extends Window {
   constructor(payload?: string) {
-    super({ resizable: false, width: 600, height: 600, title: 'Setup', fullscreen: false }, `setup${payload ? `?payload=${payload}` : ''}`);
+    super(`setup${payload ? `?payload=${payload}` : ''}`, { resizable: false, width: 600, height: 600, title: 'Setup', fullscreen: false });
+    let quitRequested = false;
+    app.on('before-quit', () => quitRequested = true);
     this.window.on('closed', async () => {
       //await this.checkVersion();
-      new MainWindow();
+      if (!quitRequested) { //Only open main window if setup was closed normally. If the app is quitting we don't want to open a new window
+        new MainWindow();
+      }
     });
   }
   async checkVersion() {

@@ -4,7 +4,7 @@ import { Window } from '../window';
 
 export class LoginWindow extends Window {
   constructor() {
-    super({ resizable: false, width: 500, height: 500, title: 'ADGA Login', fullscreen: false }, 'login');
+    super('login', { resizable: false, width: 500, height: 500, title: 'ADGA Login', fullscreen: false });
     try {
       app.setSecureKeyboardEntryEnabled(true);
     } catch (e) {
