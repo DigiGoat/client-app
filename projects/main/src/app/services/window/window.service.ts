@@ -8,6 +8,7 @@ import { ImageWindow } from '../../windows/image/image.window';
 import { ImageOptimizeWindow } from '../../windows/image/optimize/optimize.window';
 import { LoginWindow } from '../../windows/login/login.window';
 import { MainWindow } from '../../windows/main/main.window';
+import { SettingsWindow } from '../../windows/settings/settings.window';
 import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
@@ -24,48 +25,19 @@ export class WindowService {
       window.close();
     },
     openSetup: async () => {
-      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/setup'));
-      if (window) {
-        if (window.isMinimized()) {
-          window.restore();
-        }
-        window.focus();
-      } else {
-        new SetupWindow();
-      }
+      new SetupWindow();
     },
     openMain: async () => {
-      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/main'));
-      if (window) {
-        if (window.isMinimized()) {
-          window.restore();
-        }
-        window.focus();
-      } else {
-        new MainWindow();
-      }
+      new MainWindow();
+    },
+    openSettings: async () => {
+      new SettingsWindow();
     },
     openGit: async () => {
-      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/git'));
-      if (window) {
-        if (window.isMinimized()) {
-          window.restore();
-        }
-        window.focus();
-      } else {
-        new GitWindow();
-      }
+      new GitWindow();
     },
     openLogin: async () => {
-      const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes('#/login'));
-      if (window) {
-        if (window.isMinimized()) {
-          window.restore();
-        }
-        window.focus();
-      } else {
-        new LoginWindow();
-      }
+      new LoginWindow();
     },
     quit: async (_event, relaunch) => {
       if (relaunch) {

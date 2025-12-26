@@ -3,15 +3,16 @@ import type { BackendSharedModule, SharedModule } from '../../../../shared/share
 import { ADGAService } from './adga/adga.service';
 import { AppService } from './app/app.service';
 import { ConfigService } from './config/config.service';
+import { CustomPagesService } from './custom-pages/custom-pages.service';
 import { DialogService } from './dialog/dialog.service';
 import { GitService } from './git/git.service';
 import { GoatService } from './goat/goat.service';
 import { ImageService } from './image/image.service';
 import { PreviewService } from './preview/preview.service';
 import { RepoService } from './repo/repo.service';
+import { SettingsService } from './settings/settings.service';
 import { StdioService } from './stdio/stdio.service';
 import { WindowService } from './window/window.service';
-import { CustomPagesService } from './custom-pages/custom-pages.service';
 
 export class ServiceModule {
   api: BackendSharedModule = {
@@ -19,6 +20,7 @@ export class ServiceModule {
     git: new GitService().api,
     window: new WindowService().api,
     config: new ConfigService().api,
+    settings: new SettingsService().api,
     goat: new GoatService().api,
     adga: new ADGAService().api,
     repo: new RepoService().api,

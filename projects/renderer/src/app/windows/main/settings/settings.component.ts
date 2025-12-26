@@ -38,4 +38,7 @@ export class SettingsComponent implements OnInit {
   async openOptimizer() {
     await this.windowService.openImageOptimizer();
   }
+  async openSettings() {
+    await this.windowService.openSettings();
+  }
 }

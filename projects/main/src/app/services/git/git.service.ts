@@ -44,26 +44,16 @@ export class GitService {
       await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
       await this.git.addConfig('user.name', name || 'Digi');
       await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
+      // Wait to run check until a window is opened since if updates need to be installed it will be handled by the setup window
+      //app.once('browser-window-created', () => {
+      this.checkForUpdates();
+      //});
     },
     updateSetup: async (_event, repo, name, email, token) => {
       await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
-      await this.git.addConfig('user.name', name || 'Digi');
-      await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
-    },
-    setupDemo: async () => {
-      emptyDirSync(this.base);
-      await this.git.clone(`https://github.com/DigiGoat/${app.getVersion().includes('beta') ? 'beta-demo' : 'demo'}.git`, '.');
-      await this.git.addConfig('user.name', 'Digi');
-      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
-    },
-    setupBlank: async () => {
-      emptyDirSync(this.base);
-      await this.git.clone('https://github.com/DigiGoat/web-ui.git', '.', ['--branch', app.getVersion().includes('beta') ? 'beta' : 'main', '--single-branch']);
-      await this.git.addConfig('user.name', 'Digi');
-      await this.git.addConfig('user.email', 'Digi@DigiGoat.farm');
-      await this.checkForUpdates();
+      await this.git.addConfig('user.name', name);
+      await this.git.addConfig('user.email', email);
+      await this.checkForUpdates(); // Immediately pull new changes
     },
     version: async () => {
       return await this.git.version();
@@ -105,6 +95,11 @@ export class GitService {
       this.change();
 
     },
+    commitSettings: async (_event, message) => {
+      await this.commit(message, 'src/assets/resources/settings.json');
+      this.change();
+
+    },
     commitRelated: async (_event, message) => {
       await this.commit(message, 'src/assets/resources/related.json');
       this.change();
@@ -119,7 +114,7 @@ export class GitService {
     },
     publish: async () => {
       try {
-        await this.git.pull();
+        await this.checkForUpdates();
       } catch (error) {
         const response = await dialog.showMessageBox({
           message: 'Sync Error',
@@ -230,13 +225,7 @@ export class GitService {
     this.checkForUpdates();
   }
   async checkForUpdates() {
-    console.debug('Attempting to pull the latest changes...');
-    await this.git.pull('origin').then(data => {
-      this.change();
-      if (data.files.length) {
-        dialog.showMessageBox({ message: 'Successfully downloaded changes done to your website!', detail: 'If you don\'t remember making changes on another device, then they\'re likely from lactation records syncing. Go the the history page and check for the author "Digi" to be sure' });
-      }
-    }).catch(err => console.warn('(Non-Fatal) Startup Pull Failed with Error:', err));
+    await this.pullChanges();
 
     try {
       console.debug('Checking for upstream remote...');
@@ -265,6 +254,38 @@ export class GitService {
     } catch (e) {
       console.warn('Failed to Check For Updates (Non-Fatal):', e);
       this.scheduleUpdateCheck(true);
+    }
+  }
+  async pullChanges() {
+    console.debug('Attempting to pull the latest changes...');
+
+    try {
+      // Use rebase=merges so we don't create new merge commits, but keep existing ones.
+      const data = await this.git.pull(['--rebase=merges']);
+
+      this.change();
+      if (data.files.length) {
+        dialog.showMessageBox({
+          message: 'Successfully downloaded changes done to your website!',
+          detail: 'If you don\'t remember making changes on another device, then they\'re likely from lactation records syncing. Go the the history page and check for the author "Digi" to be sure'
+        });
+      }
+    } catch (err) {
+      console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
+
+      // If the pull left us in a conflicted state, abort so JSON files are restored.
+      try {
+        const status = await this.git.status();
+        if (status.conflicted?.length) {
+          console.warn('Conflicts detected during startup pull, aborting rebase/merge...');
+          // Prefer aborting rebase; if that fails, try merge abort.
+          await this.git.rebase((['--abort'])).catch(() =>
+            this.git.merge(['--abort']).catch()
+          );
+        }
+      } catch (abortErr) {
+        console.warn('Failed to inspect/abort conflicted state:', abortErr);
+      }
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {

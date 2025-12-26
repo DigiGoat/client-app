@@ -8,4 +8,5 @@ export interface AppService {
   inspectDirectory: (path: string) => Promise<string[]>;
   openMarkdown: () => Promise<void>;
   platform: NodeJS.Platform;
+  base64Decode: (data: string) => Promise<string>;
 }

@@ -27,13 +27,13 @@
 </div>
 <div class="container text-center d-flex flex-column justify-content-center vh-100" *ngIf="!cloning">
   <h1>Setup Your Website:</h1>
-  <form (ngSubmit)="setup()">
-    <div>
+  <form (ngSubmit)="existingID ? updateSetup() :  setup()">
+    <div *ngIf="existingID || payloadId" class="mb-4">
       <label for="url" class="form-label">Website ID:</label>
       <input name="id" type="text" class="form-control" [class.is-valid]="!!id" [class.is-invalid]="!id" id="url" required
         placeholder="ex. LilPilchuckCreek" [(ngModel)]="id">
     </div>
-    <div>
+    <div *ngIf="existingID || payloadId" class="mb-4">
       <label for="token" class="form-label">Access Token:</label>
       <input name="token" type="text" class="form-control" [class.is-valid]="token.startsWith('github_pat_') && token.length === 93"
         [class.is-invalid]="!token.startsWith('github_pat_') || token.length !== 93" id="token" placeholder="github_pat_"
@@ -42,25 +42,23 @@
         {{!token ? 'Please Specify Your Token' : !token.startsWith('github_pat_') ? 'Tokens Must Start With `github_pat_`' :  'Tokens Must Be 93 Characters Long'}}
       </div>
     </div>
-    <div>
+    <div class="mb-4">
       <label for="name" class="form-label">Name:</label>
       <input name="name" type="text" class="form-control" [class.is-valid]="!!name" [class.is-invalid]="!name" id="name" required
         placeholder="Used For Identification Purposes When Publishing Changes" [(ngModel)]="name">
     </div>
-    <div>
+    <div class="mb-4">
       <label for="email" class="form-label">Email:</label>
       <input name="email" type="email" class="form-control" [class.is-valid]="email" [class.is-invalid]="!email" id="email" required
         placeholder="Used For Identification Purposes When Publishing Changes" [(ngModel)]="email" email>
     </div>
-    <button [disabled]="!id || (token && !token.startsWith('github_pat_')) || !name || !email" type="submit" class="btn btn-info mt-4"
-      advanced="false">Setup <i class="bi bi-cloud-download"></i></button>
-    <button (click)="updateSetup()" [disabled]="!id || (token && !token.startsWith('github_pat_')) || !name || !email" type="button"
-      class="btn btn-info mt-4" advanced>Update <i class="bi bi-cloud-plus"></i></button>
+    <div class="form-text">Note that your name and email are only used for identification purposes when publishing changes. <span
+        *ngIf="!id">This means that until you subscribe to DigiGoat and publish your website, your information is not shared. Anything you
+        do right now is for you and you only </span> </div>
+    <button [disabled]="!name || !email || (token && !token.startsWith('github_pat_'))" type="button" class="btn btn-info mt-4"
+      [advanced]="existingID" (click)="setup()">Get Started <i class="bi bi-cloud-download"></i></button>
+    <button (click)="updateSetup()" [disabled]="!existingID || !id || (token && !token.startsWith('github_pat_')) || !name || !email"
+      type="button" class="btn btn-info mt-4" [advanced]="!existingID">Configure <i class="bi bi-cloud-plus"></i></button>
+    <button type="submit" class="d-none">Hidden button to enable ngSubmit binding</button>
   </form>
-  <h3 class="pt-4">OR:</h3>
-  <div>
-    <button (click)="setupDemo()" type="button" class="btn btn-warning me-3">Preview The Demo <i
-        class="bi bi-cloud-arrow-down-fill"></i></button>
-    <button (click)="setupBlank()" type="button" class="btn btn-warning">Start From Scratch <i class="bi bi-cloud-arrow-down"></i></button>
-  </div>
 </div>

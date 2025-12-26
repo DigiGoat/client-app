@@ -9,6 +9,7 @@ export class WindowService {
   close = window.electron.window.close;
   openSetup = window.electron.window.openSetup;
   openMain = window.electron.window.openMain;
+  openSettings = window.electron.window.openSettings;
   openGit = window.electron.window.openGit;
   openLogin = window.electron.window.openLogin;
   quit = window.electron.window.quit;

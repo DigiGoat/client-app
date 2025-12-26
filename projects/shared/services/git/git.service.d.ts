@@ -6,8 +6,6 @@ export interface GitService {
   isRepo: () => Promise<boolean>;
   setup: (repo: string, name: string, email: string, token?: string) => Promise<void>;
   updateSetup: (repo: string, name: string, email: string, token?: string) => Promise<void>;
-  setupDemo: () => Promise<void>;
-  setupBlank: () => Promise<void>;
   onprogress: (callback: (event: SimpleGitProgressEvent) => void) => void;
   version: () => Promise<VersionResult>;
   install: () => Promise<void>;
@@ -18,6 +16,7 @@ export interface GitService {
   commitReferences: (message: string[]) => Promise<void>;
   commitForSale: (message: string[]) => Promise<void>;
   commitConfig: (message: string[]) => Promise<void>;
+  commitSettings: (message: string[]) => Promise<void>;
   commitRelated: (message: string[]) => Promise<void>;
   commitKiddingSchedule: (message: string[]) => Promise<void>;
   commitCustomPages: (message: string[]) => Promise<void>;

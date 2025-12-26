@@ -6,6 +6,12 @@ import type { ForgeConfig } from '@electron-forge/shared-types';
 
 const config: ForgeConfig = {
   packagerConfig: {
+    protocols: [
+      {
+        name: 'DigiGoat',
+        schemes: ['digigoat']
+      }
+    ],
     asar: {
       unpack: '**/node_modules/{sharp,@img}/**/*'
     },

@@ -9,4 +9,5 @@ export const AppService: AppServiceType = {
   inspectDirectory: path => ipcRenderer.invoke('app:inspectDirectory', path),
   openMarkdown: () => ipcRenderer.invoke('app:openMarkdown'),
   platform: process.platform,
+  base64Decode: (data: string) => ipcRenderer.invoke('app:base64Decode', data),
 };

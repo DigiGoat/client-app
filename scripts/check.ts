@@ -12,12 +12,16 @@ import packageJson from '../package.json';
 const origin = `origin/${process.env['GITHUB_BASE_REF']}`;
 
 const ci = !!process.env['CI'];
+if (ci) {
+  console.log('::group::Starting Pre Check');
+}
 const log = {
   debug: (...message: unknown[]): void => console.debug(chalk.dim('>', ...message)),
-  info: (...message: unknown[]): void => console.log(...message),
+  info: (...message: unknown[]): void => ci ? console.log(`::endgroup::\n::group::${message.shift()}\n`, ...message) : console.log(...message),
   warn: (...message: unknown[]): void => console.warn(`${ci ? '::warning::' : ''}${chalk.yellowBright(...message)}`),
   error: (...message: unknown[]): void => console.error(`${ci ? '::error::' : ''}${chalk.redBright(...message)}`),
-  success: (...message: unknown[]): void => console.log(chalk.greenBright(...message))
+  success: (...message: unknown[]): void => console.log(chalk.greenBright(...message)),
+  notice: (...message: unknown[]): void => console.log(ci ? '::notice::' : '', chalk.cyanBright(...message)),
 };
 if (!ci) {
   log.error('This workflow may only be run by a pull request!');
@@ -109,13 +113,13 @@ async function checkChangelog() {
 }
 (async () => {
   try {
-    console.log('Checking the branch...');
+    log.info('Checking the branch...');
     await checkBranch();
-    console.log('Checking the version...');
+    log.info('Checking the version...');
     await checkVersion();
-    console.log('Checking dependency versions...');
+    log.info('Checking dependency versions...');
     await checkDependencyVersions();
-    console.log('Previewing the changelog...');
+    log.info('Previewing the changelog...');
     await checkChangelog();
     if (success) {
       log.success('Pre-Check Passed');
@@ -136,8 +140,12 @@ async function checkChangelog() {
     }
     process.exitCode = 1;
   }
-  console.log('Posting the summary...');
+  log.info('Posting the summary...');
   await postSummary();
+  if (ci) {
+    console.log('::endgroup::');
+  }
+  log.success('Done.');
 })();
 
 async function namePullRequest(changes: string) {

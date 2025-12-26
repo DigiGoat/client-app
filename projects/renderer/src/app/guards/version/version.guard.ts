@@ -79,6 +79,11 @@ export const VersionGuard: CanActivateFn = async () => {
       await windowService.quit();
     }
     return false;
+  } else if (repoVersion && repoVersion.minor > appVersion.minor && repoVersion.major === appVersion.major) {
+    const action = await dialogService.showMessageBox({ message: 'App Update Available!', detail: 'A new version of the app is available, would you like to update now?', type: 'question', buttons: ['Yes', 'No'] });
+    if (action.response === 0) {
+      appService.openLatest();
+    }
   }
   return true;
 };

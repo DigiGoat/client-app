@@ -4,7 +4,15 @@ import { join } from 'path';
 export class Window {
   private base = join(__dirname, '../../../');
   protected window?: BrowserWindow;
-  constructor(options?: BrowserWindowConstructorOptions, path?: string) {
+  constructor(path: string, options?: BrowserWindowConstructorOptions) {
+    const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes(`#/${path}`));
+    if (window) {
+      if (window.isMinimized()) {
+        window.restore();
+      }
+      window.focus();
+      return;
+    }
     this.window = new BrowserWindow({
       show: false,
       backgroundColor: 'hsl(230, 100%, 10%)',
@@ -74,5 +82,17 @@ export class Window {
 
       menu.popup();
     });
+    if (path !== 'main') {
+      let quitRequested = false;
+      app.on('before-quit', () => quitRequested = true);
+      this.window.on('closed', () => {
+        // If the user opened Settings directly (or closed everything else), ensure they aren't left with no windows.
+        if (BrowserWindow.getAllWindows().length === 0 && !quitRequested) {
+          import('./main/main.window').then(({ MainWindow }) => {
+            new MainWindow();
+          });
+        }
+      });
+    }
   }
 }

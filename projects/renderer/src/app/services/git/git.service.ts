@@ -14,8 +14,6 @@ export class GitService {
   isRepo = window.electron.git.isRepo;
   setup = window.electron.git.setup;
   updateSetup = window.electron.git.updateSetup;
-  setupDemo = window.electron.git.setupDemo;
-  setupBlank = window.electron.git.setupBlank;
   version: () => Promise<VersionResult> = window.electron.git.version;
   set onprogress(callback: (event: SimpleGitProgressEvent) => void) {
     window.electron.git.onprogress(callback);
@@ -27,6 +25,7 @@ export class GitService {
   commitReferences = window.electron.git.commitReferences;
   commitForSale = window.electron.git.commitForSale;
   commitConfig = window.electron.git.commitConfig;
+  commitSettings = window.electron.git.commitSettings;
   commitRelated = window.electron.git.commitRelated;
   commitKiddingSchedule = window.electron.git.commitKiddingSchedule;
   commitCustomPages = window.electron.git.commitCustomPages;
