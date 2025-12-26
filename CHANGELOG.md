@@ -6,6 +6,7 @@
   * Increased the padding between fields
   * Added a note about how the name and email are used
   * Fixed a bug causing hitting enter to not submit the form
+* Upgraded from MacOS 13 to MacOS 15 for the macOS intel build
 
 
 ## 6.0.4-beta.2
