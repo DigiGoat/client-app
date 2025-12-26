@@ -25,6 +25,7 @@ export class GitService {
   commitReferences = window.electron.git.commitReferences;
   commitForSale = window.electron.git.commitForSale;
   commitConfig = window.electron.git.commitConfig;
+  commitSettings = window.electron.git.commitSettings;
   commitRelated = window.electron.git.commitRelated;
   commitKiddingSchedule = window.electron.git.commitKiddingSchedule;
   commitCustomPages = window.electron.git.commitCustomPages;

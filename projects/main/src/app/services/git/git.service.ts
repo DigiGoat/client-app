@@ -95,6 +95,11 @@ export class GitService {
       this.change();
 
     },
+    commitSettings: async (_event, message) => {
+      await this.commit(message, 'src/assets/resources/settings.json');
+      this.change();
+
+    },
     commitRelated: async (_event, message) => {
       await this.commit(message, 'src/assets/resources/related.json');
       this.change();

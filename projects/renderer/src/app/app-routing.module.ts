@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'goat', loadChildren: () => import('./windows/goat/goat.module').then(m => m.GoatModule) },
   { path: 'login', loadChildren: () => import('./windows/login/login.module').then(m => m.LoginModule) },
   { path: 'image', loadChildren: () => import('./windows/image/image.module').then(m => m.ImageModule) },
-  { path: 'custom-page', loadChildren: () => import('./windows/custom-page/custom-page.module').then(m => m.CustomPageModule) }
+  { path: 'custom-page', loadChildren: () => import('./windows/custom-page/custom-page.module').then(m => m.CustomPageModule) },
+  { path: 'settings', loadChildren: () => import('./windows/settings/settings.module').then(m => m.SettingsModule) }
 ];
 
 @NgModule({

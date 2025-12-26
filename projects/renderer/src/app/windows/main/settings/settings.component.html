@@ -1,15 +1,26 @@
 <h1 class="text-center">App Settings:</h1>
 <div class="container">
-  <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
+  <div class="row px-3 row-cols-3  row-cols-xxl-4 justify-content-around">
     <div class="mb-3 col text-center ">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="openOptimizer()"> Optimize Images <i
           class="bi bi-magic"></i></button>
+      <div class="form-text">Image optimization is run automatically now, this is here for backwards-compatibility</div>
     </div>
     <div class="mb-3 col text-center ">
-      <button class="btn btn-secondary color-scheme-quaternary w-75" type="button" (click)="openLogin()"> ADGA Account </button>
+      <button class="btn btn-secondary color-scheme-quaternary w-100" type="button" (click)="openLogin()"> ADGA Account <i
+          class="bi bi-person-circle"></i></button>
+      <div class="form-text">This button's safe, use it to log in or switch ADGA account's</div>
+    </div>
+    <div class="mb-3 col text-center">
+      <button class="btn btn-secondary color-scheme-quaternary w-100" type="button" (click)="openSettings()"> Website Settings <i
+          class="bi bi-sliders"></i>
+      </button>
+      <div class="form-text">Some technical stuff for your website, you shouldn't ever have to edit anything here</div>
     </div>
     <div class="mb-3 col text-center ">
-      <button class="btn btn-warning w-75" type="button" (click)="openSetup()"> Switch Website's </button>
+      <button class="btn btn-warning w-100" type="button" (click)="openSetup()"> Switch Website's </button>
+      <div class="form-text text-warning">WARNING: Website switching should not be done manually, it may cause data loss. Only go here if
+        instructed</div>
     </div>
     <div class="mb-3 col" advanced>
       <div class="input-group">

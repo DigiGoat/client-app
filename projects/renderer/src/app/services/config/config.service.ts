@@ -124,40 +124,6 @@ export class ConfigService {
     }
     this.config = { shortTitle: shortTitle };
   }
-  get link(): string {
-    if (this.config['link']) {
-      return `${this.config['link']}${(this.config['link'] as string).endsWith('/') ? '' : '/'}`;
-    }
-    return '';
-  }
-  get analytics(): Analytics {
-    if (this.config['analytics']) {
-      return this.config['analytics'] as Analytics;
-    }
-    return {};
-  }
-  set analytics(analytics: Analytics) {
-    this.config = {
-      analytics: {
-        ...(typeof this.config['analytics'] === 'object' ? this.config['analytics'] : {}),
-        ...analytics
-      }
-    };
-  }
-  get firebase(): Firebase {
-    if (this.config['firebase']) {
-      return this.config['firebase'] as Firebase;
-    }
-    return {};
-  }
-  set firebase(firebase: Firebase) {
-    this.config = {
-      firebase: {
-        ...(typeof this.config['firebase'] === 'object' ? this.config['firebase'] : {}),
-        ...firebase
-      }
-    };
-  }
   get colors(): ColorScheme {
     if (this.config['colors']) {
       return this.config['colors'] as ColorScheme;
@@ -235,7 +201,6 @@ export class ConfigService {
 }
 
 
-type Analytics = { gtag?: string, clarity?: string; };
 type ColorScheme = {
   background?: 'wood';
   main?: string;
@@ -250,4 +215,3 @@ type ColorScheme = {
   };
 };
 type Socials = { facebook?: string, instagram?: string, threads?: string; };
-type Firebase = { apiKey?: string, messagingSenderId?: string, appId?: string; };

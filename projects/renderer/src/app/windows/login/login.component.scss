@@ -1,3 +1,4 @@
-div:has(.form-label)>* {
+div:has(.form-label)>*,
+div:has(.form-label)>*>* {
   background-color: inherit !important;
 }

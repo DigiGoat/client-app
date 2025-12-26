@@ -9,6 +9,7 @@ import type { GoatService } from './services/goat/goat.service';
 import type { ImageService } from './services/image/image.service';
 import type { PreviewService } from './services/preview/preview.service';
 import type { RepoService } from './services/repo/repo.service';
+import type { SettingsService } from './services/settings/settings.service';
 import type { StdioService } from './services/stdio/stdio.service';
 import type { WindowService } from './services/window/window.service';
 
@@ -17,6 +18,7 @@ export interface SharedModule {
   window: WindowService;
   dialog: DialogService;
   config: ConfigService;
+  settings: SettingsService;
   goat: GoatService;
   adga: ADGAService;
   repo: RepoService;

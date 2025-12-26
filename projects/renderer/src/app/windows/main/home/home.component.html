@@ -95,26 +95,6 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings"
-        [class.unsaved]="configService.isDirty('analytics')"> View Analytics <i class="bi bi-clipboard-data"></i> </button>
-      <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
-        <div class="input-group ">
-          <span class="input-group-text">GTAG:</span>
-          <input type="text" class="form-control" [ngModel]="configService.analytics.gtag"
-            (ngModelChange)="configService.analytics = {gtag: $event}">
-        </div>
-        <div class="form-text">Your Google Analytics Tag ID</div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">Clarity:</span>
-          <input type="text" class="form-control" [ngModel]="configService.analytics.clarity"
-            (ngModelChange)="configService.analytics = {clarity: $event}">
-        </div>
-        <div class="form-text">Your Microsoft Clarity ID</div>
-      </div>
-      <div class="form-text">The Analytics Settings For Your Website</div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
         data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
         [class.unsaved]="configService.isDirty('socials')"> View Socials <i class="bi bi-share"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
@@ -150,32 +130,6 @@
         <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
       </div>
       <div class="form-text">Your Farm's Social Media Associations</div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#firebaseSettings" aria-expanded="false" aria-controls="firebaseSettings"
-        [class.unsaved]="configService.isDirty('firebase')"> Firebase Configuration <i class="bi bi-clipboard-data"></i> </button>
-      <div class="collapse p-3 color-scheme-secondary" id="firebaseSettings">
-        <div class="input-group ">
-          <span class="input-group-text">API Key:</span>
-          <input type="text" class="form-control" [ngModel]="configService.firebase.apiKey"
-            (ngModelChange)="configService.firebase = {apiKey: $event}">
-        </div>
-        <div class="form-text">Your Firebase API Key</div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">Messaging Sender ID:</span>
-          <input type="text" class="form-control" [ngModel]="configService.firebase.messagingSenderId"
-            (ngModelChange)="configService.firebase = {messagingSenderId: $event}">
-        </div>
-        <div class="form-text">Your Firebase Messaging Sender ID</div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">App ID:</span>
-          <input type="text" class="form-control" [ngModel]="configService.firebase.appId"
-            (ngModelChange)="configService.firebase = {appId: $event}">
-        </div>
-        <div class="form-text">Your Firebase App ID</div>
-      </div>
-      <div class="form-text">The Firebase Settings For Your Website</div>
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"> Change Favicon <i

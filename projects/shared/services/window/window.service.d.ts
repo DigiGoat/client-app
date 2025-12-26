@@ -3,6 +3,7 @@ export interface WindowService {
   close: (ignoreChanges?: boolean, ignoreClosable?: boolean) => Promise<void>;
   openSetup: () => Promise<void>;
   openMain: () => Promise<void>;
+  openSettings: () => Promise<void>;
   openGit: () => Promise<void>;
   openLogin: () => Promise<void>;
   quit: (relaunch?: boolean) => Promise<void>;

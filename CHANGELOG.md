@@ -1,3 +1,13 @@
+## 7.0.0-beta.1
+* Parameters that only need to be edited by DigiGoat are now located in their own file
+  * This means that when Digi has to do some work on your site, there won't be any conflicts with your work
+* Some styling changes to the ADGA login window
+* Minor updates to the setup window
+  * Increased the padding between fields
+  * Added a note about how the name and email are used
+  * Fixed a bug causing hitting enter to not submit the form
+
+
 ## 6.0.4-beta.2
 * Fixed multiple bugs with the setup window
   * The setup window would sometimes not do anything if it was already open and a deep link was used

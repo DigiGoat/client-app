@@ -1,0 +1,79 @@
+<h1 class="text-center">Website Settings:</h1>
+<div class="container">
+  <div class="row px-3 row-cols-1  row-cols-xxl-2 justify-content-around">
+    <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="isDirty('url')">
+        <span class="input-group-text">Page URL:</span>
+        <input type="text" class="form-control" [(ngModel)]="settings.url" (ngModelChange)="detectChanges()"
+          [suggestion]="suggestedSettings.firebase.projectId ? 'https://'+suggestedSettings.firebase!.projectId + '.web.app' : ''">
+      </div>
+      <div class="form-text">Your Farm's Hosting Domain (ex. https://www.yourfarm.com/)</div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings" [class.unsaved]="isDirty('analytics')">
+        View Analytics <i class="bi bi-clipboard-data"></i> </button>
+      <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
+        <div class="input-group ">
+          <span class="input-group-text">GTAG:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.analytics!.gtag" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.analytics.gtag || ''">
+        </div>
+        <div class="form-text">Your Google Analytics Tag ID</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Clarity:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.analytics!.clarity" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.analytics.clarity || ''">
+        </div>
+        <div class="form-text">Your Microsoft Clarity ID</div>
+      </div>
+      <div class="form-text">The Analytics Settings For Your Website</div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#firebaseSettings" aria-expanded="false" aria-controls="firebaseSettings" [class.unsaved]="isDirty('firebase')">
+        Firebase Configuration <i class="bi bi-clipboard-data"></i> </button>
+      <div class="collapse p-3 color-scheme-secondary" id="firebaseSettings">
+        <!--  firebase: Partial<{
+        apiKey: string,
+        authDomain: string,
+        projectId: string,
+        storageBucket: string,
+        messagingSenderId: string;
+        appId: string;
+      }>;-->
+        <div class="input-group mt-3">
+          <span class="input-group-text">Project ID:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.projectId" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.firebase!.projectId || ''">
+        </div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">API Key:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.apiKey" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.firebase!.apiKey || ''">
+        </div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Auth Domain:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.authDomain" (ngModelChange)="detectChanges()"
+            [suggestion]="settings.firebase?.projectId ? settings.firebase!.projectId + '.firebaseapp.com' : ''">
+        </div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Storage Bucket:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.storageBucket" (ngModelChange)="detectChanges()"
+            [suggestion]="settings.firebase?.projectId ? settings.firebase!.projectId + '.firebasestorage.app' : ''">
+        </div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Messaging Sender ID:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.messagingSenderId" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.firebase!.messagingSenderId || ''">
+        </div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">App ID:</span>
+          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.appId" (ngModelChange)="detectChanges()"
+            [suggestion]="suggestedSettings.firebase!.appId || ''">
+        </div>
+      </div>
+      <div class="form-text">The Firebase Settings For Your Website</div>
+    </div>
+  </div>
+</div>

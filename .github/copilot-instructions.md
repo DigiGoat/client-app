@@ -14,7 +14,7 @@ These repositories use semantic versioning. Especially `web-ui` and `client-app`
 I do not expect you, or want you, to update version numbers. I am providing this information so that when you are searching for files, you do so on the correct branch.
 
 ## Syntax and Structure
-All of these repositories use angular. This repository specifically uses modules, using a different one for each window. It is important to know that when linking to other parts of the app, you MUST use routerlink="" instead of href="", This allows for a more native behavior. If a suggestion can be done using an angular tool rather than a native HTML/JS tool, ALWAYS use the angular tool. 
+All of these repositories use angular. This repository specifically uses modules, using a different one for each window. It is important to know that when linking to other parts of the app, you MUST use routerlink="" instead of href="", This allows for a more native behavior. If a suggestion can be done using an angular tool rather than a native HTML/JS tool, ALWAYS use the angular tool. If code can be generated via the angular CLI (components, services, modules, etc.), ALWAYS use the angular CLI.
 
 When generating code, be sure to follow the existing code style. This includes but is not limited to: using single quotes for strings, using semicolons at the end of statements, and using 2 spaces for indentation.
 
@@ -22,7 +22,7 @@ This repository supports testing, however it is not enforced. Furthermore, all t
 
 When generating HTML, generate custom CSS as minimally as possible. If styling is necessary, use `bootstrap` classes.
 
-If you wish to verify your suggestions, you may run `yarn build` and `yarn lint`. If you choose to run `yarn test`, know that it may fail even if you provided valid suggestions. However, `yarn build` and `yarn lint` should always pass.
+If you wish to verify your suggestions, you may run `yarn build` and `yarn lint`. If you choose to run `yarn test`, know that it may fail even if you provided valid suggestions. However, `yarn build` and `yarn lint` should always pass. Don't use tasks (ex. Build.Main), these are used for running debug sessions in VSCode, stick to the yarn commands. Furthermore, VSCode will periodically mark code that is legit under `global.d.ts` as errors - ignore these (this happens for the majority of the `window.electron.x` calls).
 
 ## Accesing the DigiGoat Space
 If you feel that you need more information about DigiGoat, you can use the Github MCP to download the space "DigiGoat" owned by the DigiGoat organization. It is recommended that you do this before using the Github MCP to access any information from other repositories, as it will give you more context about how the repositories work together.

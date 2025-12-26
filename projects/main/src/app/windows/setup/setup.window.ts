@@ -2,20 +2,11 @@ import { app, dialog, shell } from 'electron';
 import { readJSON } from 'fs-extra';
 import { join } from 'path';
 import parse from 'semver/functions/parse';
-import { MainWindow } from '../main/main.window';
 import { Window } from '../window';
 
 export class SetupWindow extends Window {
   constructor(payload?: string) {
     super(`setup${payload ? `?payload=${payload}` : ''}`, { resizable: false, width: 600, height: 600, title: 'Setup', fullscreen: false });
-    let quitRequested = false;
-    app.on('before-quit', () => quitRequested = true);
-    this.window.on('closed', async () => {
-      //await this.checkVersion();
-      if (!quitRequested) { //Only open main window if setup was closed normally. If the app is quitting we don't want to open a new window
-        new MainWindow();
-      }
-    });
   }
   async checkVersion() {
     try {

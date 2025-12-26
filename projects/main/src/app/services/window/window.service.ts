@@ -8,6 +8,7 @@ import { ImageWindow } from '../../windows/image/image.window';
 import { ImageOptimizeWindow } from '../../windows/image/optimize/optimize.window';
 import { LoginWindow } from '../../windows/login/login.window';
 import { MainWindow } from '../../windows/main/main.window';
+import { SettingsWindow } from '../../windows/settings/settings.window';
 import { SetupWindow } from '../../windows/setup/setup.window';
 
 export class WindowService {
@@ -28,6 +29,9 @@ export class WindowService {
     },
     openMain: async () => {
       new MainWindow();
+    },
+    openSettings: async () => {
+      new SettingsWindow();
     },
     openGit: async () => {
       new GitWindow();
