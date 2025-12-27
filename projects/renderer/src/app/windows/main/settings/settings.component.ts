@@ -1,6 +1,7 @@
 import { Component, type OnInit } from '@angular/core';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { AppService } from '../../../services/app/app.service';
+import { GitService } from '../../../services/git/git.service';
 import { RepoService } from '../../../services/repo/repo.service';
 import { WindowService } from '../../../services/window/window.service';
 
@@ -13,9 +14,13 @@ import { WindowService } from '../../../services/window/window.service';
 export class SettingsComponent implements OnInit {
   public appVersion: string = '';
   public webVersion: string = '';
-  constructor(private windowService: WindowService, private adgaService: ADGAService, private appService: AppService, private repoService: RepoService) { }
+  constructor(private windowService: WindowService, private adgaService: ADGAService, private appService: AppService, private repoService: RepoService, private gitService: GitService) { }
   async ngOnInit() {
     this.blacklist = (await this.adgaService.getBlacklist()).join('<br>');
+    this.gitService.onchange = () => this.setVersionDetails();
+    this.setVersionDetails();
+  }
+  async setVersionDetails() {
     this.appVersion = (await this.appService.getVersion()).version;
     this.webVersion = (await this.repoService.getVersion())!.version;
     if (!this.appVersion.includes('beta')) {
@@ -32,5 +37,8 @@ export class SettingsComponent implements OnInit {
   }
   async openOptimizer() {
     await this.windowService.openImageOptimizer();
+  }
+  async openSettings() {
+    await this.windowService.openSettings();
   }
 }

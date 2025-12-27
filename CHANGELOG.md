@@ -1,3 +1,55 @@
+## 7.0.0-beta.1
+* Parameters that only need to be edited by DigiGoat are now located in their own file
+  * This means that when Digi has to do some work on your site, there won't be any conflicts with your work
+* Some styling changes to the ADGA login window
+* Minor updates to the setup window
+  * Increased the padding between fields
+  * Added a note about how the name and email are used
+  * Fixed a bug causing hitting enter to not submit the form
+* Upgraded from MacOS 13 to MacOS 15 for the macOS intel build
+
+
+## 6.0.4-beta.2
+* Fixed multiple bugs with the setup window
+  * The setup window would sometimes not do anything if it was already open and a deep link was used
+  * The app would sometimes open a main window after quitting from the setup window (this bug blocked the app from quitting)
+  * Fixed how the setup window handles multiple quit's being emitted if there are unsaved changes
+* Moved logic that blocks multiple identical windows from the window service to the window base
+* Updated the version guard to also prompt recommended updates, not just requiring major ones
+* Tweaked some bugs with the update button being disabled in the setup window
+
+## 6.0.4-beta.1
+* Added the ability to open the setup window via deep link
+  * The link format is `digigoat://setup?payload=ENCRYPTED_PAYLOAD_HERE`
+  * The payload is an optional encrypted base64 JSON object containing `repo`, `token`, `name`, and `email`
+
+## 6.0.3-beta.1
+* Improved web update checks
+  * Publishing now runs the same update check flow (pull + upstream version check) instead of a plain pull
+* Improved Setup window
+  * Added support for an optional encrypted `payload` query param to prefill Website ID, token, name, and email
+  * Website ID and token fields are only shown when updating an existing setup or when a payload is provided
+  * Removed the demo/blank setup options and default setup now falls back to cloning `web-ui` if no ID is provided
+  * Made pulling upstream changes a part of the setup/update process to ensure the latest changes are always pulled
+* Fixed the "App Update Available" prompt to only trigger when the major version matches
+
+## 6.0.2-beta.1
+* Added LICENSE
+
+## 6.0.1-beta.1
+* Updated bootstrap from `5.3.3` to `5.3.8`
+  * This is a library used for fonts and styles
+
+## 6.0.0-beta.2
+* When re-arranging custom pages and goats, the name now stays centered
+* If a custom page is using a default name, it is dimmed and italicized
+
+## 6.0.0-beta.1
+* Added Support for Custom Pages!
+
+## 5.6.3-beta.1
+* The version details on the settings page are now updated automatically when web updates are installed
+
 ## 5.6.2-beta.1
 * Fixed a bug with how the adga package version was managed
 

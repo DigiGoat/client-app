@@ -3,6 +3,7 @@ export interface WindowService {
   close: (ignoreChanges?: boolean, ignoreClosable?: boolean) => Promise<void>;
   openSetup: () => Promise<void>;
   openMain: () => Promise<void>;
+  openSettings: () => Promise<void>;
   openGit: () => Promise<void>;
   openLogin: () => Promise<void>;
   quit: (relaunch?: boolean) => Promise<void>;
@@ -14,4 +15,5 @@ export interface WindowService {
   openImages: (searchQueries: string[]) => Promise<void>;
   refreshMain: () => Promise<void>;
   openImageOptimizer: () => Promise<void>;
+  openCustomPage: (index: number) => Promise<void>;
 }

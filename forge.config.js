@@ -8,10 +8,16 @@ var plugin_auto_unpack_natives_1 = require("@electron-forge/plugin-auto-unpack-n
 var publisher_github_1 = require("@electron-forge/publisher-github");
 var config = {
     packagerConfig: {
+        protocols: [
+            {
+                name: 'DigiGoat',
+                schemes: ['digigoat']
+            }
+        ],
         asar: {
             unpack: '**/node_modules/{sharp,@img}/**/*'
         },
-        icon: './assets/AppIcon'
+        icon: './assets/AppIcon',
     },
     rebuildConfig: {},
     makers: [new maker_squirrel_1.MakerSquirrel({

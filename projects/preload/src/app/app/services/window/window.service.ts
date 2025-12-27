@@ -5,6 +5,7 @@ export const WindowService: WindowServiceType = {
   close: (ignoreChanges, ignoreClosable) => ipcRenderer.invoke('window:close', ignoreChanges, ignoreClosable),
   openSetup: () => ipcRenderer.invoke('window:openSetup'),
   openMain: () => ipcRenderer.invoke('window:openMain'),
+  openSettings: () => ipcRenderer.invoke('window:openSettings'),
   openGit: () => ipcRenderer.invoke('window:openGit'),
   openLogin: () => ipcRenderer.invoke('window:openLogin'),
   quit: (relaunch) => ipcRenderer.invoke('window:quit', relaunch),
@@ -15,5 +16,6 @@ export const WindowService: WindowServiceType = {
   setTitle: (title) => ipcRenderer.invoke('window:setTitle', title),
   openImages: (searchQueries) => ipcRenderer.invoke('window:openImages', searchQueries),
   refreshMain: () => ipcRenderer.invoke('window:refreshMain'),
-  openImageOptimizer: () => ipcRenderer.invoke('window:openImageOptimizer')
+  openImageOptimizer: () => ipcRenderer.invoke('window:openImageOptimizer'),
+  openCustomPage: (index) => ipcRenderer.invoke('window:openCustomPage', index)
 };

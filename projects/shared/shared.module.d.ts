@@ -2,12 +2,14 @@ import type { IpcMainEvent } from 'electron';
 import type { ADGAService } from './services/adga/adga.service';
 import type { AppService } from './services/app/app.service';
 import type { ConfigService } from './services/config/config.service';
+import type { CustomPagesService } from './services/custom-pages/custom-pages.service';
 import type { DialogService } from './services/dialog/dialog.service';
 import type { GitService } from './services/git/git.service';
 import type { GoatService } from './services/goat/goat.service';
 import type { ImageService } from './services/image/image.service';
 import type { PreviewService } from './services/preview/preview.service';
 import type { RepoService } from './services/repo/repo.service';
+import type { SettingsService } from './services/settings/settings.service';
 import type { StdioService } from './services/stdio/stdio.service';
 import type { WindowService } from './services/window/window.service';
 
@@ -16,6 +18,7 @@ export interface SharedModule {
   window: WindowService;
   dialog: DialogService;
   config: ConfigService;
+  settings: SettingsService;
   goat: GoatService;
   adga: ADGAService;
   repo: RepoService;
@@ -23,6 +26,7 @@ export interface SharedModule {
   image: ImageService;
   preview: PreviewService;
   stdio: StdioService;
+  customPages: CustomPagesService;
 }
 
 type WithoutOnKeys<T> = {

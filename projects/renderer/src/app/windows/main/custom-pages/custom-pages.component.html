@@ -1,0 +1,19 @@
+<h1 class="text-center flex-grow-1"> Custom Pages: </h1>
+<div class="list-group position-relative container text-center" cdkDropList cdkDropListLockAxis="y" (cdkDropListDropped)="rearrange($event)"
+  style="height: 445.5px">
+  <span *ngIf="!customPages.length" class="list-group-item color-scheme-tertiary">No Custom Pages Found!</span>
+  <button *ngFor="let customPage of customPages; index as i" class="list-group-item list-group-item-action color-scheme-tertiary"
+    (click)="openCustomPage(i)" cdkDrag [class.default-name]="!customPage.title">{{customPage.title || ('Custom Page ' + (i + 1))}}
+    <i class="bi bi-list parent-hover position-absolute h3 translate-middle top-50 draggable" style="left: 4%; cursor: grab;"
+      cdkDragHandle></i>
+    <div class="drag-placeholder color-scheme-quaternary" *cdkDragPlaceholder></div>
+    <div class="btn-group position-absolute translate-middle top-50 parent-hover" style="right: -1%">
+      <button class="btn btn-outline-danger btn-sm" (click)="deleteCustomPage($event, i)"
+        tooltip="Delete {{customPage.title || ('Custom Page ' + (i + 1))}}">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </button>
+  <button class="list-group-item list-group-item-action color-scheme-tertiary text-center position-sticky bottom-0 border-top"
+    (click)="addCustomPage()">Add a Custom Page <i class="bi bi-plus-lg ps-1 pt-2"></i></button>
+</div>
