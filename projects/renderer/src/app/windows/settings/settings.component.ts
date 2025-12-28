@@ -64,8 +64,8 @@ export class SettingsComponent implements OnInit {
       }
     };
 
-    this.suggestedSettings.analytics = this.configService.config['analytics'] as Analytics;
-    this.suggestedSettings.firebase = this.configService.config['firebase'] as Firebase;
+    this.suggestedSettings.analytics = this.configService.config['analytics'] as Analytics ?? {};
+    this.suggestedSettings.firebase = this.configService.config['firebase'] as Firebase ?? {};
 
     const repoName = (await this.gitService.getSetup()).repo;
     this.suggestedSettings.firebase.projectId = repoName?.toLowerCase();
