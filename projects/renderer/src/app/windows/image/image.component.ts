@@ -64,7 +64,7 @@ export class ImageComponent implements OnInit {
         if (!map[this.queries[0]]) map[this.queries[0]] = [];
         map[this.queries[0]].unshift({ file: image });
         await this.imageService.setImageMap(map);
-        await this.gitService.commitImages([image], [`Downloaded Image To ${this.queries[0]}`, `Downloaded ${image}`]);
+        await this.gitService.commitImages([`${this.queries[0]}/${image}`], [`Downloaded Image To ${this.queries[0]}`, `Downloaded ${image}`]);
         button.disabled = false;
       },
       error: error => {

@@ -5,7 +5,7 @@
       <div class="input-group" [class.unsaved]="isDirty('url')">
         <span class="input-group-text">Page URL:</span>
         <input type="text" class="form-control" [(ngModel)]="settings.url" (ngModelChange)="detectChanges()"
-          [suggestion]="suggestedSettings.firebase.projectId ? 'https://'+suggestedSettings.firebase!.projectId + '.web.app' : ''">
+          [suggestion]="suggestedSettings.firebase.projectId ? 'https://'+suggestedSettings.firebase!.projectId + '.web.app/' : ''">
       </div>
       <div class="form-text">Your Farm's Hosting Domain (ex. https://www.yourfarm.com/)</div>
     </div>

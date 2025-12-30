@@ -41,9 +41,15 @@ export class GitService {
     },
     setup: async (_event, repo, name, email, token) => {
       emptyDirSync(this.base);
-      await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
-      await this.git.addConfig('user.name', name || 'Digi');
-      await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
+      try {
+        await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
+        await this.git.addConfig('user.name', name || 'Digi');
+        await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
+      } catch (err) {
+        console.error('Clone failed, emptying directory');
+        emptyDirSync(this.base);
+        return Promise.reject(err);
+      }
       // Wait to run check until a window is opened since if updates need to be installed it will be handled by the setup window
       //app.once('browser-window-created', () => {
       this.checkForUpdates();
@@ -221,7 +227,7 @@ export class GitService {
   };
   constructor() {
     ensureDirSync(this.base);
-    this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false'] });
+    this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false', 'core.longpaths=true'] });
     this.checkForUpdates();
   }
   async checkForUpdates() {

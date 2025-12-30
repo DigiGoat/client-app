@@ -1,3 +1,20 @@
+## 7.0.3-beta.3
+* Fixed a bug causing some inputs for a goats information to be locked on unregistered goats
+
+## 7.0.3-beta.2
+* Fixed a bug causing images downloaded not to save correctly
+
+## 7.0.3-beta.1
+* Fixed a bug causing a non-current lactation to be marked as current if it was never completed
+  * Now, only the latest freshening can be marked as current
+
+## 7.0.2-beta.1
+* Fixed a bug causing the app to open even if the setup was not complete
+* Hopefully fixed a bug that was preventing git from cloning the repository properly
+
+## 7.0.1-beta.1
+* Fixed a bug causing the website settings window to not work properly
+
 ## 7.0.0-beta.1
 * Parameters that only need to be edited by DigiGoat are now located in their own file
   * This means that when Digi has to do some work on your site, there won't be any conflicts with your work
