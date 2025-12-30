@@ -1,3 +1,7 @@
+## 7.0.2-beta.1
+* Fixed a bug causing the app to open even if the setup was not complete
+* Hopefully fixed a bug that was preventing git from cloning the repository properly
+
 ## 7.0.1-beta.1
 * Fixed a bug causing the website settings window to not work properly
 
