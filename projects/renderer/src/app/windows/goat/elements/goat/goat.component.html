@@ -47,8 +47,8 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('name')">
         <span class="input-group-text">Name:</span>
-        <input *ngIf="!id" type="text" class="form-control" [(ngModel)]="name">
-        <app-case-input *ngIf="id" [(value)]="name" class="form-control"></app-case-input>
+        <input *ngIf="!goat.id" type="text" class="form-control" [(ngModel)]="name">
+        <app-case-input *ngIf="goat.id" [(value)]="name" class="form-control"></app-case-input>
       </div>
       <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
     </div>
@@ -61,7 +61,7 @@
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
-    <div class="mb-3 col" *ngIf="!id || dateOfDeath">
+    <div class="mb-3 col" *ngIf="!goat.id || dateOfDeath">
       <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
       <div class="input-group" [class.unsaved]="isDirty('dateOfDeath')">
         <span class="input-group-text">Deceased:</span>
@@ -87,8 +87,8 @@
     <div class="mb-3 col" *ngIf="!related">
       <div class="input-group" [class.unsaved]="isDirty('colorAndMarking')">
         <span class="input-group-text">Color And Markings:</span>
-        <textarea *ngIf="!id" type="text" class="form-control" [(ngModel)]="colorAndMarking"></textarea>
-        <app-case-input *ngIf="id" [(value)]="colorAndMarking" class="form-control"></app-case-input>
+        <textarea *ngIf="!goat.id" type="text" class="form-control" [(ngModel)]="colorAndMarking"></textarea>
+        <app-case-input *ngIf="goat.id" [(value)]="colorAndMarking" class="form-control"></app-case-input>
       </div>
       <div class="form-text">What Your Goat Looks Like</div>
     </div>
