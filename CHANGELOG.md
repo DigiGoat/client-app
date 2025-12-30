@@ -1,3 +1,6 @@
+## 7.0.3-beta.3
+* Fixed a bug causing some inputs for a goats information to be locked on unregistered goats
+
 ## 7.0.3-beta.2
 * Fixed a bug causing images downloaded not to save correctly
 
