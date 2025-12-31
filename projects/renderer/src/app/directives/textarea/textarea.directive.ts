@@ -20,7 +20,8 @@ export class TextareaDirective implements AfterViewChecked {
     this.adjust();
   }
   adjust() {
-    this.el.nativeElement.style.height = 'auto';
-    this.el.nativeElement.style.height = `${this.el.nativeElement.scrollHeight}px`;
+    //this.el.nativeElement.style.height = 'auto';
+    //this.el.nativeElement.style.height = `${this.el.nativeElement.scrollHeight}px`;
+    this.el.nativeElement.style.height = (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) ? (this.el.nativeElement.scrollHeight) + 'px' : 'auto';
   }
 }
