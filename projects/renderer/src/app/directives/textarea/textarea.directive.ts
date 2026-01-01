@@ -22,6 +22,12 @@ export class TextareaDirective implements AfterViewChecked {
   adjust() {
     //this.el.nativeElement.style.height = 'auto';
     //this.el.nativeElement.style.height = `${this.el.nativeElement.scrollHeight}px`;
-    this.el.nativeElement.style.height = (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) ? (this.el.nativeElement.scrollHeight) + 'px' : 'auto';
+    //this.el.nativeElement.style.height = (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) ? (this.el.nativeElement.scrollHeight) + 'px' : 'auto';
+    if (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) {
+      this.el.nativeElement.style.height = (this.el.nativeElement.scrollHeight) + 'px';
+    } else if (this.el.nativeElement.ownerDocument.activeElement !== this.el.nativeElement) {
+      this.el.nativeElement.style.height = 'auto';
+      this.el.nativeElement.style.height = `${this.el.nativeElement.scrollHeight}px`;
+    }
   }
 }
