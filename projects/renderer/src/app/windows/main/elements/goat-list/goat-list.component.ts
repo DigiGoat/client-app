@@ -23,7 +23,7 @@ export class GoatListComponent implements OnInit {
   @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
   @Input() filter?: (goat: Goat) => boolean;
   @Input() listName?: ListLocations;
-  @Output() moveGoat = new EventEmitter<{ goat: Goat, location: ListLocations, keepCopy: boolean, index: number; }>();
+  @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number }>();
   goats: Goat[] = [];
 
   constructor(private windowService: WindowService, private dialogService: DialogService) { }

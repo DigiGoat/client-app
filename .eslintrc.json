@@ -16,7 +16,8 @@
         "quotes": [
           "warn",
           "single"
-        ]
+        ],
+        "@typescript-eslint/member-delimiter-style": "warn"
       }
     }
   ]

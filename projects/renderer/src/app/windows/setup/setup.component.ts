@@ -52,7 +52,7 @@ export class SetupComponent implements OnInit {
     try {
       await this.gitService.updateSetup(this.id, this.name, this.email, this.token);
     } catch (error: unknown) {
-      const message = (error as { message: string; }).message;
+      const message = (error as { message: string }).message;
       await this.dialogService.showMessageBox({ message: 'Failed To Update!', type: 'error', detail: message.split('fatal:').pop() });
       console.error(error);
     } finally {

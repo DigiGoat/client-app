@@ -328,7 +328,7 @@ export class GoatsComponent {
     this.configService.forSale = enabled;
     this.configService.saveChanges();
   }
-  moveGoat(event: { goat: Goat; location: ListLocations; keepCopy: boolean, index: number; }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
+  moveGoat(event: { goat: Goat; location: ListLocations; keepCopy: boolean; index: number }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
     if (!event.goat.sex) {
       if (from === 'Does' || event.location === 'Does') {
         event.goat.sex = 'Female';
