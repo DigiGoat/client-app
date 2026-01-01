@@ -1,3 +1,9 @@
+## 7.0.4-beta.1
+* Added the ability to move goats between lists!
+  * You can now move goats between the does, bucks, references, and for sale lists
+  * When moving a goat, you can choose to either move it (remove from current list) or copy it (keep in current list)
+* Fixed some bugs causing textareas to not resize properly
+
 ## 7.0.3-beta.3
 * Fixed a bug causing some inputs for a goats information to be locked on unregistered goats
 
