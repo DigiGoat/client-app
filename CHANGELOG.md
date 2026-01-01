@@ -1,3 +1,8 @@
+## 7.0.5-beta.1
+* Fixed a bug causing the "optimize images" prompt to appear even if there aren't any images
+* Finally identified the bug causing failed clones
+  * It was a result of the .json files being watched and tampered with during the clone process
+
 ## 7.0.4-beta.1
 * Added the ability to move goats between lists!
   * You can now move goats between the does, bucks, references, and for sale lists
