@@ -27,12 +27,13 @@
     <div class="mb-3 col">
       <h3>Does:</h3>
       <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes" (deleteIndex)="deleteDoe($event)" (addGoat)="addDoe($event)"
-        (rearranged)="rearrangeDoes($event)" [filter]="filters.doe"></app-goat-list>
+        (rearranged)="rearrangeDoes($event)" [filter]="filters.doe" listName="Does" (moveGoat)="moveGoat($event, 'Does')"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Bucks:</h3>
       <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)" (addGoat)="addBuck($event)"
-        [filter]="filters.buck" (rearranged)="rearrangeBucks($event)"></app-goat-list>
+        [filter]="filters.buck" (rearranged)="rearrangeBucks($event)" listName="Bucks"
+        (moveGoat)="moveGoat($event, 'Bucks')"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Related:</h3>
@@ -41,12 +42,14 @@
     <div class="mb-3 col">
       <h3>References:</h3>
       <app-goat-list type="reference" [goats]="references" [syncing]="syncingReferences" (deleteIndex)="deleteReference($event)"
-        (addGoat)="addReference($event)" (rearranged)="rearrangeReferences($event)" [(enabled)]="referencesEnabled"></app-goat-list>
+        (addGoat)="addReference($event)" (rearranged)="rearrangeReferences($event)" [(enabled)]="referencesEnabled" listName="References"
+        (moveGoat)="moveGoat($event, 'References')"></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>For Sale:</h3>
       <app-goat-list type="for-sale" [goats]="forSale" [syncing]="syncingForSale" (deleteIndex)="deleteForSale($event)"
-        (addGoat)="addForSale($event)" (rearranged)="rearrangeForSale($event)" [(enabled)]="forSaleEnabled"></app-goat-list>
+        (addGoat)="addForSale($event)" (rearranged)="rearrangeForSale($event)" [(enabled)]="forSaleEnabled" listName="For Sale"
+        (moveGoat)="moveGoat($event, 'For Sale')"></app-goat-list>
     </div>
   </div>
 </div>

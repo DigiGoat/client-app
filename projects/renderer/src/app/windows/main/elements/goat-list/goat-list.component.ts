@@ -22,6 +22,8 @@ export class GoatListComponent implements OnInit {
   @Output() addGoat = new EventEmitter<Goat>();
   @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
   @Input() filter?: (goat: Goat) => boolean;
+  @Input() listName?: ListLocations;
+  @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number }>();
   goats: Goat[] = [];
 
   constructor(private windowService: WindowService, private dialogService: DialogService) { }
@@ -68,4 +70,21 @@ export class GoatListComponent implements OnInit {
     moveItemInArray(this.goats, event.previousIndex, event.currentIndex);
     this.rearranged.emit(event);
   }
+
+  async _moveGoat(event: MouseEvent, index: number) {
+    event.stopPropagation();
+    const goat = this.goats[index];
+    const options = ['References', 'For Sale', 'Cancel'].filter(option => option != this.listName);
+    if (goat.sex === 'Female' && this.listName !== 'Does') {
+      options.unshift('Does');
+    }
+    if (goat.sex === 'Male' && this.listName !== 'Bucks') {
+      options.unshift('Bucks');
+    }
+    const action = await this.dialogService.showMessageBox({ type: 'question', message: `Move ${goat.nickname || goat.name || goat.normalizeId}?`, detail: `Where would you like to move ${goat.nickname || goat.name || goat.normalizeId} to?`, buttons: options, cancelId: options.indexOf('Cancel'), checkboxLabel: `Keep a copy of ${goat.nickname || goat.name || goat.normalizeId} in the current list`, defaultId: 0 });
+    if (action.response !== options.indexOf('Cancel')) {
+      this.moveGoat.emit({ goat, location: options[action.response] as ListLocations, keepCopy: action.checkboxChecked, index });
+    }
+  }
 }
+export type ListLocations = 'Does' | 'Bucks' | 'References' | 'For Sale' | 'Cancel';

@@ -5,6 +5,7 @@ import { ADGAService } from '../../../services/adga/adga.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService } from '../../../services/goat/goat.service';
+import type { ListLocations } from '../elements/goat-list/goat-list.component';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
 
 @Component({
@@ -326,5 +327,44 @@ export class GoatsComponent {
   set forSaleEnabled(enabled: boolean) {
     this.configService.forSale = enabled;
     this.configService.saveChanges();
+  }
+  moveGoat(event: { goat: Goat; location: ListLocations; keepCopy: boolean; index: number }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
+    if (!event.goat.sex) {
+      if (from === 'Does' || event.location === 'Does') {
+        event.goat.sex = 'Female';
+      } else if (from === 'Bucks' || event.location === 'Bucks') {
+        event.goat.sex = 'Male';
+      }
+    }
+    switch (event.location) {
+      case 'Does':
+        this.goatService.addDoe(event.goat);
+        break;
+      case 'Bucks':
+        this.goatService.addBuck(event.goat);
+        break;
+      case 'References':
+        this.goatService.addReference(event.goat);
+        break;
+      case 'For Sale':
+        this.goatService.addForSale(event.goat);
+        break;
+    }
+    if (!event.keepCopy) {
+      switch (from) {
+        case 'Does':
+          this.goatService.deleteDoe(event.index);
+          break;
+        case 'Bucks':
+          this.goatService.deleteBuck(event.index);
+          break;
+        case 'References':
+          this.goatService.deleteReference(event.index);
+          break;
+        case 'For Sale':
+          this.goatService.deleteForSale(event.index);
+          break;
+      }
+    }
   }
 }
