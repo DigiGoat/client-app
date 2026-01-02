@@ -18,8 +18,8 @@ export class ADGAService {
   handleError(error: Error & AxiosError) {
     if (error.isAxiosError && error.response) {
       const response = error.response;
-      if ((response.data as { error?: { message?: string; }; }).error) {
-        const responseError = (error.response.data as { error?: { details?: string; }; }).error;
+      if ((response.data as { error?: { message?: string } }).error) {
+        const responseError = (error.response.data as { error?: { details?: string } }).error;
         if (responseError.details) {
           return Promise.reject(new Error(responseError.details));
         } else {

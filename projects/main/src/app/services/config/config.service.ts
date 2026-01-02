@@ -1,5 +1,6 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, exists, readJson, watch, writeJson } from 'fs-extra';
+import { existsSync } from 'fs';
+import { ensureFileSync, readJson, watch, writeJson } from 'fs-extra';
 import { join } from 'path';
 import { ConfigService as ConfigServiceType } from '../../../../../shared/services/config/config.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -30,6 +31,7 @@ export class ConfigService {
   watchingConfig = false;
   watchConfig() {
     if (this.watchingConfig) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.config);
     this.watchingConfig = true;
     watch(this.config, async (event) => {
@@ -47,15 +49,11 @@ export class ConfigService {
       }
       if (event === 'rename') {
         this.watchingConfig = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchConfig();
-        }
+        this.watchConfig();
       }
     }).on('error', async () => {
       this.watchingConfig = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchConfig();
-      }
+      this.watchConfig();
     });
   }
   constructor() {

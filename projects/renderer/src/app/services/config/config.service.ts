@@ -214,4 +214,4 @@ type ColorScheme = {
     quaternary?: string;
   };
 };
-type Socials = { facebook?: string, instagram?: string, threads?: string; };
+type Socials = { facebook?: string; instagram?: string; threads?: string };

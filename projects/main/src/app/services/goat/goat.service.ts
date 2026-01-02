@@ -1,5 +1,5 @@
 import { BrowserWindow, app, ipcMain } from 'electron';
-import { ensureFileSync, exists, existsSync, readJson, watch, writeJSON } from 'fs-extra';
+import { ensureFileSync, existsSync, readJson, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import type { GoatService as GoatServiceType } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -107,6 +107,7 @@ export class GoatService {
   watchingDoes = false;
   watchDoes() {
     if (this.watchingDoes) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.does);
     this.watchingDoes = true;
     watch(this.does, async (event) => {
@@ -125,20 +126,17 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingDoes = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchDoes();
-        }
+        this.watchDoes();
       }
     }).on('error', async () => {
       this.watchingDoes = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchDoes();
-      }
+      this.watchDoes();
     });
   }
   watchingBucks = false;
   watchBucks() {
     if (this.watchingBucks) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.bucks);
     this.watchingBucks = true;
     watch(this.bucks, async (event) => {
@@ -157,20 +155,17 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingBucks = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchBucks();
-        }
+        this.watchBucks();
       }
     }).on('error', async () => {
       this.watchingBucks = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchBucks();
-      }
+      this.watchBucks();
     });
   }
   watchingReferences = false;
   watchReferences() {
     if (this.watchingReferences || !existsSync(this.references)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.references);
     this.watchingReferences = true;
     watch(this.references, async (event) => {
@@ -189,20 +184,17 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingReferences = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchReferences();
-        }
+        this.watchReferences();
       }
     }).on('error', async () => {
       this.watchingReferences = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchReferences();
-      }
+      this.watchReferences();
     });
   }
   watchingForSale = false;
   watchForSale() {
     if (this.watchingForSale || !existsSync(this.forSale)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.forSale);
     this.watchingForSale = true;
     watch(this.forSale, async (event) => {
@@ -221,20 +213,17 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingForSale = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchForSale();
-        }
+        this.watchForSale();
       }
     }).on('error', async () => {
       this.watchingForSale = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchForSale();
-      }
+      this.watchForSale();
     });
   }
   watchingRelated = false;
   watchRelated() {
     if (this.watchingRelated || !existsSync(this.related)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.related);
     this.watchingRelated = true;
     watch(this.related, async (event) => {
@@ -253,20 +242,17 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingRelated = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchRelated();
-        }
+        this.watchRelated();
       }
     }).on('error', async () => {
       this.watchingRelated = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchRelated();
-      }
+      this.watchRelated();
     });
   }
   watchingKiddingSchedule = false;
   watchKiddingSchedule() {
     if (this.watchingKiddingSchedule || !existsSync(this.kiddingSchedule)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.kiddingSchedule);
     this.watchingKiddingSchedule = true;
     watch(this.kiddingSchedule, async (event) => {
@@ -285,15 +271,11 @@ export class GoatService {
       }
       if (event === 'rename') {
         this.watchingKiddingSchedule = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchKiddingSchedule();
-        }
+        this.watchKiddingSchedule();
       }
     }).on('error', async () => {
       this.watchingKiddingSchedule = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchKiddingSchedule();
-      }
+      this.watchKiddingSchedule();
     });
   }
   constructor() {

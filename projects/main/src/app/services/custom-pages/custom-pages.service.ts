@@ -27,6 +27,7 @@ export class CustomPagesService {
   watchingCustomPages = false;
   watchCustomPages() {
     if (this.watchingCustomPages || !existsSync(this.customPages)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.customPages);
     this.watchingCustomPages = true;
     watch(this.customPages, async (event) => {
@@ -45,15 +46,11 @@ export class CustomPagesService {
       }
       if (event === 'rename') {
         this.watchingCustomPages = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchCustomPages();
-        }
+        this.watchCustomPages();
       }
     }).on('error', async () => {
       this.watchingCustomPages = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchCustomPages();
-      }
+      this.watchCustomPages();
     });
   }
   constructor() {

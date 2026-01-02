@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, net, protocol } from 'electron';
+import { existsSync } from 'fs';
 import { ensureDir, ensureFile, ensureFileSync, exists, move, readJson, rm, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import sharp from 'sharp';
@@ -160,6 +161,7 @@ export class ImageService {
   watchingImages = false;
   watchImages() {
     if (this.watchingImages) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.imageMap);
     this.watchingImages = true;
     watch(this.imageMap, async (event) => {
@@ -176,15 +178,11 @@ export class ImageService {
       }
       if (event === 'rename') {
         this.watchingImages = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchImages();
-        }
+        this.watchImages();
       }
     }).on('error', async () => {
       this.watchingImages = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchImages();
-      }
+      this.watchImages();
     });
 
   }
@@ -217,7 +215,7 @@ export class ImageService {
       }
       console.debug('Has optimized images:', hasOptimized);
       // If none are optimized, prompt the user
-      if (!hasOptimized) {
+      if (!hasOptimized && Object.keys(imageMap).length) {
         if (app.isReady()) {
           this.askForOptimizations();
         } else {

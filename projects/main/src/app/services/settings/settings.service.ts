@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { ensureFileSync, exists, existsSync, readJson, watch, writeJson } from 'fs-extra';
+import { ensureFileSync, existsSync, readJson, watch, writeJson } from 'fs-extra';
 import { join } from 'path';
 import type { SettingsService as SettingsServiceType } from '../../../../../shared/services/settings/settings.service';
 import type { BackendService } from '../../../../../shared/shared.module';
@@ -31,6 +31,7 @@ export class SettingsService {
   watchingSettings = false;
   watchSettings() {
     if (this.watchingSettings || !existsSync(this.settings)) return;
+    if (!existsSync(join(this.base, '.git'))) return;
     ensureFileSync(this.settings);
     this.watchingSettings = true;
     watch(this.settings, async (event) => {
@@ -48,15 +49,11 @@ export class SettingsService {
       }
       if (event === 'rename') {
         this.watchingSettings = false;
-        if (await exists(join(this.base, '.git'))) {
-          this.watchSettings();
-        }
+        this.watchSettings();
       }
     }).on('error', async () => {
       this.watchingSettings = false;
-      if (await exists(join(this.base, '.git'))) {
-        this.watchSettings();
-      }
+      this.watchSettings();
     });
   }
 
