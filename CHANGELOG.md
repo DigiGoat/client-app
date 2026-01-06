@@ -1,3 +1,7 @@
+## 7.1.0-beta.1
+* Added the ability to configure whether images can be viewed internationally
+  * The new default setting is to block images from being viewed outside of the US
+
 ## 7.0.5-beta.1
 * Fixed a bug causing the "optimize images" prompt to appear even if there aren't any images
 * Finally identified the bug causing failed clones
