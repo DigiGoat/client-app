@@ -10,6 +10,16 @@
       <div class="form-text">Your Farm's Hosting Domain (ex. https://www.yourfarm.com/)</div>
     </div>
     <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="isDirty('internationalImages')">
+        <span class="input-group-text">International Images:</span>
+        <select class="form-select" [(ngModel)]="settings.internationalImages" (ngModelChange)="detectChanges()">
+          <option [value]="settings.internationalImages === undefined ? undefined : false">Block Images Outside of the US</option>
+          <option [value]="true">Allow Images to Load Internationally</option>
+        </select>
+      </div>
+      <div class="form-text">Choose if the images on your website should be available outside of the US</div>
+    </div>
+    <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
         data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings" [class.unsaved]="isDirty('analytics')">
         View Analytics <i class="bi bi-clipboard-data"></i> </button>

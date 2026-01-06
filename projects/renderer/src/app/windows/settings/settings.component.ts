@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit {
   get unsavedChangesDiff() {
     return this.diffService.diff(this._oldSettings, this.settings) as Record<string, string>;
   }
-  isDirty(parameter: string) {
+  isDirty(parameter: keyof Settings) {
     return (parameter in this.unsavedChangesDiff);
   }
   get unsavedChanges() {
@@ -31,6 +31,7 @@ export class SettingsComponent implements OnInit {
     analytics: {},
     firebase: {},
     url: '',
+    internationalImages: false
   };
 
   async ngOnInit() {
