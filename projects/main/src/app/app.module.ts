@@ -1,4 +1,5 @@
-import { BrowserWindow, Menu, app, dialog, shell, type MenuItemConstructorOptions } from 'electron';
+import { init } from '@sentry/electron/main';
+import { app, BrowserWindow, dialog, Menu, shell, type MenuItemConstructorOptions } from 'electron';
 import { readJSON } from 'fs-extra';
 import { join, resolve } from 'path';
 import parse from 'semver/functions/parse';
@@ -13,6 +14,12 @@ export class AppModule {
     if (require('electron-squirrel-startup')) {
       app.quit();
     }
+    init({
+      dsn: 'https://5cb98f8e2125a9f35721b4a2e66d3e57@o4510677771681792.ingest.us.sentry.io/4510677777317888',
+      enableLogs: true,
+      environment: app.isPackaged ? app.getVersion().includes('beta') ? 'beta' : 'production' : 'development',
+      debug: !app.isPackaged,
+    });
     new ServiceModule();
     const template: MenuItemConstructorOptions[] = [
       { role: 'fileMenu' },
