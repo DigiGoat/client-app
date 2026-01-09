@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/electron/main';
 import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-extra';
@@ -46,6 +47,7 @@ export class GitService {
         await this.git.addConfig('user.name', name || 'Digi');
         await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
       } catch (err) {
+        captureException(err);
         console.error('Clone failed, emptying directory');
         emptyDirSync(this.base);
         return Promise.reject(err);
@@ -277,6 +279,7 @@ export class GitService {
         });
       }
     } catch (err) {
+      captureException(err);
       console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
 
       // If the pull left us in a conflicted state, abort so JSON files are restored.

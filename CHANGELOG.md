@@ -1,3 +1,9 @@
+## 7.1.1-beta.1
+* Added Sentry!
+  * This will help identify and fix crashes and bugs in the app
+  * No personal data is collected, only crash reports and logs
+  * A feedback 
+
 ## 7.1.0-beta.1
 * Added the ability to configure whether images can be viewed internationally
   * The new default setting is to block images from being viewed outside of the US

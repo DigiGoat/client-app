@@ -120,8 +120,20 @@ jobs:
       - name: Rebuild dependencies
         run: yarn install
 
-      - name: Run check
+      - name: Release new version
+        id: release
         run: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BEFORE: ${{ github.event.before }}
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v3
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        with:
+          environment: ${{ github.ref_name == 'main' && 'production' || 'beta' }}
+          release: ${{ steps.release.outputs.version }}
+          finalize: ${{ github.ref_name == 'main' }}
