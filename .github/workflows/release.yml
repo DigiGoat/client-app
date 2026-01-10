@@ -5,10 +5,16 @@ on:
     branches: [main, beta]
 permissions:
   contents: write
+env:
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+  SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
 
 jobs:
   macos_arm_release:
     runs-on: macos-latest
+    env:
+      SENTRY_DIST: macos-arm64
 
     steps:
       - name: Github checkout
@@ -37,6 +43,8 @@ jobs:
 
   macos_release:
     runs-on: macos-15-intel
+    env:
+      SENTRY_DIST: macos-x64
 
     steps:
       - name: Github checkout
@@ -65,6 +73,8 @@ jobs:
 
   windows_release:
     runs-on: windows-latest
+    env:
+      SENTRY_DIST: windows
 
     steps:
       - name: Github checkout
@@ -129,11 +139,6 @@ jobs:
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         with:
           environment: ${{ github.ref_name == 'main' && 'production' || 'beta' }}
           release: ${{ steps.release.outputs.version }}
-          finalize: ${{ github.ref_name == 'main' }}

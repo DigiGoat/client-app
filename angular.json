@@ -44,7 +44,8 @@
                 "input": "/node_modules/bootstrap/dist/js/bootstrap.bundle.js",
                 "bundleName": "bootstrap.bundle"
               }
-            ]
+            ],
+            "sourceMap": true
           },
           "configurations": {
             "production": {
@@ -65,8 +66,7 @@
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              "extractLicenses": false
             }
           },
           "defaultConfiguration": "production"
