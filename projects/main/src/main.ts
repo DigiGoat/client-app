@@ -12,6 +12,7 @@ init({
   environment: app.isPackaged ? (app.getVersion().includes('beta') ? 'beta' : 'production') : 'development',
   dist: process.platform === 'darwin' ? (process.arch === 'arm64' ? 'macos-arm64' : 'macos-x64') : 'windows',
   debug: !app.isPackaged,
+  tracesSampleRate: 1.0,
 });
 
 new AppModule();
