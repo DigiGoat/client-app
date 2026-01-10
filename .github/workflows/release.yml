@@ -142,3 +142,7 @@ jobs:
         with:
           environment: ${{ github.ref_name == 'main' && 'production' || 'beta' }}
           release: DigiGoat@${{ steps.release.outputs.version }}
+          set_commits: 'manual'
+          commit: ${{ github.sha }}
+          previous_commit: ${{ github.event.before }}
+          repo: DigiGoat/client-app
