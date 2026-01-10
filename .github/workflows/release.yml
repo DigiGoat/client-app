@@ -1,6 +1,5 @@
 name: Release app
 on:
-  workflow_dispatch:
   push:
     branches: [main, beta]
 permissions:
