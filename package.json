@@ -7,7 +7,7 @@
     "url": "https://github.com/DigiGoat"
   },
   "description": "An app to merge the gap between ADGA, your farm, and the internet.",
-  "version": "7.1.1-beta.1",
+  "version": "7.1.1-beta.2",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -25,8 +25,8 @@
     "package": "(rm -r out || rmdir out) ; run-p build:* && electron-forge package",
     "package:windows": "run-p build:windows:* && electron-forge package",
     "make": "(rm -r out || rmdir out) ; run-p build:* && electron-forge make",
-    "publish:mac": "run-p build:* && electron-forge publish",
-    "publish:windows": "run-p build:windows:* && electron-forge publish",
+    "publish:mac": "run-p build:* && run-p sourcemap:* && electron-forge publish",
+    "publish:windows": "run-p build:windows:* && run-p sourcemap:windows:* && electron-forge publish",
     "test": "(rm -r coverage || rmdir coverage) ; run-p --continue-on-error 'test:* {@}' --",
     "test:main": "jest --config projects/main/jest.config.ts -w 6",
     "test:renderer": "ng test -w 6",
@@ -42,7 +42,15 @@
     "pull-check": "ts-node ./scripts/check.ts",
     "release": "ts-node ./scripts/release.ts",
     "fix-version": "ts-node ./scripts/version.ts",
-    "rebuild": "tsc -m commonjs --esModuleInterop forge.config.ts && (echo '//GENERATED CODE, RUN `yarn rebuild` TO UPDATE\n' && cat forge.config.js) > forge.config.js.tmp && mv forge.config.js.tmp forge.config.js"
+    "rebuild": "tsc -m commonjs --esModuleInterop forge.config.ts && (echo '//GENERATED CODE, RUN `yarn rebuild` TO UPDATE\n' && cat forge.config.js) > forge.config.js.tmp && mv forge.config.js.tmp forge.config.js",
+    "sourcemap": "run-p sourcemap:*",
+    "sourcemap:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release $npm_package_version --dist $SENTRY_DIST",
+    "sourcemap:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release $npm_package_version --dist $SENTRY_DIST",
+    "sourcemap:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release $npm_package_version --dist $SENTRY_DIST",
+    "sourcemap:windows": "run-p sourcemap:windows:*",
+    "sourcemap:windows:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release %npm_package_version% --dist %SENTRY_DIST%",
+    "sourcemap:windows:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release %npm_package_version% --dist %SENTRY_DIST%",
+    "sourcemap:windows:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release %npm_package_version% --dist %SENTRY_DIST%"
   },
   "private": true,
   "dependencies": {
@@ -56,6 +64,7 @@
     "@angular/platform-browser-dynamic": "^19.0.6",
     "@angular/router": "^19.0.6",
     "@sentry/angular": "10.29.0",
+    "@sentry/cli": "^2",
     "@sentry/electron": "^7.5.0",
     "adga": "^3.7.2-beta.1",
     "axios": "^1.7.9",

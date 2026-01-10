@@ -1,3 +1,6 @@
+## 7.1.1-beta.2
+* Added source maps for easier debugging of crashes and errors!
+
 ## 7.1.1-beta.1
 * Added Sentry!
   * This will help identify and fix crashes and bugs in the app

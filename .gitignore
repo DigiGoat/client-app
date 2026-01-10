@@ -143,3 +143,9 @@ out/
 
 # Temporary test block until implemented
 *.spec.ts
+
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.env.sentry-build-plugin
