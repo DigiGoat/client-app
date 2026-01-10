@@ -1,3 +1,6 @@
+## 7.1.1-beta.3
+* Fixed a bug causing source maps to not upload correctly on MacOS
+
 ## 7.1.1-beta.2
 * Added source maps for easier debugging of crashes and errors!
 
