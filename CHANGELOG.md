@@ -1,3 +1,7 @@
+## 7.1.1-beta.6
+* Started tracing all IPC calls with Sentry to help identify performance bottlenecks
+  * With a focus on ADGA API calls & Git operations
+
 ## 7.1.1-beta.5
 * Manually configured the commits for Sentry releases to align with the DigiGoat Releases versioning
 
