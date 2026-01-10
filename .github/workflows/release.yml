@@ -141,4 +141,4 @@ jobs:
         uses: getsentry/action-release@v3
         with:
           environment: ${{ github.ref_name == 'main' && 'production' || 'beta' }}
-          release: ${{ steps.release.outputs.version }}
+          release: DigiGoat@${{ steps.release.outputs.version }}

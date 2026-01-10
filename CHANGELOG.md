@@ -1,3 +1,7 @@
+## 7.1.1-beta.4
+* Added back an accidentally deleted script for the sourcemaps of the main process on MacOS
+* Updated release names to be Sentry compatible (i.e. `DigiGoat@7.1.1-beta.4` instead of just `7.1.1-beta.4`)
+
 ## 7.1.1-beta.3
 * Fixed a bug causing source maps to not upload correctly on MacOS
 
