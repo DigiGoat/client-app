@@ -7,7 +7,7 @@
     "url": "https://github.com/DigiGoat"
   },
   "description": "An app to merge the gap between ADGA, your farm, and the internet.",
-  "version": "7.1.1-beta.7",
+  "version": "7.1.1-beta.8",
   "main": "dist/main/main.js",
   "scripts": {
     "ng": "ng",
@@ -43,12 +43,12 @@
     "release": "ts-node ./scripts/release.ts",
     "fix-version": "ts-node ./scripts/version.ts",
     "rebuild": "tsc -m commonjs --esModuleInterop forge.config.ts && (echo '//GENERATED CODE, RUN `yarn rebuild` TO UPDATE\n' && cat forge.config.js) > forge.config.js.tmp && mv forge.config.js.tmp forge.config.js",
-    "sourcemap:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST --url-prefix ~/main",
-    "sourcemap:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST --url-prefix ~/renderer",
-    "sourcemap:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST --url-prefix ~/preload",
-    "sourcemap:windows:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST% --url-prefix ~/main",
-    "sourcemap:windows:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST% --url-prefix ~/renderer",
-    "sourcemap:windows:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST% --url-prefix ~/preload"
+    "sourcemap:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST",
+    "sourcemap:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST",
+    "sourcemap:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release \"DigiGoat@$npm_package_version\" --dist $SENTRY_DIST",
+    "sourcemap:windows:main": "sentry-cli sourcemaps inject ./dist/main && sentry-cli sourcemaps upload ./dist/main --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST%",
+    "sourcemap:windows:renderer": "sentry-cli sourcemaps inject ./dist/renderer/browser && sentry-cli sourcemaps upload ./dist/renderer/browser --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST%",
+    "sourcemap:windows:preload": "sentry-cli sourcemaps inject ./dist/preload && sentry-cli sourcemaps upload ./dist/preload --release \"DigiGoat@%npm_package_version%\" --dist %SENTRY_DIST%"
   },
   "private": true,
   "dependencies": {
