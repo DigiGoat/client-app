@@ -45,7 +45,8 @@
                 "bundleName": "bootstrap.bundle"
               }
             ],
-            "sourceMap": true
+            "sourceMap": true,
+            "outputHashing": "none"
           },
           "configurations": {
             "production": {
@@ -61,7 +62,6 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all",
               "baseHref": "./"
             },
             "development": {

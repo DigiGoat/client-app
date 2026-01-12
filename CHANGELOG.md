@@ -1,3 +1,9 @@
+## 7.1.1-beta.7
+* Improved source maps
+  * Added prefix to separate main, renderer, and preload processes
+  * Disabled output hashing for easier debugging
+* Added console logging integration 
+
 ## 7.1.1-beta.6
 * Started tracing all IPC calls with Sentry to help identify performance bottlenecks
   * With a focus on ADGA API calls & Git operations
