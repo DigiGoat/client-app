@@ -1,7 +1,7 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { init as angularInit } from '@sentry/angular';
-import { browserTracingIntegration, init, replayIntegration } from '@sentry/electron/renderer';
+import { init as angularInit, } from '@sentry/angular';
+import { browserTracingIntegration, consoleLoggingIntegration, init, replayIntegration } from '@sentry/electron/renderer';
 import { AppModule } from './app/app.module';
 init({
   // Adds request headers and IP for users, for more info visit:
@@ -22,6 +22,7 @@ init({
         mask: ['[name="password"]']
       }
     ),
+    consoleLoggingIntegration(),
   ],
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for tracing.
