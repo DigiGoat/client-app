@@ -1,3 +1,6 @@
+## 7.1.1-beta.8
+* Fixed a bug causing source maps to not upload correctly due to the "improvement" in the previous version
+
 ## 7.1.1-beta.7
 * Improved source maps
   * Added prefix to separate main, renderer, and preload processes
