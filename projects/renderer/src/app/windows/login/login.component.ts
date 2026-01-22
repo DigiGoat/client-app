@@ -18,9 +18,11 @@ export class LoginComponent implements OnInit {
   name?: string;
   constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private appService: AppService) { }
   async login() {
+    const passwordShowing = this.showPassword;
     try {
       this.windowService.setClosable(false);
       this.status = 'Logging In...';
+      this.showPassword = false;
       const account = await this.adgaService.login(this.username, this.password, this.id);
       this.name = this.diffService.titleCase(account.name);
       this.status = 'Success!';
@@ -41,6 +43,8 @@ export class LoginComponent implements OnInit {
 
       }
       setTimeout(() => this.status = 'Login', 2000);
+    } finally {
+      this.showPassword = passwordShowing;
     }
   }
   async logout() {

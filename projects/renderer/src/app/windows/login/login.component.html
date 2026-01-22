@@ -4,14 +4,14 @@
     <div class="mb-4">
       <label for="username" class="form-label">Username:</label>
       <input name="username" type="text" class="form-control" [class.is-valid]="!!username" [class.is-invalid]="!username" required
-        [(ngModel)]="username" id="username" type="email">
+        [(ngModel)]="username" id="username" type="email" sentry-mask>
       <div class="invalid-feedback"> Please Specify Your Username </div>
     </div>
     <div class="mb-4">
       <label for="password" class="form-label">Password:</label>
       <div class="input-group has-validation">
         <input name="password" type="text" class="form-control" [class.is-valid]="!!password" [class.is-invalid]="!password" id="password"
-          required [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'">
+          required [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" sentry-mask>
         <button class="input-group-text btn btn-secondary color-scheme-quaternary" (click)="togglePassword()" type="button">
           <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
         </button>
@@ -20,7 +20,7 @@
     </div>
     <div class="mb-4">
       <label for="id" class="form-label">Account ID (Optional):</label>
-      <input name="id" type="number" class="form-control" [(ngModel)]="id" id="id" type="email">
+      <input name="id" type="number" class="form-control" [(ngModel)]="id" id="id" type="email" sentry-mask>
       <div class="valid-feedback"> Looks good! </div>
     </div>
     <div>

@@ -1,3 +1,12 @@
+## 7.1.1-beta.9
+* Significant improvements to Sentry
+  * Added profiling (main + renderer) to help identify performance bottlenecks
+  * Improved breadcrumbs and automatic context collection (app/window events, HTTP, filesystem, session)
+  * Added renderer integrations for better diagnostics (HTTP client, reporting observer, user feedback)
+  * Improved privacy for replays/logs by masking sensitive inputs (ADGA login + setup fields)
+  * Reduced noise during development by preventing events from being sent when the app is not packaged
+  * Added feedback dialog for users to report issues directly from the app
+
 ## 7.1.1-beta.8
 * Fixed a bug causing source maps to not upload correctly due to the "improvement" in the previous version
 
