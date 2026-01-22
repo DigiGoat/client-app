@@ -1,5 +1,3 @@
-import type Sentry from '@sentry/electron/preload';
-import { init } from '@sentry/electron/renderer';
 import { contextBridge } from 'electron';
 import type { SharedModule } from '../../../../shared/shared.module';
 import { ADGAService } from './services/adga/adga.service';
@@ -35,9 +33,6 @@ export class AppModule {
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    (require('@sentry/electron/preload-namespaced') as typeof Sentry).hookupIpc();
-    init({
-      enableLogs: true,
-    });
+    //(require('@sentry/electron/preload-namespaced') as typeof Sentry).hookupIpc();
   }
 }
