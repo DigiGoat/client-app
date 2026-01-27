@@ -1,4 +1,4 @@
-import { additionalContextIntegration, electronBreadcrumbsIntegration, fsIntegration, httpIntegration, init, mainProcessSessionIntegration } from '@sentry/electron/main';
+import { additionalContextIntegration, electronBreadcrumbsIntegration, httpIntegration, init, mainProcessSessionIntegration } from '@sentry/electron/main';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { app, session } from 'electron';
 import { AppModule } from './app/app.module';
@@ -15,40 +15,9 @@ init({
       deviceModelManufacturer: true,
     }),
     electronBreadcrumbsIntegration({
-      app: (name) => !name.startsWith('remote-'),
-      autoUpdater: true,
-      webContents: (name) =>
-        ['dom-ready', 'context-menu', 'load-url', 'destroyed'].includes(
-          name,
-        ),
-      browserWindow: (name) =>
-        [
-          'closed',
-          'close',
-          'unresponsive',
-          'responsive',
-          'show',
-          'blur',
-          'focus',
-          'hide',
-          'maximize',
-          'minimize',
-          'restore',
-          'enter-full-screen',
-          'leave-full-screen',
-        ].includes(name),
-      screen: true,
-      powerMonitor: true,
       captureWindowTitles: true,
     }),
-    fsIntegration({
-      recordFilePaths: true,
-      recordErrorMessagesAsSpanAttributes: true,
-    }),
-    httpIntegration({
-      breadcrumbs: true,
-      spans: true,
-    }),
+    httpIntegration(),
     mainProcessSessionIntegration({ sendOnCreate: true }),
     nodeProfilingIntegration(),
   ],
@@ -60,13 +29,14 @@ init({
   profileLifecycle: 'trace',
   attachScreenshot: true,
   enableRendererProfiling: true,
-  beforeSend: (event) => app.isPackaged ? event : null,
+  includeLocalVariables: true,
+  beforeSend: event => app.isPackaged ? event : null,
 });
 app.whenReady().then(() => {
   session.defaultSession.setDisplayMediaRequestHandler(
     (request, callback) => {
       callback({ video: request.frame });
-    },
+    }, { useSystemPicker: true }
   );
 });
 

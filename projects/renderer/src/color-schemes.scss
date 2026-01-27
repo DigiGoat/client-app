@@ -121,3 +121,16 @@ input.color-scheme-quaternary.disabled {
     background-color: var(--tertiary-light-color) !important;
   }
 }
+
+// Sentry Customizations
+#sentry-feedback {
+  --background: var(--secondary-color);
+  --accent-background: var(--quaternary-color);
+}
+
+@include color-mode(light) {
+  #sentry-feedback {
+    --background: var(--secondary-light-color);
+    --accent-background: var(--quaternary-light-color);
+  }
+}

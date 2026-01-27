@@ -1,3 +1,4 @@
+import { captureException, getActiveSpan } from '@sentry/electron/main';
 import ADGA from 'adga';
 import CDCB, { LactationType } from 'adga/cdcb';
 import { AxiosError } from 'axios';
@@ -16,10 +17,11 @@ export class ADGAService {
   account?: Account;
   get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
   handleError(error: Error & AxiosError) {
+    captureException(error, { level: 'warning' });
     if (error.isAxiosError && error.response) {
       const response = error.response;
-      if ((response.data as { error?: { message?: string } }).error) {
-        const responseError = (error.response.data as { error?: { details?: string } }).error;
+      if ((response.data as { error?: { message?: string; }; }).error) {
+        const responseError = (error.response.data as { error?: { details?: string; }; }).error;
         if (responseError.details) {
           return Promise.reject(new Error(responseError.details));
         } else {
@@ -105,7 +107,9 @@ export class ADGAService {
       try {
         const blacklist = await readJSON(this.blacklistPath).catch(() => [] as string[]);
         const goats = await this.adga.getOwnedGoats(this.account?.id);
+        getActiveSpan()?.setAttribute('owned_goats_count', goats.totalCount);
         goats.items = goats.items.filter(goat => !blacklist.includes(goat.id));
+        getActiveSpan()?.setAttribute('owned_goats_count_filtered', goats.items.length);
         return goats;
       } catch (err) {
         console.warn('Error Fetching Owned Goats:', err);
@@ -128,6 +132,7 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
+        getActiveSpan()?.setAttribute('goats_fetched_count', ids.length);
         return await this.adga.getGoats(ids);
       } catch (err) {
         console.warn('Error Fetching Goats:', err);
@@ -183,6 +188,8 @@ export class ADGAService {
             return record;
           })
         );
+        getActiveSpan()?.setAttribute('lactations_fetched_count', records.length);
+        getActiveSpan()?.setAttribute('lactation_tests_fetched_count', records.reduce((sum, record) => sum + record.tests.length, 0));
         // CDCB returns lactations in reverse order, so reverse to match original unshift logic
         return records.reverse();
       } catch (err) {
@@ -195,7 +202,9 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        return (await this.adga.getAllGoatsByNormalizeId(normalizeId)).items;
+        const goats = await this.adga.getAllGoatsByNormalizeId(normalizeId);
+        getActiveSpan()?.setAttribute('goats_lookup_count', goats.items.length);
+        return goats.items;
       } catch (err) {
         console.warn('Error Looking Up Goats:', err);
         return this.handleError(err);
@@ -206,7 +215,9 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        return (await this.adga.getAllGoatsByName(name)).items;
+        const goats = await this.adga.getAllGoatsByName(name);
+        getActiveSpan()?.setAttribute('goats_lookup_count', goats.items.length);
+        return goats.items;
       } catch (err) {
         console.warn('Error Looking Up Goats:', err);
         return this.handleError(err);
@@ -225,7 +236,9 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        return (await this.adga.getLinearAppraisal(id)).items;
+        const linearAppraisal = await this.adga.getLinearAppraisal(id);
+        getActiveSpan()?.setAttribute('linear_appraisal_fetched_count', linearAppraisal.items.length);
+        return linearAppraisal.items;
       } catch (err) {
         console.warn('Error Fetching Linear Appraisal:', err);
         return this.handleError(err);
@@ -236,7 +249,9 @@ export class ADGAService {
         return this.noADGAMessage;
       }
       try {
-        return (await this.adga.getAwards(id)).items;
+        const awards = await this.adga.getAwards(id);
+        getActiveSpan()?.setAttribute('awards_fetched_count', awards.items.length);
+        return awards.items;
       } catch (err) {
         console.warn('Error Fetching Awards:', err);
         return this.handleError(err);
