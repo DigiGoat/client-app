@@ -1,3 +1,14 @@
+## 7.1.1-beta.10
+* Changed the colors of the sentry feedback dialog to better match the DigiGoat theme
+* Removed some unnecessary Sentry integrations to improve performance
+* Added some details to some of the existing adga spans for better diagnostics
+* Updates to the History page
+  * Improved how changes are fetched
+  * Made the changes to push more accurate
+* Added identification data to Sentry events to help group issues by user
+  * This only applies to DigiGoat subscribers, your usage remains anonymous when not subscribed
+* Added spans to monitor the performance of the live preview start/stop process
+
 ## 7.1.1-beta.9
 * Significant improvements to Sentry
   * Added profiling (main + renderer) to help identify performance bottlenecks

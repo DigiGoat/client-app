@@ -3,6 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { init as angularInit } from '@sentry/angular';
 import { browserProfilingIntegration, browserTracingIntegration, feedbackIntegration, httpClientIntegration, init, replayIntegration, reportingObserverIntegration } from '@sentry/electron/renderer';
 import { AppModule } from './app/app.module';
+
 init({
   // Adds request headers and IP for users, for more info visit:
   // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/#sendDefaultPii

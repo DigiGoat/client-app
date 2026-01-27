@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/electron/main';
+import { captureException, metrics, setUser } from '@sentry/electron/main';
 import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-extra';
@@ -43,13 +43,17 @@ export class GitService {
     setup: async (_event, repo, name, email, token) => {
       emptyDirSync(this.base);
       try {
+        metrics.count('clone.initiated', 1, { attributes: { repo: repo } });
         await this.git.clone(`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`, '.');
         await this.git.addConfig('user.name', name || 'Digi');
         await this.git.addConfig('user.email', email || 'Digi@DigiGoat.farm');
+        this.configureUser();
+        metrics.count('clone.completed', 1, { attributes: { repo: repo } });
       } catch (err) {
-        captureException(err);
+        captureException(err, { level: 'warning' });
         console.error('Clone failed, emptying directory');
         emptyDirSync(this.base);
+        metrics.count('clone.failed', 1, { attributes: { repo: repo } });
         return Promise.reject(err);
       }
       // Wait to run check until a window is opened since if updates need to be installed it will be handled by the setup window
@@ -61,6 +65,7 @@ export class GitService {
       await this.git.remote(['set-url', 'origin', `https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`]);
       await this.git.addConfig('user.name', name);
       await this.git.addConfig('user.email', email);
+      await this.configureUser();
       await this.checkForUpdates(); // Immediately pull new changes
     },
     version: async () => {
@@ -121,6 +126,7 @@ export class GitService {
       this.change();
     },
     publish: async () => {
+      metrics.count('publish.initiated', 1);
       try {
         await this.checkForUpdates();
       } catch (error) {
@@ -142,6 +148,7 @@ export class GitService {
       }
       await this.git.push();
       this.change();
+      metrics.count('publish.completed', 1);
     },
     reset: async () => {
       await this.git.clean(CleanOptions.FORCE);
@@ -156,6 +163,8 @@ export class GitService {
     getStatus: async () => {
       const status = await this.git.status();
       delete status.isClean;
+      const local = await this.git.log(['--first-parent', '@{u}..']);
+      status.ahead = local.total;
       return status;
     },
     fetchUpdate: async () => {
@@ -215,10 +224,9 @@ export class GitService {
       }
     },
     getHistory: async () => {
-      const upstreams = (await this.git.branch(['-r'])).all.filter(branch => branch.includes('upstream'));
       return {
-        local: await this.git.log(['@{u}..', ...upstreams.map(branch => `^${branch}`)]),
-        remote: await this.git.log(['@{u}', ...upstreams.map(branch => `^${branch}`)]),
+        local: await this.git.log(['--first-parent', '@{u}..']),
+        remote: await this.git.log(['--first-parent', '@{u}']),
       };
     }
   };
@@ -231,6 +239,7 @@ export class GitService {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false', 'core.longpaths=true'] });
     this.checkForUpdates();
+    this.configureUser();
   }
   async checkForUpdates() {
     await this.pullChanges();
@@ -279,7 +288,7 @@ export class GitService {
         });
       }
     } catch (err) {
-      captureException(err);
+      captureException(err, { level: 'warning' });
       console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
 
       // If the pull left us in a conflicted state, abort so JSON files are restored.
@@ -321,6 +330,7 @@ export class GitService {
     this.scheduleUpdateCheck();
   }
   async installUpdates(oldVersion: string, newVersion: string) {
+    metrics.count('update.installed', 1, { attributes: { from: oldVersion, to: newVersion } });
     await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
     this.change();
   }
@@ -331,5 +341,23 @@ export class GitService {
     this.existingCheck = setTimeout(() => {
       this.checkForUpdates();
     }, 1000 * 60 * (quickCheck ? 5 : 60)); // Check every hour (or every 5 minutes if this is a quick check)
+  }
+
+  async configureUser() {
+    try {
+      const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin').refs.fetch;
+      const config = {
+        token: remoteUrl.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
+        repo: remoteUrl.split('github.com/DigiGoat/')[1].split('.git')[0]
+      };
+      if (config.repo !== 'web-ui') {
+        const name = (await this.git.getConfig('user.name')).value;
+        const email = (await this.git.getConfig('user.email')).value;
+        setUser({ id: config.repo, username: name, email: email });
+
+      }
+    } catch (err) {
+      console.warn('Error Configuring User:', err);
+    }
   }
 }
