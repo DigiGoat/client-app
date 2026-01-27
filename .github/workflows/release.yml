@@ -138,7 +138,7 @@ jobs:
 
       - name: Get First Commit Date
         id: start_date
-        run: echo 'time=$(git show -s --format=%ct ${{ github.event.before }}' > $GITHUB_OUTPUT
+        run: echo 'time=$(git show -s --format=%ct ${{ github.event.before }}.. --reverse --ancestry-path -n 1)' > $GITHUB_OUTPUT
       
       - name: Create Sentry release
         uses: getsentry/action-release@v3
