@@ -136,6 +136,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BEFORE: ${{ github.event.before }}
 
+      - name: Get First Commit Date
+        id: start_date
+        run: echo 'time=$(git show -s --format=%ct ${{ github.event.before }}' > $GITHUB_OUTPUT
+      
       - name: Create Sentry release
         uses: getsentry/action-release@v3
         with:
@@ -145,3 +149,4 @@ jobs:
           commit: ${{ github.sha }}
           previous_commit: ${{ github.event.before }}
           repo: DigiGoat/client-app
+          started_at: ${{ steps.start_date.outputs.time }}
