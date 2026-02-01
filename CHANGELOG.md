@@ -1,3 +1,7 @@
+## 7.1.1-beta.11
+* Release in sentry now show the "created at" date properly
+  * Uses the date of the first commit in the release range
+
 ## 7.1.1-beta.10
 * Changed the colors of the sentry feedback dialog to better match the DigiGoat theme
 * Removed some unnecessary Sentry integrations to improve performance
