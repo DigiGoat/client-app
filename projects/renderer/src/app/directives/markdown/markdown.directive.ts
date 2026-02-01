@@ -1,23 +1,29 @@
 import { HttpClient } from '@angular/common/http';
-import { booleanAttribute, Directive, ElementRef, HostListener, Input, type OnInit } from '@angular/core';
+import { booleanAttribute, Directive, ElementRef, HostListener, Input, type OnInit, type OnDestroy } from '@angular/core';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
 import { ImageService } from '../../services/image/image.service';
 import { MarkedService } from '../../services/marked/marked.service';
+import type { Tooltip } from 'bootstrap';
 
 @Directive({
   selector: 'textarea[markdown]',
   standalone: false
 })
-export class MarkdownDirective implements OnInit {
+export class MarkdownDirective implements OnInit, OnDestroy {
 
   constructor(private el: ElementRef<HTMLTextAreaElement>, private http: HttpClient, private appService: AppService, private markedService: MarkedService, private dialogService: DialogService, private imageService: ImageService, private gitService: GitService, private diffService: DiffService) { }
   private markdownEl!: HTMLElement;
   private iconEl!: HTMLElement;
   private imageIconEl?: HTMLElement;
   private descriptor?: HTMLElement;
+  private iconTooltip?: Tooltip;
+  private imageIconTooltip?: Tooltip;
+  private markdownClickHandler?: () => void;
+  private iconClickHandler?: () => void;
+  private imageIconClickHandler?: () => void;
 
   @Input({ alias: 'markdown-images', transform: booleanAttribute }) imagesUploads = false;
 
@@ -31,7 +37,8 @@ export class MarkdownDirective implements OnInit {
     this.markdownEl.style.overflow = 'auto';
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.markdownEl);
     this.markdownEl.style.display = 'none';
-    this.markdownEl.addEventListener('click', () => this.hideMarkdown());
+    this.markdownClickHandler = () => this.hideMarkdown();
+    this.markdownEl.addEventListener('click', this.markdownClickHandler);
     //Wait 100ms so that Angular has a chance to bind to `ngModel`
     this.iconEl = this.el.nativeElement.ownerDocument.createElement('i');
     this.iconEl.className = 'bi bi-markdown';
@@ -54,14 +61,16 @@ export class MarkdownDirective implements OnInit {
       this.imageIconEl.title = 'Images Supported';
       this.imageIconEl.style.zIndex = '100';
       this.imageIconEl.style.cursor = 'copy';
-      this.imageIconEl.addEventListener('click', () => this.uploadImages());
+      this.imageIconClickHandler = () => this.uploadImages();
+      this.imageIconEl.addEventListener('click', this.imageIconClickHandler);
       this.el.nativeElement.insertAdjacentElement('beforebegin', this.imageIconEl);
-      bootstrap.Tooltip.getOrCreateInstance(this.imageIconEl);
+      this.imageIconTooltip = bootstrap.Tooltip.getOrCreateInstance(this.imageIconEl);
     }
 
-    this.iconEl.addEventListener('click', () => this.appService.openMarkdown());
+    this.iconClickHandler = () => this.appService.openMarkdown();
+    this.iconEl.addEventListener('click', this.iconClickHandler);
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.iconEl);
-    bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
+    this.iconTooltip = bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
     setTimeout(() => this.showMarkdown(), 100);
   }
   oldValue = '';
@@ -183,5 +192,27 @@ export class MarkdownDirective implements OnInit {
       this.el.nativeElement.dispatchEvent(new Event('input'));
       this.hideMarkdown();
     }
+  }
+
+  ngOnDestroy(): void {
+    // Dispose of Bootstrap Tooltip instances to prevent memory leaks and race conditions
+    this.iconTooltip?.dispose();
+    this.imageIconTooltip?.dispose();
+
+    // Remove event listeners to prevent memory leaks
+    if (this.markdownClickHandler) {
+      this.markdownEl?.removeEventListener('click', this.markdownClickHandler);
+    }
+    if (this.iconClickHandler) {
+      this.iconEl?.removeEventListener('click', this.iconClickHandler);
+    }
+    if (this.imageIconClickHandler && this.imageIconEl) {
+      this.imageIconEl.removeEventListener('click', this.imageIconClickHandler);
+    }
+
+    // Remove dynamically created DOM elements
+    this.markdownEl?.remove();
+    this.iconEl?.remove();
+    this.imageIconEl?.remove();
   }
 }

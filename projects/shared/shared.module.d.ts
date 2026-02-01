@@ -1,4 +1,4 @@
-import type { IpcMainEvent } from 'electron';
+import type { IpcMainInvokeEvent } from 'electron';
 import type { ADGAService } from './services/adga/adga.service';
 import type { AppService } from './services/app/app.service';
 import type { ConfigService } from './services/config/config.service';
@@ -30,7 +30,7 @@ export interface SharedModule {
 }
 
 type WithoutOnKeys<T> = {
-  [K in keyof T as K extends `on${infer _}` ? never : K]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
+  [K in keyof T as K extends `on${infer _}` ? never : K]: T[K] extends (...args: infer A) => any ? (event: IpcMainInvokeEvent, ...args: A) => ReturnType<T[K]> : never;
 };
 
 type WithoutNonPromises<T> = {
@@ -39,6 +39,6 @@ type WithoutNonPromises<T> = {
 
 export type BackendService<T> = {
   //@ts-expect-error
-  [K in keyof WithoutOnKeys<WithoutNonPromises<T>>]: T[K] extends (...args: infer A) => any ? (event: IpcMainEvent, ...args: A) => ReturnType<T[K]> : never;
+  [K in keyof WithoutOnKeys<WithoutNonPromises<T>>]: T[K] extends (...args: infer A) => any ? (event: IpcMainInvokeEvent, ...args: A) => ReturnType<T[K]> : never;
 };
-export type BackendSharedModule = Record<keyof SharedModule, BackendService<SharedModule[keyof SharedModule]>>;
+export type BackendSharedModule = { [K in keyof SharedModule]: BackendService<SharedModule[K]> };

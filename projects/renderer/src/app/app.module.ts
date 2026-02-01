@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, provideAppInitializer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { Router } from '@angular/router';
+import { createErrorHandler, TraceService } from '@sentry/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -12,7 +14,22 @@ import { AppComponent } from './app.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useValue: createErrorHandler(),
+    },
+    {
+      provide: TraceService,
+      deps: [Router],
+    },
+    {
+      provide: provideAppInitializer,
+      useFactory: () => () => {},
+      deps: [TraceService],
+      multi: true,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

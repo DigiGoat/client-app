@@ -12,7 +12,6 @@ const config = {
     path: path.resolve(__dirname, '../../dist/preload'),
     filename: 'bundle.js'
   },
-  plugins: [],
   module: {
     rules: [
       {
@@ -27,6 +26,7 @@ const config = {
   },
   target: 'electron-preload',
   context: __dirname,
+  devtool: 'source-map'
 };
 
 module.exports = () => {

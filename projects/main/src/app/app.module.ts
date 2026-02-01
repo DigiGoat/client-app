@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, app, dialog, shell, type MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, dialog, Menu, shell, type MenuItemConstructorOptions } from 'electron';
 import { readJSON } from 'fs-extra';
 import { join, resolve } from 'path';
 import parse from 'semver/functions/parse';
@@ -9,10 +9,6 @@ import { SetupWindow } from './windows/setup/setup.window';
 export class AppModule {
   openedByDeepLink = false;
   constructor() {
-    // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-    if (require('electron-squirrel-startup')) {
-      app.quit();
-    }
     new ServiceModule();
     const template: MenuItemConstructorOptions[] = [
       { role: 'fileMenu' },

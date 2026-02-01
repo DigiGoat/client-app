@@ -3,9 +3,9 @@
 import axios from 'axios';
 //@ts-ignore - chalk isn't broken yet at v4
 import chalk from 'chalk';
+import { writeFileSync } from 'fs';
 import { readFile } from 'fs/promises';
 import Git from 'simple-git';
-//@ts-ignore - This is addressed in the compiler options
 import packageJson from '../package.json';
 
 const origin = process.env['BEFORE'];
@@ -56,9 +56,13 @@ use the id of that release to update the release
   log.info('Getting version');
   const { version } = packageJson;
   log.debug('Version:', version);
+  if (process.env['GITHUB_OUTPUT']) {
+    log.info('Setting release version output');
+    writeFileSync(process.env['GITHUB_OUTPUT'], `version=${version}\n`, { flag: 'a' });
+  }
   log.info('Getting releases');
   const { data: releases } = await github.get('/repos/digigoat/client-app/releases');
-  const release = releases.find((r: { name: string; }) => r.name === `v${version}`);
+  const release = releases.find((r: { name: string }) => r.name === `v${version}`);
   if (!release) {
     log.error(`Release ${version} not found`);
     process.exit(1);

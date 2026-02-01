@@ -1,3 +1,66 @@
+## 7.1.1-beta.12
+* (Hopefully) Fixed a bug causing the Sentry release date to be incorrect
+
+## 7.1.1-beta.11
+* Release in sentry now show the "created at" date properly
+  * Uses the date of the first commit in the release range
+
+## 7.1.1-beta.10
+* Changed the colors of the sentry feedback dialog to better match the DigiGoat theme
+* Removed some unnecessary Sentry integrations to improve performance
+* Added some details to some of the existing adga spans for better diagnostics
+* Updates to the History page
+  * Improved how changes are fetched
+  * Made the changes to push more accurate
+* Added identification data to Sentry events to help group issues by user
+  * This only applies to DigiGoat subscribers, your usage remains anonymous when not subscribed
+* Added spans to monitor the performance of the live preview start/stop process
+
+## 7.1.1-beta.9
+* Significant improvements to Sentry
+  * Added profiling (main + renderer) to help identify performance bottlenecks
+  * Improved breadcrumbs and automatic context collection (app/window events, HTTP, filesystem, session)
+  * Added renderer integrations for better diagnostics (HTTP client, reporting observer, user feedback)
+  * Improved privacy for replays/logs by masking sensitive inputs (ADGA login + setup fields)
+  * Reduced noise during development by preventing events from being sent when the app is not packaged
+  * Added feedback dialog for users to report issues directly from the app
+
+## 7.1.1-beta.8
+* Fixed a bug causing source maps to not upload correctly due to the "improvement" in the previous version
+
+## 7.1.1-beta.7
+* Improved source maps
+  * Added prefix to separate main, renderer, and preload processes
+  * Disabled output hashing for easier debugging
+* Added console logging integration 
+
+## 7.1.1-beta.6
+* Started tracing all IPC calls with Sentry to help identify performance bottlenecks
+  * With a focus on ADGA API calls & Git operations
+
+## 7.1.1-beta.5
+* Manually configured the commits for Sentry releases to align with the DigiGoat Releases versioning
+
+## 7.1.1-beta.4
+* Added back an accidentally deleted script for the sourcemaps of the main process on MacOS
+* Updated release names to be Sentry compatible (i.e. `DigiGoat@7.1.1-beta.4` instead of just `7.1.1-beta.4`)
+
+## 7.1.1-beta.3
+* Fixed a bug causing source maps to not upload correctly on MacOS
+
+## 7.1.1-beta.2
+* Added source maps for easier debugging of crashes and errors!
+
+## 7.1.1-beta.1
+* Added Sentry!
+  * This will help identify and fix crashes and bugs in the app
+  * No personal data is collected, only crash reports and logs
+  * A feedback 
+
+## 7.1.0-beta.1
+* Added the ability to configure whether images can be viewed internationally
+  * The new default setting is to block images from being viewed outside of the US
+
 ## 7.0.5-beta.1
 * Fixed a bug causing the "optimize images" prompt to appear even if there aren't any images
 * Finally identified the bug causing failed clones

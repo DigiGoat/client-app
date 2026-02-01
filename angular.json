@@ -44,15 +44,17 @@
                 "input": "/node_modules/bootstrap/dist/js/bootstrap.bundle.js",
                 "bundleName": "bootstrap.bundle"
               }
-            ]
+            ],
+            "sourceMap": true,
+            "outputHashing": "none"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -60,13 +62,11 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all",
               "baseHref": "./"
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              "extractLicenses": false
             }
           },
           "defaultConfiguration": "production"

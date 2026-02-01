@@ -1,5 +1,6 @@
+import { startSpan } from '@sentry/electron/main';
 import { ipcMain } from 'electron';
-import type { BackendSharedModule, SharedModule } from '../../../../shared/shared.module';
+import type { BackendSharedModule } from '../../../../shared/shared.module';
 import { ADGAService } from './adga/adga.service';
 import { AppService } from './app/app.service';
 import { ConfigService } from './config/config.service';
@@ -31,6 +32,17 @@ export class ServiceModule {
     customPages: new CustomPagesService().api,
   };
   constructor() {
-    Object.keys(this.api).forEach(service => Object.keys(this.api[service as keyof SharedModule]).forEach(key => ipcMain.handle(`${service}:${key}`, this.api[service as keyof SharedModule][key as keyof SharedModule[keyof SharedModule]])));
+    // `SharedModule` typing is primarily for compile-time contracts; at runtime this is a
+    // nested object of invoke-able functions. We cast here to avoid TS reducing the
+    // indexed access type to `never`.
+    const api = this.api as unknown as Record<string, Record<string, (...args: unknown[]) => unknown>>;
+
+    Object.keys(api).forEach(service => {
+      Object.keys(api[service]).forEach(key => {
+        ipcMain.handle(`${service}:${key}`, (...allArgs) =>
+          startSpan({ name: key, op: `ipc.${service}` }, () => api[service][key](...allArgs)),
+        );
+      });
+    });
   }
 }
