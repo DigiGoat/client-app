@@ -70,13 +70,19 @@ export class ImageService {
       const names = [];
       for (const image of images) {
         const name = `${timestamp}-${i}+.webp`;
-        await sharp(image as string | ArrayBuffer)
-          .resize({ height: 400, withoutEnlargement: true })
-          .webp()
-          .withMetadata()
-          .toFile(join(assetsDir, directory, name));
-        names.push(name);
-        i++;
+        try {
+          await sharp(image as string | ArrayBuffer)
+            .resize({ height: 400, withoutEnlargement: true })
+            .webp()
+            .withMetadata()
+            .toFile(join(assetsDir, directory, name));
+          names.push(name);
+          i++;
+        } catch (err) {
+          console.warn('Failed to add image:', err);
+          const parsedErr = err instanceof Error ? err : new Error(String(err));
+          dialog.showErrorBox(`Failed to add ${typeof image === 'string' ? image : 'image'}`, parsedErr.message);
+        }
       }
       return names;
     },

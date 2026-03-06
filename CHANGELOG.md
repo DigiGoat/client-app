@@ -1,3 +1,16 @@
+## 7.1.2-beta.3
+* Fixed a bug causing unsupported image formats to fail without any error message
+  * Addresses Sentry issue [DIGIGOAT-R](https://digigoat.sentry.io/issues/7298974121/)
+
+## 7.1.2-beta.2
+* Fixed a bug causing drag-and-drop to not work for uploading images
+  * Addresses Sentry issue [DIGIGOAT-Q](https://digigoat.sentry.io/issues/7298955442/)
+
+## 7.1.2-beta.1
+* Used Copilot to fix some tooltip bugs
+  * This addresses Sentry issue DIGIGOAT-D and DIGIGOAT-N
+  * Copilot preemptively fixed some potential bugs with the search dropdown tooltips as well
+
 ## 7.1.1-beta.12
 * (Hopefully) Fixed a bug causing the Sentry release date to be incorrect
 

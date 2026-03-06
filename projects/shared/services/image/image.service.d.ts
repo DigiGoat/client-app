@@ -3,7 +3,7 @@ export interface ImageService {
   getImageMap: () => Promise<ImageMap>;
   setImageMap: (imageMap: ImageMap) => Promise<void>;
   uploadImages: (...images: string[]) => Promise<string[]>;
-  addImages: (directory: string, ...images: (ArrayBuffer | string | File)[]) => Promise<string[]>;
+  addImages: (directory: string, ...images: (ArrayBuffer | string)[]) => Promise<string[]>;
   mvImage: (oldDir: string, newDir: string, image: string) => Promise<void>;
   deleteImages: (directory: string, image: string[]) => Promise<void>;
   getUploadDir: () => Promise<string>;
