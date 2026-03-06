@@ -7,12 +7,20 @@ import type { Tooltip } from 'bootstrap';
 })
 export class TooltipDirective implements AfterViewInit, OnDestroy {
   private bsTooltip?: Tooltip;
+  private _title = '';
+  private _initialized = false;
   @Input('tooltip-placement') placement: 'auto' | 'top' | 'bottom' | 'left' | 'right' = 'auto';
   @Input() set tooltip(value: string) {
+    this._title = value || '';
     if (this.bsTooltip) {
-      this.bsTooltip.setContent({ '.tooltip-inner': value });
-    } else {
-      this.el.nativeElement.setAttribute('data-bs-title', value);
+      if (this._title) {
+        this.bsTooltip.setContent({ '.tooltip-inner': this._title });
+      } else {
+        this.bsTooltip.dispose();
+        this.bsTooltip = undefined;
+      }
+    } else if (this._initialized && this._title) {
+      this.bsTooltip = bootstrap.Tooltip.getOrCreateInstance(this.el.nativeElement, { placement: this.placement, title: this._title });
     }
   }
   @HostBinding('attr.data-bs-toggle') toggle = 'tooltip';
@@ -21,7 +29,10 @@ export class TooltipDirective implements AfterViewInit, OnDestroy {
   }
   constructor(private el: ElementRef) { }
   ngAfterViewInit(): void {
-    this.bsTooltip = bootstrap.Tooltip.getOrCreateInstance(this.el.nativeElement, { placement: this.placement });
+    this._initialized = true;
+    if (this._title) {
+      this.bsTooltip = bootstrap.Tooltip.getOrCreateInstance(this.el.nativeElement, { placement: this.placement, title: this._title });
+    }
   }
   ngOnDestroy(): void {
     this.bsTooltip?.dispose();
