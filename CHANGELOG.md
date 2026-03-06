@@ -1,3 +1,8 @@
+## 7.1.2-beta.1
+* Used Copilot to fix some tooltip bugs
+  * This addresses Sentry issue DIGIGOAT-D and DIGIGOAT-N
+  * Copilot preemptively fixed some potential bugs with the search dropdown tooltips as well
+
 ## 7.1.1-beta.12
 * (Hopefully) Fixed a bug causing the Sentry release date to be incorrect
 

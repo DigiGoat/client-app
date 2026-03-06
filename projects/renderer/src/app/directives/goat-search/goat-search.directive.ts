@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, type OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, type OnDestroy, type OnInit } from '@angular/core';
 import type { Dropdown } from 'bootstrap';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../services/goat/goat.service';
@@ -7,12 +7,15 @@ import { GoatService } from '../../services/goat/goat.service';
   selector: 'input[goat-search]',
   standalone: false
 })
-export class GoatSearchDirective implements OnInit {
+export class GoatSearchDirective implements OnInit, OnDestroy {
 
   private document = this.el.nativeElement.ownerDocument;
   private list = this.document.createElement('ul');
   private input = this.el.nativeElement;
   private dropdown?: Dropdown;
+  private inputHandler?: () => void;
+  private focusHandler?: () => void;
+  private blurHandler?: () => void;
   @Input({ alias: 'goat-search' }) goats?: Goat[] | 'does' | 'bucks';
   constructor(private el: ElementRef<HTMLInputElement>, private goatService: GoatService) { }
   async ngOnInit() {
@@ -25,9 +28,12 @@ export class GoatSearchDirective implements OnInit {
 
     this.dropdown = bootstrap.Dropdown.getOrCreateInstance(this.input);
 
-    this.input.addEventListener('input', () => this.updateList());
-    this.input.addEventListener('focus', () => this.updateList());
-    this.input.addEventListener('blur', () => this.dropdown?.hide());
+    this.inputHandler = () => this.updateList();
+    this.focusHandler = () => this.updateList();
+    this.blurHandler = () => this.dropdown?.hide();
+    this.input.addEventListener('input', this.inputHandler);
+    this.input.addEventListener('focus', this.focusHandler);
+    this.input.addEventListener('blur', this.blurHandler);
   }
   async updateList() {
     this.list.innerHTML = '';
@@ -74,5 +80,24 @@ export class GoatSearchDirective implements OnInit {
         this.list.appendChild(item);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    // Dispose of Bootstrap Dropdown instance to prevent memory leaks and race conditions
+    this.dropdown?.dispose();
+
+    // Remove event listeners to prevent memory leaks
+    if (this.inputHandler) {
+      this.input.removeEventListener('input', this.inputHandler);
+    }
+    if (this.focusHandler) {
+      this.input.removeEventListener('focus', this.focusHandler);
+    }
+    if (this.blurHandler) {
+      this.input.removeEventListener('blur', this.blurHandler);
+    }
+
+    // Remove dynamically created DOM elements
+    this.list.remove();
   }
 }
