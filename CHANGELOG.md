@@ -1,3 +1,7 @@
+## 7.1.2-beta.2
+* Fixed a bug causing drag-and-drop to not work for uploading images
+  * Addresses Sentry issue [DIGIGOAT-Q](https://digigoat.sentry.io/issues/7298955442/)
+
 ## 7.1.2-beta.1
 * Used Copilot to fix some tooltip bugs
   * This addresses Sentry issue DIGIGOAT-D and DIGIGOAT-N

@@ -46,7 +46,8 @@ export class ImageComponent implements OnInit {
     event.stopPropagation();
     const map = await this.imageService.getImageMap();
     if (!map[this.queries[0]]) map[this.queries[0]] = [];
-    const names = await this.imageService.addImages(this.queries[0], ...files);
+    const buffers = await Promise.all(files.map(file => file.arrayBuffer()));
+    const names = await this.imageService.addImages(this.queries[0], ...buffers);
     map[this.queries[0]].unshift(...names.map(name => ({ file: name })));
 
     const paths = names.map(name => `${this.queries[0]}/${name}`);
