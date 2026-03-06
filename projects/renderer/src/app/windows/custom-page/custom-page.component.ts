@@ -40,8 +40,7 @@ export class CustomPageComponent implements OnInit {
       }
     };
   }
-  setParam<T extends keyof CustomPage>(key: T, value: CustomPage[T]) {
-    this.customPage[key] = value;
+  detectChanges() {
     this.windowService.setTitle(this.customPage.title || '');
     this.windowService.setUnsavedChanges(this.unsavedChanges);
   }
