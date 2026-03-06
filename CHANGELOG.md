@@ -1,3 +1,7 @@
+## 7.1.2-beta.3
+* Fixed a bug causing unsupported image formats to fail without any error message
+  * Addresses Sentry issue [DIGIGOAT-R](https://digigoat.sentry.io/issues/7298974121/)
+
 ## 7.1.2-beta.2
 * Fixed a bug causing drag-and-drop to not work for uploading images
   * Addresses Sentry issue [DIGIGOAT-Q](https://digigoat.sentry.io/issues/7298955442/)
