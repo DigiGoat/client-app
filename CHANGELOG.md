@@ -1,3 +1,6 @@
+## 7.1.3-beta.1
+* Fixed the suggested page url not updating when a firebase project id is configured
+
 ## 7.1.2-beta.3
 * Fixed a bug causing unsupported image formats to fail without any error message
   * Addresses Sentry issue [DIGIGOAT-R](https://digigoat.sentry.io/issues/7298974121/)
