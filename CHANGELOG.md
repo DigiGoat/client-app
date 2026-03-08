@@ -1,3 +1,6 @@
+## 7.1.3-beta.2
+* Fixed a backend bug causing suggestions to attempt to access the firebase project id before it is defined
+  * Addresses Sentry issue [DIGIGOAT-V](https://digigoat.sentry.io/issues/7319855633/)
 ## 7.1.3-beta.1
 * Fixed the suggested page url not updating when a firebase project id is configured
 
