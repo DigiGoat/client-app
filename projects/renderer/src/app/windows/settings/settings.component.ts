@@ -15,7 +15,10 @@ import { WindowService } from '../../services/window/window.service';
 })
 export class SettingsComponent implements OnInit {
   private _oldSettings: Settings = {};
-  settings: Settings = {};
+  settings: Settings & Required<Pick<Settings, 'analytics' | 'firebase'>> = {
+    analytics: {},
+    firebase: {}
+  };
   constructor(private diffService: DiffService, private settingsService: SettingsService, private windowService: WindowService, private gitService: GitService, private dialogService: DialogService, private configService: ConfigService) { }
   get unsavedChangesDiff() {
     return this.diffService.diff(this._oldSettings, this.settings) as Record<string, string>;
@@ -36,7 +39,11 @@ export class SettingsComponent implements OnInit {
 
   async ngOnInit() {
     const settings = await this.settingsService.get();
-    this.settings = settings;
+    this.settings = {
+      firebase: {},
+      analytics: {},
+      ...settings
+    };
     this._oldSettings = structuredClone(settings);
     if (!this.settings.analytics) {
       this.settings.analytics = {};
@@ -83,10 +90,14 @@ export class SettingsComponent implements OnInit {
     await this.gitService.commitSettings(['Updated Settings', ...diffMessage]);
   }
   async discardChanges() {
-    this.settings = this._oldSettings;
+    this.settings = {
+      analytics: {},
+      firebase: {},
+      ...this._oldSettings
+    };
     await this.windowService.setUnsavedChanges(false);
   }
 }
 
-type Analytics = { gtag?: string; clarity?: string };
-type Firebase = { apiKey?: string; messagingSenderId?: string; appId?: string };
+type Analytics = { gtag?: string; clarity?: string; };
+type Firebase = { apiKey?: string; messagingSenderId?: string; appId?: string; };
