@@ -41,8 +41,8 @@
         <span class="input-group-text">Contact Us Page:</span>
         <select class="form-select" aria-label="Contact Form Select Dropdown" [(ngModel)]="configService.contactForm"
           [disabled]="!configService.email || (!configService.title && !configService.shortTitle)">
-          <option [value]="true">Enabled</option>
-          <option [value]="false">Disabled</option>
+          <option [ngValue]="true">Enabled</option>
+          <option [ngValue]="false">Disabled</option>
         </select>
       </div>
       <div class="form-text"> Add a <Code>Contact Us</Code> page to your site (this is a great way to hide your email if you're worried
