@@ -1,3 +1,10 @@
+## 7.2.0-beta.1
+* Added the ability to hide your farm email to prevent spam, while still being able to receive DigiGoat emails
+  * If the email is hidden, it will not be displayed on the homepage or in the footer, but it will still be used for the contact form and milk test reports
+* Added the ability to enable the new contact us form!
+  * This allows visitors to your site to contact you without exposing your email address
+  * The messages sent through the contact form will be forwarded to your farm email address
+
 ## 7.1.3-beta.2
 * Fixed a backend bug causing suggestions to attempt to access the firebase project id before it is defined
   * Addresses Sentry issue [DIGIGOAT-V](https://digigoat.sentry.io/issues/7319855633/)

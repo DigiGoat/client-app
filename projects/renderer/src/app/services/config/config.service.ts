@@ -101,6 +101,12 @@ export class ConfigService {
   set email(email: string) {
     this.config = { email: email };
   }
+  get hideEmail(): boolean {
+    return this.config['hideEmail'] as boolean ?? false;
+  }
+  set hideEmail(hideEmail: boolean) {
+    this.config = { hideEmail: hideEmail };
+  }
   get homeDescription(): string {
     if (this.config['homeDescription']) {
       return this.config['homeDescription'] as string;
@@ -198,6 +204,12 @@ export class ConfigService {
       }
     };
   }
+  get contactForm(): boolean {
+    return this.config['contactForm'] as boolean ?? false;
+  }
+  set contactForm(contactForm: boolean) {
+    this.config = { contactForm: contactForm };
+  }
 }
 
 
@@ -214,4 +226,4 @@ type ColorScheme = {
     quaternary?: string;
   };
 };
-type Socials = { facebook?: string; instagram?: string; threads?: string };
+type Socials = { facebook?: string; instagram?: string; threads?: string; };

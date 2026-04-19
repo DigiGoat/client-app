@@ -25,11 +25,68 @@
       <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('email')">
+      <div class="input-group" [class.unsaved]="configService.isDirty('email') || configService.isDirty('hideEmail')">
         <span class="input-group-text">Email:</span>
         <input type="email" class="form-control" [(ngModel)]="configService.email" [suggestion]="suggestionService.email">
+        <button class="input-group-text btn btn-secondary color-scheme-quaternary fw-bold" type="button"
+          (click)="configService.hideEmail = !configService.hideEmail"> @if(configService.hideEmail) { <span class="text-danger"><i
+              class="bi bi-eye-slash"></i> Hidden</span> } @else {<span class="text-success"> <i class="bi bi-eye"></i> Visible</span>}
+        </button>
       </div>
-      <div class="form-text">Your Email To Be Displayed In The Footer & On The Homepage</div>
+      <div class="form-text">Your Farms Email Address. Used by DigiGoat for milk test reports, the contact us form, and displayed in the
+        footer & on the homepage if enabled</div>
+    </div>
+    <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="configService.isDirty('contactForm')">
+        <span class="input-group-text">Contact Us Page:</span>
+        <select class="form-select" aria-label="Contact Form Select Dropdown" [(ngModel)]="configService.contactForm"
+          [disabled]="!configService.email || (!configService.title && !configService.shortTitle)">
+          <option [value]="true">Enabled</option>
+          <option [value]="false">Disabled</option>
+        </select>
+      </div>
+      <div class="form-text"> Add a <Code>Contact Us</Code> page to your site (this is a great way to hide your email if you're worried
+        about spam)<p *ngIf="!configService.email || (!configService.title && !configService.shortTitle)" class="text-warning">You Must Have
+          An Email And A Farm Name Configured To Enable This Feature</p>
+      </div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
+        [class.unsaved]="configService.isDirty('socials')"> View Socials <i class="bi bi-share"></i> </button>
+      <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
+        <div class="input-group ">
+          <span class="input-group-text">Facebook:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.facebook"
+            (ngModelChange)="configService.socials = {facebook: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://facebook.com/{{configService.socials.facebook}}" type="button" *ngIf="configService.socials.facebook">
+            <i class="bi bi-facebook"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Facebook Username</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Instagram:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.instagram"
+            (ngModelChange)="configService.socials = {instagram: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://instagram.com/{{configService.socials.instagram}}" type="button" *ngIf="configService.socials.instagram">
+            <i class="bi bi-instagram"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Instagram Username (Don't include &#64;)</div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">Threads:</span>
+          <input type="text" class="form-control" [ngModel]="configService.socials.threads"
+            (ngModelChange)="configService.socials = {threads: $event}">
+          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://threads.net/@{{configService.socials.threads}}" type="button" *ngIf="configService.socials.threads">
+            <i class="bi bi-threads"></i>
+          </a>
+        </div>
+        <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
+      </div>
+      <div class="form-text">Your Farm's Social Media Associations</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
@@ -92,44 +149,6 @@
         <div class="form-text">Primarily used for the background of your goats popups</div>
       </div>
       <div class="form-text">The Colors to be used on your website (Dark mode on the left, light mode on the right) </div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
-        [class.unsaved]="configService.isDirty('socials')"> View Socials <i class="bi bi-share"></i> </button>
-      <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
-        <div class="input-group ">
-          <span class="input-group-text">Facebook:</span>
-          <input type="text" class="form-control" [ngModel]="configService.socials.facebook"
-            (ngModelChange)="configService.socials = {facebook: $event}">
-          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://facebook.com/{{configService.socials.facebook}}" type="button" *ngIf="configService.socials.facebook">
-            <i class="bi bi-facebook"></i>
-          </a>
-        </div>
-        <div class="form-text">Your Farm's Facebook Username</div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">Instagram:</span>
-          <input type="text" class="form-control" [ngModel]="configService.socials.instagram"
-            (ngModelChange)="configService.socials = {instagram: $event}">
-          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://instagram.com/{{configService.socials.instagram}}" type="button" *ngIf="configService.socials.instagram">
-            <i class="bi bi-instagram"></i>
-          </a>
-        </div>
-        <div class="form-text">Your Farm's Instagram Username (Don't include &#64;)</div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">Threads:</span>
-          <input type="text" class="form-control" [ngModel]="configService.socials.threads"
-            (ngModelChange)="configService.socials = {threads: $event}">
-          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://threads.net/@{{configService.socials.threads}}" type="button" *ngIf="configService.socials.threads">
-            <i class="bi bi-threads"></i>
-          </a>
-        </div>
-        <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
-      </div>
-      <div class="form-text">Your Farm's Social Media Associations</div>
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"> Change Favicon <i
