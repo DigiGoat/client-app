@@ -13,7 +13,6 @@ init({
     // which automatically instruments your application to monitor its
     // performance, including custom Angular routing instrumentation
     browserTracingIntegration(),
-    browserProfilingIntegration(),
 
     // Registers the Replay integration,
     // which automatically captures Session Replays
@@ -45,7 +44,6 @@ init({
   // https://docs.sentry.io/platforms/javascript/session-replay/configuration/#general-integration-configuration
   replaysSessionSampleRate: 1,//0.1,
   replaysOnErrorSampleRate: 1.0,
-  profileSessionSampleRate: 1.0,
   profileLifecycle: 'trace',
 }, angularInit);
 

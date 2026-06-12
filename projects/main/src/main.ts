@@ -1,5 +1,4 @@
 import { additionalContextIntegration, electronBreadcrumbsIntegration, httpIntegration, init, mainProcessSessionIntegration } from '@sentry/electron/main';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { app, session } from 'electron';
 import { AppModule } from './app/app.module';
 
@@ -19,16 +18,12 @@ init({
     }),
     httpIntegration(),
     mainProcessSessionIntegration({ sendOnCreate: true }),
-    nodeProfilingIntegration(),
   ],
   environment: app.isPackaged ? (app.getVersion().includes('beta') ? 'beta' : 'production') : 'development',
   dist: process.platform === 'darwin' ? (process.arch === 'arm64' ? 'macos-arm64' : 'macos-x64') : 'windows',
   debug: !app.isPackaged,
   tracesSampleRate: 1.0,
-  profileSessionSampleRate: 1.0,
-  profileLifecycle: 'trace',
   attachScreenshot: true,
-  enableRendererProfiling: true,
   includeLocalVariables: true,
   beforeSend: event => app.isPackaged ? event : null,
 });
