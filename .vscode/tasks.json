@@ -2,6 +2,11 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Electron.Install",
+      "type": "shell",
+      "command": "npx install-electron --no"
+    },
+    {
       "label": "Build.Main",
       "type": "npm",
       "script": "build:main",
@@ -98,6 +103,7 @@
       "label": "Build",
       "dependsOn": [
         "Build.Main",
+        "Electron.Install",
         "Build.Preload",
         "Build.Renderer"
       ],
