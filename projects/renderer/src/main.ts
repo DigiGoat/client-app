@@ -1,8 +1,10 @@
+import { provideZoneChangeDetection } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { init as angularInit } from '@sentry/angular';
-import { browserProfilingIntegration, browserTracingIntegration, feedbackIntegration, httpClientIntegration, init, replayIntegration, reportingObserverIntegration } from '@sentry/electron/renderer';
+import { browserTracingIntegration, feedbackIntegration, httpClientIntegration, init, replayIntegration, reportingObserverIntegration } from '@sentry/electron/renderer';
 import { AppModule } from './app/app.module';
+
 
 init({
   // Adds request headers and IP for users, for more info visit:
@@ -47,5 +49,5 @@ init({
   profileLifecycle: 'trace',
 }, angularInit);
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic().bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], })
   .catch(err => console.error(err));
