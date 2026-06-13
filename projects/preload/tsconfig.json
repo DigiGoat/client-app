@@ -2,19 +2,19 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es5",
+    "module": "node16",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    //"baseUrl": ".",
+    "rootDir": "./src",
     "outDir": "../../dist/preload",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "paths": {
       "*": [
-        "node_modules/*"
+        "./node_modules/*"
       ]
     }
   },

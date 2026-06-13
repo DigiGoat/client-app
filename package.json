@@ -133,6 +133,6 @@
     "titleTemplate": "{title}"
   },
   "engines": {
-    "node": "22.14"
+    "node": "24.16.0"
   }
 }
