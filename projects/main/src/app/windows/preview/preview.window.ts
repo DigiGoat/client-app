@@ -167,7 +167,7 @@ export class PreviewWindow {
           throw new Error(`Node version ${nodeVersion} does not satisfy ${acceptableVersions}`);
         }
         console.log(`Node version is acceptable (${nodeVersion})`);
-      } catch (error) {
+      } catch {
         const result = await dialog.showMessageBox({
           type: 'error',
           message: 'Incompatible Node.js Installation',
@@ -260,7 +260,7 @@ export class PreviewWindow {
       try {
         const yarnVersion = await exec('yarn -v', this.spawnOptions);
         console.log(`Yarn found (${yarnVersion})`);
-      } catch (error) {
+      } catch {
         await this.enableYarn();
       }
     });
@@ -286,7 +286,7 @@ export class PreviewWindow {
       try {
         console.log('Checking dependencies');
         await exec('yarn install --offline', this.spawnOptions);
-      } catch (error) {
+      } catch {
         const result = await dialog.showMessageBox({
           type: 'error',
           message: 'Dependencies Incomplete',

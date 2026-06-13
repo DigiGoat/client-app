@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
@@ -15,12 +15,17 @@ import { WindowService } from '../../../../services/window/window.service';
   standalone: false
 })
 export class GoatComponent implements OnInit {
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private diffService = inject(DiffService);
+  private adgaService = inject(ADGAService);
+  private cdr = inject(ChangeDetectorRef);
+
   @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
   @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
   @Input({ transform: booleanAttribute }) related = false;
   @Input({ transform: booleanAttribute, alias: 'for-sale' }) forSale = false;
-  constructor(private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private adgaService: ADGAService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.windowService.setUnsavedChanges(false);
     let initial = true;

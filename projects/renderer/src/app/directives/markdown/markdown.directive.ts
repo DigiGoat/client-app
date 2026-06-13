@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { booleanAttribute, Directive, ElementRef, HostListener, Input, type OnDestroy, type OnInit } from '@angular/core';
+import { booleanAttribute, Directive, ElementRef, HostListener, inject, Input, type OnDestroy, type OnInit } from '@angular/core';
 import type { Tooltip } from 'bootstrap';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -13,8 +13,15 @@ import { MarkedService } from '../../services/marked/marked.service';
   standalone: false
 })
 export class MarkdownDirective implements OnInit, OnDestroy {
+  private el = inject<ElementRef<HTMLTextAreaElement>>(ElementRef);
+  private http = inject(HttpClient);
+  private appService = inject(AppService);
+  private markedService = inject(MarkedService);
+  private dialogService = inject(DialogService);
+  private imageService = inject(ImageService);
+  private gitService = inject(GitService);
+  private diffService = inject(DiffService);
 
-  constructor(private el: ElementRef<HTMLTextAreaElement>, private http: HttpClient, private appService: AppService, private markedService: MarkedService, private dialogService: DialogService, private imageService: ImageService, private gitService: GitService, private diffService: DiffService) { }
   private markdownEl!: HTMLElement;
   private iconEl!: HTMLElement;
   private imageIconEl?: HTMLElement;
@@ -102,7 +109,7 @@ export class MarkdownDirective implements OnInit, OnDestroy {
         }
         this.renderImages();
         this.descriptor?.classList.remove('d-none');
-      } catch (error) {
+      } catch {
         this.iconEl.classList.remove('text-success', 'text-warning');
         this.iconEl.classList.add('text-danger');
         this.hideMarkdown();

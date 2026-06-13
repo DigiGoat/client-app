@@ -1,4 +1,4 @@
-import { Component, HostListener, signal, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, signal, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -13,6 +13,12 @@ import { WindowService } from '../../services/window/window.service';
   standalone: false
 })
 export class SetupComponent implements OnInit {
+  private gitService = inject(GitService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private route = inject(ActivatedRoute);
+  private appService = inject(AppService);
+
   id = '';
   token = '';
   name = '';
@@ -36,7 +42,6 @@ export class SetupComponent implements OnInit {
     return this._cloning;
   }
   dots = '';
-  constructor(private gitService: GitService, private windowService: WindowService, private dialogService: DialogService, private route: ActivatedRoute, private appService: AppService) { }
   async setup() {
     this.cloning = true;
     try {

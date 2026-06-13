@@ -17,7 +17,7 @@ export const VersionGuard: CanActivateFn = async () => {
     if (!(await gitService.version()).installed) {
       return false;
     }
-  } catch (e) {
+  } catch {
     return false;
   }
 

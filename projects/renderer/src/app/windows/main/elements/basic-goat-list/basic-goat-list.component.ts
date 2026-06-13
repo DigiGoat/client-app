@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
@@ -11,12 +11,12 @@ import { WindowService } from '../../../../services/window/window.service';
   standalone: false
 })
 export class BasicGoatListComponent implements OnInit {
+  private windowService = inject(WindowService);
+
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input() syncing?: boolean | number = false;
 
   goats: Goat[] = [];
-
-  constructor(private windowService: WindowService) { }
 
   ngOnInit() {
     this._goats.subscribe({

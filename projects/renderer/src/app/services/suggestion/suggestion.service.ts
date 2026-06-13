@@ -1,4 +1,4 @@
-import { ApplicationRef, Injectable } from '@angular/core';
+import { ApplicationRef, Injectable, inject } from '@angular/core';
 import { ADGAService } from '../adga/adga.service';
 import { DiffService } from '../diff/diff.service';
 
@@ -6,6 +6,10 @@ import { DiffService } from '../diff/diff.service';
   providedIn: 'root'
 })
 export class SuggestionService {
+  private adgaService = inject(ADGAService);
+  private diffService = inject(DiffService);
+  private applicationRef = inject(ApplicationRef);
+
   private suggestAccount() {
     this.adgaService.getAccount().then(account => {
       this.name = this.diffService.titleCase(account?.name ?? '');
@@ -14,7 +18,7 @@ export class SuggestionService {
       this.applicationRef.tick();
     });
   }
-  constructor(private adgaService: ADGAService, private diffService: DiffService, private applicationRef: ApplicationRef) {
+  constructor() {
     this.suggestAccount();
     this.adgaService.onchange = () => this.suggestAccount();
   }

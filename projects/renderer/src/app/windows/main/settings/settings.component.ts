@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { AppService } from '../../../services/app/app.service';
 import { GitService } from '../../../services/git/git.service';
@@ -13,9 +13,14 @@ import { WindowService } from '../../../services/window/window.service';
   standalone: false
 })
 export class SettingsComponent implements OnInit {
+  private windowService = inject(WindowService);
+  private adgaService = inject(ADGAService);
+  private appService = inject(AppService);
+  private repoService = inject(RepoService);
+  private gitService = inject(GitService);
+
   public appVersion: string = '';
   public webVersion: string = '';
-  constructor(private windowService: WindowService, private adgaService: ADGAService, private appService: AppService, private repoService: RepoService, private gitService: GitService) { }
   async ngOnInit() {
     this.blacklist = (await this.adgaService.getBlacklist()).join('<br>');
     this.gitService.onchange = () => this.setVersionDetails();

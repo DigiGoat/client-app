@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { PreviewService } from '../../services/preview/preview.service';
@@ -14,10 +14,15 @@ import { WindowService } from '../../services/window/window.service';
   standalone: false
 })
 export class MainComponent implements OnInit {
+  private gitService = inject(GitService);
+  private cdr = inject(ChangeDetectorRef);
+  private dialogService = inject(DialogService);
+  private windowService = inject(WindowService);
+  private previewService = inject(PreviewService);
+  private stdioService = inject(StdioService);
+
   localChanges = 0;
   remoteChanges = 0;
-  constructor(private gitService: GitService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private windowService: WindowService, private previewService: PreviewService, private stdioService: StdioService) {
-  }
 
   async ngOnInit() {
     this.stdioService.pipeConsole();

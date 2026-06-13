@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { History } from '../../../../../../shared/services/git/git.service';
 import { GitService } from '../../../services/git/git.service';
 import { MarkedService } from '../../../services/marked/marked.service';
@@ -11,7 +11,9 @@ import { MarkedService } from '../../../services/marked/marked.service';
   standalone: false
 })
 export class HistoryComponent implements OnInit {
-  constructor(private gitService: GitService, public marked: MarkedService) { }
+  private gitService = inject(GitService);
+  marked = inject(MarkedService);
+
   history?: History;
   async ngOnInit() {
     this.history = await this.gitService.getHistory();

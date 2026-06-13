@@ -1,6 +1,6 @@
 import { moveItemInArray, transferArrayItem, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { type ImageMap } from '../../../../../shared/services/image/image.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -16,10 +16,15 @@ import { ImageService } from '../../services/image/image.service';
   standalone: false
 })
 export class ImageComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private imageService = inject(ImageService);
+  private dialogService = inject(DialogService);
+  private gitService = inject(GitService);
+  private httpClient = inject(HttpClient);
+  private diffService = inject(DiffService);
+
   queries: string[] = [];
   imageMap: ImageMap = {};
-  constructor(private route: ActivatedRoute, private imageService: ImageService, private dialogService: DialogService, private gitService: GitService, private httpClient: HttpClient, private diffService: DiffService) {
-  }
   async ngOnInit() {
     this.queries = this.route.snapshot.queryParamMap.keys;
     this.updateImages();

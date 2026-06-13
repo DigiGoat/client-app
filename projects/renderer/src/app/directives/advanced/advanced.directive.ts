@@ -1,4 +1,4 @@
-import { Directive, HostBinding, HostListener, Input, booleanAttribute } from '@angular/core';
+import { Directive, HostBinding, HostListener, Input, booleanAttribute, inject } from '@angular/core';
 import { AppService } from '../../services/app/app.service';
 
 @Directive({
@@ -6,8 +6,9 @@ import { AppService } from '../../services/app/app.service';
   standalone: false
 })
 export class AdvancedDirective {
+  private appService = inject(AppService);
+
   @Input({ transform: booleanAttribute }) advanced: boolean = true;
-  constructor(private appService: AppService) { }
   @HostBinding('style.display') get display() {
     return (this.show ?? !this.advanced) ? 'inline' : 'none';
   }

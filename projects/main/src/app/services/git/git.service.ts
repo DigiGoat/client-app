@@ -129,7 +129,7 @@ export class GitService {
       metrics.count('publish.initiated', 1);
       try {
         await this.checkForUpdates();
-      } catch (error) {
+      } catch {
         const response = await dialog.showMessageBox({
           message: 'Sync Error',
           detail: 'Failed to download latest changes from remote repository. Please either choose to overwrite your local changes by resetting to the last published state of your website or overwrite the remote changes including any edits made on other devices',

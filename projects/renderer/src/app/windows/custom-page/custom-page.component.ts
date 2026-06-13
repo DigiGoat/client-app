@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import { CustomPagesService } from '../../services/custom-pages/custom-pages.service';
@@ -14,11 +14,16 @@ import { WindowService } from '../../services/window/window.service';
   styleUrl: './custom-page.component.scss'
 })
 export class CustomPageComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private customPagesService = inject(CustomPagesService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private cdr = inject(ChangeDetectorRef);
+  private diffService = inject(DiffService);
+
   index = -1;
   private customPages: CustomPage[] = [];
   public customPage: CustomPage = {};
-  constructor(private route: ActivatedRoute, private customPagesService: CustomPagesService, private windowService: WindowService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private diffService: DiffService) {
-  }
   ngOnInit() {
     this.index = Number(this.route.snapshot.params['custom-page']);
 

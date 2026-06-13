@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
@@ -11,11 +11,12 @@ import { GoatService } from '../../../services/goat/goat.service';
   standalone: false
 })
 export class BuckComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private goatService = inject(GoatService);
+
   index = -1;
   bucks = this.goatService.bucks;
   setter = (index: number, buck: Goat) => this.goatService.setBuck(index, buck);
-  constructor(private route: ActivatedRoute, private goatService: GoatService) {
-  }
   async ngOnInit() {
     this.index = Number(this.route.snapshot.params['goat']);
   }

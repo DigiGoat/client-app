@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, type OnDestroy, type OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, type OnDestroy, type OnInit, inject } from '@angular/core';
 import type { Dropdown } from 'bootstrap';
 import type { Goat } from '../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../services/goat/goat.service';
@@ -8,6 +8,9 @@ import { GoatService } from '../../services/goat/goat.service';
   standalone: false
 })
 export class GoatSearchDirective implements OnInit, OnDestroy {
+  private el = inject<ElementRef<HTMLInputElement>>(ElementRef);
+  private goatService = inject(GoatService);
+
 
   private document = this.el.nativeElement.ownerDocument;
   private list = this.document.createElement('ul');
@@ -17,7 +20,6 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
   private focusHandler?: () => void;
   private blurHandler?: () => void;
   @Input({ alias: 'goat-search' }) goats?: Goat[] | 'does' | 'bucks';
-  constructor(private el: ElementRef<HTMLInputElement>, private goatService: GoatService) { }
   async ngOnInit() {
     this.input.setAttribute('data-bs-toggle', 'dropdown');
     this.input.classList.add('dropdown-toggle');

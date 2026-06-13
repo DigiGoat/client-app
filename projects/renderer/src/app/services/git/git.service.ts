@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { SimpleGitProgressEvent, VersionResult } from 'simple-git';
 import { DialogService } from '../dialog/dialog.service';
 import { WindowService } from '../window/window.service';
@@ -7,8 +7,11 @@ import { WindowService } from '../window/window.service';
   providedIn: 'root'
 })
 export class GitService {
+  private dialogService = inject(DialogService);
+  private windowService = inject(WindowService);
 
-  constructor(private dialogService: DialogService, private windowService: WindowService) {
+
+  constructor() {
     window.electron.git.onprogress(event => console.debug(event));
   }
   isRepo = window.electron.git.isRepo;

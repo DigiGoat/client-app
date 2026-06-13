@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -12,12 +12,17 @@ import { WindowService } from '../../services/window/window.service';
   standalone: false
 })
 export class LoginComponent implements OnInit {
+  private adgaService = inject(ADGAService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private diffService = inject(DiffService);
+  private appService = inject(AppService);
+
   username = '';
   password = '';
   id?: number;
   status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
   name?: string;
-  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private appService: AppService) { }
   async login() {
     const passwordShowing = this.showPassword;
     try {

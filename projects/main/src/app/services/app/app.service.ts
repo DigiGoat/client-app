@@ -15,13 +15,13 @@ export class AppService {
           try {
             await systemPreferences.promptTouchID(message);
             return true;
-          } catch (_err) {
+          } catch {
             return false;
           }
         } else {
           return true;
         }
-      } catch (_err) {
+      } catch {
         //Failed to check if touch ID is allowed, this just means we are on windows
         return true;
       }

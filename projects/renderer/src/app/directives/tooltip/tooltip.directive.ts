@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostBinding, HostListener, Input, type AfterViewInit, type OnDestroy } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, Input, type AfterViewInit, type OnDestroy, inject } from '@angular/core';
 import type { Tooltip } from 'bootstrap';
 
 @Directive({
@@ -6,6 +6,8 @@ import type { Tooltip } from 'bootstrap';
   standalone: false
 })
 export class TooltipDirective implements AfterViewInit, OnDestroy {
+  private el = inject(ElementRef);
+
   private bsTooltip?: Tooltip;
   private _title = '';
   private _initialized = false;
@@ -27,7 +29,6 @@ export class TooltipDirective implements AfterViewInit, OnDestroy {
   @HostListener('click') onClick() {
     this.bsTooltip?.hide();
   }
-  constructor(private el: ElementRef) { }
   ngAfterViewInit(): void {
     this._initialized = true;
     if (this._title) {

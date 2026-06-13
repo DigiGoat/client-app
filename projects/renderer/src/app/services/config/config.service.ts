@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { Config } from '../../../../../shared/services/config/config.service';
 import { DialogService } from '../dialog/dialog.service';
 import { DiffService } from '../diff/diff.service';
@@ -9,6 +9,11 @@ import { WindowService } from '../window/window.service';
   providedIn: 'root'
 })
 export class ConfigService {
+  private diffService = inject(DiffService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private gitService = inject(GitService);
+
   private _oldConfig: Config = {};
   private _config: Config = {};
   get unsavedChangesDiff() {
@@ -38,7 +43,9 @@ export class ConfigService {
     this.config = this._oldConfig;
     await this.windowService.setUnsavedChanges(false);
   }
-  constructor(private diffService: DiffService, private windowService: WindowService, private dialogService: DialogService, private gitService: GitService) {
+  constructor() {
+    const windowService = this.windowService;
+
     this.windowService.setUnsavedChanges(false);
     window.electron.config.get().then(config => {
       this._oldConfig = config;

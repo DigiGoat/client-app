@@ -1,5 +1,5 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { Goat, Kidding } from '../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../adga/adga.service';
@@ -10,8 +10,10 @@ import { GitService } from '../git/git.service';
   providedIn: 'root'
 })
 export class GoatService {
+  private gitService = inject(GitService);
+  private diffService = inject(DiffService);
+  private adgaService = inject(ADGAService);
 
-  constructor(private gitService: GitService, private diffService: DiffService, private adgaService: ADGAService) { }
   does = new Observable<Goat[]>(observer => {
     window.electron.goat.getDoes().then(does => observer.next(does));
     window.electron.goat.onDoesChange(does => observer.next(does));

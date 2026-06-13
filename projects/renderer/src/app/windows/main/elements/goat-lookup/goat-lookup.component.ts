@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
 
@@ -10,12 +10,12 @@ import { ADGAService } from '../../../../services/adga/adga.service';
   standalone: false
 })
 export class GoatLookupComponent {
+  private adgaService = inject(ADGAService);
+
   nameGoats?: Goat[] = [];
   idGoats?: Goat[] = [];
   @Output() goatSelected = new EventEmitter<Goat>();
   @Input() filter?: (goat: Goat) => boolean;
-
-  constructor(private adgaService: ADGAService) { }
   async lookupGoats(search: string) {
     await Promise.all([(async () => {
       this.idGoats = undefined;
