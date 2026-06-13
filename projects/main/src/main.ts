@@ -30,7 +30,7 @@ init({
 app.whenReady().then(() => {
   session.defaultSession.setDisplayMediaRequestHandler(
     (request, callback) => {
-      callback({ video: request.frame });
+      callback({ video: request.frame || undefined });
     }, { useSystemPicker: true }
   );
 });

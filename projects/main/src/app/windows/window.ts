@@ -27,15 +27,15 @@ export class Window {
 
     this.window.loadURL(startURL);
     this.window.once('ready-to-show', () => {
-      if (!this.window.isVisible()) {
+      if (this.window && !this.window.isVisible()) {
         this.window.show();
-        this.window.setSize(options.width ?? options.minWidth ?? options.maxWidth ?? -1, options.height ?? options.minHeight ?? options.maxHeight ?? -1);
+        this.window.setSize(options?.width ?? options?.minWidth ?? options?.maxWidth ?? -1, options?.height ?? options?.minHeight ?? options?.maxHeight ?? -1);
         this.window.center();
       }
     });
 
     this.window.on('close', event => {
-      if (this.window.documentEdited || this.window.title.endsWith('*')) {
+      if (this.window && (this.window.documentEdited || this.window.title.endsWith('*'))) {
         event.preventDefault();
         this.window.webContents.send('window:onsave');
       }
@@ -45,7 +45,7 @@ export class Window {
       return { action: 'deny' };
     });
     app.on('before-quit', () => {
-      if (!this.window.isDestroyed()) {
+      if (this.window && !this.window.isDestroyed()) {
         this.window.setClosable(true);
         let attempts = 0;
         this.window.on('close', () => attempts++);
@@ -63,7 +63,7 @@ export class Window {
       for (const suggestion of params.dictionarySuggestions) {
         menu.append(new MenuItem({
           label: suggestion,
-          click: () => this.window.webContents.replaceMisspelling(suggestion)
+          click: () => this.window!.webContents.replaceMisspelling(suggestion)
         }));
       }
 
@@ -75,7 +75,7 @@ export class Window {
         menu.append(
           new MenuItem({
             label: `Add '${params.misspelledWord}' To Dictionary`,
-            click: () => this.window.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
+            click: () => this.window!.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
           })
         );
       }
@@ -88,7 +88,7 @@ export class Window {
       this.window.on('closed', () => {
         // If the user opened Settings directly (or closed everything else), ensure they aren't left with no windows.
         if (BrowserWindow.getAllWindows().length === 0 && !quitRequested) {
-          import('./main/main.window').then(({ MainWindow }) => {
+          import('./main/main.window.js').then(({ MainWindow }) => {
             new MainWindow();
           });
         }

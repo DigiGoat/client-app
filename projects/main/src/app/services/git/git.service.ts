@@ -5,7 +5,7 @@ import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-ext
 import { join } from 'path';
 import type { SemVer } from 'semver';
 import parse from 'semver/functions/parse';
-import { CleanOptions, ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent } from 'simple-git';
+import { CleanOptions, ResetMode, simpleGit, type SimpleGit, type SimpleGitProgressEvent, type StatusResult } from 'simple-git';
 import { GitService as GitServiceType } from '../../../../../shared/services/git/git.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
@@ -161,7 +161,7 @@ export class GitService {
       this.change();
     },
     getStatus: async () => {
-      const status = await this.git.status();
+      const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
       delete status.isClean;
       const local = await this.git.log(['--first-parent', '@{u}..']);
       status.ahead = local.total;
@@ -178,15 +178,24 @@ export class GitService {
       await this.git.fetch('upstream', app.getVersion().includes('beta') ? 'beta' : 'main');
       console.debug('Checking for updates...');
       const newVersion = parse(JSON.parse(await this.git.show('FETCH_HEAD:package.json')).version);
+      if (!newVersion) {
+        return Promise.reject('Failed to fetch new version');
+      }
       return newVersion;
     },
     readUpdate: async () => {
       const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      if (!newVersion) {
+        return Promise.reject('Failed to read new version');
+      }
       return newVersion;
     },
     installUpdates: async () => {
       const oldVersion = parse((await readJSON(join(this.base, 'package.json'))).version);
       const newVersion = parse(JSON.parse(await this.git.show(`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}:package.json`)).version);
+      if (!oldVersion || !newVersion) {
+        return Promise.reject('Failed to install updates');
+      }
       await this.git.clean(CleanOptions.FORCE);
       await this.git.merge([`upstream/${app.getVersion().includes('beta') ? 'beta' : 'main'}`, '--message', `Updated web-ui from v${oldVersion} to v${newVersion}`, '--commit', '--no-edit', '--no-ff']);
       this.change();
@@ -211,12 +220,12 @@ export class GitService {
     getSetup: async () => {
       //`https://${token ? `${token}@` : ''}github.com/DigiGoat/${repo}.git`
       try {
-        const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin').refs.fetch;
+        const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin')?.refs.fetch;
         return {
-          name: (await this.git.getConfig('user.name')).value,
-          email: (await this.git.getConfig('user.email')).value,
-          token: remoteUrl.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
-          repo: remoteUrl.split('github.com/DigiGoat/')[1].split('.git')[0]
+          name: (await this.git.getConfig('user.name')).value || undefined,
+          email: (await this.git.getConfig('user.email')).value || undefined,
+          token: remoteUrl?.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
+          repo: remoteUrl?.split('github.com/DigiGoat/')[1]?.split('.git')[0]
         };
       } catch (err) {
         console.warn('Error Getting Setup:', err);
@@ -260,9 +269,9 @@ export class GitService {
         unparsedNewVersion = unparsedNewVersion.split('-')[0];
         unparsedOldVersion = unparsedOldVersion.split('-')[0];
       }
-      const newVersion = parse(unparsedNewVersion);
-      const oldVersion = parse(unparsedOldVersion);
-      const appVersion = parse(app.getVersion());
+      const newVersion = parse(unparsedNewVersion)!;
+      const oldVersion = parse(unparsedOldVersion)!;
+      const appVersion = parse(app.getVersion())!;
       if (app.isReady()) {
         this.determineUpdates(oldVersion, newVersion, appVersion);
       } else {
@@ -345,14 +354,14 @@ export class GitService {
 
   async configureUser() {
     try {
-      const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin').refs.fetch;
+      const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin')?.refs.fetch;
       const config = {
-        token: remoteUrl.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
-        repo: remoteUrl.split('github.com/DigiGoat/')[1].split('.git')[0]
+        token: remoteUrl?.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
+        repo: remoteUrl?.split('github.com/DigiGoat/')[1]?.split('.git')[0]
       };
       if (config.repo !== 'web-ui') {
-        const name = (await this.git.getConfig('user.name')).value;
-        const email = (await this.git.getConfig('user.email')).value;
+        const name = (await this.git.getConfig('user.name')).value || undefined;
+        const email = (await this.git.getConfig('user.email')).value || undefined;
         setUser({ id: config.repo, username: name, email: email });
 
       }

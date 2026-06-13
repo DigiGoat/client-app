@@ -13,12 +13,12 @@ export class PreviewService {
     getPreviewVisible: async () => {
       const windows = BrowserWindow.getAllWindows();
       const previewWindow = windows.find(window => window.getBackgroundColor() === '#FFFFFF');
-      return previewWindow?.isVisible();
+      return previewWindow?.isVisible() ?? false;
     },
     getPreviewCloseable: async () => {
       const windows = BrowserWindow.getAllWindows();
       const previewWindow = windows.find(window => window.getBackgroundColor() === '#FFFFFF');
-      return previewWindow?.closable;
+      return previewWindow?.closable ?? false;
     },
     startPreview: async () => {
       const windows = BrowserWindow.getAllWindows();

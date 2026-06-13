@@ -1,13 +1,20 @@
 import { captureException, getActiveSpan } from '@sentry/electron/main';
 import ADGA from 'adga';
 import CDCB, { LactationType } from 'adga/cdcb';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { BrowserWindow, app, safeStorage } from 'electron';
 import { ensureFile, ensureFileSync, readFile, readFileSync, readJSON, readJSONSync, writeFile, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import { ADGAService as ADGAServiceType, type Account } from '../../../../../shared/services/adga/adga.service';
 import type { LactationRecord } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
+
+type AdgaApiErrorResponse = {
+  error?: {
+    message?: string;
+    details?: string;
+  };
+};
 
 export class ADGAService {
   adga?: ADGA;
@@ -16,21 +23,21 @@ export class ADGAService {
   blacklistPath = join(app.getPath('userData'), 'ADGA Blacklist');
   account?: Account;
   get noADGAMessage() { return Promise.reject(new Error('No ADGA Account Found!')); }
-  handleError(error: Error & AxiosError) {
+  handleError(error: unknown) {
     captureException(error, { level: 'warning' });
-    if (error.isAxiosError && error.response) {
+    if (isAxiosError(error) && error.response) {
       const response = error.response;
-      if ((response.data as { error?: { message?: string; }; }).error) {
-        const responseError = (error.response.data as { error?: { details?: string; }; }).error;
-        if (responseError.details) {
-          return Promise.reject(new Error(responseError.details));
-        } else {
-          return Promise.reject(new Error(JSON.stringify(responseError)));
-        }
+      const responseError = response.data as AdgaApiErrorResponse;
+      if (responseError.error?.details) {
+        return Promise.reject(new Error(responseError.error.details));
+      } else if (responseError.error?.message) {
+        return Promise.reject(new Error(responseError.error.message));
+      } else if (responseError.error) {
+        return Promise.reject(new Error(JSON.stringify(responseError.error)));
       } else {
         return Promise.reject(new Error(`Request Failed with Status Code ${response.status} - ${response.statusText}`));
       }
-    } else if (error.message) {
+    } else if (error instanceof Error) {
       return Promise.reject(new Error(error.message));
     } else {
       return Promise.reject(error);
@@ -56,7 +63,9 @@ export class ADGAService {
   }
   async writeAccount(account: Account) {
     if (app.isPackaged) {
-      await writeFile(this.accountPath, safeStorage.encryptString(JSON.stringify(account)));
+      const encrypted = safeStorage.encryptString(JSON.stringify(account));
+      // ensure type is compatible with writeFile (ArrayBufferView)
+      await writeFile(this.accountPath, Uint8Array.from(encrypted));
     } else {
       await writeJSON(this.accountPath + '.json', account);
     }
@@ -67,14 +76,14 @@ export class ADGAService {
       this.adga = new ADGA(username, password);
       const info = await this.adga.getCurrentLoginInfo();
       const profile = await this.adga.getMembershipDetails();
-      const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id ?? info.accountProfile.account.id, herdName: info.accountProfile.herdName };
+      const account = { name: profile.account.displayName, email: info.user.emailAddress, username: username, password: password, id: id ?? info.accountProfile.account.id, herdName: info.accountProfile.herdName! };
       this.account = account;
       return account;
     } catch (error) {
       //this.adga = undefined;
       return this.handleError(error);
     } finally {
-      await this.writeAccount(this.account);
+      await this.writeAccount(this.account || {} as Account);
     }
   }
   api: BackendService<ADGAServiceType> = {
@@ -157,13 +166,13 @@ export class ADGAService {
             const stats: LactationRecord['stats'] = { milk: {}, butterfat: {}, protein: {} };
             for (const stat of lactationTests.lactationStds) {
               if (stat.typeName === 'Actual') {
-                stats.milk.projected = stat.mlk;
-                stats.butterfat.projected = stat.fat;
-                stats.protein.projected = stat.pro;
+                stats.milk!.projected = stat.mlk;
+                stats.butterfat!.projected = stat.fat;
+                stats.protein!.projected = stat.pro;
               } else if (stat.typeName === 'Standard') {
-                stats.milk.achieved = stat.mlk;
-                stats.butterfat.achieved = stat.fat;
-                stats.protein.achieved = stat.pro;
+                stats.milk!.achieved = stat.mlk;
+                stats.butterfat!.achieved = stat.fat;
+                stats.protein!.achieved = stat.pro;
               }
             }
             const tests: LactationRecord['tests'] = [];
@@ -189,7 +198,7 @@ export class ADGAService {
           })
         );
         getActiveSpan()?.setAttribute('lactations_fetched_count', records.length);
-        getActiveSpan()?.setAttribute('lactation_tests_fetched_count', records.reduce((sum, record) => sum + record.tests.length, 0));
+        getActiveSpan()?.setAttribute('lactation_tests_fetched_count', records.reduce((sum, record) => sum + (record.tests ?? []).length, 0));
         // CDCB returns lactations in reverse order, so reverse to match original unshift logic
         return records.reverse();
       } catch (err) {
@@ -263,8 +272,8 @@ export class ADGAService {
     const init = () => {
       try {
         this.account = this.readAccountSync();
-        if (this.account.username && this.account.password) {
-          this.fetchAccount(this.account.username, this.account.password).catch((err: unknown) => console.warn('Error Updating ADGA Info (non-fatal):', err));
+        if (this.account?.username && this.account?.password) {
+          this.fetchAccount(this.account.username, this.account.password).catch((err) => console.warn('Error Updating ADGA Info (non-fatal):', err));
         }
       } catch (err) {
         console.warn('Error Accessing Account (non-fatal):', err);

@@ -3,7 +3,7 @@ import type { Animal } from 'adga/cdcb';
 import type { LactationRecord } from '../goat/goat.service';
 
 export interface ADGAService {
-  getAccount: () => Promise<Account>;
+  getAccount: () => Promise<Account | undefined>;
   login: (username: string, password: string, id?: number) => Promise<Account>;
   logout: () => Promise<void>;
   getOwnedGoats: () => Promise<OwnedGoats['result']>;

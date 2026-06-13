@@ -1,5 +1,5 @@
 import { BrowserWindow, app, ipcMain } from 'electron';
-import { ensureFileSync, exists, existsSync, readJson, watch, writeJSON } from 'fs-extra';
+import { ensureFileSync, existsSync, readJson, watch, writeJSON } from 'fs-extra';
 import { join } from 'path';
 import type { CustomPagesService as CustomPagesServiceType } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import type { BackendService } from '../../../../../shared/shared.module';
