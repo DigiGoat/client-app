@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { booleanAttribute, Directive, ElementRef, HostListener, Input, type OnInit, type OnDestroy } from '@angular/core';
+import { booleanAttribute, Directive, ElementRef, HostListener, Input, type OnDestroy, type OnInit } from '@angular/core';
+import type { Tooltip } from 'bootstrap';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
 import { ImageService } from '../../services/image/image.service';
 import { MarkedService } from '../../services/marked/marked.service';
-import type { Tooltip } from 'bootstrap';
 
 @Directive({
   selector: 'textarea[markdown]',
@@ -147,7 +147,7 @@ export class MarkdownDirective implements OnInit, OnDestroy {
   async renderMarkdown(markdown: string) {
     return await new Promise<string>((resolve, reject) => {
       this.http.post('https://api.github.com/markdown', { text: markdown, mode: 'gfm' }, { responseType: 'text' }).subscribe({
-        next: response => {
+        next: (response: string) => {
           resolve(response);
         }, error: reject
       });

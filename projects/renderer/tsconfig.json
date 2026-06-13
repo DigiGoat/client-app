@@ -2,7 +2,9 @@
 {
   "extends": "../../angular.tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "../../out-tsc/renderer",
+    "moduleResolution": "bundler",
     "types": []
   },
   "files": [
