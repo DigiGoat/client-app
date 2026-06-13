@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
 
@@ -6,6 +6,7 @@ import { ADGAService } from '../../../../services/adga/adga.service';
   selector: 'app-goat-lookup',
   templateUrl: './goat-lookup.component.html',
   styleUrl: './goat-lookup.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatLookupComponent {

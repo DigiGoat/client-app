@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { PreviewService } from '../../services/preview/preview.service';
@@ -10,6 +10,7 @@ import { WindowService } from '../../services/window/window.service';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MainComponent implements OnInit {

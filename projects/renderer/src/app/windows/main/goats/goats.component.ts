@@ -1,5 +1,5 @@
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, ViewChild, type ElementRef } from '@angular/core';
+import { Component, ViewChild, type ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { startSpan } from '@sentry/electron/renderer';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
@@ -13,6 +13,7 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
   selector: 'app-goats',
   templateUrl: './goats.component.html',
   styleUrl: './goats.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatsComponent {

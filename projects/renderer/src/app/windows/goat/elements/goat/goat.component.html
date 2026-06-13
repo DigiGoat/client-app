@@ -122,7 +122,7 @@
             <span>
               <div class="input-group mb-1">
                 <span class="input-group-text">Tattoo:</span>
-                <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
+                <input type="text" class="form-control w-25" [ngModel]="$safeNavigationMigration(tattoo.tattooLocation?.name) | uppercase"
                   (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!goat.id"><span class="input-group-text">:</span>
                   <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)"
                     [disabled]="!!goat.id">

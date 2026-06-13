@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { History } from '../../../../../../shared/services/git/git.service';
 import { GitService } from '../../../services/git/git.service';
 import { MarkedService } from '../../../services/marked/marked.service';
@@ -7,6 +7,7 @@ import { MarkedService } from '../../../services/marked/marked.service';
   selector: 'app-history',
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HistoryComponent implements OnInit {

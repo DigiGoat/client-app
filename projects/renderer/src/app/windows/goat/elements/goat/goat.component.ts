@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit } from '@angular/core';
+import { booleanAttribute, ChangeDetectorRef, Component, Input, ViewChild, type ElementRef, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../../services/adga/adga.service';
@@ -11,6 +11,7 @@ import { WindowService } from '../../../../services/window/window.service';
   selector: 'app-goat',
   templateUrl: './goat.component.html',
   styleUrl: './goat.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatComponent implements OnInit {

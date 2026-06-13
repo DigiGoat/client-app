@@ -1,6 +1,6 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { Goat, Kidding } from '../../../../../../shared/services/goat/goat.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -13,6 +13,7 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-kidding-schedule',
   templateUrl: './kidding-schedule.component.html',
   styleUrl: './kidding-schedule.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class KiddingScheduleComponent implements OnInit {

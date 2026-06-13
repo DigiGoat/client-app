@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
@@ -8,6 +8,7 @@ import { GoatService } from '../../../services/goat/goat.service';
   standalone: false,
 
   templateUrl: './for-sale.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './for-sale.component.scss'
 })
 export class ForSaleComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
@@ -7,6 +7,7 @@ import { GoatService } from '../../../services/goat/goat.service';
   selector: 'app-buck',
   templateUrl: './buck.component.html',
   styleUrl: './buck.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BuckComponent implements OnInit {

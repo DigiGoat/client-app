@@ -1,4 +1,4 @@
-import { Component, HostListener, signal, type OnInit } from '@angular/core';
+import { Component, HostListener, signal, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -9,6 +9,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-setup',
   templateUrl: './setup.component.html',
   styleUrl: './setup.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SetupComponent implements OnInit {

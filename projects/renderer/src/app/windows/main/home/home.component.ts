@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../../../services/app/app.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -12,6 +12,7 @@ import { WindowService } from '../../../services/window/window.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HomeComponent {

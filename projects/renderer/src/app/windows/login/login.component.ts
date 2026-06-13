@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -8,6 +8,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LoginComponent implements OnInit {

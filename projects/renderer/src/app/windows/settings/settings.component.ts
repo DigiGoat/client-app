@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { Settings } from '../../../../../shared/services/settings/settings.service';
 import { ConfigService } from '../../services/config/config.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -11,6 +11,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-settings',
   standalone: false,
   templateUrl: './settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings.component.scss'
 })
 export class SettingsComponent implements OnInit {

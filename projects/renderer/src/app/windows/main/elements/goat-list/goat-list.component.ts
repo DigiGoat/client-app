@@ -1,5 +1,5 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
+import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../../../../services/dialog/dialog.service';
@@ -10,6 +10,7 @@ import { WindowService } from '../../../../services/window/window.service';
   selector: 'app-goat-list',
   templateUrl: './goat-list.component.html',
   styleUrl: './goat-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatListComponent implements OnInit {

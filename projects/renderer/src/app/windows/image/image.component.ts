@@ -1,6 +1,6 @@
 import { moveItemInArray, transferArrayItem, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { type ImageMap } from '../../../../../shared/services/image/image.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -12,6 +12,7 @@ import { ImageService } from '../../services/image/image.service';
   selector: 'app-image',
   templateUrl: './image.component.html',
   styleUrl: './image.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ImageComponent implements OnInit {

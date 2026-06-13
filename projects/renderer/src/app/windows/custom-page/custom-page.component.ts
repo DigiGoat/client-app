@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import { CustomPagesService } from '../../services/custom-pages/custom-pages.service';
@@ -10,6 +10,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-custom-page',
   standalone: false,
   templateUrl: './custom-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './custom-page.component.scss'
 })
 export class CustomPageComponent implements OnInit {

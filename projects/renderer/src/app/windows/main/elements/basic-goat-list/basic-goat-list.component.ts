@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
@@ -7,6 +7,7 @@ import { WindowService } from '../../../../services/window/window.service';
   selector: 'app-basic-goat-list',
   templateUrl: './basic-goat-list.component.html',
   styleUrl: './basic-goat-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BasicGoatListComponent implements OnInit {

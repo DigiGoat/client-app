@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { AppService } from '../../../services/app/app.service';
 import { GitService } from '../../../services/git/git.service';
@@ -9,6 +9,7 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SettingsComponent implements OnInit {

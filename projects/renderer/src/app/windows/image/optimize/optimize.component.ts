@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import type { ImageMap, OptimizeProgress } from '../../../../../../shared/services/image/image.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
 import { DiffService } from '../../../services/diff/diff.service';
@@ -12,6 +12,7 @@ import { WindowService } from '../../../services/window/window.service';
   standalone: false,
 
   templateUrl: './optimize.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './optimize.component.scss'
 })
 export class OptimizeComponent implements OnInit {
