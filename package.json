@@ -28,13 +28,6 @@
     "publish:mac": "run-p build:* && run-p sourcemap:* && electron-forge publish",
     "publish:windows": "run-p build:windows:* && run-p sourcemap:windows:* && electron-forge publish",
     "test": "(rm -r coverage || rmdir coverage) ; run-p --continue-on-error 'test:* {@}' --",
-    "test:main": "jest --config projects/main/jest.config.ts -w 6",
-    "test:renderer": "ng test -w 6",
-    "test:preload": "jest --config projects/preload/jest.config.ts -w 6",
-    "ci:test": "(rm -r reports || rmdir reports) ; run-p --continue-on-error ci:test:*",
-    "ci:test:main": "JEST_JUNIT_OUTPUT_DIR='reports/main' jest --config projects/main/jest.config.ts --ci --reporters=default --reporters=jest-junit",
-    "ci:test:renderer": "JEST_JUNIT_OUTPUT_DIR='reports/renderer' ng test --ci --reporters=default --reporters=jest-junit",
-    "ci:test:preload": "JEST_JUNIT_OUTPUT_DIR='reports/preload' jest --config projects/preload/jest.config.ts --ci --reporters=default --reporters=jest-junit",
     "lint": "run-p --continue-on-error 'lint:* {@}' --",
     "lint:renderer": "ng lint",
     "lint:main": "eslint projects/main",
@@ -83,7 +76,6 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-builders/jest": "^19.0.0",
     "@angular-devkit/build-angular": "^19.0.7",
     "@angular-eslint/builder": "19.0.2",
     "@angular-eslint/eslint-plugin": "19.0.2",
@@ -101,7 +93,6 @@
     "@types/axios": "^0.14.0",
     "@types/bootstrap": "^5.2.10",
     "@types/fs-extra": "^11.0.4",
-    "@types/jest": "^29.5.12",
     "@types/node": "20.11",
     "@types/semver": "^7.5.8",
     "@types/tar": "^6.1.13",
@@ -112,25 +103,13 @@
     "chalk": "4",
     "electron": "^42.4.0",
     "eslint": "^8.57.0",
-    "jest": "^29.7.0",
-    "jest-junit": "^16.0.0",
     "npm-run-all": "^4.1.5",
-    "ts-jest": "^29.1.4",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "typescript": "~5.6.3",
     "wait-on": "^7.2.0",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
-  },
-  "jest-junit": {
-    "outputDirectory": "reports",
-    "outputName": "jest-junit.xml",
-    "ancestorSeparator": " › ",
-    "uniqueOutputName": "false",
-    "suiteNameTemplate": "{filepath}",
-    "classNameTemplate": "{classname}",
-    "titleTemplate": "{title}"
   },
   "engines": {
     "node": "24.16.0"
