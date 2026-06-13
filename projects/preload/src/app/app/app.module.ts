@@ -32,7 +32,5 @@ export class AppModule {
   };
   constructor() {
     contextBridge.exposeInMainWorld('electron', this.api);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    //(require('@sentry/electron/preload-namespaced') as typeof Sentry).hookupIpc();
   }
 }
