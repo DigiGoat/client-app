@@ -1,2 +1,4 @@
-<span *ngFor="let char of value?.split(''); let i = index" tabindex="0" (click)="invertCase(i)"
+@for (char of value?.split(''); track char; let i = $index) {
+  <span tabindex="0" (click)="invertCase(i)"
   (keydown)="invertCase(i)">{{ char || '&nbsp;' }}</span>
+}
