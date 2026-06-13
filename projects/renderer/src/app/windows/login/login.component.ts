@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     } catch (e) {
       this.status = 'Login Failed';
       this.windowService.setClosable(true);
-      const message = (e as { message: string }).message;
+      const message = (e as { message: string; }).message;
       if (message.includes('ETIMEDOUT')) {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
       } else if (message.includes('ENOTFOUND')) {
@@ -54,9 +54,9 @@ export class LoginComponent implements OnInit {
   async ngOnInit() {
     try {
       const account = await this.adgaService.getAccount();
-      this.username = account.username;
-      this.password = account.password;
-      this.id = account.id;
+      this.username = account?.username ?? '';
+      this.password = account?.password ?? '';
+      this.id = account?.id;
     } catch (e) {
       console.warn('Error Reading Account:', e);
     }

@@ -8,9 +8,9 @@ import { DiffService } from '../diff/diff.service';
 export class SuggestionService {
   private suggestAccount() {
     this.adgaService.getAccount().then(account => {
-      this.name = this.diffService.titleCase(account.name ?? '');
-      this.email = account.email ?? '';
-      this.herdName = account.herdName ?? '';
+      this.name = this.diffService.titleCase(account?.name ?? '');
+      this.email = account?.email ?? '';
+      this.herdName = account?.herdName ?? '';
       this.applicationRef.tick();
     });
   }
@@ -23,9 +23,9 @@ export class SuggestionService {
 
   private herdName = '';
   get title() {
-    return this.diffService.titleCase((this.herdName.endsWith('FARM') || !this.herdName) ? this.herdName : `${this.herdName} FARM`);
+    return this.diffService.titleCase((this.herdName?.endsWith('FARM') || !this.herdName) ? this.herdName : `${this.herdName} FARM`);
   }
   get shortTitle() {
-    return this.diffService.titleCase(this.herdName.endsWith('FARM') ? this.herdName.slice(0, -5) : this.herdName);
+    return this.diffService.titleCase(this.herdName?.endsWith('FARM') ? this.herdName.slice(0, -5) : this.herdName);
   }
 }
