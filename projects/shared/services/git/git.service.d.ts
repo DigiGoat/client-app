@@ -23,7 +23,7 @@ export interface GitService {
   publish: () => Promise<void>;
   reset: () => Promise<void>;
   clean: () => Promise<void>;
-  getStatus: () => Promise<StatusResult>;
+  getStatus: () => Promise<Omit<StatusResult, 'isClean'>>;
   onchange: (callback: () => void) => void;
   fetchUpdate: () => Promise<SemVer>;
   readUpdate: () => Promise<SemVer>;

@@ -1,5 +1,5 @@
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, ViewChild, type ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ViewChild, type ElementRef } from '@angular/core';
 import { startSpan } from '@sentry/electron/renderer';
 import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
@@ -13,9 +13,15 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
   selector: 'app-goats',
   templateUrl: './goats.component.html',
   styleUrl: './goats.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatsComponent {
+  private goatService = inject(GoatService);
+  private adgaService = inject(ADGAService);
+  private diffService = inject(DiffService);
+  private configService = inject(ConfigService);
+
   does = this.goatService.does;
   bucks = this.goatService.bucks;
   references = this.goatService.references;
@@ -25,7 +31,6 @@ export class GoatsComponent {
     doe: DoeFilter,
     buck: BuckFilter,
   };
-  constructor(private goatService: GoatService, private adgaService: ADGAService, private diffService: DiffService, private configService: ConfigService) { }
 
   get syncing() {
     return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false || this.syncingForSale !== false;
@@ -255,8 +260,7 @@ export class GoatsComponent {
         await this.goatService.writeRelated(related);
         try {
           const newIds: number[] = [];
-          for (let i = 0; i < related.length; i++) {
-            const goat = related[i];
+          for (const goat of related) {
             if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
               newIds.push(goat.damId);
             }

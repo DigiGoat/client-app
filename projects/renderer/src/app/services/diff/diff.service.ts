@@ -6,7 +6,6 @@ import { addedDiff, deletedDiff, detailedDiff, diff, updatedDiff } from 'deep-ob
 })
 export class DiffService {
 
-  constructor() { }
   diff = diff;
   addedDiff = addedDiff;
   deletedDiff = deletedDiff;

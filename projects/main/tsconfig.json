@@ -2,24 +2,22 @@
   "compilerOptions": {
     "target": "ES6",
     "allowJs": true,
-    "module": "commonjs",
+    "module": "node16",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    // "baseUrl": ".",
+    "rootDir": "./src",
     "outDir": "../../dist/main",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
-
     "paths": {
       "*": [
-        "node_modules/*"
+        "./node_modules/*"
       ]
     },
-
     "inlineSources": true,
-
     // Set `sourceRoot` to  "/" to strip the build path prefix
     // from generated source code references.
     // This improves issue grouping in Sentry.

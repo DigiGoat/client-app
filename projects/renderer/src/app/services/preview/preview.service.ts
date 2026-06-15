@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class PreviewService {
 
-  constructor() { }
 
   getPreviewActive = window.electron.preview.getPreviewActive;
   getPreviewVisible = window.electron.preview.getPreviewVisible;

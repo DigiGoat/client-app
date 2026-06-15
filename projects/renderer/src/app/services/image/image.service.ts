@@ -6,7 +6,6 @@ import type { ImageMap, OptimizeProgress } from '../../../../../shared/services/
 })
 export class ImageService {
 
-  constructor() { }
   set onchange(callback: (images: ImageMap) => void) {
     window.electron.image.onchange(callback);
   }

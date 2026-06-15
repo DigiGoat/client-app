@@ -18,7 +18,7 @@ export const RepoGuard: CanActivateFn = async () => {
       await windowService.close();
       return false;
     }
-  } catch (e) {
+  } catch {
     //Git Isn't Installed, Another Guard Will Handle This
     return false;
   }

@@ -7,13 +7,13 @@ export class LoginWindow extends Window {
     if (this.window) {
       try {
         app.setSecureKeyboardEntryEnabled(true);
-      } catch (e) {
+      } catch {
         //Do nothing, this just means we aren't on Mac
       }
       this.window.on('closed', () => {
         try {
           app.setSecureKeyboardEntryEnabled(false);
-        } catch (e) {
+        } catch {
           //Do nothing, this just means we aren't on Mac
         }
       });

@@ -1,54 +1,64 @@
 <div class="d-flex justify-content-end align-items-start">
-  <h1 class="text-center flex-grow-1" *ngIf="goat.nickname || goat.name || goat.normalizeId" [class.unsaved]="unsavedChanges">
-    {{goat.nickname || goat.name || goat.normalizeId}}:
-  </h1>
-  <div *ngIf="goat.id" class="btn-group p-1">
-    <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()"
-      [disabled]="syncingDetails">Sync All <i class="bi bi-arrow-repeat" [class.spin]="syncingDetails"></i></button>
-    <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
-      data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
-      <span class="visually-hidden">Toggle Dropdown</span>
-    </button>
-    <ul #dropdown class="dropdown-menu color-scheme-quaternary" style="width: 125%">
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingDetails" (click)="syncDetails()">Sync
-          Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLA" (click)="syncLA()">Sync LA <i
+  @if (goat.nickname || goat.name || goat.normalizeId) {
+    <h1 class="text-center flex-grow-1" [class.unsaved]="unsavedChanges">
+      {{goat.nickname || goat.name || goat.normalizeId}}:
+    </h1>
+  }
+  @if (goat.id) {
+    <div class="btn-group p-1">
+      <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()"
+        [disabled]="syncingDetails">Sync All <i class="bi bi-arrow-repeat" [class.spin]="syncingDetails"></i></button>
+        <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
+          data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
+          <span class="visually-hidden">Toggle Dropdown</span>
+        </button>
+        <ul #dropdown class="dropdown-menu color-scheme-quaternary" style="width: 125%">
+          <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingDetails" (click)="syncDetails()">Sync
+            Details <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingDetails"></i></button></li>
+            <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLA" (click)="syncLA()">Sync LA <i
             class="bi bi-arrow-repeat float-end" [class.spin]="syncingLA"></i></button></li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLactations"
-          (click)="syncLactations()">Sync Lactations <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingLactations"></i></button>
-      </li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingAwards" (click)="syncAwards()">Sync
-          Awards <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button></li>
-      <!--
-    <li><button type="button" class="dropdown-item" (click)="syncShows()" [disabled]="syncing">Sync Shows <i
-          class="bi bi-arrow-repeat float-end" [class.spin]="syncingShows"></i></button>
-    </li>
-    <li><button type="button" class="dropdown-item" (click)="syncLA()" [disabled]="syncing">Sync LA <i class="bi bi-arrow-repeat float-end"
-          [class.spin]="syncingLA"></i></button></li>
-    <li><button type="button" class="dropdown-item" (click)="syncAwards()" [disabled]="syncing">Sync Awards <i
-          class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button>
-    </li>
-    <li><button type="button" class="dropdown-item" (click)="syncProgeny()" [disabled]="syncing">Sync Progeny <i
+            <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingLactations"
+              (click)="syncLactations()">Sync Lactations <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingLactations"></i></button>
+            </li>
+            <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncingAwards" (click)="syncAwards()">Sync
+              Awards <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button></li>
+              <!--
+              <li><button type="button" class="dropdown-item" (click)="syncShows()" [disabled]="syncing">Sync Shows <i
+              class="bi bi-arrow-repeat float-end" [class.spin]="syncingShows"></i></button>
+            </li>
+            <li><button type="button" class="dropdown-item" (click)="syncLA()" [disabled]="syncing">Sync LA <i class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingLA"></i></button></li>
+            <li><button type="button" class="dropdown-item" (click)="syncAwards()" [disabled]="syncing">Sync Awards <i
+            class="bi bi-arrow-repeat float-end" [class.spin]="syncingAwards"></i></button>
+          </li>
+          <li><button type="button" class="dropdown-item" (click)="syncProgeny()" [disabled]="syncing">Sync Progeny <i
           class="bi bi-arrow-repeat float-end" [class.spin]="syncingProgeny"></i></button>
-    </li>
-  -->
-    </ul>
-  </div>
+        </li>
+        -->
+      </ul>
+    </div>
+  }
 </div>
 <div class="container">
   <div class="row  row-cols-1 row-cols-md-2  row-cols-xxl-3 justify-content-around pt-3">
-    <div class="mb-3 col" *ngIf="!related">
-      <div class="input-group" [class.unsaved]="isDirty('nickname')">
-        <span class="input-group-text">Nickname:</span>
-        <input type="text" class="form-control" [(ngModel)]="nickname" [suggestion]="name?.split(' ')?.pop() ?? ''">
+    @if (!related) {
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('nickname')">
+          <span class="input-group-text">Nickname:</span>
+          <input type="text" class="form-control" [(ngModel)]="nickname" [suggestion]="name?.split(' ')?.pop() ?? ''">
+        </div>
+        <div class="form-text">Your Goat's Farm Name (Used As The Primary Identifier)</div>
       </div>
-      <div class="form-text">Your Goat's Farm Name (Used As The Primary Identifier)</div>
-    </div>
+    }
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('name')">
         <span class="input-group-text">Name:</span>
-        <input *ngIf="!goat.id" type="text" class="form-control" [(ngModel)]="name">
-        <app-case-input *ngIf="goat.id" [(value)]="name" class="form-control"></app-case-input>
+        @if (!goat.id) {
+          <input type="text" class="form-control" [(ngModel)]="name">
+        }
+        @if (goat.id) {
+          <app-case-input [(value)]="name" class="form-control"></app-case-input>
+        }
       </div>
       <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
     </div>
@@ -61,15 +71,17 @@
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div>
-    <div class="mb-3 col" *ngIf="!goat.id || dateOfDeath">
-      <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
-      <div class="input-group" [class.unsaved]="isDirty('dateOfDeath')">
-        <span class="input-group-text">Deceased:</span>
-        <input type="text" class="form-control" [ngModel]="dateOfDeath | longDate" #dateOfDeathEl
-          (blur)="goat = {dateOfBirth: dateOfDeathEl.value }" [disabled]="!!goat.id">
+    @if (!goat.id || dateOfDeath) {
+      <div class="mb-3 col">
+        <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+        <div class="input-group" [class.unsaved]="isDirty('dateOfDeath')">
+          <span class="input-group-text">Deceased:</span>
+          <input type="text" class="form-control" [ngModel]="dateOfDeath | longDate" #dateOfDeathEl
+            (blur)="goat = {dateOfBirth: dateOfDeathEl.value }" [disabled]="!!goat.id">
+        </div>
+        <div class="form-text">Your Goat's Date of Death (Formatted Automatically)</div>
       </div>
-      <div class="form-text">Your Goat's Date of Death (Formatted Automatically)</div>
-    </div>
+    }
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="isDirty('normalizeId')">
         <span class="input-group-text">ID:</span>
@@ -77,93 +89,119 @@
       </div>
       <div class="form-text">Your Goat's ID (Used As A Identifier If None Other Is Available)</div>
     </div>
-    <div class="mb-3 col" *ngIf="!related">
-      <div class="input-group" [class.unsaved]="isDirty('description')">
-        <span class="input-group-text">Description:</span>
-        <textarea type="text" class="form-control" [(ngModel)]="description" markdown></textarea>
+    @if (!related) {
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('description')">
+          <span class="input-group-text">Description:</span>
+          <textarea type="text" class="form-control" [(ngModel)]="description" markdown></textarea>
+        </div>
+        <div class="form-text">Some Information About Your Goat</div>
       </div>
-      <div class="form-text">Some Information About Your Goat</div>
-    </div>
-    <div class="mb-3 col" *ngIf="!related">
-      <div class="input-group" [class.unsaved]="isDirty('colorAndMarking')">
-        <span class="input-group-text">Color And Markings:</span>
-        <textarea *ngIf="!goat.id" type="text" class="form-control" [(ngModel)]="colorAndMarking"></textarea>
-        <app-case-input *ngIf="goat.id" [(value)]="colorAndMarking" class="form-control"></app-case-input>
+    }
+    @if (!related) {
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('colorAndMarking')">
+          <span class="input-group-text">Color And Markings:</span>
+          @if (!goat.id) {
+            <textarea type="text" class="form-control" [(ngModel)]="colorAndMarking"></textarea>
+          }
+          @if (goat.id) {
+            <app-case-input [(value)]="colorAndMarking" class="form-control"></app-case-input>
+          }
+        </div>
+        <div class="form-text">What Your Goat Looks Like</div>
       </div>
-      <div class="form-text">What Your Goat Looks Like</div>
-    </div>
-    <div class="mb-3 col" *ngIf="!related">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#tattoos"
-        aria-expanded="false" aria-controls="tattoos" [class.unsaved]="false"> Tattoos <i class="bi bi-ear"></i>
-      </button>
-      <div class="collapse p-3 color-scheme-secondary" id="tattoos">
-        <span *ngFor="let tattoo of tattoos; index as i">
-          <div class="input-group mb-1">
-            <span class="input-group-text">Tattoo:</span>
-            <input type="text" class="form-control w-25" [ngModel]="tattoo.tattooLocation?.name | uppercase"
-              (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!goat.id"><span class="input-group-text">:</span>
-            <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)"
-              [disabled]="!!goat.id">
+    }
+    @if (!related) {
+      <div class="mb-3 col">
+        <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#tattoos"
+          aria-expanded="false" aria-controls="tattoos" [class.unsaved]="false"> Tattoos <i class="bi bi-ear"></i>
+        </button>
+        <div class="collapse p-3 color-scheme-secondary" id="tattoos">
+          @for (tattoo of tattoos; track tattoo; let i = $index) {
+            <span>
+              <div class="input-group mb-1">
+                <span class="input-group-text">Tattoo:</span>
+                <input type="text" class="form-control w-25" [ngModel]="$safeNavigationMigration(tattoo.tattooLocation?.name) | uppercase"
+                  (ngModelChange)="setTattooLocation(i, $event)" [disabled]="!!goat.id"><span class="input-group-text">:</span>
+                  <input type="text" class="form-control" [ngModel]="tattoo.tattoo | uppercase" (ngModelChange)="setTattooValue(i, $event)"
+                    [disabled]="!!goat.id">
+                </div>
+              </span>
+            }
           </div>
-        </span>
+        </div>
+      }
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('sex')">
+          <span class="input-group-text">Sex:</span>
+          <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!goat.id">
+            @if (sex === undefined) {
+              <option value="undefined">Unspecified (Female)</option>
+            }
+            <option value="Male">Male</option>
+            @if (sex !== undefined) {
+              <option value="Female">Female</option>
+            }
+          </select>
+        </div>
+        <div class="form-text">Your Goat's Gender (Defualt's to 'Female' if needed)</div>
       </div>
-    </div>
-    <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="isDirty('sex')">
-        <span class="input-group-text">Sex:</span>
-        <select class="form-select" aria-label="Sex Select Dropdown" [(ngModel)]="sex" [disabled]="!!goat.id">
-          <option value="undefined" *ngIf="sex === undefined">Unspecified (Female)</option>
-          <option value="Male">Male</option>
-          <option value="Female" *ngIf="sex !== undefined">Female</option>
-        </select>
+      @if (forSale) {
+        <div class="mb-3 col">
+          <div class="input-group" [class.unsaved]="isDirty('pet')">
+            <span class="input-group-text">Sale Type:</span>
+            <select class="form-select" aria-label="Sale Type Select Dropdown" [(ngModel)]="pet" [disabled]="!!goat.id">
+              @if (pet === undefined) {
+                <option value="undefined">Unspecified (Registered)</option>
+              }
+              <option value="true">Pet</option>
+              @if (pet !== undefined) {
+                <option value="false">Registered</option>
+              }
+            </select>
+          </div>
+          <div class="form-text">Wether or not you're selling this animal with papers (Defualt's to 'Registered' if needed)</div>
+        </div>
+      }
+      @if (forSale) {
+        <div class="mb-3 col">
+          <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
+          <div class="input-group" [class.unsaved]="isDirty('price')">
+            <span class="input-group-text">Price:</span>
+            <input type="text" class="form-control" [ngModel]="price" #priceEl (blur)="price = priceEl.value">
+          </div>
+          <div class="form-text">The Price to Display for this Goat</div>
+        </div>
+      }
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('damId')">
+          <span class="input-group-text">Dam's ID:</span>
+          <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!goat.id" goat-search="does">
+        </div>
+        <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
       </div>
-      <div class="form-text">Your Goat's Gender (Defualt's to 'Female' if needed)</div>
-    </div>
-    <div class="mb-3 col" *ngIf="forSale">
-      <div class="input-group" [class.unsaved]="isDirty('pet')">
-        <span class="input-group-text">Sale Type:</span>
-        <select class="form-select" aria-label="Sale Type Select Dropdown" [(ngModel)]="pet" [disabled]="!!goat.id">
-          <option value="undefined" *ngIf="pet === undefined">Unspecified (Registered)</option>
-          <option value="true">Pet</option>
-          <option value="false" *ngIf="pet !== undefined">Registered</option>
-        </select>
+      <div class="mb-3 col">
+        <div class="input-group" [class.unsaved]="isDirty('sireId')">
+          <span class="input-group-text">Sire's ID:</span>
+          <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!goat.id" goat-search="bucks">
+        </div>
+        <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
       </div>
-      <div class="form-text">Wether or not you're selling this animal with papers (Defualt's to 'Registered' if needed)</div>
-    </div>
-    <div class="mb-3 col" *ngIf="forSale">
-      <!--Should it appear unsaved if changed while focussed?  (|| dateOfBirthEl.innerText !== dateOfBirth)-->
-      <div class="input-group" [class.unsaved]="isDirty('price')">
-        <span class="input-group-text">Price:</span>
-        <input type="text" class="form-control" [ngModel]="price" #priceEl (blur)="price = priceEl.value">
-      </div>
-      <div class="form-text">The Price to Display for this Goat</div>
-    </div>
-    <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="isDirty('damId')">
-        <span class="input-group-text">Dam's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="damId" [disabled]="!!goat.id" goat-search="does">
-      </div>
-      <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
-    </div>
-    <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="isDirty('sireId')">
-        <span class="input-group-text">Sire's ID:</span>
-        <input type="text" class="form-control" [(ngModel)]="sireId" [disabled]="!!goat.id" goat-search="bucks">
-      </div>
-      <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
-    </div>
-    <div class="mb-3 col" *ngIf="related">
-      <div class="input-group" [class.unsaved]="isDirty('ownerAccount')">
-        <span class="input-group-text">Owner:</span>
-        <app-case-input class="form-control" [(value)]="owner"></app-case-input>
-      </div>
-      <div class="form-text">The Current Owner of this Goat</div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#linear"
-        aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard2-data"></i>
-      </button>
-      <!--<div class="collapse p-3 color-scheme-secondary" id="linear">
+      @if (related) {
+        <div class="mb-3 col">
+          <div class="input-group" [class.unsaved]="isDirty('ownerAccount')">
+            <span class="input-group-text">Owner:</span>
+            <app-case-input class="form-control" [(value)]="owner"></app-case-input>
+          </div>
+          <div class="form-text">The Current Owner of this Goat</div>
+        </div>
+      }
+      <div class="mb-3 col">
+        <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#linear"
+          aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard2-data"></i>
+        </button>
+        <!--<div class="collapse p-3 color-scheme-secondary" id="linear">
         <div class="row">
           <div class="col">Appraisal Year</div>
           <div class="col">General Appearance</div>
@@ -194,178 +232,198 @@
               disabled>
           </div>
         </div>-->
-      <div class="collapse p-3 color-scheme-secondary" id="linear">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col" tooltip="General Appearance">GA</th>
-              <th scope="col" tooltip="Dairy Strength">DS</th>
-              <th scope="col" tooltip="Body Capacity">BC</th>
-              <th scope="col" *ngIf="goat.sex === 'Female'" tooltip="Mammary System">MS</th>
-              <th scope="col" tooltip="Final Score">FS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="!linearAppraisals || !linearAppraisals.length">
-              <td colspan="100" class="text-center"> No Linear Appraisal History Found </td>
-            </tr>
-            <tr *ngFor="let appraisal of linearAppraisals; index as i">
-              <th scope="row">{{appraisal.appraisalDate | longDate}}
-              </th>
-              <td>
-                {{appraisal.generalAppearance}}
-              </td>
-              <td>
-                {{appraisal.dairyStrength}}
-              </td>
-              <td>
-                {{appraisal.bodyCapacity}}
-              </td>
-              <td *ngIf="goat.sex === 'Female'">
-                {{appraisal.mammarySystem}}
-              </td>
-              <td [class.fst-italic]="appraisal.isPermanent" [class.fw-bold]="appraisal.isPermanent"
-                [tooltip]="appraisal.isPermanent ? 'Permanent Score' : ''">
-                {{appraisal.finalScore}}
-              </td>
-            </tr>
-          </tbody>
-          <!--<tfoot>
+        <div class="collapse p-3 color-scheme-secondary" id="linear">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col" tooltip="General Appearance">GA</th>
+                <th scope="col" tooltip="Dairy Strength">DS</th>
+                <th scope="col" tooltip="Body Capacity">BC</th>
+                @if (goat.sex === 'Female') {
+                  <th scope="col" tooltip="Mammary System">MS</th>
+                }
+                <th scope="col" tooltip="Final Score">FS</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (!linearAppraisals || !linearAppraisals.length) {
+                <tr>
+                  <td colspan="100" class="text-center"> No Linear Appraisal History Found </td>
+                </tr>
+              }
+              @for (appraisal of linearAppraisals; track appraisal; let i = $index) {
+                <tr>
+                  <th scope="row">{{appraisal.appraisalDate | longDate}}
+                  </th>
+                  <td>
+                    {{appraisal.generalAppearance}}
+                  </td>
+                  <td>
+                    {{appraisal.dairyStrength}}
+                  </td>
+                  <td>
+                    {{appraisal.bodyCapacity}}
+                  </td>
+                  @if (goat.sex === 'Female') {
+                    <td>
+                      {{appraisal.mammarySystem}}
+                    </td>
+                  }
+                  <td [class.fst-italic]="appraisal.isPermanent" [class.fw-bold]="appraisal.isPermanent"
+                    [tooltip]="appraisal.isPermanent ? 'Permanent Score' : ''">
+                    {{appraisal.finalScore}}
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <!--<tfoot>
             <tr>
               <td colspan="100" class="text-end">
                 <button class="btn btn-outline-secondary" type="button"
                   (click)="doe.linearAppraisal ? doe.linearAppraisal.push({custom: true}) : doe.linearAppraisal = [{custom: true}]">Add
                   Entry <i class="bi bi-plus-lg"></i></button>
-              </td>
-            </tr>
-          </tfoot>-->
-        </table>
+                </td>
+              </tr>
+            </tfoot>-->
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#lactationHistory" aria-expanded="false" aria-controls="lactationHistory" [class.unsaved]="false"> Lactation History
-        <i class="bi bi-clipboard2-pulse"></i>
-      </button>
-      <div class="collapse p-3 color-scheme-secondary" id="lactationHistory">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Start Date</th>
-              <th scope="col">Lactation</th>
-              <th scope="col" tooltip="Days in Milk">DIM</th>
-              <th scope="col" tooltip="Achieved/Projected (lbs)">Milk</th>
-              <th scope="col" tooltip="Achieved/Projected (lbs)">Butter Fat</th>
-              <th scope="col" tooltip="Achieved/Projected (lbs)">Protein</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="!lactationRecords?.length">
-              <td colspan="100" class="text-center"> No Lactation History Found </td>
-            </tr>
-            <tr *ngFor="let record of lactationRecords; index as i">
-              <th scope="row" [class.fst-italic]="record.isCurrent" [class.fw-bold]="record.isCurrent"
-                [tooltip]="record.isCurrent ? 'Active Lactation' : ''">{{record.startDate | longDate}}
-              </th>
-              <td>
-                {{record.lactationNumber}}
-              </td>
-              <td>
-                {{record.daysInMilk}}
-              </td>
-              <td>
-                {{record.stats?.milk?.achieved}} / {{record.stats?.milk?.projected}}
-              </td>
-              <td>
-                {{record.stats?.butterfat?.achieved}} / {{record.stats?.butterfat?.projected}}
-              </td>
-              <td>
-                {{record.stats?.protein?.achieved}} / {{record.stats?.protein?.projected}}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="mb-3 col">
+        <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+          data-bs-target="#lactationHistory" aria-expanded="false" aria-controls="lactationHistory" [class.unsaved]="false"> Lactation History
+          <i class="bi bi-clipboard2-pulse"></i>
+        </button>
+        <div class="collapse p-3 color-scheme-secondary" id="lactationHistory">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Start Date</th>
+                <th scope="col">Lactation</th>
+                <th scope="col" tooltip="Days in Milk">DIM</th>
+                <th scope="col" tooltip="Achieved/Projected (lbs)">Milk</th>
+                <th scope="col" tooltip="Achieved/Projected (lbs)">Butter Fat</th>
+                <th scope="col" tooltip="Achieved/Projected (lbs)">Protein</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (!lactationRecords?.length) {
+                <tr>
+                  <td colspan="100" class="text-center"> No Lactation History Found </td>
+                </tr>
+              }
+              @for (record of lactationRecords; track record; let i = $index) {
+                <tr>
+                  <th scope="row" [class.fst-italic]="record.isCurrent" [class.fw-bold]="record.isCurrent"
+                    [tooltip]="record.isCurrent ? 'Active Lactation' : ''">{{record.startDate | longDate}}
+                  </th>
+                  <td>
+                    {{record.lactationNumber}}
+                  </td>
+                  <td>
+                    {{record.daysInMilk}}
+                  </td>
+                  <td>
+                    {{record.stats?.milk?.achieved}} / {{record.stats?.milk?.projected}}
+                  </td>
+                  <td>
+                    {{record.stats?.butterfat?.achieved}} / {{record.stats?.butterfat?.projected}}
+                  </td>
+                  <td>
+                    {{record.stats?.protein?.achieved}} / {{record.stats?.protein?.projected}}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#currentLactation" aria-expanded="false" aria-controls="currentLactation" [class.unsaved]="false"> Current Lactation
-        <i class="bi bi-clipboard-pulse"></i>
-      </button>
-      <div class="collapse p-3 color-scheme-secondary" id="currentLactation">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Test #:</th>
-              <th scope="col">Test Date</th>
-              <th scope="col" tooltip="Days in Milk">DIM</th>
-              <th scope="col">Milk</th>
-              <th scope="col" tooltip="Butter Fat Percent">Fat Pct.</th>
-              <th scope="col" tooltip="Protein Percent">Protein Pct.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="!currentLactation?.tests?.length">
-              <td colspan="100" class="text-center"> No Tests Found For the Current Lactation </td>
-            </tr>
-            <tr *ngFor="let test of currentLactation?.tests; index as i">
-              <th scope="row">{{test.testNumber}}
-              </th>
-              <td>
-                {{test.testDate | longDate}}
-              </td>
-              <td>
-                {{test.daysInMilk}}
-              </td>
-              <td>
-                {{test.milk}}
-              </td>
-              <td>
-                {{test.butterfatPct}}%
-              </td>
-              <td>
-                {{test.proteinPct}}%
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="mb-3 col">
+        <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+          data-bs-target="#currentLactation" aria-expanded="false" aria-controls="currentLactation" [class.unsaved]="false"> Current Lactation
+          <i class="bi bi-clipboard-pulse"></i>
+        </button>
+        <div class="collapse p-3 color-scheme-secondary" id="currentLactation">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Test #:</th>
+                <th scope="col">Test Date</th>
+                <th scope="col" tooltip="Days in Milk">DIM</th>
+                <th scope="col">Milk</th>
+                <th scope="col" tooltip="Butter Fat Percent">Fat Pct.</th>
+                <th scope="col" tooltip="Protein Percent">Protein Pct.</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (!currentLactation?.tests?.length) {
+                <tr>
+                  <td colspan="100" class="text-center"> No Tests Found For the Current Lactation </td>
+                </tr>
+              }
+              @for (test of currentLactation?.tests; track test; let i = $index) {
+                <tr>
+                  <th scope="row">{{test.testNumber}}
+                  </th>
+                  <td>
+                    {{test.testDate | longDate}}
+                  </td>
+                  <td>
+                    {{test.daysInMilk}}
+                  </td>
+                  <td>
+                    {{test.milk}}
+                  </td>
+                  <td>
+                    {{test.butterfatPct}}%
+                  </td>
+                  <td>
+                    {{test.proteinPct}}%
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#awards"
-        aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-award"></i>
-      </button>
-      <div class="collapse p-3 color-scheme-secondary" id="awards">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Year</th>
-              <th scope="col">Count</th>
-              <th scope="col" tooltip="Award Code">Code</th>
-              <th scope="col" tooltip="Award Description">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="!awards || !awards.length">
-              <td colspan="100" class="text-center"> No Awards Found </td>
-            </tr>
-            <tr *ngFor="let award of awards; index as i">
-              <th scope="row">{{award.awardYear}}
-              </th>
-              <td>
-                {{award.awardCount}}
-              </td>
-              <td>
-                {{award.awardCode}}
-              </td>
-              <td>
-                {{award.awardDescription}}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="mb-3 col">
+        <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#awards"
+          aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-award"></i>
+        </button>
+        <div class="collapse p-3 color-scheme-secondary" id="awards">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col">Count</th>
+                <th scope="col" tooltip="Award Code">Code</th>
+                <th scope="col" tooltip="Award Description">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (!awards || !awards.length) {
+                <tr>
+                  <td colspan="100" class="text-center"> No Awards Found </td>
+                </tr>
+              }
+              @for (award of awards; track award; let i = $index) {
+                <tr>
+                  <th scope="row">{{award.awardYear}}
+                  </th>
+                  <td>
+                    {{award.awardCount}}
+                  </td>
+                  <td>
+                    {{award.awardCode}}
+                  </td>
+                  <td>
+                    {{award.awardDescription}}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>

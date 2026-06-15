@@ -12,6 +12,9 @@ export class SetupWindow extends Window {
     try {
       const webVersion = parse((await readJSON(join(app.getPath('userData'), 'repo', 'package.json'))).version);
       const appVersion = parse(app.getVersion());
+      if (!webVersion || !appVersion) {
+        throw new Error('Failed to parse version');
+      }
       if (webVersion.major > appVersion.major) {
         await dialog.showMessageBox({ message: 'App Update Required!', detail: 'Your app is outdated and needs to be updated to continue', type: 'error', buttons: ['OK'] });
         shell.openExternal('https://github.com/DigiGoat/client-app/releases');

@@ -2,7 +2,9 @@
 {
   "extends": "../../angular.tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "../../out-tsc/renderer",
+    "moduleResolution": "bundler",
     "types": []
   },
   "files": [
@@ -10,5 +12,13 @@
   ],
   "include": [
     "src/**/*.d.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

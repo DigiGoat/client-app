@@ -1,5 +1,5 @@
 import { type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { CustomPage } from '../../../../../../shared/services/custom-pages/custom-pages.service';
 import { CustomPagesService } from '../../../services/custom-pages/custom-pages.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -9,11 +9,15 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-custom-pages',
   standalone: false,
   templateUrl: './custom-pages.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './custom-pages.component.scss'
 })
 export class CustomPagesComponent implements OnInit {
+  private customPagesService = inject(CustomPagesService);
+  private dialogService = inject(DialogService);
+  private windowService = inject(WindowService);
+
   customPages: CustomPage[] = [];
-  constructor(private customPagesService: CustomPagesService, private dialogService: DialogService, private windowService: WindowService) { }
   ngOnInit(): void {
     this.customPagesService.getCustomPages().then(customPages => {
       this.customPages = customPages;

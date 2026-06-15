@@ -3,27 +3,37 @@
     (keydown)=" $event.key === 'Enter'?  dropdown.focus() : undefined">
   <button #dropdown class="btn btn-secondary color-scheme-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
     (focus)="lookupGoats(search.value)" online-only [disabled]="!search.value.length"><i class="bi bi-search"></i></button>
-  <ul class="dropdown-menu color-scheme-quaternary w-100" style="max-height: 200px; overflow-y: scroll;">
-    <li *ngIf="!idGoats || !nameGoats" class="dropdown-item color-scheme-quaternary"><i class="bi bi-arrow-repeat spin pe-2"></i>Loading...
-    </li>
-    <li *ngFor="let goat of idGoats">
-      <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
-        <div class='fw-semibold text-wrap'> {{goat.name}}</div>
-        <div class='fw-light' [innerHTML]="formatGoat(goat, search.value).normalizeId"></div>
-      </button>
-    </li>
-    <li *ngIf="idGoats?.length && nameGoats?.length">
-      <hr class="dropdown-divider">
-    </li>
-    <li *ngFor="let goat of nameGoats">
-      <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
-        <div class='fw-semibold text-wrap' [innerHTML]="formatGoat(goat, search.value).name"></div>
-        <div class='fw-light'>{{goat.normalizeId}}</div>
-      </button>
-    </li>
-    <li *ngIf="(idGoats && nameGoats) && (!nameGoats.length && !idGoats.length)">
-      <span class="dropdown-item color-scheme-quaternary">No Goats Found</span>
-    </li>
+    <ul class="dropdown-menu color-scheme-quaternary w-100" style="max-height: 200px; overflow-y: scroll;">
+      @if (!idGoats || !nameGoats) {
+        <li class="dropdown-item color-scheme-quaternary"><i class="bi bi-arrow-repeat spin pe-2"></i>Loading...
+      </li>
+    }
+    @for (goat of idGoats; track goat) {
+      <li>
+        <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
+          <div class='fw-semibold text-wrap'> {{goat.name}}</div>
+          <div class='fw-light' [innerHTML]="formatGoat(goat, search.value).normalizeId"></div>
+        </button>
+      </li>
+    }
+    @if (idGoats?.length && nameGoats?.length) {
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+    }
+    @for (goat of nameGoats; track goat) {
+      <li>
+        <button class="dropdown-item color-scheme-quaternary" (click)="goatSelected.emit(goat)">
+          <div class='fw-semibold text-wrap' [innerHTML]="formatGoat(goat, search.value).name"></div>
+          <div class='fw-light'>{{goat.normalizeId}}</div>
+        </button>
+      </li>
+    }
+    @if ((idGoats && nameGoats) && (!nameGoats.length && !idGoats.length)) {
+      <li>
+        <span class="dropdown-item color-scheme-quaternary">No Goats Found</span>
+      </li>
+    }
     <li>
       <hr class="dropdown-divider">
     </li>

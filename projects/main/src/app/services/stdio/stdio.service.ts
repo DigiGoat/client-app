@@ -10,14 +10,14 @@ export class StdioService {
     const originalStdoutWrite = process.stdout.write.bind(process.stdout);
     const originalStderrWrite = process.stderr.write.bind(process.stderr);
 
-    process.stdout.write = (chunk, ...args) => {
+    process.stdout.write = ((chunk, enc, cb) => {
       BrowserWindow.getAllWindows().forEach(window => window.webContents.send('stdio:stdout', chunk.toString()));
-      return originalStdoutWrite(chunk, ...args);
-    };
+      return originalStdoutWrite(chunk, enc, cb);
+    }) as typeof process.stdout.write;
 
-    process.stderr.write = (chunk, ...args) => {
+    process.stderr.write = ((chunk, enc, cb) => {
       BrowserWindow.getAllWindows().forEach(window => window.webContents.send('stdio:stderr', chunk.toString()));
-      return originalStderrWrite(chunk, ...args);
-    };
+      return originalStderrWrite(chunk, enc, cb);
+    }) as typeof process.stderr.write;
   }
 }

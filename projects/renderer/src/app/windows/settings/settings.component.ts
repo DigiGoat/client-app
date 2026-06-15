@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Settings } from '../../../../../shared/services/settings/settings.service';
 import { ConfigService } from '../../services/config/config.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -11,15 +11,22 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-settings',
   standalone: false,
   templateUrl: './settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings.component.scss'
 })
 export class SettingsComponent implements OnInit {
+  private diffService = inject(DiffService);
+  private settingsService = inject(SettingsService);
+  private windowService = inject(WindowService);
+  private gitService = inject(GitService);
+  private dialogService = inject(DialogService);
+  private configService = inject(ConfigService);
+
   private _oldSettings: Settings = {};
   settings: Settings & Required<Pick<Settings, 'analytics' | 'firebase'>> = {
     analytics: {},
     firebase: {}
   };
-  constructor(private diffService: DiffService, private settingsService: SettingsService, private windowService: WindowService, private gitService: GitService, private dialogService: DialogService, private configService: ConfigService) { }
   get unsavedChangesDiff() {
     return this.diffService.diff(this._oldSettings, this.settings) as Record<string, string>;
   }
@@ -99,5 +106,5 @@ export class SettingsComponent implements OnInit {
   }
 }
 
-type Analytics = { gtag?: string; clarity?: string; };
-type Firebase = { apiKey?: string; messagingSenderId?: string; appId?: string; };
+interface Analytics { gtag?: string; clarity?: string; }
+interface Firebase { apiKey?: string; messagingSenderId?: string; appId?: string; }

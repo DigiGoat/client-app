@@ -1,5 +1,5 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit } from '@angular/core';
+import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../../../../services/dialog/dialog.service';
@@ -10,9 +10,13 @@ import { WindowService } from '../../../../services/window/window.service';
   selector: 'app-goat-list',
   templateUrl: './goat-list.component.html',
   styleUrl: './goat-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GoatListComponent implements OnInit {
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input({ required: true }) type!: GoatType;
   @Input() syncing?: boolean | number = false;
@@ -25,8 +29,6 @@ export class GoatListComponent implements OnInit {
   @Input() listName?: ListLocations;
   @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number }>();
   goats: Goat[] = [];
-
-  constructor(private windowService: WindowService, private dialogService: DialogService) { }
 
   ngOnInit() {
     this._goats.subscribe({

@@ -18,8 +18,6 @@ All of these repositories use angular. This repository specifically uses modules
 
 When generating code, be sure to follow the existing code style. This includes but is not limited to: using single quotes for strings, using semicolons at the end of statements, and using 2 spaces for indentation.
 
-This repository supports testing, however it is not enforced. Furthermore, all testing is done through `jest`, NOT `karma`.
-
 When generating HTML, generate custom CSS as minimally as possible. If styling is necessary, use `bootstrap` classes.
 
 If you wish to verify your suggestions, you may run `yarn build` and `yarn lint`. If you choose to run `yarn test`, know that it may fail even if you provided valid suggestions. However, `yarn build` and `yarn lint` should always pass. Don't use tasks (ex. Build.Main), these are used for running debug sessions in VSCode, stick to the yarn commands. Furthermore, VSCode will periodically mark code that is legit under `global.d.ts` as errors - ignore these (this happens for the majority of the `window.electron.x` calls).

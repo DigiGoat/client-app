@@ -6,7 +6,6 @@ import { parse, parseInline } from 'marked';
 })
 export class MarkedService {
 
-  constructor() { }
   parse(src: string) {
     return parse(src, { gfm: true, async: false });
   }

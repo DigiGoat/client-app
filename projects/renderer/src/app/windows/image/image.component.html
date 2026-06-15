@@ -16,29 +16,33 @@
           </button>
         </div>
         <div class="card-footer color-scheme-tertiary"> OR: <div class="input-group pt-2">
-            <input type="url" class="form-control color-scheme-tertiary" placeholder="https://example.com" #link
-              (keydown)=" $event.key === 'Enter'?  download.focus() : undefined" (paste)="paste(link, $event)">
-            <button class="btn btn-secondary color-scheme-tertiary" online-only
-              (click)="link.value ? downloadImage(link, download) : showClipboard(link, 'value')"
-              (mouseenter)="showClipboard(link, 'placeholder')" (mouseleave)="link.placeholder = 'https://example.com'"
-              [tooltip]="link.value ? 'Download Image' : 'Paste From Clipboard'" tooltip-placement="top" #download><i class="bi"
-                [class.bi-download]="link.value" [class.bi-type]="!link.value"></i></button>
-          </div>
+          <input type="url" class="form-control color-scheme-tertiary" placeholder="https://example.com" #link
+            (keydown)=" $event.key === 'Enter'?  download.focus() : undefined" (paste)="paste(link, $event)">
+          <button class="btn btn-secondary color-scheme-tertiary" online-only
+            (click)="link.value ? downloadImage(link, download) : showClipboard(link, 'value')"
+            (mouseenter)="showClipboard(link, 'placeholder')" (mouseleave)="link.placeholder = 'https://example.com'"
+            [tooltip]="link.value ? 'Download Image' : 'Paste From Clipboard'" tooltip-placement="top" #download><i class="bi"
+          [class.bi-download]="link.value" [class.bi-type]="!link.value"></i></button>
         </div>
       </div>
     </div>
   </div>
-  <div class="row px-3 row-cols-2 row-cols-lg-3  row-cols-xxl-4 justify-content-around" *ngFor="let query of queries" cdkDropList
+</div>
+@for (query of queries; track query) {
+  <div class="row px-3 row-cols-2 row-cols-lg-3  row-cols-xxl-4 justify-content-around" cdkDropList
     [cdkDropListData]="query" (cdkDropListDropped)="moveImage($event)" cdkDropListOrientation="mixed">
-    <div class="mb-3 col" *ngFor="let image of imageMap[query]; index as i" cdkDrag [cdkDragData]="image.file" cdkDragBoundary=".container">
-      <div class="card text-center color-scheme-secondary position-relative">
-        <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
-          <img [src]="'image:'+query+'/'+image.file" class="card-img rounded object-fit-contain" [alt]="image.alt">
+    @for (image of imageMap[query]; track image; let i = $index) {
+      <div class="mb-3 col" cdkDrag [cdkDragData]="image.file" cdkDragBoundary=".container">
+        <div class="card text-center color-scheme-secondary position-relative">
+          <div class="ratio" style="--bs-aspect-ratio: 62.5%;">
+            <img [src]="'image:'+query+'/'+image.file" class="card-img rounded object-fit-contain" [alt]="image.alt">
+          </div>
+          <button class="btn text-secondary-emphasis position-absolute top-0 end-0 parent-hover" tooltip="Delete Image"
+            tooltip-placement="top" (click)="deleteImage(query, image.file)"><i class="bi bi-x-lg"></i></button>
+          </div>
+          <div class="drag-placeholder card text-center color-scheme-secondary" *cdkDragPlaceholder></div>
         </div>
-        <button class="btn text-secondary-emphasis position-absolute top-0 end-0 parent-hover" tooltip="Delete Image"
-          tooltip-placement="top" (click)="deleteImage(query, image.file)"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="drag-placeholder card text-center color-scheme-secondary" *cdkDragPlaceholder></div>
+      }
     </div>
-  </div>
+  }
 </div>

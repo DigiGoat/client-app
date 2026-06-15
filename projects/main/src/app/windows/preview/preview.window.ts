@@ -34,7 +34,6 @@ export class PreviewWindow {
   };
 
   constructor() {
-    this.startServer();
     this.window = new BrowserWindow({
       show: false,
       backgroundColor: 'grey',
@@ -45,6 +44,7 @@ export class PreviewWindow {
       minHeight: 500,
       closable: false,
     });
+    this.startServer();
 
     this.notifyChanges();
     this.window.on('closed', () => {
@@ -55,7 +55,7 @@ export class PreviewWindow {
     });
 
     this.window.on('close', event => {
-      if (this.server && !this.server.stdout.closed) {
+      if (this.server && !this.server.stdout?.closed && this.server.pid) {
         event.preventDefault();
         treeKill(this.server.pid, 'SIGINT');
       }
@@ -65,7 +65,7 @@ export class PreviewWindow {
       return { action: 'deny' };
     });
     app.on('before-quit', () => {
-      if (!this.window.isDestroyed()) {
+      if (this.window && !this.window.isDestroyed()) {
         let attempts = 0;
         this.window.on('close', () => attempts++);
         this.window.on('closed', () => {
@@ -84,7 +84,7 @@ export class PreviewWindow {
         await this.checkYarn();
         await this.checkDependencies();
 
-        this.window.setClosable(true);
+        this.window!.setClosable(true);
         console.log('Starting server');
         this.notifyProgress(Progress.START_SERVER);
         this.notifyChanges();
@@ -97,7 +97,7 @@ export class PreviewWindow {
           ...this.spawnOptions
         });
 
-        this.server.stdout.on('data', data => {
+        this.server.stdout!.on('data', data => {
           data = stripVTControlCharacters(data.toString()); //Strip out the ANSI color characters that are outputted on Windows
           console.log('yarn start:', data);
           if (data.includes('Local')) {
@@ -105,11 +105,11 @@ export class PreviewWindow {
             console.log('Match:', match);
             const url = match ? match[1] : 'http://localhost:4000';
             console.log('Preview URL:', url);
-            this.window.loadURL(url);
-            this.window.on('ready-to-show', () => {
+            this.window!.loadURL(url);
+            this.window!.on('ready-to-show', () => {
               startSpan.end();
               span.end();
-              if (!this.window.isVisible()) {
+              if (this.window && !this.window.isVisible()) {
                 this.window.show();
                 this.window.setSize(992, 600);
                 this.window.center();
@@ -117,10 +117,10 @@ export class PreviewWindow {
             });
           } else if (data.includes('Would you like to use a different port? (Y/n)')) {
             console.log('Port Busy, retrying...');
-            this.server.stdin.write('\r\n');
+            this.server!.stdin!.write('\r\n');
           }
         });
-        this.server.stderr.on('data', data => {
+        this.server.stderr!.on('data', data => {
           console.error('yarn start:', data.toString());
         });
         this.server.on('close', () => {
@@ -132,12 +132,12 @@ export class PreviewWindow {
           dialog.showErrorBox('Failed To Start Preview:', error.message);
           this.window?.close();
         });
-      } catch (error) {
+      } catch (error: unknown) {
         if (error !== 'Close Window') {
           console.error('Error starting server:', error);
-          dialog.showErrorBox('Failed To Start Preview:', error);
+          dialog.showErrorBox('Failed To Start Preview:', error instanceof Error ? error.message : String(error));
         }
-        this.window.setClosable(true);
+        this.window?.setClosable(true);
         this.window?.close();
       }
     });
@@ -167,7 +167,7 @@ export class PreviewWindow {
           throw new Error(`Node version ${nodeVersion} does not satisfy ${acceptableVersions}`);
         }
         console.log(`Node version is acceptable (${nodeVersion})`);
-      } catch (error) {
+      } catch {
         const result = await dialog.showMessageBox({
           type: 'error',
           message: 'Incompatible Node.js Installation',
@@ -260,7 +260,7 @@ export class PreviewWindow {
       try {
         const yarnVersion = await exec('yarn -v', this.spawnOptions);
         console.log(`Yarn found (${yarnVersion})`);
-      } catch (error) {
+      } catch {
         await this.enableYarn();
       }
     });
@@ -275,7 +275,7 @@ export class PreviewWindow {
         await this.checkYarn();
       } catch (error) {
         console.error(error);
-        dialog.showErrorBox('Failed To Enable Yarn:', error);
+        dialog.showErrorBox('Failed To Enable Yarn:', error instanceof Error ? error.message : String(error));
         throw 'Close Window';
       }
     });
@@ -286,7 +286,7 @@ export class PreviewWindow {
       try {
         console.log('Checking dependencies');
         await exec('yarn install --offline', this.spawnOptions);
-      } catch (error) {
+      } catch {
         const result = await dialog.showMessageBox({
           type: 'error',
           message: 'Dependencies Incomplete',
@@ -370,7 +370,7 @@ async function exec(command: string, options?: ExecOptions): Promise<string> {
         resolve(stdout.trim());
       }
     });
-    server.stdout.on('data', data => console.log(`${command}:`, data));
-    server.stderr.on('data', data => console.error(`${command}:`, data));
+    server.stdout!.on('data', data => console.log(`${command}:`, data));
+    server.stderr!.on('data', data => console.error(`${command}:`, data));
   });
 }

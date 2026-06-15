@@ -6,7 +6,7 @@ import type { BackendService } from '../../../../../shared/shared.module';
 
 export class AppService {
   api: BackendService<AppServiceType> = {
-    getVersion: async () => parse(app.getVersion()),
+    getVersion: async () => parse(app.getVersion())!,
     openVersion: async (_event, version) => shell.openExternal(`https://github.com/DigiGoat/client-app/releases?q=v${version}.x`),
     openLatest: async () => shell.openExternal('https://github.com/DigiGoat/client-app/releases/latest'),
     authenticate: async (_event, message) => {
@@ -15,13 +15,13 @@ export class AppService {
           try {
             await systemPreferences.promptTouchID(message);
             return true;
-          } catch (_err) {
+          } catch {
             return false;
           }
         } else {
           return true;
         }
-      } catch (_err) {
+      } catch {
         //Failed to check if touch ID is allowed, this just means we are on windows
         return true;
       }

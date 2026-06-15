@@ -1,6 +1,6 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, type OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { Goat, Kidding } from '../../../../../../shared/services/goat/goat.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -13,14 +13,22 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-kidding-schedule',
   templateUrl: './kidding-schedule.component.html',
   styleUrl: './kidding-schedule.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class KiddingScheduleComponent implements OnInit {
+  configService = inject(ConfigService);
+  private diffService = inject(DiffService);
+  private goatService = inject(GoatService);
+  private cdr = inject(ChangeDetectorRef);
+  private gitService = inject(GitService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+
   private oldBreedings: Kidding[] = [];
   public breedings: Kidding[] = [];
   public does: Goat[] = [];
   public bucks: Goat[] = [];
-  constructor(public configService: ConfigService, private diffService: DiffService, private goatService: GoatService, private cdr: ChangeDetectorRef, private gitService: GitService, private windowService: WindowService, private dialogService: DialogService) { }
   async ngOnInit() {
     this.breedings = await this.goatService.getKiddingSchedule();
     this.goatService.kiddingSchedule.subscribe({

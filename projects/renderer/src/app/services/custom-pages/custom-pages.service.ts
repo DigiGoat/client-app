@@ -1,5 +1,5 @@
 import { type CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import { DiffService } from '../diff/diff.service';
 import { GitService } from '../git/git.service';
@@ -8,8 +8,9 @@ import { GitService } from '../git/git.service';
   providedIn: 'root'
 })
 export class CustomPagesService {
+  private gitService = inject(GitService);
+  private diffService = inject(DiffService);
 
-  constructor(private gitService: GitService, private diffService: DiffService) { }
 
   getCustomPages = window.electron.customPages.getCustomPages;
 

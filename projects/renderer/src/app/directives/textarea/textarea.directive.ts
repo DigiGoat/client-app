@@ -1,17 +1,17 @@
-import { Directive, ElementRef, HostBinding, HostListener, type AfterViewChecked } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, type AfterViewChecked, inject } from '@angular/core';
 
 @Directive({
   selector: 'textarea',
   standalone: false
 })
 export class TextareaDirective implements AfterViewChecked {
+  private el = inject<ElementRef<HTMLTextAreaElement>>(ElementRef);
+
   @HostBinding('style.resize') resize = 'none';
   @HostBinding('style.overflow-y') overflowY = 'hidden';
   @HostBinding('style.word-wrap') wordWrap = 'break-word';
   @HostListener('window:resize') onResize() {
     this.adjust();
-  }
-  constructor(private el: ElementRef<HTMLTextAreaElement>) {
   }
   ngAfterViewChecked() {
     this.adjust();

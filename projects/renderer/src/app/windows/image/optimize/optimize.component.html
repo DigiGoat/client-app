@@ -16,16 +16,24 @@
       </div>
     </div>
   </div>
-  <div *ngIf="optimizing">
-    <div>Current Directory: <b>{{progress.directory}}</b></div>
-    <div>Current File: <b>{{progress.file}}</b></div>
-  </div>
-  <div *ngIf="done">
-    <div class="text-success h5">All images optimized!</div>
-    <div class="text-muted">You may now close this window.</div>
-    <div class="text-warning" *ngIf="failedImages.length">Some images failed to optimize: <ul>
-        <li *ngFor="let image of failedImages">{{ image }}</li>
-      </ul>
+  @if (optimizing) {
+    <div>
+      <div>Current Directory: <b>{{progress.directory}}</b></div>
+      <div>Current File: <b>{{progress.file}}</b></div>
     </div>
+  }
+  @if (done) {
+    <div>
+      <div class="text-success h5">All images optimized!</div>
+      <div class="text-muted">You may now close this window.</div>
+      @if (failedImages.length) {
+        <div class="text-warning">Some images failed to optimize: <ul>
+          @for (image of failedImages; track image) {
+            <li>{{ image }}</li>
+          }
+        </ul>
+      </div>
+    }
   </div>
+}
 </div>

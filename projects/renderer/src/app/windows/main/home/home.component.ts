@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AppService } from '../../../services/app/app.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -12,10 +12,18 @@ import { WindowService } from '../../../services/window/window.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HomeComponent {
-  constructor(private windowService: WindowService, public configService: ConfigService, public suggestionService: SuggestionService, private dialogService: DialogService, private appService: AppService, private repoService: RepoService, private gitService: GitService) { }
+  private windowService = inject(WindowService);
+  configService = inject(ConfigService);
+  suggestionService = inject(SuggestionService);
+  private dialogService = inject(DialogService);
+  private appService = inject(AppService);
+  private repoService = inject(RepoService);
+  private gitService = inject(GitService);
+
 
   async openLogin() {
     await this.windowService.openLogin();

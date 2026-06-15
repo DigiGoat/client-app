@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import type { ImageMap, OptimizeProgress } from '../../../../../../shared/services/image/image.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
 import { DiffService } from '../../../services/diff/diff.service';
@@ -12,9 +12,16 @@ import { WindowService } from '../../../services/window/window.service';
   standalone: false,
 
   templateUrl: './optimize.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './optimize.component.scss'
 })
 export class OptimizeComponent implements OnInit {
+  private imageService = inject(ImageService);
+  private dialogService = inject(DialogService);
+  private gitService = inject(GitService);
+  private diffService = inject(DiffService);
+  private windowService = inject(WindowService);
+
   optimizing = true;
   progress: OptimizeProgress = {
     directory: '',
@@ -29,14 +36,6 @@ export class OptimizeComponent implements OnInit {
   originalImageMap: ImageMap | undefined;
   optimizedImageMap: ImageMap | undefined;
   failedImages: string[] = [];
-
-  constructor(
-    private imageService: ImageService,
-    private dialogService: DialogService,
-    private gitService: GitService,
-    private diffService: DiffService,
-    private windowService: WindowService
-  ) { }
 
   async ngOnInit() {
     this.imageService.onOptimizeProgress = (progress) => {

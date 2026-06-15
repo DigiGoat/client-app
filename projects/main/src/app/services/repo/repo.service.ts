@@ -12,7 +12,7 @@ export class RepoService {
     getVersion: async () => {
       if (await exists(join(this.base, 'package.json'))) {
         const { version } = await readJSON(join(this.base, 'package.json'));
-        return parse(version);
+        return parse(version) || undefined;
       }
     },
     setFavicon: async (_event, path) => {

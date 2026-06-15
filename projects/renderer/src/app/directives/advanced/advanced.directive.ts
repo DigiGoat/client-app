@@ -1,4 +1,4 @@
-import { Directive, HostBinding, HostListener, Input, booleanAttribute } from '@angular/core';
+import { Directive, HostBinding, HostListener, Input, booleanAttribute, inject } from '@angular/core';
 import { AppService } from '../../services/app/app.service';
 
 @Directive({
@@ -6,8 +6,9 @@ import { AppService } from '../../services/app/app.service';
   standalone: false
 })
 export class AdvancedDirective {
-  @Input({ transform: booleanAttribute }) advanced: boolean = true;
-  constructor(private appService: AppService) { }
+  private appService = inject(AppService);
+
+  @Input({ transform: booleanAttribute }) advanced = true;
   @HostBinding('style.display') get display() {
     return (this.show ?? !this.advanced) ? 'inline' : 'none';
   }
@@ -28,7 +29,7 @@ export class AdvancedDirective {
     }
   }
   //If the window looses focus, hide the advanced options
-  @HostListener('window:blur', ['$event']) handleFocusEvent() {
+  @HostListener('window:blur') handleFocusEvent() {
     this.show = !this.advanced;
   }
 }

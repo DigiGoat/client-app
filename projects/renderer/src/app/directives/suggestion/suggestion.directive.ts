@@ -1,10 +1,12 @@
-import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, Input, inject } from '@angular/core';
 
 @Directive({
   selector: 'input[suggestion], textarea[suggestion]',
   standalone: false
 })
 export class SuggestionDirective {
+  private el = inject<ElementRef<HTMLInputElement | HTMLTextAreaElement>>(ElementRef);
+
   /** What to display as a placeholder and autofill if selected */
   @Input() suggestion!: string;
   @HostBinding('placeholder') get placeholder() {
@@ -24,5 +26,4 @@ export class SuggestionDirective {
       this.el.nativeElement.dispatchEvent(new Event('input'));
     }
   }
-  constructor(private el: ElementRef<HTMLInputElement | HTMLTextAreaElement>) { }
 }

@@ -14,7 +14,7 @@ import { SetupWindow } from '../../windows/setup/setup.window';
 export class WindowService {
   api: BackendService<WindowServiceType> = {
     close: async (event, ignoreChanges, ignoreClosable) => {
-      const window = BrowserWindow.fromWebContents(event.sender);
+      const window = BrowserWindow.fromWebContents(event.sender)!;
       if (ignoreChanges) {
         window.setDocumentEdited(false);
         window.setTitle('');
@@ -48,7 +48,7 @@ export class WindowService {
       }
     },
     setUnsavedChanges: async (event, unsavedChanges) => {
-      const window = BrowserWindow.fromWebContents(event.sender);
+      const window = BrowserWindow.fromWebContents(event.sender)!;
       window.setDocumentEdited(unsavedChanges);
       if (process.platform !== 'darwin') {
         let title = window.title;
@@ -62,7 +62,7 @@ export class WindowService {
       }
     },
     setClosable: async (event, closable) => {
-      BrowserWindow.fromWebContents(event.sender).setClosable(closable);
+      BrowserWindow.fromWebContents(event.sender)!.setClosable(closable);
     },
     openGoat: async (event, type, index) => {
       const windows = BrowserWindow.getAllWindows();
@@ -87,7 +87,7 @@ export class WindowService {
       }
     },
     setTitle: async (event, title) => {
-      BrowserWindow.fromWebContents(event.sender).setTitle(title);
+      BrowserWindow.fromWebContents(event.sender)!.setTitle(title);
     },
     openImages: async (_event, searchQueries) => {
       const windows = BrowserWindow.getAllWindows();

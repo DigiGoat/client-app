@@ -2,7 +2,7 @@ name: Pre Check
 
 on:
   pull_request:
-    branches: 
+    branches:
     - main
     - beta
 
@@ -19,14 +19,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: yarn
           cache-dependency-path: yarn.lock
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Rebuild dependencies
         run: yarn install
-        
+
       - name: Run check
         run: yarn pull-check
         env:

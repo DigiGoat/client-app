@@ -1,36 +1,54 @@
 <div class="list-group position-relative" cdkDropList cdkDropListLockAxis="y" (cdkDropListDropped)="rearrange($event)"
   style="height: 445.5px">
-  <span
-    class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
-    style="min-height: auto; z-index: 1 !important;" *ngIf="enabled !== undefined">
-    <label class="form-check-label" for="enabledSwitch"> <span class="fw-bold text-success" *ngIf="enabled">Enabled</span><span
-        class="fw-bold text-danger" *ngIf="!enabled">Disabled</span></label>
-    <input class="form-check-input ms-1" type="checkbox" role="switch" id="enabledSwitch" [ngModel]="enabled"
-      (ngModelChange)="enabledChange.emit($event)">
-  </span>
-  <span *ngIf="!goats.length" class="list-group-item color-scheme-tertiary">No Goats Found!</span>
-  <button *ngFor="let goat of goats; index as i" class="list-group-item list-group-item-action color-scheme-tertiary" (click)="openGoat(i)"
-    cdkDrag>{{goat.nickname || goat.name || goat.normalizeId}} <span *ngIf="type === 'for-sale' && goat.price"
-      class="text-warning">({{goat.price}})</span> <i *ngIf="syncing === i" class="bi bi-arrow-repeat spin position-absolute"
+  @if (enabled !== undefined) {
+    <span
+      class="list-group-item color-scheme-tertiary form-check form-switch form-check-reverse d-flex justify-content-center position-sticky top-0"
+      style="min-height: auto; z-index: 1 !important;">
+      <label class="form-check-label" for="enabledSwitch"> @if (enabled) {
+        <span class="fw-bold text-success">Enabled</span>
+        }@if (!enabled) {
+        <span
+        class="fw-bold text-danger">Disabled</span>
+      }</label>
+      <input class="form-check-input ms-1" type="checkbox" role="switch" id="enabledSwitch" [ngModel]="enabled"
+        (ngModelChange)="enabledChange.emit($event)">
+    </span>
+  }
+  @if (!goats.length) {
+    <span class="list-group-item color-scheme-tertiary">No Goats Found!</span>
+  }
+  @for (goat of goats; track goat; let i = $index) {
+    <button class="list-group-item list-group-item-action color-scheme-tertiary" (click)="openGoat(i)"
+      cdkDrag>{{goat.nickname || goat.name || goat.normalizeId}} @if (type === 'for-sale' && goat.price) {
+      <span
+      class="text-warning">({{goat.price}})</span>
+      } @if (syncing === i) {
+      <i class="bi bi-arrow-repeat spin position-absolute"
       style="left: 3%"></i>
+    }
     <i class="bi bi-list parent-hover position-absolute h3 translate-middle-y top-50 draggable" style="left: 1%; cursor: grab;"
-      cdkDragHandle></i>
+    cdkDragHandle></i>
     <div class="drag-placeholder color-scheme-quaternary" *cdkDragPlaceholder></div>
     <div class="btn-group position-absolute translate-middle-y top-50 parent-hover" style="right: 1%">
-      <button class="btn btn-outline-secondary btn-sm" (click)="_moveGoat($event, i)"
-        tooltip="Move {{goat.nickname || goat.name || goat.normalizeId}}" *ngIf="listName">
-        <i class="bi bi-folder-symlink"></i>
-      </button>
-      <button class="btn btn-outline-indigo btn-sm" (click)="openImages($event, i)" tooltip="Edit Images"
-        *ngIf="goat.nickname || goat.name || goat.normalizeId">
-        <i class="bi bi-images"></i>
-      </button> <button class="btn btn-outline-danger btn-sm" (click)="deleteGoat($event, i)"
+      @if (listName) {
+        <button class="btn btn-outline-secondary btn-sm" (click)="_moveGoat($event, i)"
+          tooltip="Move {{goat.nickname || goat.name || goat.normalizeId}}">
+          <i class="bi bi-folder-symlink"></i>
+        </button>
+      }
+      @if (goat.nickname || goat.name || goat.normalizeId) {
+        <button class="btn btn-outline-indigo btn-sm" (click)="openImages($event, i)" tooltip="Edit Images"
+          >
+          <i class="bi bi-images"></i>
+        </button>
+        } <button class="btn btn-outline-danger btn-sm" (click)="deleteGoat($event, i)"
         tooltip="Delete {{goat.nickname || goat.name || goat.normalizeId}}">
         <i class="bi bi-trash"></i>
       </button>
     </div>
   </button>
-  <app-goat-lookup class="list-group-item list-group-item-action color-scheme-tertiary position-sticky bottom-0"
-    (goatSelected)="newGoat($event)" [filter]="lookupFilter">
-  </app-goat-lookup>
+}
+<app-goat-lookup class="list-group-item list-group-item-action color-scheme-tertiary position-sticky bottom-0"
+  (goatSelected)="newGoat($event)" [filter]="lookupFilter">
+</app-goat-lookup>
 </div>

@@ -1,4 +1,4 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -8,15 +8,21 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LoginComponent implements OnInit {
+  private adgaService = inject(ADGAService);
+  private windowService = inject(WindowService);
+  private dialogService = inject(DialogService);
+  private diffService = inject(DiffService);
+  private appService = inject(AppService);
+
   username = '';
   password = '';
   id?: number;
   status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
   name?: string;
-  constructor(private adgaService: ADGAService, private windowService: WindowService, private dialogService: DialogService, private diffService: DiffService, private appService: AppService) { }
   async login() {
     const passwordShowing = this.showPassword;
     try {
@@ -31,7 +37,7 @@ export class LoginComponent implements OnInit {
     } catch (e) {
       this.status = 'Login Failed';
       this.windowService.setClosable(true);
-      const message = (e as { message: string }).message;
+      const message = (e as { message: string; }).message;
       if (message.includes('ETIMEDOUT')) {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'warning', detail: 'The Connection Timed Out. Please Verify Your Internet Connection & Try Again' });
       } else if (message.includes('ENOTFOUND')) {
@@ -54,9 +60,9 @@ export class LoginComponent implements OnInit {
   async ngOnInit() {
     try {
       const account = await this.adgaService.getAccount();
-      this.username = account.username;
-      this.password = account.password;
-      this.id = account.id;
+      this.username = account?.username ?? '';
+      this.password = account?.password ?? '';
+      this.id = account?.id;
     } catch (e) {
       console.warn('Error Reading Account:', e);
     }
