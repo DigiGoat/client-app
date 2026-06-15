@@ -1,3 +1,6 @@
+## 7.3.0-beta.2
+* Implemented the temporary fix described here: https://github.com/electron/forge/issues/4277 to allow the app to build properly on node v24
+
 ## 7.3.0-beta.1
 * Many under-the-hood improvements to the app's performance and stability
   * Disabled Sentry profiling as it was not providing useful insights (instead it just introduced unnecessary overhead)
