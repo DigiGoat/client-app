@@ -17,9 +17,10 @@ jobs:
 
     steps:
       - name: Github checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: yarn
@@ -47,9 +48,10 @@ jobs:
 
     steps:
       - name: Github checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: yarn
@@ -77,9 +79,10 @@ jobs:
 
     steps:
       - name: Github checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: yarn
@@ -108,14 +111,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: yarn
           cache-dependency-path: yarn.lock
 

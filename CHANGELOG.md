@@ -13,6 +13,8 @@
     * Fixed the newly introduced lint errors and warnings
   * Updated @sentry/electron from v7.5 to v7.13
     * @sentry/angular from v10.29 to v10.50
+  * Updated github actions dependencies to their latest versions
+    * Updated node testing to test on Node.js v22, v24, and v26 (instead of v18, v20, and v22)
 
     
 ## 7.2.0-beta.1
