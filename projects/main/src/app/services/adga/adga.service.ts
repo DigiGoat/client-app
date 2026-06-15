@@ -9,12 +9,12 @@ import { ADGAService as ADGAServiceType, type Account } from '../../../../../sha
 import type { LactationRecord } from '../../../../../shared/services/goat/goat.service';
 import type { BackendService } from '../../../../../shared/shared.module';
 
-type AdgaApiErrorResponse = {
+interface AdgaApiErrorResponse {
   error?: {
     message?: string;
     details?: string;
   };
-};
+}
 
 export class ADGAService {
   adga?: ADGA;

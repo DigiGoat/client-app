@@ -8,7 +8,7 @@ import { AppService } from '../../services/app/app.service';
 export class AdvancedDirective {
   private appService = inject(AppService);
 
-  @Input({ transform: booleanAttribute }) advanced: boolean = true;
+  @Input({ transform: booleanAttribute }) advanced = true;
   @HostBinding('style.display') get display() {
     return (this.show ?? !this.advanced) ? 'inline' : 'none';
   }

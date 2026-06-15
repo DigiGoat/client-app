@@ -19,8 +19,8 @@ export class SettingsComponent implements OnInit {
   private repoService = inject(RepoService);
   private gitService = inject(GitService);
 
-  public appVersion: string = '';
-  public webVersion: string = '';
+  public appVersion = '';
+  public webVersion = '';
   async ngOnInit() {
     this.blacklist = (await this.adgaService.getBlacklist()).join('<br>');
     this.gitService.onchange = () => this.setVersionDetails();

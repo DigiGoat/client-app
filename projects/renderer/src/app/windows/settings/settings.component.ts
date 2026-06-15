@@ -106,5 +106,5 @@ export class SettingsComponent implements OnInit {
   }
 }
 
-type Analytics = { gtag?: string; clarity?: string; };
-type Firebase = { apiKey?: string; messagingSenderId?: string; appId?: string; };
+interface Analytics { gtag?: string; clarity?: string; }
+interface Firebase { apiKey?: string; messagingSenderId?: string; appId?: string; }

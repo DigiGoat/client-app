@@ -220,7 +220,7 @@ export class ConfigService {
 }
 
 
-type ColorScheme = {
+interface ColorScheme {
   background?: 'wood';
   main?: string;
   secondary?: string;
@@ -232,5 +232,5 @@ type ColorScheme = {
     tertiary?: string;
     quaternary?: string;
   };
-};
-type Socials = { facebook?: string; instagram?: string; threads?: string; };
+}
+interface Socials { facebook?: string; instagram?: string; threads?: string; }
