@@ -355,16 +355,18 @@ export class GitService {
   async configureUser() {
     try {
       const remoteUrl = (await this.git.getRemotes(true)).find(remote => remote.name === 'origin')?.refs.fetch;
+      const repo = remoteUrl?.split('github.com/DigiGoat/')[1]?.split('.git')[0];
+      if (!repo || repo === 'web-ui') {
+        return;
+      }
       const config = {
         token: remoteUrl?.includes('@') ? remoteUrl.split('@')[0].split('https://')[1] : undefined,
-        repo: remoteUrl?.split('github.com/DigiGoat/')[1]?.split('.git')[0]
+        repo
       };
-      if (config.repo !== 'web-ui') {
-        const name = (await this.git.getConfig('user.name')).value || undefined;
-        const email = (await this.git.getConfig('user.email')).value || undefined;
-        setUser({ id: config.repo, username: name, email: email });
+      const name = (await this.git.getConfig('user.name')).value || undefined;
+      const email = (await this.git.getConfig('user.email')).value || undefined;
+      setUser({ id: config.repo, username: name, email: email });
 
-      }
     } catch (err) {
       console.warn('Error Configuring User:', err);
     }
