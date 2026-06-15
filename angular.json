@@ -95,7 +95,8 @@
             "lintFilePatterns": [
               "projects/renderer/**/*.ts",
               "projects/renderer/**/*.html"
-            ]
+            ],
+            "eslintConfig": "projects/renderer/eslint.config.js"
           }
         }
       }
