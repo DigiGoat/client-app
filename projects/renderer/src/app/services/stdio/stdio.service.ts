@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class StdioService {
 
-  constructor() { }
   set onstdout(callback: (data: string) => void) {
     window.electron.stdio.onstdout(callback);
   }

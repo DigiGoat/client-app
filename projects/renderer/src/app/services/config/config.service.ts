@@ -157,7 +157,7 @@ export class ConfigService {
       };
     } else {
       this.config = {
-        colors: colors
+        colors: colors as string
       };
     }
   }

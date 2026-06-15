@@ -25,7 +25,7 @@ import { AppComponent } from './app.component';
     },
     {
       provide: provideAppInitializer,
-      useFactory: () => () => {},
+      useFactory: () => () => undefined,
       deps: [TraceService],
       multi: true,
     }

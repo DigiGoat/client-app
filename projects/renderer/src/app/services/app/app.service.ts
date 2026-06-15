@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class AppService {
 
-  constructor() { }
   getVersion = window.electron.app.getVersion;
   openVersion = window.electron.app.openVersion;
   openLatest = window.electron.app.openLatest;
