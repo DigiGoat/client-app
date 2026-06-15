@@ -1,3 +1,20 @@
+## 7.3.0-beta.1
+* Many under-the-hood improvements to the app's performance and stability
+  * Disabled Sentry profiling as it was not providing useful insights (instead it just introduced unnecessary overhead)
+  * Updated Electron from v36 to v42
+  * Removed Jest tests (Angular has switched to vitest and this repo was not making use of testing anyways)
+  * Updated typescript to v6
+    * Fixed the newly introduced type errors and warnings
+  * Updated Angular from v19 to v22
+  * Updated Angular CDK from v19 to v22
+  * Updated Electron Forge from v7.6 to v7.11
+  * Updated ESLint from v8 to v10
+    * Migrated config files
+    * Fixed the newly introduced lint errors and warnings
+  * Updated @sentry/electron from v7.5 to v7.13
+    * @sentry/angular from v10.29 to v10.50
+
+    
 ## 7.2.0-beta.1
 * Added the ability to hide your farm email to prevent spam, while still being able to receive DigiGoat emails
   * If the email is hidden, it will not be displayed on the homepage or in the footer, but it will still be used for the contact form and milk test reports
