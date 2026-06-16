@@ -297,12 +297,12 @@ export class GitService {
         });
       }
     } catch (err) {
-      captureException(err, { level: 'warning' });
       console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
 
       // If the pull left us in a conflicted state, abort so JSON files are restored.
       try {
         const status = await this.git.status();
+        captureException(err, { level: 'warning', extra: { gitStatus: status } });
         if (status.conflicted?.length) {
           console.warn('Conflicts detected during startup pull, aborting rebase/merge...');
           // Prefer aborting rebase; if that fails, try merge abort.
@@ -312,6 +312,7 @@ export class GitService {
         }
       } catch (abortErr) {
         console.warn('Failed to inspect/abort conflicted state:', abortErr);
+        captureException(abortErr, { level: 'warning' });
       }
     }
   }
