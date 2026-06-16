@@ -1,4 +1,4 @@
-import { captureException, metrics, setUser } from '@sentry/electron/main';
+import { captureException, metrics, setUser, startSpan } from '@sentry/electron/main';
 import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-extra';
@@ -35,6 +35,24 @@ export class GitService {
         return Promise.reject(err);
       }
     }
+  }
+
+  private lastStatus?: Omit<StatusResult, 'isClean'>;
+  private lastAhead?: number;
+  async getStatus() {
+    const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
+    delete status.isClean;
+    if (this.lastStatus?.ahead === status.ahead && this.lastAhead) {
+      status.ahead = this.lastAhead;
+    } else {
+      await startSpan({ op: 'ipc.git.getStatus', name: 'getHistory' }, async () => {
+        this.lastStatus = status;
+        const local = await this.git.log(['--first-parent', '@{u}..']);
+        this.lastAhead = local.total;
+        status.ahead = this.lastAhead;
+      });
+    }
+    return status;
   }
   api: BackendService<GitServiceType> = {
     isRepo: async () => {
@@ -160,13 +178,7 @@ export class GitService {
       await this.git.clean(CleanOptions.FORCE);
       this.change();
     },
-    getStatus: async () => {
-      const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
-      delete status.isClean;
-      const local = await this.git.log(['--first-parent', '@{u}..']);
-      status.ahead = local.total;
-      return status;
-    },
+    getStatus: () => this.getStatus(),
     fetchUpdate: async () => {
       console.debug('Checking for upstream remote...');
       const remotes = await this.git.getRemotes();

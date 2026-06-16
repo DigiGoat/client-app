@@ -1,3 +1,6 @@
+## 7.3.1-beta.1
+* Increased the responsiveness of the unpublished changes indicator by caching the unpublished changes and only updating it when changes are made
+
 ## 7.3.0-beta.3
 * Updated the Node version to be downloaded to run the preview server
   * The version is now determined by the .nvmrc file in the repo, which is currently set to v24.16.0
