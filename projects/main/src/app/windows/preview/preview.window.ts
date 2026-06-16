@@ -3,7 +3,7 @@ import axios from 'axios';
 import { exec as _exec, spawn, type ChildProcess, type ExecOptions } from 'child_process';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { dialog } from 'electron/main';
-import { createWriteStream, ensureDir, exists, move, readJSON, rm } from 'fs-extra';
+import { createWriteStream, ensureDir, exists, move, readFile, readJSON, rm } from 'fs-extra';
 import { join } from 'path';
 import { satisfies } from 'semver';
 import { extract } from 'tar';
@@ -22,6 +22,7 @@ export class PreviewWindow {
   private corepack = join(this.cache, 'corepack');
   private yarnCache = join(this.cache, 'yarn');
   private repoBase = join(this.base, 'repo');
+  private nodeVersion = join(this.repoBase, '.nvmrc');
 
   private spawnOptions = {
     cwd: this.repoBase,
@@ -92,7 +93,9 @@ export class PreviewWindow {
 
 
         const startSpan = startInactiveSpan({ op: 'preview.server', name: 'start' });
-        this.server = spawn('yarn', ['start'], {
+        // Angular CLI may skip interactive prompts when launched from a non-TTY child process.
+        // Use an ephemeral port to avoid the "use a different port" prompt path entirely.
+        this.server = spawn('yarn', ['start', '--port', '0'], {
           shell: process.platform === 'win32',
           ...this.spawnOptions
         });
@@ -188,7 +191,7 @@ export class PreviewWindow {
       try {
         await rm(this.nodeBinary, { recursive: true, force: true });
 
-        const NODE_VERSION = 'v22.14.0';
+        const NODE_VERSION = (await exists(this.nodeVersion)) ? `v${(await readFile(this.nodeVersion, 'utf8')).trim()}` : 'v24.16.0';
 
         const PLATFORM = process.platform === 'darwin' ? 'darwin' : 'win';
         const ARCH = process.arch;

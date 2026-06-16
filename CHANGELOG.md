@@ -1,3 +1,8 @@
+## 7.3.0-beta.3
+* Updated the Node version to be downloaded to run the preview server
+  * The version is now determined by the .nvmrc file in the repo, which is currently set to v24.16.0
+* Forced the preview server to pick an ephemeral port to avoid the "use a different port" prompt from the Angular CLI, which doesn't work properly when launched from a non-TTY child process (like in our case)
+
 ## 7.3.0-beta.2
 * Implemented the temporary fix described here: https://github.com/electron/forge/issues/4277 to allow the app to build properly on node v24
 

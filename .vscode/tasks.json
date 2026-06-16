@@ -4,7 +4,11 @@
     {
       "label": "Install.Electron",
       "type": "shell",
-      "command": "npx install-electron --no"
+      "command": "npx install-electron --no",
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
     },
     {
       "label": "Build.Main",
