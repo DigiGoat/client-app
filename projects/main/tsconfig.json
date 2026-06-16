@@ -21,7 +21,7 @@
     // Set `sourceRoot` to  "/" to strip the build path prefix
     // from generated source code references.
     // This improves issue grouping in Sentry.
-    "sourceRoot": "/"
+    //"sourceRoot": "/" -- NOTE: This breaks breakpoints in VSCode. It will be disabled for now as by default it is "" which should not break issue grouping
   },
   "files": [
     "src/main.ts"
