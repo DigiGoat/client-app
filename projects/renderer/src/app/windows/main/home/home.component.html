@@ -1,160 +1,141 @@
-<h1 class="text-center">Website Settings:</h1>
-@if (!suggestionService.name) {
-  <p class="text-center text-secondary fst-italic">Tip: You Can Autofill Most Of This Info Once You <button
-  class="btn btn-link text-secondary fst-italic p-0" (click)="openLogin()">Login To Your ADGA Account</button> </p>
-}
-<div class="container">
+<h1 class="text-center" [class.unsaved]="unsavedChanges()">Website Settings:</h1> @if (!suggestionService.name) { <p
+  class="text-center text-secondary fst-italic">Tip: You Can Autofill Most Of This Info Once You <button
+    class="btn btn-link text-secondary fst-italic p-0" (click)="openLogin()">Login To Your ADGA Account</button> </p> } <div
+  class="container">
   <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around">
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('title')">
+      <div class="input-group" [class.unsaved]="'title' in dirtyFields()">
         <span class="input-group-text">Farm Name:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.title" [suggestion]="suggestionService.title">
+        <input type="text" class="form-control" [formField]="configForm.title" [suggestion]="suggestionService.title">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed On The Home Page and in the Menubar</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('shortTitle')">
+      <div class="input-group" [class.unsaved]="'shortTitle' in dirtyFields()">
         <span class="input-group-text">Short Farm Name:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.shortTitle" [suggestion]="suggestionService.shortTitle">
+        <input type="text" class="form-control" [formField]="configForm.shortTitle" [suggestion]="suggestionService.shortTitle">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('owner')">
+      <div class="input-group" [class.unsaved]="'owner' in dirtyFields()">
         <span class="input-group-text">Owner:</span>
-        <input type="text" class="form-control" [(ngModel)]="configService.owner" [suggestion]="suggestionService.name">
+        <input type="text" class="form-control" [formField]="configForm.owner" [suggestion]="suggestionService.name">
       </div>
       <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('email') || configService.isDirty('hideEmail')">
+      <div class="input-group" [class.unsaved]="'email' in dirtyFields() || 'hideEmail' in dirtyFields()">
         <span class="input-group-text">Email:</span>
-        <input type="email" class="form-control" [(ngModel)]="configService.email" [suggestion]="suggestionService.email">
+        <input type="email" class="form-control" [formField]="configForm.email" [suggestion]="suggestionService.email">
         <button class="input-group-text btn btn-secondary color-scheme-quaternary fw-bold" type="button"
-          (click)="configService.hideEmail = !configService.hideEmail"> @if(configService.hideEmail) { <span class="text-danger"><i
-          class="bi bi-eye-slash"></i> Hidden</span> } @else {<span class="text-success"> <i class="bi bi-eye"></i> Visible</span>}
-        </button>
+          (click)="configForm.hideEmail().value.set(!configForm.hideEmail().value())"> @if(configForm.hideEmail().value()) { <span
+            class="text-danger"><i class="bi bi-eye-slash"></i> Hidden</span> } @else {<span class="text-success"> <i class="bi bi-eye"></i>
+            Visible</span>} </button>
       </div>
       <div class="form-text">Your Farms Email Address. Used by DigiGoat for milk test reports, the contact us form, and displayed in the
-      footer & on the homepage if enabled</div>
+        footer & on the homepage if enabled</div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="configService.isDirty('contactForm')">
+      <div class="input-group" [class.unsaved]="'contactForm' in dirtyFields()">
         <span class="input-group-text">Contact Us Page:</span>
-        <select class="form-select" aria-label="Contact Form Select Dropdown" [(ngModel)]="configService.contactForm"
-          [disabled]="!configService.email || (!configService.title && !configService.shortTitle)">
-          <option [ngValue]="true">Enabled</option>
-          <option [ngValue]="false">Disabled</option>
+        <select #contactFormSelect class="form-select" aria-label="Contact Form Select Dropdown" [value]="configForm.contactForm().value()"
+          (change)="configForm.contactForm().value.set(contactFormSelect.value === 'true')"
+          [disabled]="configForm.contactForm().disabled()">
+          <option value="true">Enabled</option>
+          <option value="false">Disabled</option>
         </select>
       </div>
       <div class="form-text"> Add a <Code>Contact Us</Code> page to your site (this is a great way to hide your email if you're worried
-      about spam)@if (!configService.email || (!configService.title && !configService.shortTitle)) {
-      <p class="text-warning">You Must Have
-      An Email And A Farm Name Configured To Enable This Feature</p>
-    }
-  </div>
-</div>
-<div class="mb-3 col">
-  <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-    data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
-    [class.unsaved]="configService.isDirty('socials')"> View Socials <i class="bi bi-share"></i> </button>
-    <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
-      <div class="input-group ">
-        <span class="input-group-text">Facebook:</span>
-        <input type="text" class="form-control" [ngModel]="configService.socials.facebook"
-          (ngModelChange)="configService.socials = {facebook: $event}">
-        @if (configService.socials.facebook) {
+        about spam)@if (configForm.contactForm().disabled()) { <p class="text-warning">You Must Have An Email And A Farm Name Configured To
+          Enable This Feature</p> } </div>
+    </div>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
+        [class.unsaved]="'socials' in dirtyFields()"> View Socials <i class="bi bi-share"></i> </button>
+      <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
+        <div class="input-group" [class.unsaved]="dirtyFields().socials && 'facebook' in dirtyFields().socials!">
+          <span class="input-group-text">Facebook:</span>
+          <input type="text" class="form-control" [formField]="configForm.socials.facebook"> @if (configForm.socials.facebook().value()) {
           <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://facebook.com/{{configService.socials.facebook}}" type="button">
+            href="https://facebook.com/{{configForm.socials.facebook().value()}}" type="button">
             <i class="bi bi-facebook"></i>
-          </a>
-        }
-      </div>
-      <div class="form-text">Your Farm's Facebook Username</div>
-      <div class="input-group mt-3">
-        <span class="input-group-text">Instagram:</span>
-        <input type="text" class="form-control" [ngModel]="configService.socials.instagram"
-          (ngModelChange)="configService.socials = {instagram: $event}">
-        @if (configService.socials.instagram) {
+          </a> }
+        </div>
+        <div class="form-text">Your Farm's Facebook User name</div>
+        <div class="input-group mt-3" [class.unsaved]="dirtyFields().socials && 'instagram' in dirtyFields().socials!">
+          <span class="input-group-text">Instagram:</span>
+          <input type="text" class="form-control" [formField]="configForm.socials.instagram"> @if (configForm.socials.instagram().value()) {
           <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://instagram.com/{{configService.socials.instagram}}" type="button">
+            href="https://instagram.com/{{configForm.socials.instagram().value()}}" type="button">
             <i class="bi bi-instagram"></i>
-          </a>
-        }
-      </div>
-      <div class="form-text">Your Farm's Instagram Username (Don't include &#64;)</div>
-      <div class="input-group mt-3">
-        <span class="input-group-text">Threads:</span>
-        <input type="text" class="form-control" [ngModel]="configService.socials.threads"
-          (ngModelChange)="configService.socials = {threads: $event}">
-        @if (configService.socials.threads) {
-          <a class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
-            href="https://threads.net/@{{configService.socials.threads}}" type="button">
+          </a> }
+        </div>
+        <div class="form-text">Your Farm's Instagram Username (Don't include &#64;)</div>
+        <div class="input-group mt-3" [class.unsaved]="dirtyFields().socials && 'threads' in dirtyFields().socials!">
+          <span class="input-group-text">Threads:</span>
+          <input type="text" class="form-control" [formField]="configForm.socials.threads"> @if (configForm.socials.threads().value()) { <a
+            class="input-group-text btn btn-secondary color-scheme-quaternary" target="_blank"
+            href="https://threads.net/@{{configForm.socials.threads().value()}}" type="button">
             <i class="bi bi-threads"></i>
-          </a>
-        }
+          </a> }
+        </div>
+        <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
       </div>
-      <div class="form-text">Your Farm's Threads Username (Don't include &#64;)</div>
+      <div class="form-text">Your Farm's Social Media Associations</div>
     </div>
-    <div class="form-text">Your Farm's Social Media Associations</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group" [class.unsaved]="configService.isDirty('homeDescription')">
-      <span class="input-group-text">Homepage Content:</span>
-      <textarea type="text" class="form-control" [(ngModel)]="configService.homeDescription" markdown markdown-images></textarea>
+    <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="'homeDescription' in dirtyFields()">
+        <span class="input-group-text">Homepage Content:</span>
+        <textarea type="text" class="form-control" [formField]="configForm.homeDescription" markdown markdown-images></textarea>
+      </div>
+      <div class="form-text">The Content To Be Displayed On The Homepage</div>
     </div>
-    <div class="form-text">The Content To Be Displayed On The Homepage</div>
-  </div>
-  <div class="mb-3 col">
-    <div class="input-group" [class.unsaved]="configService.isDirty('saleTerms')">
-      <span class="input-group-text">Sale Terms & Pricing:</span>
-      <textarea type="text" class="form-control" [(ngModel)]="configService.saleTerms" markdown markdown-images></textarea>
+    <div class="mb-3 col">
+      <div class="input-group" [class.unsaved]="'saleTerms' in dirtyFields()">
+        <span class="input-group-text">Sale Terms & Pricing:</span>
+        <textarea type="text" class="form-control" [formField]="configForm.saleTerms" markdown markdown-images></textarea>
+      </div>
+      <div class="form-text">The Content To Be In The Sale Terms & Pricing Popup</div>
     </div>
-    <div class="form-text">The Content To Be In The Sale Terms & Pricing Popup</div>
-  </div>
-  <div class="mb-3 col">
-    <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-      data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings"
-      [class.unsaved]="configService.isDirty('colors')"> View Color Settings <i class="bi bi-palette2"></i> </button>
+    <div class="mb-3 col">
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
+        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings" [class.unsaved]="'colors' in dirtyFields()">
+        View Color Settings <i class="bi bi-palette2"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="colorSettings">
         <div class="input-group">
-          <span class="input-group-text">Main:</span>
-          <input type="text" class="form-control" [ngModel]="configService.colors.main"
-            (ngModelChange)="configService.colors = {main: $event}"
-            [style.background-color]="configService.colors.main || 'hsl(230, 100%, 10%)'" suggestion="hsl(230, 100%, 10%)">
-          <input type="text" class="form-control light" [ngModel]="$safeNavigationMigration(configService.colors.light?.main)"
-            (ngModelChange)="configService.colors = {light: {main: $event}}"
-            [style.background-color]="configService.colors.light?.main || 'hsl(230, 100%, 80%)'" suggestion="hsl(230, 100%, 80%)">
+          <span class="input-group-text"
+            [class.unsaved]="dirtyFields().colors && ('main' in dirtyFields().colors! || 'light' in dirtyFields().colors!)">Main:</span>
+          <input type="text" class="form-control" [formField]="configForm.colors.main"
+            [style.background-color]="configForm.colors.main().value() || 'hsl(230, 100%, 10%)'" suggestion="hsl(230, 100%, 10%)">
+          <input type="text" class="form-control light" [formField]="configForm.colors.light.main"
+            [style.background-color]="configForm.colors.light.main().value() || 'hsl(230, 100%, 80%)'" suggestion="hsl(230, 100%, 80%)">
         </div>
         <div class="form-text">Primarily used for the background of the page</div>
         <div class="input-group mt-3">
-          <span class="input-group-text">Secondary:</span>
-          <input type="text" class="form-control" [ngModel]="configService.colors.secondary"
-            (ngModelChange)="configService.colors = {secondary: $event}"
-            [style.background-color]="configService.colors.secondary || 'hsl(230, 100%, 15%)'" suggestion="hsl(230, 100%, 15%)">
-          <input type="text" class="form-control light" suggestion="hsl(230, 100%, 75%)" [ngModel]="$safeNavigationMigration(configService.colors.light?.secondary)"
-            (ngModelChange)="configService.colors = {light: {secondary: $event}}"
-            [style.background-color]="configService.colors.light?.secondary || 'hsl(230, 100%, 75%)'">
+          <span class="input-group-text" [class.unsaved]="dirtyFields().colors && 'secondary' in dirtyFields().colors!">Secondary:</span>
+          <input type="text" class="form-control" [formField]="configForm.colors.secondary"
+            [style.background-color]="configForm.colors.secondary().value() || 'hsl(230, 100%, 15%)'" suggestion="hsl(230, 100%, 15%)">
+          <input type="text" class="form-control light" suggestion="hsl(230, 100%, 75%)" [formField]="configForm.colors.light.secondary"
+            [style.background-color]="configForm.colors.light.secondary().value() || 'hsl(230, 100%, 75%)'">
         </div>
         <div class="form-text">Primarily used for the menubar</div>
         <div class="input-group mt-3">
-          <span class="input-group-text">Tertiary:</span>
-          <input type="text" class="form-control" [ngModel]="configService.colors.tertiary"
-            (ngModelChange)="configService.colors = {tertiary: $event}"
-            [style.background-color]="configService.colors.tertiary || 'hsl(230, 100%, 20%)'" suggestion="hsl(230, 100%, 20%)">
-          <input type="text" class="form-control light" [ngModel]="$safeNavigationMigration(configService.colors.light?.tertiary)"
-            (ngModelChange)="configService.colors = {light: {tertiary: $event}}"
-            [style.background-color]="configService.colors.light?.tertiary || 'hsl(230, 100%, 70%)'" suggestion="hsl(230, 100%, 70%)">
+          <span class="input-group-text" [class.unsaved]="dirtyFields().colors && 'tertiary' in dirtyFields().colors!">Tertiary:</span>
+          <input type="text" class="form-control" [formField]="configForm.colors.tertiary"
+            [style.background-color]="configForm.colors.tertiary().value() || 'hsl(230, 100%, 20%)'" suggestion="hsl(230, 100%, 20%)">
+          <input type="text" class="form-control light" [formField]="configForm.colors.light.tertiary"
+            [style.background-color]="configForm.colors.light.tertiary().value() || 'hsl(230, 100%, 70%)'" suggestion="hsl(230, 100%, 70%)">
         </div>
         <div class="form-text">Primarily used for the header and footer of your goats popups</div>
         <div class="input-group mt-3">
-          <span class="input-group-text">Quaternary:</span>
-          <input type="text" class="form-control" [ngModel]="configService.colors.quaternary"
-            (ngModelChange)="configService.colors = {quaternary: $event}"
-            [style.background-color]="configService.colors.quaternary || 'hsl(230, 100%, 25%)'" suggestion="hsl(230, 100%, 25%)">
-          <input type="text" class="form-control light" [ngModel]="$safeNavigationMigration(configService.colors.light?.quaternary)"
-            (ngModelChange)="configService.colors = {light: {quaternary: $event}}"
-            [style.background-color]="configService.colors.light?.quaternary || 'hsl(230, 100%, 65%)'" suggestion="hsl(230, 100%, 65%)">
+          <span class="input-group-text" [class.unsaved]="dirtyFields().colors && 'quaternary' in dirtyFields().colors!">Quaternary:</span>
+          <input type="text" class="form-control" [formField]="configForm.colors.quaternary"
+            [style.background-color]="configForm.colors.quaternary().value() || 'hsl(230, 100%, 25%)'" suggestion="hsl(230, 100%, 25%)">
+          <input type="text" class="form-control light" [formField]="configForm.colors.light.quaternary"
+            [style.background-color]="configForm.colors.light.quaternary().value() || 'hsl(230, 100%, 65%)'"
+            suggestion="hsl(230, 100%, 65%)">
         </div>
         <div class="form-text">Primarily used for the background of your goats popups</div>
       </div>
@@ -162,10 +143,10 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"> Change Favicon <i
-      class="bi bi-bookmark-star"></i></button>
+          class="bi bi-bookmark-star"></i></button>
       <div class="form-text">This is the logo that browsers will use for the tab, bookmarks, and app. Use <a
-      href="http://realfavicongenerator.net/" target="_blank">Real Favicon Generator</a> To Create Your Favicon, Then Import Them Here
+          href="http://realfavicongenerator.net/" target="_blank">Real Favicon Generator</a> To Create Your Favicon, Then Import Them Here
+      </div>
     </div>
   </div>
-</div>
 </div>

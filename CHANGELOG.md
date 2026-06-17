@@ -1,3 +1,9 @@
+## 7.3.2-beta.1
+* Switching to Angular Signals for change detection and state management!
+  * This should improve the performance of the app and reduce the number of unnecessary change detection cycles
+  * The following pages have been converted to use signals:
+    * Home
+
 ## 7.3.1-beta.1
 * Increased the responsiveness of the unpublished changes indicator by caching the unpublished changes and only updating it when changes are made
 

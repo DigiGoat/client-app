@@ -1,19 +1,20 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
-import { ConfigService } from '../../services/config/config.service';
+import type { CanDeactivateFn } from '@angular/router';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { WindowService } from '../../services/window/window.service';
+import type { SaveableStrategy } from '../../strategies/saveable/saveable.strategy';
 
-export const SaveGuard: CanActivateFn = async () => {
-  const configService = inject(ConfigService);
-  const dialogService = inject(DialogService);
-  if (configService.unsavedChanges) {
+export const SaveGuard: CanDeactivateFn<SaveableStrategy> = async (component) => {
+  if (component.unsavedChanges()) {
+    const dialogService = inject(DialogService);
+    const windowService = inject(WindowService);
     const action = await dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Continue Without Saving', 'Cancel'], defaultId: 0 });
     switch (action.response) {
       case 0:
-        await configService.saveChanges();
+        await component.saveChanges();
         return true;
       case 1:
-        await configService.discardChanges();
+        await windowService.setUnsavedChanges(false);
         return true;
       default:
         return false;
