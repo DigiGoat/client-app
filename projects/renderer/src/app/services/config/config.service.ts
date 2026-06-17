@@ -20,20 +20,21 @@ export class ConfigService {
       /* ----------- */
       ...newConfig
     };
-    return config as typeof CONFIG;
+    return config as CONFIG;
   };
 
 
-  async saveConfig(oldConfig: typeof CONFIG, newConfig: typeof CONFIG) {
+  async saveConfig(oldConfig: CONFIG, newConfig: CONFIG) {
     const diffMessage = this.diffService.commitMsg(oldConfig, newConfig);
     await window.electron.config.set(newConfig);
     await this.gitService.commitConfig(['Updated Config', ...diffMessage]);
   }
-  set onchange(callback: (config: typeof CONFIG) => void) {
+  set onchange(callback: (config: CONFIG) => void) {
     window.electron.config.onchange(callback as (config: Config) => void);
   }
 }
 
+export type CONFIG = typeof CONFIG;
 export const CONFIG = {
   title: '',
   shortTitle: '',

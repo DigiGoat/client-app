@@ -48,13 +48,13 @@ export class ADGAService {
   async getGoats(ids: number[]) {
     return (await window.electron.adga.getGoats(ids)).items.map(goat => this.parseGoat(goat));
   }
-  private parseGoat({ nickname, name, description, dateOfBirth, dateOfDeath, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId, ownerAccount }: Goat): Goat {
-    const parsedGoat: Goat = {
-      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, dateOfDeath, normalizeId, id, sex, damId, sireId, ownerAccount: { displayName: this.diffService.titleCase(ownerAccount?.displayName ?? '') }, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
+  private parseGoat({ nickname, name, description, dateOfBirth, dateOfDeath, normalizeId, animalTattoo, id, colorAndMarking, sex, damId, sireId, ownerAccount }: Goat) {
+    const parsedGoat = {
+      nickname, name: this.diffService.titleCase(name ?? ''), description, dateOfBirth, dateOfDeath: dateOfDeath === null ? undefined : dateOfDeath, normalizeId, id, sex, damId, sireId, ownerAccount: { displayName: this.diffService.titleCase(ownerAccount?.displayName ?? '') }, colorAndMarking: this.diffService.titleCase(colorAndMarking ?? ''), animalTattoo: animalTattoo?.map(tattoo => ({ tattoo: tattoo.tattoo, tattooLocation: { name: tattoo.tattooLocation?.name } })),
     };
     Object.keys(parsedGoat).forEach(key => {
-      if ((parsedGoat[key as keyof Goat]) === undefined) {
-        delete parsedGoat[key as keyof Goat];
+      if ((parsedGoat[key as keyof typeof parsedGoat]) === undefined) {
+        delete parsedGoat[key as keyof typeof parsedGoat];
       }
     });
     return parsedGoat;
@@ -64,11 +64,11 @@ export class ADGAService {
   set onchange(callback: () => void) {
     window.electron.adga.onchange(callback);
   }
-  async lookupGoatsByName(name: string): Promise<Goat[]> {
+  async lookupGoatsByName(name: string): Promise<ADGAGoat[]> {
     const goats = await window.electron.adga.lookupGoatsByName(name);
     return goats.map(goat => this.parseGoat(goat));
   }
-  async lookupGoatsById(normalizeId: string): Promise<Goat[]> {
+  async lookupGoatsById(normalizeId: string): Promise<ADGAGoat[]> {
     const goats = await window.electron.adga.lookupGoatsById(normalizeId);
     return goats.map(goat => this.parseGoat(goat));
   }
@@ -94,3 +94,5 @@ export class ADGAService {
     return awards.map(({ awardCode, awardDescription, awardYear, awardCount }) => ({ awardCode, awardDescription: this.diffService.titleCase(awardDescription), awardYear, awardCount }));//.filter(award => !(award.awardCode.includes('CH') || award.awardCode.includes('SG')));
   }
 }
+
+export type ADGAGoat = ReturnType<ADGAService['parseGoat']>;
