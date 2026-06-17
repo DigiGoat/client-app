@@ -1,5 +1,5 @@
 import { provideZoneChangeDetection } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { platformBrowser } from '@angular/platform-browser';
 
 import { init as angularInit } from '@sentry/angular';
 import { browserTracingIntegration, feedbackIntegration, httpClientIntegration, init, replayIntegration, reportingObserverIntegration } from '@sentry/electron/renderer';
@@ -49,5 +49,5 @@ init({
   profileLifecycle: 'trace',
 }, angularInit);
 
-platformBrowserDynamic().bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], })
+platformBrowser().bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], })
   .catch(err => console.error(err));

@@ -25,7 +25,7 @@ init({
   debug: !app.isPackaged,
   tracesSampleRate: 1.0,
   attachScreenshot: true,
-  includeLocalVariables: true,
+  includeLocalVariables: app.isPackaged,
   beforeSend: event => app.isPackaged ? event : null,
 });
 app.whenReady().then(() => {

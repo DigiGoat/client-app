@@ -32,6 +32,8 @@ export class GitService {
       } else if ((err as Error).message.includes('LF will be replaced by CRLF the next time Git touches it')) {
         console.warn('Git will change line endings on next commit');
       } else {
+        captureException(err, { level: 'error', extra: { message, files } });
+        await this.git.reset(ResetMode.HARD, ['--', ...(files instanceof Array ? files : [files])]);
         return Promise.reject(err);
       }
     }
