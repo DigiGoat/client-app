@@ -23,7 +23,7 @@ export class GitService {
       message[0] += '\n';
       message = message.join('\n');
     }
-    writeFile(commitPath, message);
+    await writeFile(commitPath, message);
     try {
       return await this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
     } catch (err) {
@@ -33,7 +33,7 @@ export class GitService {
         console.warn('Git will change line endings on next commit');
       } else {
         captureException(err, { level: 'error', extra: { message, files } });
-        await this.git.reset(ResetMode.HARD, ['--', ...(files instanceof Array ? files : [files])]);
+        await this.git.raw('restore', (files instanceof Array ? files : [files]));
         return Promise.reject(err);
       }
     }
