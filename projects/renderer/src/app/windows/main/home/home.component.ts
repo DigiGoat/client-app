@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewEncapsulation, type OnInit } from '@angular/core';
 import { disabled, form } from '@angular/forms/signals';
 import { AppService } from '../../../services/app/app.service';
-import { ConfigService } from '../../../services/config/config.service';
+import { CONFIG, ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GitService } from '../../../services/git/git.service';
@@ -28,8 +28,8 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
   private gitService = inject(GitService);
   private diffService = inject(DiffService);
 
-  private savedConfig = signal(this.configService.BLANK_CONFIG);
-  public configModel = signal(this.configService.BLANK_CONFIG);
+  private savedConfig = signal(CONFIG);
+  public configModel = signal(CONFIG);
   public configForm = form(this.configModel, form => {
     disabled(form.contactForm, { when: ({ valueOf }) => !valueOf(form.email) || (!valueOf(form.title) || !valueOf(form.shortTitle)) });
   });
@@ -51,7 +51,7 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
   };
 
   dirtyFields = computed(() => {
-    return this.diffService.diff(this.savedConfig(), this.configForm().value()) as Partial<typeof this.configService.BLANK_CONFIG>;
+    return this.diffService.diff(this.savedConfig(), this.configForm().value()) as Partial<typeof CONFIG>;
   });
 
   async openLogin() {
