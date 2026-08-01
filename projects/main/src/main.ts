@@ -1,5 +1,5 @@
 import { additionalContextIntegration, electronBreadcrumbsIntegration, httpIntegration, init, mainProcessSessionIntegration } from '@sentry/electron/main';
-import { app, session } from 'electron';
+import { app, dialog, session } from 'electron';
 import { AppModule } from './app/app.module';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -26,7 +26,13 @@ init({
   tracesSampleRate: 1.0,
   attachScreenshot: true,
   includeLocalVariables: app.isPackaged,
-  beforeSend: event => app.isPackaged ? event : null,
+  beforeSend: event => {
+    if (app.isPackaged) {
+      return event;
+    }
+    dialog.showErrorBox('Sentry Error', JSON.stringify(event.exception, null, 2));
+    return null;
+  }
 });
 app.whenReady().then(() => {
   session.defaultSession.setDisplayMediaRequestHandler(
