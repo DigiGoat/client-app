@@ -130,6 +130,10 @@
       "label": "openDebug",
       "command": "echo ${input:debug}", // the 'start' command that's defined in the inputs list
       "type": "shell",
+      "presentation": {
+        "reveal": "never",
+        "close": true
+      },
       "problemMatcher": []
     },
     {
