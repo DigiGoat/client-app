@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewEncapsulation, type OnInit } from '@angular/core';
-import { disabled, form } from '@angular/forms/signals';
+import { disabled, form, readonly } from '@angular/forms/signals';
 import { AppService } from '../../../services/app/app.service';
 import { CONFIG, ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
@@ -28,9 +28,11 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
   private gitService = inject(GitService);
   private diffService = inject(DiffService);
 
+  private loading = signal(true);
   private savedConfig = signal(CONFIG);
-  public configModel = signal(CONFIG);
+  private configModel = signal(CONFIG);
   public configForm = form(this.configModel, form => {
+    readonly(form, { when: () => this.loading() });
     disabled(form.contactForm, { when: ({ valueOf }) => !valueOf(form.email) || (!valueOf(form.title) || !valueOf(form.shortTitle)) });
   });
 
@@ -38,6 +40,7 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
     this.savedConfig.set(await this.configService.getConfig());
     this.configModel.set(this.savedConfig());
     this.configForm().reset();
+    this.loading.set(false);
 
     this.configService.onchange = (newConfig) => {
       this.savedConfig.set(newConfig);
@@ -51,7 +54,7 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
   };
 
   dirtyFields = computed(() => {
-    return this.diffService.diff(this.savedConfig(), this.configForm().value()) as Partial<typeof CONFIG>;
+    return this.diffService.diff(this.savedConfig(), this.configForm().value()) as Partial<CONFIG>;
   });
 
   async openLogin() {

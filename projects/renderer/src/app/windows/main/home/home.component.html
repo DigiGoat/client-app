@@ -1,4 +1,4 @@
-<h1 class="text-center" [class.unsaved]="unsavedChanges()">Website Settings:</h1> @if (!suggestionService.name) { <p
+<h1 class="text-center" [class.unsaved]="unsavedChanges()">Website Settings:</h1> @if (!suggestionService.name()) { <p
   class="text-center text-secondary fst-italic">Tip: You Can Autofill Most Of This Info Once You <button
     class="btn btn-link text-secondary fst-italic p-0" (click)="openLogin()">Login To Your ADGA Account</button> </p> } <div
   class="container">
@@ -6,32 +6,32 @@
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'title' in dirtyFields()">
         <span class="input-group-text">Farm Name:</span>
-        <input type="text" class="form-control" [formField]="configForm.title" [suggestion]="suggestionService.title">
+        <input type="text" class="form-control" [formField]="configForm.title" [suggestion]="suggestionService.title()">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed On The Home Page and in the Menubar</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'shortTitle' in dirtyFields()">
         <span class="input-group-text">Short Farm Name:</span>
-        <input type="text" class="form-control" [formField]="configForm.shortTitle" [suggestion]="suggestionService.shortTitle">
+        <input type="text" class="form-control" [formField]="configForm.shortTitle" [suggestion]="suggestionService.shortTitle()">
       </div>
       <div class="form-text">Your Farm's Name To Be Displayed At The End Of The Tab Title</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'owner' in dirtyFields()">
         <span class="input-group-text">Owner:</span>
-        <input type="text" class="form-control" [formField]="configForm.owner" [suggestion]="suggestionService.name">
+        <input type="text" class="form-control" [formField]="configForm.owner" [suggestion]="suggestionService.name() ">
       </div>
       <div class="form-text">Your Name To Be Displayed In The Footer & On The Homepage</div>
     </div>
     <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'email' in dirtyFields() || 'hideEmail' in dirtyFields()">
         <span class="input-group-text">Email:</span>
-        <input type="email" class="form-control" [formField]="configForm.email" [suggestion]="suggestionService.email">
+        <input type="email" class="form-control" [formField]="configForm.email" [suggestion]="suggestionService.email()">
         <button class="input-group-text btn btn-secondary color-scheme-quaternary fw-bold" type="button"
-          (click)="configForm.hideEmail().value.set(!configForm.hideEmail().value())"> @if(configForm.hideEmail().value()) { <span
-            class="text-danger"><i class="bi bi-eye-slash"></i> Hidden</span> } @else {<span class="text-success"> <i class="bi bi-eye"></i>
-            Visible</span>} </button>
+          (click)="configForm.hideEmail().value.set(!configForm.hideEmail().value())" [class.loading]="configForm.hideEmail().readonly()">
+          @if(configForm.hideEmail().value()) { <span class="text-danger"><i class="bi bi-eye-slash"></i> Hidden</span> } @else {<span
+            class="text-success"> <i class="bi bi-eye"></i> Visible</span>} </button>
       </div>
       <div class="form-text">Your Farms Email Address. Used by DigiGoat for milk test reports, the contact us form, and displayed in the
         footer & on the homepage if enabled</div>
@@ -40,8 +40,8 @@
       <div class="input-group" [class.unsaved]="'contactForm' in dirtyFields()">
         <span class="input-group-text">Contact Us Page:</span>
         <select #contactFormSelect class="form-select" aria-label="Contact Form Select Dropdown" [value]="configForm.contactForm().value()"
-          (change)="configForm.contactForm().value.set(contactFormSelect.value === 'true')"
-          [disabled]="configForm.contactForm().disabled()">
+          (input)="configForm.contactForm().value.set(contactFormSelect.value === 'true')" [disabled]="configForm.contactForm().disabled()"
+          [class.loading]="configForm.contactForm().readonly()">
           <option value="true">Enabled</option>
           <option value="false">Disabled</option>
         </select>
@@ -52,8 +52,8 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings"
-        [class.unsaved]="'socials' in dirtyFields()"> View Socials <i class="bi bi-share"></i> </button>
+        data-bs-target="#socialsSettings" aria-expanded="false" aria-controls="socialsSettings" [class.unsaved]="'socials' in dirtyFields()"
+        [class.loading]="configForm.socials.facebook().readonly()"> View Socials <i class="bi bi-share"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="socialsSettings">
         <div class="input-group" [class.unsaved]="dirtyFields().socials && 'facebook' in dirtyFields().socials!">
           <span class="input-group-text">Facebook:</span>
@@ -101,8 +101,8 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings" [class.unsaved]="'colors' in dirtyFields()">
-        View Color Settings <i class="bi bi-palette2"></i> </button>
+        data-bs-target="#colorSettings" aria-expanded="false" aria-controls="colorSettings" [class.unsaved]="'colors' in dirtyFields()"
+        [class.loading]="configForm.colors.main().readonly()"> View Color Settings <i class="bi bi-palette2"></i> </button>
       <div class="collapse p-3 color-scheme-secondary" id="colorSettings">
         <div class="input-group">
           <span class="input-group-text"
@@ -142,8 +142,8 @@
       <div class="form-text">The Colors to be used on your website (Dark mode on the left, light mode on the right) </div>
     </div>
     <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"> Change Favicon <i
-          class="bi bi-bookmark-star"></i></button>
+      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" (click)="changeFavicon()"
+        [class.loading]="configForm().readonly()"> Change Favicon <i class="bi bi-bookmark-star"></i></button>
       <div class="form-text">This is the logo that browsers will use for the tab, bookmarks, and app. Use <a
           href="http://realfavicongenerator.net/" target="_blank">Real Favicon Generator</a> To Create Your Favicon, Then Import Them Here
       </div>

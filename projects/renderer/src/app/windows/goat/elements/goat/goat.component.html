@@ -44,8 +44,8 @@
     </div> } <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'name' in dirtyFields()">
         <span class="input-group-text">Name:</span> @if (!goatForm.name().disabled()) { <input type="text" class="form-control"
-          [formField]="goatForm.name"> } @else { <app-case-input [modelValue]="goatForm.name().value()"
-          class="form-control"></app-case-input> }
+          [formField]="goatForm.name"> } @else { <app-case-input [(signalValue)]="goatForm.name().value" class="form-control"
+          [class.loading]="goatForm.name().readonly()"></app-case-input> }
       </div>
       <div class="form-text">Your Goat's Official Name (Used As A Secondary Identifier)</div>
     </div>
@@ -54,7 +54,8 @@
       <div class="input-group" [class.unsaved]="'dateOfBirth' in dirtyFields()">
         <span class="input-group-text">Date Of Birth:</span>
         <input type="text" class="form-control" [value]="goatForm.dateOfBirth().value() | longDate" #dateOfBirthEl
-          (blur)="goatForm.dateOfBirth().value.set(dateOfBirthEl.value)" [disabled]="goatForm.dateOfBirth().disabled()">
+          (blur)="goatForm.dateOfBirth().value.set(dateOfBirthEl.value)" [disabled]="goatForm.dateOfBirth().disabled()"
+          [readonly]="goatForm.dateOfBirth().readonly()">
       </div>
       <div class="form-text">Your Goat's Birth Date (Formatted Automatically)</div>
     </div> @if (!goatForm.dateOfDeath().disabled() || goatForm.dateOfDeath().value()) { <div class="mb-3 col">
@@ -62,7 +63,8 @@
       <div class="input-group" [class.unsaved]="'dateOfDeath' in dirtyFields()">
         <span class="input-group-text">Deceased:</span>
         <input type="text" class="form-control" [value]="goatForm.dateOfDeath().value() | longDate" #dateOfDeathEl
-          (blur)="goatForm.dateOfDeath().value.set(dateOfDeathEl.value)" [disabled]="goatForm.dateOfDeath().disabled()">
+          (blur)="goatForm.dateOfDeath().value.set(dateOfDeathEl.value)" [disabled]="goatForm.dateOfDeath().disabled()"
+          [readonly]="goatForm.dateOfDeath().readonly()">
       </div>
       <div class="form-text">Your Goat's Date of Death (Formatted Automatically)</div>
     </div> } <div class="mb-3 col">
@@ -81,12 +83,14 @@
       <div class="input-group" [class.unsaved]="'colorAndMarking' in dirtyFields()">
         <span class="input-group-text">Color And Markings:</span> @if (!goatForm.colorAndMarking().disabled()) { <textarea type="text"
           class="form-control" [formField]="goatForm.colorAndMarking"></textarea> } @else { <app-case-input
-          [modelValue]="goatForm.colorAndMarking().value()" class="form-control"></app-case-input> }
+          [(signalValue)]="goatForm.colorAndMarking().value" class="form-control"
+          [class.loading]="goatForm.colorAndMarking().readonly()"></app-case-input> }
       </div>
       <div class="form-text">What Your Goat Looks Like</div>
     </div> } @if (!related) { <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#tattoos"
-        aria-expanded="false" aria-controls="tattoos" [class.unsaved]="false"> Tattoos <i class="bi bi-ear"></i>
+        aria-expanded="false" aria-controls="tattoos" [class.unsaved]="'tattoos' in dirtyFields()"
+        [class.loading]="goatForm.tattoos().readonly()"> Tattoos <i class="bi bi-ear"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="tattoos"> @for (tattoo of goatForm.tattoos; track $index; let i = $index) {
         <span>
@@ -109,7 +113,7 @@
       <div class="input-group" [class.unsaved]="'pet' in dirtyFields()">
         <span class="input-group-text">Sale Type:</span>
         <select #petSelect class="form-select" aria-label="Sale Type Select Dropdown" [value]="goatForm.pet().value()"
-          (change)="goatForm.pet().value.set(petSelect.value === 'true')"> @if (!goatForm.pet().value()) { <option value="undefined">
+          (input)="goatForm.pet().value.set(petSelect.value === 'true')"> @if (!goatForm.pet().value()) { <option value="undefined">
             Unspecified (Registered)</option> } <option value="true">Pet</option> @if (goatForm.pet().value()) { <option value="false">
             Registered</option> } </select>
       </div>
@@ -124,9 +128,8 @@
     </div> } <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'damId' in dirtyFields()">
         <span class="input-group-text">Dam's ID:</span>
-        <input type="text" class="form-control" [value]="goatForm.damId().value()"
-          (change)="goatForm.damId().value.set($event.target.value)" placeholder="Dam's ID" [disabled]="goatForm.damId().disabled()"
-          goat-search="does">
+        <input type="text" class="form-control" [value]="goatForm.damId().value()" (input)="goatForm.damId().value.set($event.target.value)"
+          placeholder="Dam's ID" [disabled]="goatForm.damId().disabled()" [readonly]="goatForm.damId().readonly()" goat-search="does">
       </div>
       <div class="form-text">The Dam's ID (Different From Their Registration ID)</div>
     </div>
@@ -134,19 +137,21 @@
       <div class="input-group" [class.unsaved]="'sireId' in dirtyFields()">
         <span class="input-group-text">Sire's ID:</span>
         <input type="text" class="form-control" [value]="goatForm.sireId().value()"
-          (change)="goatForm.sireId().value.set($event.target.value)" placeholder="Sire's ID" [disabled]="goatForm.sireId().disabled()"
-          goat-search="bucks">
+          (input)="goatForm.sireId().value.set($event.target.value)" placeholder="Sire's ID" [disabled]="goatForm.sireId().disabled()"
+          [readonly]="goatForm.sireId().readonly()" goat-search="bucks">
       </div>
       <div class="form-text">The Sire's ID (Different From Their Registration ID)</div>
     </div> @if (related) { <div class="mb-3 col">
       <div class="input-group" [class.unsaved]="'owner' in dirtyFields()">
         <span class="input-group-text">Owner:</span>
-        <app-case-input class="form-control" [modelValue]="goatForm.owner().value()"></app-case-input>
+        <app-case-input class="form-control" [(signalValue)]="goatForm.owner().value"
+          [class.loading]="goatForm.owner().readonly()"></app-case-input>
       </div>
       <div class="form-text">The Current Owner of this Goat</div>
     </div> } <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#linear"
-        aria-expanded="false" aria-controls="linear" [class.unsaved]="false"> Linear Appraisals <i class="bi bi-clipboard2-data"></i>
+        aria-expanded="false" aria-controls="linear" [class.unsaved]="'linearAppraisals' in dirtyFields()"
+        [class.loading]="goatForm.linearAppraisals().readonly()"> Linear Appraisals <i class="bi bi-clipboard2-data"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="linear">
         <table class="table table-hover">
@@ -184,8 +189,9 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#lactationHistory" aria-expanded="false" aria-controls="lactationHistory" [class.unsaved]="false"> Lactation History
-        <i class="bi bi-clipboard2-pulse"></i>
+        data-bs-target="#lactationHistory" aria-expanded="false" aria-controls="lactationHistory"
+        [class.unsaved]="'lactationRecords' in dirtyFields()" [class.loading]="goatForm.lactationRecords().readonly()"> Lactation History <i
+          class="bi bi-clipboard2-pulse"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="lactationHistory">
         <table class="table table-hover">
@@ -226,8 +232,9 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#currentLactation" aria-expanded="false" aria-controls="currentLactation" [class.unsaved]="false"> Current Lactation
-        <i class="bi bi-clipboard-pulse"></i>
+        data-bs-target="#currentLactation" aria-expanded="false" aria-controls="currentLactation"
+        [class.unsaved]="'lactationRecords' in dirtyFields()" [class.loading]="goatForm.lactationRecords().readonly()"> Current Lactation <i
+          class="bi bi-clipboard-pulse"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="currentLactation">
         <table class="table table-hover">
@@ -267,7 +274,8 @@
     </div>
     <div class="mb-3 col">
       <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse" data-bs-target="#awards"
-        aria-expanded="false" aria-controls="awards" [class.unsaved]="false"> Awards <i class="bi bi-award"></i>
+        aria-expanded="false" aria-controls="awards" [class.unsaved]="'awards' in dirtyFields()"
+        [class.loading]="goatForm.awards().readonly()"> Awards <i class="bi bi-award"></i>
       </button>
       <div class="collapse p-3 color-scheme-secondary" id="awards">
         <table class="table table-hover">

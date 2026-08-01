@@ -16,14 +16,14 @@ export class GoatService {
   private adgaService = inject(ADGAService);
 
   does = new Observable<GOAT[]>(observer => {
-    window.electron.goat.getDoes().then(does =>
-      observer.next(does.map(doe => this.parseGoat(doe)))
+    this.getDoes().then(does =>
+      observer.next(does)
     );
     window.electron.goat.onDoesChange(does =>
       observer.next(does.map(doe => this.parseGoat(doe)))
     );
   });
-  getDoes = window.electron.goat.getDoes;
+  getDoes = async () => (await window.electron.goat.getDoes()).map(goat => this.parseGoat(goat));
   async setDoe(index: number, doe: Partial<GOAT>) {
     const does = await window.electron.goat.getDoes();
     const diffMessage = this.diffService.commitMsg(does[index], doe);
@@ -45,7 +45,7 @@ export class GoatService {
     await window.electron.goat.setDoes(newDoes);
     await this.gitService.commitDoes(diffMessage);
   }
-  async writeDoes(does: Partial<GOAT>[]) {
+  async writeDoes(does: Record<string, unknown>[]) {
     await window.electron.goat.setDoes(does);
   }
   async deleteDoe(index: number) {
@@ -59,7 +59,7 @@ export class GoatService {
   }
   async addDoe(doe: Partial<GOAT>) {
     const does = await this.getDoes();
-    does.push(doe);
+    does.push(this.parseGoat(doe));
     await window.electron.goat.setDoes(does);
     await this.gitService.commitDoes([`Added ${doe['nickname'] || doe['name'] || doe['normalizeId']}`, ...this.diffService.commitMsg({}, doe).map(msg => `${this.diffService.spaces}${msg}`)]);
   }

@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class ForSaleComponent implements OnInit {
 
   index = -1;
   references = this.goatService.forSale;
-  setter = (index: number, goatForSale: Goat) => this.goatService.updateForSale(index, goatForSale);
+  setter = (index: number, goatForSale: Record<string, unknown>) => this.goatService.updateForSale(index, goatForSale);
   async ngOnInit() {
     this.index = Number(this.route.snapshot.params['goat']);
   }

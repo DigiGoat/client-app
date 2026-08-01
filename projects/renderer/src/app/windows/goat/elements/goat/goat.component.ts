@@ -1,35 +1,34 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, inject, Input, signal, ViewChild, type ElementRef, type OnInit } from '@angular/core';
-import { disabled, form } from '@angular/forms/signals';
+import { disabled, form, readonly } from '@angular/forms/signals';
 import type { Observable } from 'rxjs';
 import { ADGAService } from '../../../../services/adga/adga.service';
-import { DialogService } from '../../../../services/dialog/dialog.service';
 import { DiffService } from '../../../../services/diff/diff.service';
 import { GOAT } from '../../../../services/goat/goat.service';
-import { WindowService } from '../../../../services/window/window.service';
 import { SaveableStrategy } from '../../../../strategies/saveable/saveable.strategy';
 
+type Goat = Pick<GOAT, 'name' | 'normalizeId' | 'nickname' | 'price' | 'id' | 'sex' | 'dateOfBirth' | 'dateOfDeath' | 'damId' | 'sireId' | 'usdaId' | 'usdaKey' | 'linearAppraisals' | 'awards' | 'lactationRecords' | 'owner' | 'pet' | 'tattoos' | 'colorAndMarking' | 'description'>;
 @Component({
   selector: 'app-goat',
   templateUrl: './goat.component.html',
   styleUrl: './goat.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class GoatComponent extends SaveableStrategy implements OnInit {
-  private windowService = inject(WindowService);
-  private dialogService = inject(DialogService);
   private diffService = inject(DiffService);
   private adgaService = inject(ADGAService);
 
-  @Input({ required: true }) getter!: Observable<GOAT[]>;
+  @Input({ required: true }) getter!: Observable<Goat[]>;
   @Input({ required: true }) index!: number;
-  @Input({ required: true }) setter!: (index: number, goat: Record<string, unknown>) => Promise<void>;
+  @Input({ required: true }) setter!: (index: number, goat: Goat) => Promise<void>;
   @Input({ transform: booleanAttribute }) related = false;
   @Input({ transform: booleanAttribute, alias: 'for-sale' }) forSale = false;
 
-  private savedGoat = signal(GOAT);
-  private goatModel = signal(GOAT);
+  private loading = signal(true);
+  private savedGoat = signal(GOAT as Goat);
+  private goatModel = signal(GOAT as Goat);
   public goatForm = form(this.goatModel, form => {
+    readonly(form, { when: () => this.loading() });
     disabled(form.name, { when: ({ valueOf }) => !!valueOf(form.id) });
     disabled(form.dateOfBirth, { when: ({ valueOf }) => !!valueOf(form.id) });
     disabled(form.dateOfDeath, { when: ({ valueOf }) => !!valueOf(form.id) });
@@ -40,7 +39,7 @@ export class GoatComponent extends SaveableStrategy implements OnInit {
   });
 
   dirtyFields = computed(() => {
-    return this.diffService.diff(this.savedGoat(), this.goatForm().value()) as Partial<GOAT>;
+    return this.diffService.diff(this.savedGoat(), this.goatForm().value()) as Partial<Goat>;
   });
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
@@ -48,15 +47,14 @@ export class GoatComponent extends SaveableStrategy implements OnInit {
   };
 
   ngOnInit() {
-    let initial = true;
     this.getter.subscribe({
       next: goats => {
         this.savedGoat.set(goats[this.index] ?? GOAT);
-        if (initial) {
+        if (this.loading()) {
           this.goatModel.set(this.savedGoat());
-          initial = false;
         }
         this.goatForm().reset();
+        this.loading.set(false);
       }
     });
   }

@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
-import type { Goat } from '../../../../../../../shared/services/goat/goat.service';
+import type { GOAT } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
 
+type Goat = Partial<Pick<GOAT, 'name' | 'normalizeId' | 'nickname'>>;
 @Component({
   selector: 'app-basic-goat-list',
   templateUrl: './basic-goat-list.component.html',

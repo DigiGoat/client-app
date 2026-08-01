@@ -1,11 +1,10 @@
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, inject, ViewChild, type ElementRef } from '@angular/core';
 import { startSpan } from '@sentry/electron/renderer';
-import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { ConfigService } from '../../../services/config/config.service';
 import { DiffService } from '../../../services/diff/diff.service';
-import { GoatService } from '../../../services/goat/goat.service';
+import { GoatService, type GOAT } from '../../../services/goat/goat.service';
 import type { ListLocations } from '../elements/goat-list/goat-list.component';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
 
@@ -70,42 +69,47 @@ export class GoatsComponent {
     });
   }
   syncingDoes: boolean | number = false;
-  async syncDoes(does?: Goat[]) {
+  async syncDoes(does?: Record<string, unknown>[]) {
     await startSpan({ name: 'does', op: 'goats.sync' }, async () => {
       this.syncingDoes = true;
       try {
         does = does ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Female');
         const oldDoes = await this.goatService.getDoes();
-        does = [...structuredClone(oldDoes), ...does.filter(doe => !oldDoes.some(d => d.id === doe.id))];
+        does = [...structuredClone(oldDoes), ...does.filter(doe => !oldDoes.some(d => doe['id'] && d['id'] === doe['id']))];
         await this.goatService.writeDoes(does);
         try {
           for (let i = 0; i < does.length; i++) {
             this.syncingDoes = i;
             const doe = does[i];
-            if (doe.id) {
-              let goat: Goat;
-              let linearAppraisals: Goat['linearAppraisals'];
-              let awards: Goat['awards'];
-              let usdaId = doe.usdaId;
-              let usdaKey = doe.usdaKey;
-              let lactationRecords: Goat['lactationRecords'];
-              await Promise.all([(async () => goat = await this.adgaService.getGoat(doe.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe.id!))(), (async () => {
-                if (!usdaId! || !usdaKey!) {
-                  const cdcbGoat = await this.adgaService.getCDCBGoat(doe.normalizeId!);
-                  if (!cdcbGoat) {
-                    return;
+            if (doe['id']) {
+              let goat: Record<string, unknown>;
+              let linearAppraisals: GOAT['linearAppraisals'] = [];
+              let awards: GOAT['awards'] = [];
+              let usdaId = doe['usdaId'];
+              let usdaKey = doe['usdaKey'];
+              let lactationRecords: GOAT['lactationRecords'] = [];
+              await Promise.all([
+                (async () => goat = await this.adgaService.getGoat(doe['id'] as number))(),
+                (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(doe['id'] as number) || [])(),
+                (async () => {
+                  if ((!usdaId! || !usdaKey!) && doe['normalizeId']) {
+                    const cdcbGoat = await this.adgaService.getCDCBGoat(doe['normalizeId'] as string);
+                    if (!cdcbGoat) {
+                      return;
+                    }
+                    usdaId = cdcbGoat.animalId;
+                    usdaKey = cdcbGoat.animKey;
                   }
-                  usdaId = cdcbGoat.animalId;
-                  usdaKey = cdcbGoat.animKey;
-                }
-                lactationRecords = await this.adgaService.getLactations(usdaId, usdaKey);
-              })(), (async () => awards = await this.adgaService.getAwards(doe.id!))()]);
-              does![i] = this.diffService.softMerge(doe, goat!);
-              does![i].linearAppraisals = linearAppraisals;
-              does![i].usdaId = usdaId;
-              does![i].usdaKey = usdaKey;
-              does![i].lactationRecords = lactationRecords;
-              does![i].awards = awards;
+                  lactationRecords = await this.adgaService.getLactations(usdaId as string, usdaKey as number);
+                })(),
+                (async () => awards = await this.adgaService.getAwards(doe['id'] as number) || [])()
+              ]);
+              does[i] = this.diffService.softMerge(doe, goat!);
+              does[i]['linearAppraisals'] = linearAppraisals;
+              does[i]['usdaId'] = usdaId;
+              does[i]['usdaKey'] = usdaKey;
+              does[i]['lactationRecords'] = lactationRecords;
+              does[i]['awards'] = awards;
             }
           }
           if (oldDoes.length || does.length) {
@@ -123,26 +127,29 @@ export class GoatsComponent {
     });
   }
   syncingBucks: boolean | number = false;
-  async syncBucks(bucks?: Goat[]) {
+  async syncBucks(bucks?: Record<string, unknown>[]) {
     await startSpan({ name: 'bucks', op: 'goats.sync' }, async () => {
       try {
         this.syncingBucks = true;
         bucks = bucks ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Male');
         const oldBucks = await this.goatService.getBucks();
-        bucks = [...structuredClone(oldBucks), ...bucks.filter(buck => !oldBucks.some(b => b.id === buck.id))];
+        bucks = [...structuredClone(oldBucks), ...bucks.filter(buck => !oldBucks.some(b => buck['id'] && buck['id'] === b['id']))];
         await this.goatService.writeBucks(bucks);
         try {
           for (let i = 0; i < bucks.length; i++) {
             this.syncingBucks = i;
             const buck = bucks[i];
-            if (buck.id) {
-              let goat: Goat;
-              let linearAppraisals: Goat['linearAppraisals'];
-              let awards: Goat['awards'];
-              await Promise.all([(async () => goat = await this.adgaService.getGoat(buck.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck.id!))(), (async () => awards = await this.adgaService.getAwards(buck.id!))()]);
+            if (buck['id']) {
+              let goat: Record<string, unknown>;
+              let linearAppraisals: GOAT['linearAppraisals'] = [];
+              let awards: GOAT['awards'] = [];
+              await Promise.all([
+                (async () => goat = await this.adgaService.getGoat(buck['id'] as number))(),
+                (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(buck['id'] as number) || [])(),
+                (async () => awards = await this.adgaService.getAwards(buck['id'] as number) || [])()]);
               bucks[i] = this.diffService.softMerge(buck, goat!);
-              bucks[i].linearAppraisals = linearAppraisals;
-              bucks[i].awards = awards;
+              bucks[i]['linearAppraisals'] = linearAppraisals;
+              bucks[i]['awards'] = awards;
             }
           }
           if (oldBucks.length || bucks.length) {
@@ -170,14 +177,17 @@ export class GoatsComponent {
           for (let i = 0; i < references.length; i++) {
             this.syncingReferences = i;
             const reference = references[i];
-            if (reference.id) {
-              let goat: Goat;
-              let linearAppraisals: Goat['linearAppraisals'];
-              let awards: Goat['awards'];
-              await Promise.all([(async () => goat = await this.adgaService.getGoat(reference.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference.id!))(), (async () => awards = await this.adgaService.getAwards(reference.id!))()]);
+            if (reference['id']) {
+              let goat: Record<string, unknown>;
+              let linearAppraisals: GOAT['linearAppraisals'] = [];
+              let awards: GOAT['awards'] = [];
+              await Promise.all([
+                (async () => goat = await this.adgaService.getGoat(reference['id'] as number))(),
+                (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(reference['id'] as number) || [])(),
+                (async () => awards = await this.adgaService.getAwards(reference['id'] as number) || [])()]);
               references[i] = this.diffService.softMerge(reference, goat!);
-              references[i].linearAppraisals = linearAppraisals;
-              references[i].awards = awards;
+              references[i]['linearAppraisals'] = linearAppraisals;
+              references[i]['awards'] = awards;
             }
           }
           if (oldReferences.length || references.length) {
@@ -205,14 +215,17 @@ export class GoatsComponent {
           for (let i = 0; i < forSale.length; i++) {
             this.syncingForSale = i;
             const goat = forSale[i];
-            if (goat.id) {
-              let _goat: Goat;
-              let linearAppraisals: Goat['linearAppraisals'];
-              let awards: Goat['awards'];
-              await Promise.all([(async () => _goat = await this.adgaService.getGoat(goat.id!))(), (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(goat.id!))(), (async () => awards = await this.adgaService.getAwards(goat.id!))()]);
+            if (goat['id']) {
+              let _goat: Record<string, unknown>;
+              let linearAppraisals: GOAT['linearAppraisals'] = [];
+              let awards: GOAT['awards'] = [];
+              await Promise.all([
+                (async () => _goat = await this.adgaService.getGoat(goat['id'] as number))(),
+                (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(goat['id'] as number) || [])(),
+                (async () => awards = await this.adgaService.getAwards(goat['id'] as number) || [])()]);
               forSale[i] = this.diffService.softMerge(goat, _goat!);
-              forSale[i].linearAppraisals = linearAppraisals;
-              forSale[i].awards = awards;
+              forSale[i]['linearAppraisals'] = linearAppraisals;
+              forSale[i]['awards'] = awards;
             }
           }
           if (oldForSale.length || forSale.length) {
@@ -238,34 +251,35 @@ export class GoatsComponent {
         const oldRelated = await this.goatService.getRelated();
 
         const ids: number[] = [];
-        const goats: Goat[] = [];
+        const goats: Record<string, unknown>[] = [];
         const does = await this.goatService.getDoes();
         const bucks = await this.goatService.getBucks();
-        (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks(), this.goatService.getReferences(), this.goatService.getForSale()])).forEach(_goats => goats.push(..._goats));
+        (await Promise.all([this.goatService.getDoes(), this.goatService.getBucks(), this.goatService.getReferences(), this.goatService.getForSale()]))
+          .forEach(_goats => goats.push(..._goats));
         for (const goat of goats) {
-          if (typeof goat.damId === 'string') {
-            goat.damId = does.find(d => d.normalizeId === goat.damId)?.id;
+          if (typeof goat['damId'] === 'string') {
+            goat['damId'] = does.find(d => d['normalizeId'] && d['normalizeId'] === goat['damId'])?.['id'];
           }
-          if (goat.damId && !ids.includes(goat.damId)) {
-            ids.push(goat.damId);
+          if (typeof goat['damId'] === 'number' && !ids.includes(goat['damId'])) {
+            ids.push(goat['damId']);
           }
-          if (typeof goat.sireId === 'string') {
-            goat.sireId = bucks.find(b => b.normalizeId === goat.sireId)?.id;
+          if (typeof goat['sireId'] === 'string') {
+            goat['sireId'] = bucks.find(b => b['normalizeId'] === goat['sireId'])?.['id'];
           }
-          if (goat.sireId && !ids.includes(goat.sireId)) {
-            ids.push(goat.sireId);
+          if (typeof goat['sireId'] === 'number' && !ids.includes(goat['sireId'])) {
+            ids.push(goat['sireId']);
           }
         }
-        const related = await this.adgaService.getGoats(ids);
-        await this.goatService.writeRelated(related);
+        const related = await this.adgaService.getGoats(ids) as Record<string, unknown>[];
+        await this.goatService.writeRelated(related.map(goat => this.goatService.parseGoat(goat)));
         try {
           const newIds: number[] = [];
           for (const goat of related) {
-            if (goat.damId && !ids.includes(goat.damId) && !newIds.includes(goat.damId)) {
-              newIds.push(goat.damId);
+            if (typeof goat['damId'] === 'number' && !ids.includes(goat['damId']) && !newIds.includes(goat['damId'])) {
+              newIds.push(goat['damId']);
             }
-            if (goat.sireId && !ids.includes(goat.sireId) && !newIds.includes(goat.sireId)) {
-              newIds.push(goat.sireId);
+            if (typeof goat['sireId'] === 'number' && !ids.includes(goat['sireId']) && !newIds.includes(goat['sireId'])) {
+              newIds.push(goat['sireId']);
             }
           }
           related.push(...(await this.adgaService.getGoats(newIds)));
@@ -273,14 +287,16 @@ export class GoatsComponent {
             this.syncingRelated = i;
             related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
 
-            let linearAppraisals: Goat['linearAppraisals'];
-            let awards: Goat['awards'];
-            await Promise.all([(async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related[i].id!))(), (async () => awards = await this.adgaService.getAwards(related[i].id!))()]);
-            related[i].linearAppraisals = linearAppraisals;
-            related[i].awards = awards;
+            let linearAppraisals: GOAT['linearAppraisals'] = [];
+            let awards: GOAT['awards'] = [];
+            await Promise.all([
+              (async () => linearAppraisals = await this.adgaService.getLinearAppraisal(related![i]['id'] as number) || [])(),
+              (async () => awards = await this.adgaService.getAwards(related![i]['id'] as number) || [])()]);
+            related[i]['linearAppraisals'] = linearAppraisals;
+            related[i]['awards'] = awards;
           }
           if (oldRelated.length || related.length) {
-            await this.goatService.setRelated(oldRelated, related);
+            await this.goatService.setRelated(oldRelated, related as GOAT[]);
           }
         } catch (err) {
           await this.goatService.writeRelated(oldRelated);
@@ -306,46 +322,48 @@ export class GoatsComponent {
   deleteForSale(index: number) {
     this.goatService.deleteForSale(index);
   }
-  addDoe(doe: Goat) {
+  addDoe(doe: Partial<GOAT>) {
     this.goatService.addDoe(doe);
   }
-  addBuck(buck: Goat) {
+  addBuck(buck: Partial<GOAT>) {
     this.goatService.addBuck(buck);
   }
-  addReference(reference: Goat) {
+  addReference(reference: Partial<GOAT>) {
     this.goatService.addReference(reference);
   }
-  addForSale(forSale: Goat) {
+  addForSale(forSale: Partial<GOAT>) {
     this.goatService.addForSale(forSale);
   }
-  rearrangeDoes(event: CdkDragDrop<Goat[]>) {
+  rearrangeDoes(event: CdkDragDrop<Record<string, unknown>[]>) {
     this.goatService.rearrangeDoes(event);
   }
-  rearrangeBucks(event: CdkDragDrop<Goat[]>) {
+  rearrangeBucks(event: CdkDragDrop<Record<string, unknown>[]>) {
     this.goatService.rearrangeBucks(event);
   }
-  rearrangeReferences(event: CdkDragDrop<Goat[]>) {
+  rearrangeReferences(event: CdkDragDrop<Record<string, unknown>[]>) {
     this.goatService.rearrangeReferences(event);
   }
-  rearrangeForSale(event: CdkDragDrop<Goat[]>) {
+  rearrangeForSale(event: CdkDragDrop<Record<string, unknown>[]>) {
     this.goatService.rearrangeForSale(event);
   }
 
   get referencesEnabled() {
-    return this.configService.references;
+    return true;//this.configService.references;
   }
   set referencesEnabled(enabled: boolean) {
-    this.configService.references = enabled;
-    this.configService.saveChanges();
+    this.configService.getConfig().then(oldConfig => {
+      this.configService.saveConfig(oldConfig, { ...oldConfig, references: enabled });
+    });
   }
   get forSaleEnabled() {
-    return this.configService.forSale;
+    return true;//this.configService.forSale;
   }
   set forSaleEnabled(enabled: boolean) {
-    this.configService.forSale = enabled;
-    this.configService.saveChanges();
+    this.configService.getConfig().then(oldConfig => {
+      this.configService.saveConfig(oldConfig, { ...oldConfig, forSale: enabled });
+    });
   }
-  moveGoat(event: { goat: Goat; location: ListLocations; keepCopy: boolean; index: number; }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
+  moveGoat(event: { goat: Partial<GOAT>; location: ListLocations; keepCopy: boolean; index: number; }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
     if (!event.goat.sex) {
       if (from === 'Does' || event.location === 'Does') {
         event.goat.sex = 'Female';

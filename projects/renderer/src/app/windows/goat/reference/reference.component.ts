@@ -1,6 +1,5 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, type OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import type { Goat } from '../../../../../../shared/services/goat/goat.service';
 import { GoatService } from '../../../services/goat/goat.service';
 
 @Component({
@@ -16,7 +15,7 @@ export class ReferenceComponent implements OnInit {
 
   index = -1;
   references = this.goatService.references;
-  setter = (index: number, reference: Goat) => this.goatService.setReference(index, reference);
+  setter = (index: number, reference: Record<string, unknown>) => this.goatService.setReference(index, reference);
   async ngOnInit() {
     this.index = Number(this.route.snapshot.params['goat']);
   }

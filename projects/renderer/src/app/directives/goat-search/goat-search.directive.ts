@@ -1,8 +1,8 @@
-import { Directive, ElementRef, Input, type OnDestroy, type OnInit, inject } from '@angular/core';
+import { Directive, ElementRef, inject, Input, type OnDestroy, type OnInit } from '@angular/core';
 import type { Dropdown } from 'bootstrap';
-import type { Goat } from '../../../../../shared/services/goat/goat.service';
-import { GoatService } from '../../services/goat/goat.service';
+import { GoatService, type GOAT } from '../../services/goat/goat.service';
 
+type GoatSearchGoat = Partial<Pick<GOAT, 'name' | 'normalizeId'>>;
 @Directive({
   selector: 'input[goat-search]',
   standalone: false
@@ -19,7 +19,7 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
   private inputHandler?: () => void;
   private focusHandler?: () => void;
   private blurHandler?: () => void;
-  @Input({ alias: 'goat-search' }) goats?: Goat[] | 'does' | 'bucks';
+  @Input({ alias: 'goat-search' }) goats?: GoatSearchGoat[] | 'does' | 'bucks';
   async ngOnInit() {
     this.input.setAttribute('data-bs-toggle', 'dropdown');
     this.input.classList.add('dropdown-toggle');
@@ -41,10 +41,10 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
     this.list.innerHTML = '';
     if (this.goats === 'does') {
       this.goats = [];
-      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getDoes()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Female')))()]);
+      await Promise.all([(async () => (this.goats as GoatSearchGoat[]).push(...await this.goatService.getDoes()))(), (async () => (this.goats as Partial<GoatSearchGoat>[]).push(...(await this.goatService.getReferences()).filter(goat => goat['sex'] === 'Female')))()]);
     } else if (this.goats === 'bucks') {
       this.goats = [];
-      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getBucks()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Male')))()]);
+      await Promise.all([(async () => (this.goats as GoatSearchGoat[]).push(...await this.goatService.getBucks()))(), (async () => (this.goats as Partial<GoatSearchGoat>[]).push(...(await this.goatService.getReferences()).filter(goat => goat['sex'] === 'Male')))()]);
     }
     if (this.goats?.length) {
       const matches = this.goats.filter(doe => doe.normalizeId?.toLowerCase().includes(this.input.value.toLowerCase()));
