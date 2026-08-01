@@ -1,6 +1,6 @@
 <h1 class="text-center">History</h1>
 <h6 class="text-center">(Click a change to expand details)</h6>
-<br> @if (history?.local?.total || !history) { <table class="table table-hover border container mb-0" style="table-layout: fixed;">
+<br> @if (history()?.local?.total || !history()) { <table class="table table-hover border container mb-0" style="table-layout: fixed;">
   <colgroup>
     <col style="width: 20%">
     <col style="width: 20%">
@@ -18,8 +18,8 @@
       <th scope="col">Author</th>
     </tr>
   </thead>
-  <tbody> @for (entry of (history?.local?.all); track entry; let i = $index) { <tr (click)="otherBodyText.classList.toggle('text-truncate')"
-      style="cursor: pointer">
+  <tbody> @for (entry of (history()?.local?.all); track entry; let i = $index) { <tr
+      (click)="otherBodyText.classList.toggle('text-truncate')" style="cursor: pointer">
       <th scope="row">
         {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
       </th>
@@ -31,7 +31,7 @@
       <td>
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
       </td>
-    </tr> } @if (!history) { <tr>
+    </tr> } @if (!history()) { <tr>
       <th class="text-center" colspan="100">Loading...</th>
     </tr> } </tbody>
 </table> } <table class="table table-hover border container" style="table-layout: fixed;">
@@ -52,7 +52,7 @@
       <th scope="col">Author</th>
     </tr>
   </thead>
-  <tbody> @for (entry of (history?.remote?.all); track entry) {<tr (click)="bodyText.classList.toggle('text-truncate')"
+  <tbody> @for (entry of (history()?.remote?.all); track entry) {<tr (click)="bodyText.classList.toggle('text-truncate')"
       style="cursor: pointer">
       <th scope="row">
         {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
@@ -66,7 +66,7 @@
       <td>
         <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
       </td>
-    </tr>} @if (!history) { <tr>
+    </tr>} @if (!history()) { <tr>
       <th class="text-center" colspan="100">Loading...</th>
     </tr> } </tbody>
 </table>
