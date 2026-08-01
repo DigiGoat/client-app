@@ -1,62 +1,55 @@
-import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from '@angular/core';
+import { form, readonly } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
 import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
-import { CustomPagesService } from '../../services/custom-pages/custom-pages.service';
-import { DialogService } from '../../services/dialog/dialog.service';
+import { CUSTOM_PAGE, CustomPagesService } from '../../services/custom-pages/custom-pages.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { WindowService } from '../../services/window/window.service';
+import { SaveableStrategy } from '../../strategies/saveable/saveable.strategy';
 
 @Component({
   selector: 'app-custom-page',
   standalone: false,
   templateUrl: './custom-page.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './custom-page.component.scss'
 })
-export class CustomPageComponent implements OnInit {
+export class CustomPageComponent extends SaveableStrategy implements OnInit {
   private route = inject(ActivatedRoute);
   private customPagesService = inject(CustomPagesService);
   private windowService = inject(WindowService);
-  private dialogService = inject(DialogService);
-  private cdr = inject(ChangeDetectorRef);
   private diffService = inject(DiffService);
 
-  index = -1;
-  private customPages: CustomPage[] = [];
-  public customPage: CustomPage = {};
+  public index = signal(-1);
+  private loading = signal(true);
+  private savedCustomPage = signal(CUSTOM_PAGE);
+  private customPageModel = signal(CUSTOM_PAGE);
+  public customPageForm = form(this.customPageModel, form => {
+    readonly(form, { when: () => this.loading() });
+  });
+  public savedCustomPages = signal;
+  public customPage = signal<CustomPage>({});
   ngOnInit() {
-    this.index = Number(this.route.snapshot.params['custom-page']);
-
-    this.windowService.setUnsavedChanges(false);
+    this.index.set(Number(this.route.snapshot.params['custom-page']));
     this.customPagesService.getCustomPages().then(customPages => {
-      this.customPages = customPages;
-      this.customPage = structuredClone(this.customPages[this.index] || {});
+      this.savedCustomPage.set(customPages[this.index()] || CUSTOM_PAGE);
+      this.customPageModel.set(customPages[this.index()] || CUSTOM_PAGE);
+      this.customPageForm().reset();
+      this.loading.set(false);
     });
-    this.windowService.onsave = async () => {
-      const action = (await this.dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Close Without Saving', 'Cancel'], defaultId: 0 })).response;
-      switch (action) {
-        case 0:
-          await this.customPagesService.setCustomPage(this.index, this.customPage);
-          await this.windowService.setUnsavedChanges(false);
-          await this.windowService.close();
-          break;
-        case 1:
-          await this.windowService.close(true);
-          break;
-      }
+    this.customPagesService.onCustomPagesChange = customPages => {
+      this.loading.set(true);
+      this.savedCustomPage.set(customPages[this.index()] || CUSTOM_PAGE);
+      this.customPageModel.set(customPages[this.index()] || CUSTOM_PAGE);
+      this.customPageForm().reset();
+      this.loading.set(false);
     };
   }
-  detectChanges() {
-    this.windowService.setTitle(this.customPage.title || '');
-    this.windowService.setUnsavedChanges(this.unsavedChanges);
-  }
-  get unsavedChangesDiff() {
-    return this.diffService.diff(this.customPages[this.index], this.customPage) as Record<string, string>;
-  }
-  isDirty(parameter: string) {
-    return (parameter in this.unsavedChangesDiff);
-  }
-  get unsavedChanges() {
-    return !!Object.keys(this.unsavedChangesDiff).length;
-  }
+  dirtyFields = computed(() => {
+    return this.diffService.diff(this.savedCustomPage(), this.customPageForm().value()) as Partial<CUSTOM_PAGE>;
+  });
+  override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
+  override saveChanges = async () => {
+    await this.customPagesService.setCustomPage(this.index(), this.customPageForm().value());
+  };
 }

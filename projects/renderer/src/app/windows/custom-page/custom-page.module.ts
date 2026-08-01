@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormField } from "@angular/forms/signals";
 import { DirectivesModule } from '../../directives/directives.module';
 import { CustomPageRoutingModule } from './custom-page-routing.module';
 import { CustomPageComponent } from './custom-page.component';
@@ -17,8 +17,8 @@ import { CustomPageComponent } from './custom-page.component';
     CommonModule,
     CustomPageRoutingModule,
     DirectivesModule,
-    FormsModule,
-    DragDropModule
+    DragDropModule,
+    FormField
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())

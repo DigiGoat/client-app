@@ -97,3 +97,8 @@
   cursor: wait !important;
   pointer-events: none !important;
 }
+
+.unavailable {
+  color: var(--bs-secondary-color) !important;
+  font-style: italic !important;
+}
