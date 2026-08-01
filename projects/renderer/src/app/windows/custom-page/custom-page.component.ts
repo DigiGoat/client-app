@@ -17,7 +17,6 @@ import { SaveableStrategy } from '../../strategies/saveable/saveable.strategy';
 export class CustomPageComponent extends SaveableStrategy implements OnInit {
   private route = inject(ActivatedRoute);
   private customPagesService = inject(CustomPagesService);
-  private windowService = inject(WindowService);
   private diffService = inject(DiffService);
 
   public index = signal(-1);
