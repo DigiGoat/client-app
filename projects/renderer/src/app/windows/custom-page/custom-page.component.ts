@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import { CUSTOM_PAGE, CustomPagesService } from '../../services/custom-pages/custom-pages.service';
 import { DiffService } from '../../services/diff/diff.service';
-import { WindowService } from '../../services/window/window.service';
 import { SaveableStrategy } from '../../strategies/saveable/saveable.strategy';
 
 @Component({
@@ -49,6 +48,7 @@ export class CustomPageComponent extends SaveableStrategy implements OnInit {
   });
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
+    this.loading.set(true);
     await this.customPagesService.setCustomPage(this.index(), this.customPageForm().value());
   };
 }

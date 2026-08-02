@@ -50,6 +50,7 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
 
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
+    this.loading.set(true);
     await this.configService.saveConfig(this.savedConfig(), this.configForm().value());
   };
 

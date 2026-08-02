@@ -43,6 +43,7 @@ export class GoatComponent extends SaveableStrategy implements OnInit {
   });
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
+    this.loading.set(true);
     await this.setter(this.index, this.goatForm().value());
   };
 
