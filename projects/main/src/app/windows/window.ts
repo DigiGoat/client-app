@@ -3,6 +3,7 @@ import { join } from 'path';
 
 export class Window {
   private base = join(__dirname, '../../../');
+  private appListeners: (() => void)[] = [];
   protected window?: BrowserWindow;
   constructor(path: string, options?: BrowserWindowConstructorOptions) {
     const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes(`#/${path}`));
@@ -44,7 +45,7 @@ export class Window {
       shell.openExternal(url);
       return { action: 'deny' };
     });
-    app.on('before-quit', () => {
+    const beforeQuitListener = () => {
       if (this.window && !this.window.isDestroyed()) {
         this.window.setClosable(true);
         let attempts = 0;
@@ -55,7 +56,9 @@ export class Window {
           }
         });
       }
-    });
+    };
+    app.on('before-quit', beforeQuitListener);
+    this.appListeners.push(beforeQuitListener);
     this.window.webContents.on('context-menu', (_event, params) => {
       const menu = new Menu();
 
@@ -84,7 +87,11 @@ export class Window {
     });
     if (path !== 'main') {
       let quitRequested = false;
-      app.on('before-quit', () => quitRequested = true);
+      const quitListener = () => {
+        quitRequested = true;
+      };
+      app.on('before-quit', quitListener);
+      this.appListeners.push(quitListener);
       this.window.on('closed', () => {
         // If the user opened Settings directly (or closed everything else), ensure they aren't left with no windows.
         if (BrowserWindow.getAllWindows().length === 0 && !quitRequested) {
@@ -94,5 +101,9 @@ export class Window {
         }
       });
     }
+    this.window.on('closed', () => {
+      this.appListeners.forEach(listener => app.removeListener('before-quit', listener));
+      this.appListeners = [];
+    });
   }
 }
