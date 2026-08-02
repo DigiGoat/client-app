@@ -30,12 +30,14 @@ export class GoatListComponent implements OnInit {
   @Input() listName?: ListLocations;
   @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number; }>();
   goats = signal<Goat[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this._goats.subscribe({
       next: goats => {
+        this.loading.set(true);
         this.goats.set(goats);
-        //! WARNING: THIS WILL CAUSE THE APP TO CRASH! - this.cdr.detectChanges(); // Notify Angular that the component's data has changed
+        this.loading.set(false);
       }
     });
   }

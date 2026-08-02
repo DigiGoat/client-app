@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { GOAT } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
@@ -8,7 +8,7 @@ type Goat = Partial<Pick<GOAT, 'name' | 'normalizeId' | 'nickname'>>;
   selector: 'app-basic-goat-list',
   templateUrl: './basic-goat-list.component.html',
   styleUrl: './basic-goat-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class BasicGoatListComponent implements OnInit {
@@ -17,12 +17,15 @@ export class BasicGoatListComponent implements OnInit {
   @Input({ required: true, alias: 'goats' }) _goats!: Observable<Goat[]>;
   @Input() syncing?: boolean | number = false;
 
-  goats: Goat[] = [];
+  goats = signal<Goat[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this._goats.subscribe({
       next: goats => {
-        this.goats = goats;
+        this.loading.set(true);
+        this.goats.set(goats);
+        this.loading.set(false);
       }
     });
   }
