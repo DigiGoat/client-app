@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, type OnInit } from '@angular/core';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { AppService } from '../../../services/app/app.service';
 import { GitService } from '../../../services/git/git.service';
@@ -9,7 +9,7 @@ import { WindowService } from '../../../services/window/window.service';
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class SettingsComponent implements OnInit {
@@ -19,24 +19,24 @@ export class SettingsComponent implements OnInit {
   private repoService = inject(RepoService);
   private gitService = inject(GitService);
 
-  public appVersion = '';
-  public webVersion = '';
+  public appVersion = signal('');
+  public webVersion = signal('');
   async ngOnInit() {
-    this.blacklist = (await this.adgaService.getBlacklist()).join('<br>');
+    this.blacklist.set((await this.adgaService.getBlacklist()).join('<br>'));
     this.gitService.onchange = () => this.setVersionDetails();
     this.setVersionDetails();
   }
   async setVersionDetails() {
-    this.appVersion = (await this.appService.getVersion()).version;
-    this.webVersion = (await this.repoService.getVersion())!.version;
-    if (!this.appVersion.includes('beta')) {
-      this.webVersion = this.webVersion.split('-')[0];
+    this.appVersion.set((await this.appService.getVersion()).version);
+    this.webVersion.set((await this.repoService.getVersion())!.version);
+    if (!this.appVersion().includes('beta')) {
+      this.webVersion.set(this.webVersion().split('-')[0]);
     }
   }
   openLogin() {
     this.windowService.openLogin();
   }
-  blacklist?: string;
+  blacklist = signal('');
   async openSetup() {
     await this.windowService.openSetup();
     await this.windowService.close();
