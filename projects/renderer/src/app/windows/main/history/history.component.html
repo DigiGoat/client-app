@@ -1,45 +1,74 @@
 <h1 class="text-center">History</h1>
 <h6 class="text-center">(Click a change to expand details)</h6>
-<br> @if (history()?.local?.total || !history()) { <table class="table table-hover border container mb-0" style="table-layout: fixed;">
+<br />
+@if (localHistory()?.total || !localHistory()) {
+  <table
+    class="table table-hover border container mb-0"
+    style="table-layout: fixed"
+  >
+    <colgroup>
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 50%" />
+      <col style="width: 10%" />
+    </colgroup>
+    <thead>
+      <tr style="position: sticky; top: 44px">
+        <th class="text-center h3" colspan="100">Unpublished Changes:</th>
+      </tr>
+      <tr style="position: sticky; top: 84px">
+        <th scope="col">Date</th>
+        <th scope="col">Action</th>
+        <th scope="col">Changes</th>
+        <th scope="col">Author</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of localHistory()?.all; track entry; let i = $index) {
+        <tr
+          (click)="otherBodyText.classList.toggle('text-truncate')"
+          style="cursor: pointer"
+        >
+          <th scope="row">
+            {{ entry.date | date: "MMM dd, yyyy 'at' hh:mm a" }}
+          </th>
+          <td>
+            {{ entry.message }}
+          </td>
+          <td #otherBodyText class="text-truncate">
+            @defer (on viewport({ rootMargin: '200%' })) {
+              <p
+                [innerHTML]="formatBody(entry.body)"
+                style="white-space: pre-wrap"
+              ></p>
+            } @placeholder {
+              <p
+                [innerHTML]="briefBodyFormat(entry.body)"
+                style="white-space: pre-wrap"
+              ></p>
+            }
+          </td>
+          <td>
+            <a href="mailto:{{ entry.author_email }}">{{
+              entry.author_name
+            }}</a>
+          </td>
+        </tr>
+      }
+      @if (!localHistory()) {
+        <tr>
+          <th class="text-center unavailable" colspan="100">Loading...</th>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+<table class="table table-hover border container" style="table-layout: fixed">
   <colgroup>
-    <col style="width: 20%">
-    <col style="width: 20%">
-    <col style="width: 50%">
-    <col style="width: 10%">
-  </colgroup>
-  <thead>
-    <tr style="position: sticky; top: 44px">
-      <th class="text-center h3" colspan="100">Unpublished Changes:</th>
-    </tr>
-    <tr style="position: sticky; top: 84px">
-      <th scope="col">Date</th>
-      <th scope="col">Action</th>
-      <th scope="col">Changes</th>
-      <th scope="col">Author</th>
-    </tr>
-  </thead>
-  <tbody> @for (entry of (history()?.local?.all); track entry; let i = $index) { <tr
-      (click)="otherBodyText.classList.toggle('text-truncate')" style="cursor: pointer">
-      <th scope="row">
-        {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
-      </th>
-      <td>
-        {{entry.message}}
-      </td>
-      <td #otherBodyText class="text-truncate"> @defer (on viewport({ rootMargin: '500px' })) { <p [innerHTML]="formatBody(entry.body)"
-          style="white-space: pre-wrap;"></p> } @placeholder { <p [innerText]="entry.body" style="white-space: pre-wrap;"></p> } </td>
-      <td>
-        <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
-      </td>
-    </tr> } @if (!history()) { <tr>
-      <th class="text-center" colspan="100">Loading...</th>
-    </tr> } </tbody>
-</table> } <table class="table table-hover border container" style="table-layout: fixed;">
-  <colgroup>
-    <col style="width: 20%">
-    <col style="width: 20%">
-    <col style="width: 50%">
-    <col style="width: 10%">
+    <col style="width: 20%" />
+    <col style="width: 20%" />
+    <col style="width: 50%" />
+    <col style="width: 10%" />
   </colgroup>
   <thead>
     <tr style="position: sticky; top: 44px">
@@ -52,21 +81,40 @@
       <th scope="col">Author</th>
     </tr>
   </thead>
-  <tbody> @for (entry of (history()?.remote?.all); track entry) {<tr (click)="bodyText.classList.toggle('text-truncate')"
-      style="cursor: pointer">
-      <th scope="row">
-        {{entry.date | date:'MMM dd, yyyy \'at\' hh:mm a'}}
-      </th>
-      <td>
-        {{entry.message}}
-      </td>
-      <td #bodyText class="text-truncate"> @defer (on viewport({ rootMargin: '500px' })) { <div [innerHTML]="formatBody(entry.body)"
-          style="white-space: pre-wrap;">
-        </div> } @placeholder { <div [innerText]="entry.body" style="white-space: pre-wrap;"></div> } </td>
-      <td>
-        <a href="mailto:{{entry.author_email}}">{{entry.author_name}}</a>
-      </td>
-    </tr>} @if (!history()) { <tr>
-      <th class="text-center" colspan="100">Loading...</th>
-    </tr> } </tbody>
+  <tbody>
+    @for (entry of remoteHistory()?.all; track entry) {
+      <tr
+        (click)="bodyText.classList.toggle('text-truncate')"
+        style="cursor: pointer"
+      >
+        <th scope="row">
+          {{ entry.date | date: "MMM dd, yyyy 'at' hh:mm a" }}
+        </th>
+        <td>
+          {{ entry.message }}
+        </td>
+        <td #bodyText class="text-truncate">
+          @defer (on viewport({ rootMargin: '200%' })) {
+            <div
+              [innerHTML]="formatBody(entry.body)"
+              style="white-space: pre-wrap"
+            ></div>
+          } @placeholder {
+            <div
+              [innerHTML]="briefBodyFormat(entry.body)"
+              style="white-space: pre-wrap"
+            ></div>
+          }
+        </td>
+        <td>
+          <a href="mailto:{{ entry.author_email }}">{{ entry.author_name }}</a>
+        </td>
+      </tr>
+    }
+    @if (!remoteHistory()) {
+      <tr>
+        <th class="text-center unavailable" colspan="100">Loading...</th>
+      </tr>
+    }
+  </tbody>
 </table>

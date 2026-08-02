@@ -44,7 +44,7 @@ export class GitService {
   async getStatus() {
     const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
     delete status.isClean;
-    if (this.lastStatus?.ahead === status.ahead && this.lastAhead) {
+    if (this.lastStatus?.ahead === status.ahead && this.lastAhead !== undefined) {
       status.ahead = this.lastAhead;
     } else {
       await startSpan({ op: 'ipc.git.getStatus', name: 'getHistory' }, async () => {
@@ -246,11 +246,11 @@ export class GitService {
         return {};
       }
     },
-    getHistory: async () => {
-      return {
-        local: await this.git.log(['--first-parent', '@{u}..']),
-        remote: await this.git.log(['--first-parent', '@{u}']),
-      };
+    getLocalHistory: async () => {
+      return await this.git.log(['--first-parent', '@{u}..']);
+    },
+    getCloudHistory: async () => {
+      return await this.git.log(['--first-parent', '@{u}']);
     }
   };
   git: SimpleGit;

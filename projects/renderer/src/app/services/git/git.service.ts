@@ -64,5 +64,6 @@ export class GitService {
   commitImages = window.electron.git.commitImages;
   commitFavicon = window.electron.git.commitFavicon;
   getSetup = window.electron.git.getSetup;
-  getHistory = window.electron.git.getHistory;
+  getLocalHistory = window.electron.git.getLocalHistory;
+  getCloudHistory = window.electron.git.getCloudHistory;
 }

@@ -31,6 +31,7 @@ export interface GitService {
   commitImages: (paths: string[], message: string[]) => Promise<void>;
   commitFavicon: () => Promise<void>;
   getSetup: () => Promise<{ repo?: string, name?: string, email?: string, token?: string; }>;
-  getHistory: () => Promise<History>;
+  getLocalHistory: () => Promise<LogResult>;
+  getCloudHistory: () => Promise<LogResult>;
 }
 export type History = { local: LogResult, remote: LogResult; };
