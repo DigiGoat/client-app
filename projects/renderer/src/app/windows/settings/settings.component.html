@@ -1,48 +1,111 @@
 <h1 class="text-center">Website Settings:</h1>
 <div class="container">
-  <div class="row px-3 row-cols-1  row-cols-xxl-2 justify-content-around">
+  <div class="row px-3 row-cols-1 row-cols-xxl-2 justify-content-around">
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="isDirty('url')">
+      <div class="input-group" [class.unsaved]="'url' in dirtyFields()">
         <span class="input-group-text">Page URL:</span>
-        <input type="text" class="form-control" [(ngModel)]="settings.url" (ngModelChange)="detectChanges()"
-          [suggestion]="suggestedSettings.firebase.projectId ? 'https://'+(settings.firebase.projectId || suggestedSettings.firebase.projectId) + '.web.app/' : ''">
+        <input
+          type="text"
+          class="form-control"
+          [formField]="settingsForm.url"
+          [suggestion]="
+            suggestedSettings().firebase.projectId
+              ? 'https://' +
+                (settingsForm().value().firebase.projectId ||
+                  suggestedSettings().firebase.projectId) +
+                '.web.app/'
+              : ''
+          "
+        />
       </div>
-      <div class="form-text">Your Farm's Hosting Domain (ex. https://www.yourfarm.com/)</div>
+      <div class="form-text">
+        Your Farm's Hosting Domain (ex. https://www.yourfarm.com/)
+      </div>
     </div>
     <div class="mb-3 col">
-      <div class="input-group" [class.unsaved]="isDirty('internationalImages')">
+      <div
+        class="input-group"
+        [class.unsaved]="'internationalImages' in dirtyFields()"
+      >
         <span class="input-group-text">International Images:</span>
-        <select class="form-select" [(ngModel)]="settings.internationalImages" (ngModelChange)="detectChanges()">
-          <option [value]="settings.internationalImages === undefined ? undefined : false">Block Images Outside of the US</option>
-          <option [value]="true">Allow Images to Load Internationally</option>
+        <select
+          #internationalImagesSelect
+          class="form-select"
+          [value]="settingsForm.internationalImages().value()"
+          (input)="
+            settingsForm
+              .internationalImages()
+              .value.set(internationalImagesSelect.value === 'true')
+          "
+          [disabled]="settingsForm.internationalImages().disabled()"
+          [class.loading]="settingsForm.internationalImages().readonly()"
+        >
+          <option value="false">Block Images Outside of the US</option>
+          <option value="true">Allow Images to Load Internationally</option>
         </select>
       </div>
-      <div class="form-text">Choose if the images on your website should be available outside of the US</div>
+      <div class="form-text">
+        Choose if the images on your website should be available outside of the
+        US
+      </div>
     </div>
     <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#analyticSettings" aria-expanded="false" aria-controls="analyticSettings" [class.unsaved]="isDirty('analytics')">
-        View Analytics <i class="bi bi-clipboard-data"></i> </button>
+      <button
+        class="btn btn-secondary w-100 color-scheme-quaternary"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#analyticSettings"
+        aria-expanded="false"
+        aria-controls="analyticSettings"
+        [class.unsaved]="'analytics' in dirtyFields()"
+        [class.loading]="settingsForm.analytics().readonly()"
+      >
+        View Analytics <i class="bi bi-clipboard-data"></i>
+      </button>
       <div class="collapse p-3 color-scheme-secondary" id="analyticSettings">
-        <div class="input-group ">
+        <div class="input-group">
           <span class="input-group-text">GTAG:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.analytics.gtag" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.analytics.gtag || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.analytics.gtag"
+            [suggestion]="suggestedSettings().analytics.gtag || ''"
+            [class.unsaved]="
+              'analytics' in dirtyFields() && 'gtag' in dirtyFields().analytics!
+            "
+          />
         </div>
         <div class="form-text">Your Google Analytics Tag ID</div>
         <div class="input-group mt-3">
           <span class="input-group-text">Clarity:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.analytics.clarity" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.analytics.clarity || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.analytics.clarity"
+            [suggestion]="suggestedSettings().analytics.clarity || ''"
+            [class.unsaved]="
+              'analytics' in dirtyFields() &&
+              'clarity' in dirtyFields().analytics!
+            "
+          />
         </div>
         <div class="form-text">Your Microsoft Clarity ID</div>
       </div>
       <div class="form-text">The Analytics Settings For Your Website</div>
     </div>
     <div class="mb-3 col">
-      <button class="btn btn-secondary w-100 color-scheme-quaternary" type="button" data-bs-toggle="collapse"
-        data-bs-target="#firebaseSettings" aria-expanded="false" aria-controls="firebaseSettings" [class.unsaved]="isDirty('firebase')">
-        Firebase Configuration <i class="bi bi-clipboard-data"></i> </button>
+      <button
+        class="btn btn-secondary w-100 color-scheme-quaternary"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#firebaseSettings"
+        aria-expanded="false"
+        aria-controls="firebaseSettings"
+        [class.unsaved]="'firebase' in dirtyFields()"
+        [class.loading]="settingsForm.firebase().readonly()"
+      >
+        Firebase Configuration <i class="bi bi-clipboard-data"></i>
+      </button>
       <div class="collapse p-3 color-scheme-secondary" id="firebaseSettings">
         <!--  firebase: Partial<{
         apiKey: string,
@@ -54,33 +117,85 @@
       }>;-->
         <div class="input-group mt-3">
           <span class="input-group-text">Project ID:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.projectId" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.firebase!.projectId || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.projectId"
+            [suggestion]="suggestedSettings().firebase.projectId || ''"
+          />
         </div>
         <div class="input-group mt-3">
           <span class="input-group-text">API Key:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.apiKey" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.firebase!.apiKey || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.apiKey"
+            [suggestion]="suggestedSettings().firebase.apiKey || ''"
+            [class.unsaved]="
+              'firebase' in dirtyFields() && 'apiKey' in dirtyFields().firebase!
+            "
+          />
         </div>
         <div class="input-group mt-3">
           <span class="input-group-text">Auth Domain:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.authDomain" (ngModelChange)="detectChanges()"
-            [suggestion]="settings.firebase.projectId ? settings.firebase!.projectId + '.firebaseapp.com' : ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.authDomain"
+            [suggestion]="
+              settingsForm().value().firebase.projectId
+                ? settingsForm().value().firebase.projectId + '.firebaseapp.com'
+                : suggestedSettings().firebase.projectId + '.firebaseapp.com'
+            "
+            [class.unsaved]="
+              'firebase' in dirtyFields() &&
+              'authDomain' in dirtyFields().firebase!
+            "
+          />
         </div>
         <div class="input-group mt-3">
           <span class="input-group-text">Storage Bucket:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.storageBucket" (ngModelChange)="detectChanges()"
-            [suggestion]="settings.firebase.projectId ? settings.firebase!.projectId + '.firebasestorage.app' : ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.storageBucket"
+            [suggestion]="
+              settingsForm().value().firebase.projectId
+                ? settingsForm().value().firebase.projectId +
+                  '.firebasestorage.app'
+                : suggestedSettings().firebase.projectId +
+                  '.firebasestorage.app'
+            "
+            [class.unsaved]="
+              'firebase' in dirtyFields() &&
+              'storageBucket' in dirtyFields().firebase!
+            "
+          />
         </div>
         <div class="input-group mt-3">
           <span class="input-group-text">Messaging Sender ID:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.messagingSenderId" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.firebase!.messagingSenderId || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.messagingSenderId"
+            [suggestion]="suggestedSettings().firebase.messagingSenderId || ''"
+            [class.unsaved]="
+              'firebase' in dirtyFields() &&
+              'messagingSenderId' in dirtyFields().firebase!
+            "
+          />
         </div>
         <div class="input-group mt-3">
           <span class="input-group-text">App ID:</span>
-          <input type="text" class="form-control" [(ngModel)]="settings.firebase!.appId" (ngModelChange)="detectChanges()"
-            [suggestion]="suggestedSettings.firebase!.appId || ''">
+          <input
+            type="text"
+            class="form-control"
+            [formField]="settingsForm.firebase.appId"
+            [suggestion]="suggestedSettings().firebase.appId || ''"
+            [class.unsaved]="
+              'firebase' in dirtyFields() && 'appId' in dirtyFields().firebase!
+            "
+          />
         </div>
       </div>
       <div class="form-text">The Firebase Settings For Your Website</div>

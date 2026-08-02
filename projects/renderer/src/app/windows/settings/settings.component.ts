@@ -1,109 +1,78 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import type { Settings } from '../../../../../shared/services/settings/settings.service';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from '@angular/core';
+import { form, readonly } from '@angular/forms/signals';
 import { ConfigService } from '../../services/config/config.service';
-import { DialogService } from '../../services/dialog/dialog.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
-import { SettingsService } from '../../services/settings/settings.service';
-import { WindowService } from '../../services/window/window.service';
+import { SETTINGS, SettingsService } from '../../services/settings/settings.service';
+import { SaveableStrategy } from '../../strategies/saveable/saveable.strategy';
 
 @Component({
   selector: 'app-settings',
   standalone: false,
   templateUrl: './settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './settings.component.scss'
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent extends SaveableStrategy implements OnInit {
   private diffService = inject(DiffService);
   private settingsService = inject(SettingsService);
-  private windowService = inject(WindowService);
   private gitService = inject(GitService);
-  private dialogService = inject(DialogService);
   private configService = inject(ConfigService);
 
-  private _oldSettings: Settings = {};
-  settings: Settings & Required<Pick<Settings, 'analytics' | 'firebase'>> = {
-    analytics: {},
-    firebase: {}
-  };
-  get unsavedChangesDiff() {
-    return this.diffService.diff(this._oldSettings, this.settings) as Record<string, string>;
+  private savedSettings = signal(SETTINGS);
+  private settingsModel = signal(SETTINGS);
+  public settingsForm = form(this.settingsModel, form => {
+    readonly(form, { when: () => this.loading() });
   }
-  isDirty(parameter: keyof Settings) {
-    return (parameter in this.unsavedChangesDiff);
-  }
-  get unsavedChanges() {
-    return !!Object.keys(this.unsavedChangesDiff).length;
-  }
+  );
+  private loading = signal(true);
 
-  suggestedSettings: Required<Settings> = {
-    analytics: {},
-    firebase: {},
-    url: '',
-    internationalImages: false
-  };
+
+  dirtyFields = computed(() => {
+    return this.diffService.diff(this.savedSettings(), this.settingsForm().value()) as Partial<SETTINGS>;
+  });
+  unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
+  suggestedSettings = signal(SETTINGS);
 
   async ngOnInit() {
     const settings = await this.settingsService.get();
-    this.settings = {
-      firebase: {},
-      analytics: {},
-      ...settings
-    };
-    this._oldSettings = structuredClone(settings);
-    if (!this.settings.analytics) {
-      this.settings.analytics = {};
-      this.detectChanges();
-    }
-    if (!this.settings.firebase) {
-      this.settings.firebase = {};
-      this.detectChanges();
-    }
+    this.savedSettings.set(settings);
+    this.settingsModel.set(settings);
+    this.settingsForm().reset();
+    this.loading.set(false);
     this.settingsService.onchange = (newSettings) => {
-      this._oldSettings = newSettings;
-      this.detectChanges();
-    };
-    this.windowService.onsave = async () => {
-      if (this.unsavedChanges) {
-        const action = (await this.dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Close Without Saving', 'Cancel'], defaultId: 0 })).response;
-        switch (action) {
-          case 0:
-            await this.saveChanges();
-            await this.windowService.close();
-            break;
-          case 1:
-            await this.windowService.close(true);
-            break;
-        }
-      }
+      this.loading.set(true);
+      this.savedSettings.set(newSettings);
+      this.loading.set(false);
     };
 
     //this.suggestedSettings.analytics = this.configService.config['analytics'] as Analytics ?? {};
     //this.suggestedSettings.firebase = this.configService.config['firebase'] as Firebase ?? {};
 
     const repoName = (await this.gitService.getSetup()).repo;
-    this.suggestedSettings.firebase.projectId = repoName?.toLowerCase();
+    if (repoName) {
+      this.suggestedSettings.update(settings => ({ ...settings, firebase: { ...settings.firebase, projectId: repoName.toLowerCase() } }));
+    }
+
+    this.configService.getConfig().then(config => {
+      this.suggestedSettings.update(settings => ({
+        ...settings,
+        analytics: {
+          ...settings.analytics,
+          ...(config as { analytics?: Analytics; })['analytics']
+        },
+        firebase: {
+          ...settings.firebase,
+          ...(config as { firebase?: Firebase; })['firebase']
+        }
+      }));
+    });
   }
 
-  detectChanges() {
-    this.windowService.setUnsavedChanges(this.unsavedChanges);
-  }
-
-  async saveChanges() {
-    const diffMessage = this.diffService.commitMsg(this._oldSettings, this.settings);
-    await window.electron.settings.set(this.settings);
-    await this.windowService.setUnsavedChanges(false);
-    await this.gitService.commitSettings(['Updated Settings', ...diffMessage]);
-  }
-  async discardChanges() {
-    this.settings = {
-      analytics: {},
-      firebase: {},
-      ...this._oldSettings
-    };
-    await this.windowService.setUnsavedChanges(false);
-  }
+  override saveChanges = async () => {
+    this.loading.set(true);
+    await this.settingsService.saveSettings(this.savedSettings(), this.settingsForm().value());
+  };
 }
 
 interface Analytics { gtag?: string; clarity?: string; }
