@@ -1,5 +1,5 @@
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, inject, ViewChild, type ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewChild, type ElementRef } from '@angular/core';
 import { startSpan } from '@sentry/electron/renderer';
 import { ADGAService } from '../../../services/adga/adga.service';
 import { ConfigService } from '../../../services/config/config.service';
@@ -12,7 +12,7 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
   selector: 'app-goats',
   templateUrl: './goats.component.html',
   styleUrl: './goats.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class GoatsComponent {
@@ -31,10 +31,8 @@ export class GoatsComponent {
     buck: BuckFilter,
   };
 
-  get syncing() {
-    return this.syncingDoes !== false || this.syncingBucks !== false || this.syncingReferences !== false || this.syncingAll || this.syncingRelated !== false || this.syncingForSale !== false;
-  }
-  syncingAll = false;
+  syncing = computed(() => this.syncingDoes() !== false || this.syncingBucks() !== false || this.syncingReferences() !== false || this.syncingAll() || this.syncingRelated() !== false || this.syncingForSale() !== false);
+  syncingAll = signal(false);
   @ViewChild('dropdown') dropdown!: ElementRef<HTMLUListElement>;
   @ViewChild('dropdownButton') dropdownButton!: ElementRef<HTMLButtonElement>;
   async syncAll() {
@@ -44,11 +42,11 @@ export class GoatsComponent {
         this.dropdownButton.nativeElement.click();
       } else {
         shown = true;
-      } this.syncingAll = true;
+      } this.syncingAll.set(true);
       try {
         await Promise.all([(async () => {
-          this.syncingDoes = true;
-          this.syncingBucks = true;
+          this.syncingDoes.set(true);
+          this.syncingBucks.set(true);
           const goats = await this.adgaService.getOwnedGoats();
           await Promise.all([this.syncDoes(goats.filter(goat => goat.sex === 'Female')), this.syncBucks(goats.filter(goat => goat.sex === 'Male'))]);
         })(), this.syncReferences(), this.syncForSale()]);
@@ -56,7 +54,7 @@ export class GoatsComponent {
       } catch (err) {
         await this.adgaService.handleError(err as Error, 'Sync Failed!');
       } finally {
-        this.syncingAll = false;
+        this.syncingAll.set(false);
         if (this.dropdown.nativeElement.classList.contains('show')) {
           if (!shown) {
             this.dropdownButton.nativeElement.click();
@@ -68,10 +66,10 @@ export class GoatsComponent {
       }
     });
   }
-  syncingDoes: boolean | number = false;
+  syncingDoes = signal<boolean | number>(false);
   async syncDoes(does?: Record<string, unknown>[]) {
     await startSpan({ name: 'does', op: 'goats.sync' }, async () => {
-      this.syncingDoes = true;
+      this.syncingDoes.set(true);
       try {
         does = does ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Female');
         const oldDoes = await this.goatService.getDoes();
@@ -79,7 +77,7 @@ export class GoatsComponent {
         await this.goatService.writeDoes(does);
         try {
           for (let i = 0; i < does.length; i++) {
-            this.syncingDoes = i;
+            this.syncingDoes.set(i);
             const doe = does[i];
             if (doe['id']) {
               let goat: Record<string, unknown>;
@@ -122,22 +120,22 @@ export class GoatsComponent {
       } catch (err) {
         await this.adgaService.handleError(err as Error, 'Does Sync Failed!');
       } finally {
-        this.syncingDoes = false;
+        this.syncingDoes.set(false);
       }
     });
   }
-  syncingBucks: boolean | number = false;
+  syncingBucks = signal<boolean | number>(false);
   async syncBucks(bucks?: Record<string, unknown>[]) {
     await startSpan({ name: 'bucks', op: 'goats.sync' }, async () => {
       try {
-        this.syncingBucks = true;
+        this.syncingBucks.set(true);
         bucks = bucks ?? (await this.adgaService.getOwnedGoats()).filter(goat => goat.sex === 'Male');
         const oldBucks = await this.goatService.getBucks();
         bucks = [...structuredClone(oldBucks), ...bucks.filter(buck => !oldBucks.some(b => buck['id'] && buck['id'] === b['id']))];
         await this.goatService.writeBucks(bucks);
         try {
           for (let i = 0; i < bucks.length; i++) {
-            this.syncingBucks = i;
+            this.syncingBucks.set(i);
             const buck = bucks[i];
             if (buck['id']) {
               let goat: Record<string, unknown>;
@@ -162,20 +160,20 @@ export class GoatsComponent {
       } catch (err) {
         await this.adgaService.handleError(err as Error, 'Bucks Sync Failed!');
       } finally {
-        this.syncingBucks = false;
+        this.syncingBucks.set(false);
       }
     });
   }
-  syncingReferences: boolean | number = false;
+  syncingReferences = signal<boolean | number>(false);
   async syncReferences() {
     await startSpan({ name: 'references', op: 'goats.sync' }, async () => {
-      this.syncingReferences = true;
+      this.syncingReferences.set(true);
       try {
         const oldReferences = await this.goatService.getReferences();
         const references = structuredClone(oldReferences);
         try {
           for (let i = 0; i < references.length; i++) {
-            this.syncingReferences = i;
+            this.syncingReferences.set(i);
             const reference = references[i];
             if (reference['id']) {
               let goat: Record<string, unknown>;
@@ -200,20 +198,20 @@ export class GoatsComponent {
       } catch (err) {
         await this.adgaService.handleError(err as Error, 'References Sync Failed!');
       } finally {
-        this.syncingReferences = false;
+        this.syncingReferences.set(false);
       }
     });
   }
-  syncingForSale: boolean | number = false;
+  syncingForSale = signal<boolean | number>(false);
   async syncForSale() {
     await startSpan({ name: 'forSale', op: 'goats.sync' }, async () => {
       try {
-        this.syncingForSale = true;
+        this.syncingForSale.set(true);
         const oldForSale = await this.goatService.getForSale();
         const forSale = structuredClone(oldForSale);
         try {
           for (let i = 0; i < forSale.length; i++) {
-            this.syncingForSale = i;
+            this.syncingForSale.set(i);
             const goat = forSale[i];
             if (goat['id']) {
               let _goat: Record<string, unknown>;
@@ -238,15 +236,15 @@ export class GoatsComponent {
       } catch (err) {
         await this.adgaService.handleError(err as Error, 'For Sale Sync Failed!');
       } finally {
-        this.syncingForSale = false;
+        this.syncingForSale.set(false);
       }
     });
   }
-  syncingRelated: boolean | number = false;
+  syncingRelated = signal<boolean | number>(false);
   async syncRelated() {
     await startSpan({ name: 'related', op: 'goats.sync' }, async () => {
       try {
-        this.syncingRelated = true;
+        this.syncingRelated.set(true);
 
         const oldRelated = await this.goatService.getRelated();
 
@@ -284,7 +282,7 @@ export class GoatsComponent {
           }
           related.push(...(await this.adgaService.getGoats(newIds)));
           for (let i = 0; i < related.length; i++) {
-            this.syncingRelated = i;
+            this.syncingRelated.set(i);
             related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
 
             let linearAppraisals: GOAT['linearAppraisals'] = [];
@@ -306,7 +304,7 @@ export class GoatsComponent {
         console.warn('Related Goats Sync Failed:', err);
         await this.adgaService.handleError(err as Error, 'Related Goats Sync Failed!');
       } finally {
-        this.syncingRelated = false;
+        this.syncingRelated.set(false);
       }
     });
   }

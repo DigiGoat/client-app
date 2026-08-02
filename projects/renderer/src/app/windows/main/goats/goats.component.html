@@ -1,55 +1,176 @@
 <div class="d-flex justify-content-end">
-  <h1 class="text-center flex-grow-1"> Goats: </h1>
+  <h1 class="text-center flex-grow-1">Goats:</h1>
   <div class="btn-group p-1">
-    <button type="button" class="btn btn-secondary color-scheme-quaternary" online-only (mouseup)="syncAll()" [disabled]="syncing">Sync All
-      <i class="bi bi-arrow-repeat" [class.spin]="syncing"></i></button>
-    <button #dropdownButton type="button" class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
-      data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" online-only>
+    <button
+      type="button"
+      class="btn btn-secondary color-scheme-quaternary"
+      online-only
+      (mouseup)="syncAll()"
+      [disabled]="syncing()"
+    >
+      Sync All <i class="bi bi-arrow-repeat" [class.spin]="syncing()"></i>
+    </button>
+    <button
+      #dropdownButton
+      type="button"
+      class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
+      data-bs-toggle="dropdown"
+      data-bs-auto-close="outside"
+      aria-expanded="false"
+      online-only
+    >
       <span class="visually-hidden">Toggle Dropdown</span>
     </button>
-    <ul #dropdown class="dropdown-menu color-scheme-quaternary" style="width: 125%">
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncDoes()">Sync Does <i
-            class="bi bi-arrow-repeat float-end" [class.spin]="syncingDoes !== false"></i></button></li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncBucks()">Sync Bucks <i
-            class="bi bi-arrow-repeat float-end" [class.spin]="syncingBucks !== false"></i></button></li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncReferences()">Sync
-          References <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingReferences !== false"></i></button></li>
-      <li><button type="button" class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncForSale()">Sync For Sale
-          <i class="bi bi-arrow-repeat float-end" [class.spin]="syncingForSale !== false"></i></button></li>
-      <li tooltip="The goats used for the pedigrees of your does and bucks"><button type="button"
-          class="dropdown-item btn color-scheme-quaternary" [disabled]="syncing" (click)="syncRelated()">Sync Related <i
-            class="bi bi-arrow-repeat float-end" [class.spin]="syncingRelated !== false"></i></button></li>
+    <ul
+      #dropdown
+      class="dropdown-menu color-scheme-quaternary"
+      style="width: 125%"
+    >
+      <li>
+        <button
+          type="button"
+          class="dropdown-item btn color-scheme-quaternary"
+          [disabled]="syncing()"
+          (click)="syncDoes()"
+        >
+          Sync Does
+          <i
+            class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingDoes() !== false"
+          ></i>
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="dropdown-item btn color-scheme-quaternary"
+          [disabled]="syncing()"
+          (click)="syncBucks()"
+        >
+          Sync Bucks
+          <i
+            class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingBucks() !== false"
+          ></i>
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="dropdown-item btn color-scheme-quaternary"
+          [disabled]="syncing()"
+          (click)="syncReferences()"
+        >
+          Sync References
+          <i
+            class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingReferences() !== false"
+          ></i>
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="dropdown-item btn color-scheme-quaternary"
+          [disabled]="syncing()"
+          (click)="syncForSale()"
+        >
+          Sync For Sale
+          <i
+            class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingForSale() !== false"
+          ></i>
+        </button>
+      </li>
+      <li tooltip="The goats used for the pedigrees of your does and bucks">
+        <button
+          type="button"
+          class="dropdown-item btn color-scheme-quaternary"
+          [disabled]="syncing()"
+          (click)="syncRelated()"
+        >
+          Sync Related
+          <i
+            class="bi bi-arrow-repeat float-end"
+            [class.spin]="syncingRelated() !== false"
+          ></i>
+        </button>
+      </li>
     </ul>
   </div>
 </div>
 <div class="container">
-  <div class="row px-3 row-cols-2  row-cols-xxl-3 justify-content-around text-center">
+  <div
+    class="row px-3 row-cols-2 row-cols-xxl-3 justify-content-around text-center"
+  >
     <div class="mb-3 col">
       <h3>Does:</h3>
-      <app-goat-list type="doe" [goats]="does" [syncing]="syncingDoes" (deleteIndex)="deleteDoe($event)" (addGoat)="addDoe($event)"
-        (rearranged)="rearrangeDoes($event)" [filter]="filters.doe" listName="Does" (moveGoat)="moveGoat($event, 'Does')"></app-goat-list>
+      <app-goat-list
+        type="doe"
+        [goats]="does"
+        [syncing]="syncingDoes()"
+        (deleteIndex)="deleteDoe($event)"
+        (addGoat)="addDoe($event)"
+        (rearranged)="rearrangeDoes($event)"
+        [filter]="filters.doe"
+        listName="Does"
+        (moveGoat)="moveGoat($event, 'Does')"
+      ></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>Bucks:</h3>
-      <app-goat-list type="buck" [goats]="bucks" [syncing]="syncingBucks" (deleteIndex)="deleteBuck($event)" (addGoat)="addBuck($event)"
-        [filter]="filters.buck" (rearranged)="rearrangeBucks($event)" listName="Bucks"
-        (moveGoat)="moveGoat($event, 'Bucks')"></app-goat-list>
+      <app-goat-list
+        type="buck"
+        [goats]="bucks"
+        [syncing]="syncingBucks()"
+        (deleteIndex)="deleteBuck($event)"
+        (addGoat)="addBuck($event)"
+        [filter]="filters.buck"
+        (rearranged)="rearrangeBucks($event)"
+        listName="Bucks"
+        (moveGoat)="moveGoat($event, 'Bucks')"
+      ></app-goat-list>
     </div>
-    <div class="mb-3 col">
-      <h3>Related:</h3>
-      <app-basic-goat-list [goats]="related" [syncing]="syncingRelated"></app-basic-goat-list>
-    </div>
+
     <div class="mb-3 col">
       <h3>References:</h3>
-      <app-goat-list type="reference" [goats]="references" [syncing]="syncingReferences" (deleteIndex)="deleteReference($event)"
-        (addGoat)="addReference($event)" (rearranged)="rearrangeReferences($event)" [(enabled)]="referencesEnabled" listName="References"
-        (moveGoat)="moveGoat($event, 'References')"></app-goat-list>
+      <app-goat-list
+        type="reference"
+        [goats]="references"
+        [syncing]="syncingReferences()"
+        (deleteIndex)="deleteReference($event)"
+        (addGoat)="addReference($event)"
+        (rearranged)="rearrangeReferences($event)"
+        [(enabled)]="referencesEnabled"
+        listName="References"
+        (moveGoat)="moveGoat($event, 'References')"
+      ></app-goat-list>
     </div>
     <div class="mb-3 col">
       <h3>For Sale:</h3>
-      <app-goat-list type="for-sale" [goats]="forSale" [syncing]="syncingForSale" (deleteIndex)="deleteForSale($event)"
-        (addGoat)="addForSale($event)" (rearranged)="rearrangeForSale($event)" [(enabled)]="forSaleEnabled" listName="For Sale"
-        (moveGoat)="moveGoat($event, 'For Sale')"></app-goat-list>
+      <app-goat-list
+        type="for-sale"
+        [goats]="forSale"
+        [syncing]="syncingForSale()"
+        (deleteIndex)="deleteForSale($event)"
+        (addGoat)="addForSale($event)"
+        (rearranged)="rearrangeForSale($event)"
+        [(enabled)]="forSaleEnabled"
+        listName="For Sale"
+        (moveGoat)="moveGoat($event, 'For Sale')"
+      ></app-goat-list>
+    </div>
+    <div class="mb-3 col">
+      <h3>Related:</h3>
+      <p class="text-muted fst-italic">
+        Goats used for the pedigrees of your does and bucks. You typically don't
+        need to edit these goats, but you can change name capitalization if you
+        want to.
+      </p>
+      <app-basic-goat-list
+        [goats]="related"
+        [syncing]="syncingRelated()"
+      ></app-basic-goat-list>
     </div>
   </div>
 </div>
