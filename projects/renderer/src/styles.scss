@@ -101,4 +101,6 @@
 .unavailable {
   color: var(--bs-secondary-color) !important;
   font-style: italic !important;
+  cursor: wait !important;
+  pointer-events: none !important;
 }
