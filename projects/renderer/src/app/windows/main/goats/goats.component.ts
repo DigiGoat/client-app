@@ -1,10 +1,11 @@
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewChild, type ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewChild, type ElementRef, type OnInit } from '@angular/core';
 import { startSpan } from '@sentry/electron/renderer';
 import { ADGAService } from '../../../services/adga/adga.service';
-import { ConfigService } from '../../../services/config/config.service';
+import { CONFIG, ConfigService } from '../../../services/config/config.service';
 import { DiffService } from '../../../services/diff/diff.service';
 import { GoatService, type GOAT } from '../../../services/goat/goat.service';
+import { SaveableStrategy } from '../../../strategies/saveable/saveable.strategy';
 import type { ListLocations } from '../elements/goat-list/goat-list.component';
 import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.component';
 
@@ -15,7 +16,7 @@ import { BuckFilter, DoeFilter } from '../elements/goat-lookup/goat-lookup.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
-export class GoatsComponent {
+export class GoatsComponent extends SaveableStrategy implements OnInit {
   private goatService = inject(GoatService);
   private adgaService = inject(ADGAService);
   private diffService = inject(DiffService);
@@ -346,20 +347,17 @@ export class GoatsComponent {
   }
 
   get referencesEnabled() {
-    return true;//this.configService.references;
+    return this.config().references;
   }
-  set referencesEnabled(enabled: boolean) {
-    this.configService.getConfig().then(oldConfig => {
-      this.configService.saveConfig(oldConfig, { ...oldConfig, references: enabled });
-    });
+  set referencesEnabled(newValue: boolean) {
+    this.config.update(oldConfig => ({ ...oldConfig, references: newValue }));
   }
+
   get forSaleEnabled() {
-    return true;//this.configService.forSale;
+    return this.config().forSale;
   }
   set forSaleEnabled(enabled: boolean) {
-    this.configService.getConfig().then(oldConfig => {
-      this.configService.saveConfig(oldConfig, { ...oldConfig, forSale: enabled });
-    });
+    this.config.update(oldConfig => ({ ...oldConfig, forSale: enabled }));
   }
   moveGoat(event: { goat: Partial<GOAT>; location: ListLocations; keepCopy: boolean; index: number; }, from: 'Does' | 'Bucks' | 'References' | 'For Sale') {
     if (!event.goat.sex) {
@@ -399,5 +397,26 @@ export class GoatsComponent {
           break;
       }
     }
+  }
+
+  savedConfig = signal(CONFIG);
+  config = signal(CONFIG);
+
+  dirtyFields = computed(() => {
+    return this.diffService.diff(this.savedConfig(), this.config()) as Partial<CONFIG>;
+  });
+  unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
+  saveChanges = async () => {
+    await this.configService.saveConfig(this.savedConfig(), this.config());
+  };
+  ngOnInit() {
+    this.configService.getConfig().then(config => {
+      this.savedConfig.set(config);
+      this.config.set(config);
+    });
+    this.configService.onchange = (config: CONFIG) => {
+      this.savedConfig.set(config);
+      this.config.set(config);
+    };
   }
 }

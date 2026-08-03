@@ -6,15 +6,15 @@ import { CustomPagesComponent } from './custom-pages/custom-pages.component';
 import { GoatsComponent } from './goats/goats.component';
 import { HistoryComponent } from './history/history.component';
 import { HomeComponent } from './home/home.component';
-import { KiddingScheduleComponent } from './kidding-schedule/kidding-schedule.component';
 import { MainComponent } from './main.component';
+import { KiddingScheduleComponent } from './og-kidding-schedule/kidding-schedule.component';
 import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   {
     path: '', component: MainComponent, children: [
       { path: 'home', component: HomeComponent, canDeactivate: [SaveGuard] },
-      { path: 'goats', component: GoatsComponent },
+      { path: 'goats', component: GoatsComponent, canDeactivate: [SaveGuard] },
       { path: 'settings', component: SettingsComponent },
       { path: 'kidding-schedule', component: KiddingScheduleComponent, canDeactivate: [kiddingSaverGuard] },
       { path: 'history', component: HistoryComponent },
