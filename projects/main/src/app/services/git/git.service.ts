@@ -261,11 +261,17 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false', 'core.longpaths=true'] });
-    this.checkForUpdates();
+    this.checkForUpdates().catch(() => console.warn('Startup Update Check Failed'));
     this.configureUser();
   }
   async checkForUpdates() {
-    await this.pullChanges();
+    try {
+      await this.pullChanges();
+    } catch (err) {
+      console.warn('Failed to check for updates:', err);
+      this.scheduleUpdateCheck(true);
+      return Promise.reject(err);
+    }
 
     try {
       console.debug('Checking for upstream remote...');
@@ -287,7 +293,7 @@ export class GitService {
       const oldVersion = parse(unparsedOldVersion)!;
       const appVersion = parse(app.getVersion())!;
       if (app.isReady()) {
-        this.determineUpdates(oldVersion, newVersion, appVersion);
+        await this.determineUpdates(oldVersion, newVersion, appVersion);
       } else {
         app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
       }
@@ -311,7 +317,7 @@ export class GitService {
         });
       }
     } catch (err) {
-      console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
+      console.warn('Failed to pull changes:', err);
 
       // If the pull left us in a conflicted state, abort so JSON files are restored.
       try {
@@ -328,6 +334,7 @@ export class GitService {
         console.warn('Failed to inspect/abort conflicted state:', abortErr);
         captureException(abortErr, { level: 'warning' });
       }
+      return Promise.reject(err);
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {
