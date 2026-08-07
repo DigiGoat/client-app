@@ -28,8 +28,8 @@ export class ConfigService {
     return {
       ...CONFIG,
       /* Migrations */
-      title: config['homeTitle'] || config['menubarTitle'],
-      shortTitle: config['tabTitle'],
+      title: config['homeTitle'] || config['menubarTitle'] || '',
+      shortTitle: config['tabTitle'] || '',
       /* ----------- */
       ...config
     } as CONFIG;
