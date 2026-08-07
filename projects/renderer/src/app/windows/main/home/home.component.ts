@@ -9,6 +9,7 @@ import { RepoService } from '../../../services/repo/repo.service';
 import { SuggestionService } from '../../../services/suggestion/suggestion.service';
 import { WindowService } from '../../../services/window/window.service';
 import { SaveableStrategy } from '../../../strategies/saveable/saveable.strategy';
+import { captureException } from '@sentry/angular';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +52,14 @@ export class HomeComponent extends SaveableStrategy implements OnInit {
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
     this.loading.set(true);
-    await this.configService.saveConfig(this.savedConfig(), this.configForm().value());
+    try {
+      await this.configService.saveConfig(this.savedConfig(), this.configForm().value());
+    } catch (error) {
+      captureException(error);
+      alert('Error saving config');
+    } finally {
+      this.loading.set(false);
+    }
   };
 
   dirtyFields = computed(() => {
