@@ -48,7 +48,7 @@ export class GitService {
       status.ahead = this.lastAhead;
     } else {
       await startSpan({ op: 'ipc.git.getStatus', name: 'getHistory' }, async () => {
-        this.lastStatus = status;
+        this.lastStatus = { ...status };
         const local = await this.git.log(['--first-parent', '@{u}..']);
         this.lastAhead = local.total;
         status.ahead = this.lastAhead;
