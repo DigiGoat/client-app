@@ -1,0 +1,25 @@
+{
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "css.styleSheets": [
+    "node_modules/bootstrap/dist/css/bootstrap.css",
+    "projects/renderer/src/*.scss",
+    "**/${fileBasenameNoExtension}.scss",
+    "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+  ],
+  "bootstrapIntelliSense": {
+    "enable": true,
+    "bsVersion": "5.3.8",
+    "useLocalFile": true,
+    "cssFilePath": "/Users/Kolton/DigiGoat/client-app/node_modules/bootstrap/dist/css/bootstrap.min.css",
+    "languageSupport": [
+      "html",
+      "css",
+      "scss"
+    ],
+    "enableHover": true,
+    "enableColorPreview": true,
+    "sortOnSave": true
+  }
+}
