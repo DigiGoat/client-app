@@ -1,3 +1,7 @@
+## 7.4.0-beta.1
+
+- At some point the Goat object was designed to be easier to work with, this minor update captures that change to match in web-ui
+
 ## 7.3.3-beta.1
 
 - Added more spans to track app performance
