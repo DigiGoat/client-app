@@ -24,6 +24,8 @@ export abstract class SaveableStrategy {
             await windowService.close(true);
             break;
         }
+      } else {
+        await windowService.close(true);
       }
     };
   }
