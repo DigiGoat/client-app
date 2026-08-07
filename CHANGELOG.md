@@ -1,626 +1,787 @@
 ## 7.3.2-beta.1
-* Switching to Angular Signals for change detection and state management!
-  * This should improve the performance of the app and reduce the number of unnecessary change detection cycles
-  * The following pages have been converted to use signals:
-    * Home
+
+- Switching to Angular Signals for change detection and state management!
+  - This should improve the performance of the app and reduce the number of unnecessary change detection cycles
+  - Every page has been converted to use signals
+  - The entire application is now "zoneless" which should provide better performance and reduce the download size
+- Fixed a bug causing changes not to be saved
+- Significant optimizations to the history page
+  - Stylings are now differed until the row is next on the page
+  - Local history is now fetched independently of remote history, which greatly improves the loading speed for the page
 
 ## 7.3.1-beta.1
-* Increased the responsiveness of the unpublished changes indicator by caching the unpublished changes and only updating it when changes are made
+
+- Increased the responsiveness of the unpublished changes indicator by caching the unpublished changes and only updating it when changes are made
 
 ## 7.3.0-beta.3
-* Updated the Node version to be downloaded to run the preview server
-  * The version is now determined by the .nvmrc file in the repo, which is currently set to v24.16.0
-* Forced the preview server to pick an ephemeral port to avoid the "use a different port" prompt from the Angular CLI, which doesn't work properly when launched from a non-TTY child process (like in our case)
+
+- Updated the Node version to be downloaded to run the preview server
+  - The version is now determined by the .nvmrc file in the repo, which is currently set to v24.16.0
+- Forced the preview server to pick an ephemeral port to avoid the "use a different port" prompt from the Angular CLI, which doesn't work properly when launched from a non-TTY child process (like in our case)
 
 ## 7.3.0-beta.2
-* Implemented the temporary fix described here: https://github.com/electron/forge/issues/4277 to allow the app to build properly on node v24
+
+- Implemented the temporary fix described here: https://github.com/electron/forge/issues/4277 to allow the app to build properly on node v24
 
 ## 7.3.0-beta.1
-* Many under-the-hood improvements to the app's performance and stability
-  * Disabled Sentry profiling as it was not providing useful insights (instead it just introduced unnecessary overhead)
-  * Updated Electron from v36 to v42
-  * Removed Jest tests (Angular has switched to vitest and this repo was not making use of testing anyways)
-  * Updated typescript to v6
-    * Fixed the newly introduced type errors and warnings
-  * Updated Angular from v19 to v22
-  * Updated Angular CDK from v19 to v22
-  * Updated Electron Forge from v7.6 to v7.11
-  * Updated ESLint from v8 to v10
-    * Migrated config files
-    * Fixed the newly introduced lint errors and warnings
-  * Updated @sentry/electron from v7.5 to v7.13
-    * @sentry/angular from v10.29 to v10.50
-  * Updated github actions dependencies to their latest versions
-    * Updated node testing to test on Node.js v22, v24, and v26 (instead of v18, v20, and v22)
 
-    
+- Many under-the-hood improvements to the app's performance and stability
+  - Disabled Sentry profiling as it was not providing useful insights (instead it just introduced unnecessary overhead)
+  - Updated Electron from v36 to v42
+  - Removed Jest tests (Angular has switched to vitest and this repo was not making use of testing anyways)
+  - Updated typescript to v6
+    - Fixed the newly introduced type errors and warnings
+  - Updated Angular from v19 to v22
+  - Updated Angular CDK from v19 to v22
+  - Updated Electron Forge from v7.6 to v7.11
+  - Updated ESLint from v8 to v10
+    - Migrated config files
+    - Fixed the newly introduced lint errors and warnings
+  - Updated @sentry/electron from v7.5 to v7.13
+    - @sentry/angular from v10.29 to v10.50
+  - Updated github actions dependencies to their latest versions
+    - Updated node testing to test on Node.js v22, v24, and v26 (instead of v18, v20, and v22)
+
 ## 7.2.0-beta.1
-* Added the ability to hide your farm email to prevent spam, while still being able to receive DigiGoat emails
-  * If the email is hidden, it will not be displayed on the homepage or in the footer, but it will still be used for the contact form and milk test reports
-* Added the ability to enable the new contact us form!
-  * This allows visitors to your site to contact you without exposing your email address
-  * The messages sent through the contact form will be forwarded to your farm email address
+
+- Added the ability to hide your farm email to prevent spam, while still being able to receive DigiGoat emails
+  - If the email is hidden, it will not be displayed on the homepage or in the footer, but it will still be used for the contact form and milk test reports
+- Added the ability to enable the new contact us form!
+  - This allows visitors to your site to contact you without exposing your email address
+  - The messages sent through the contact form will be forwarded to your farm email address
 
 ## 7.1.3-beta.2
-* Fixed a backend bug causing suggestions to attempt to access the firebase project id before it is defined
-  * Addresses Sentry issue [DIGIGOAT-V](https://digigoat.sentry.io/issues/7319855633/)
+
+- Fixed a backend bug causing suggestions to attempt to access the firebase project id before it is defined
+  - Addresses Sentry issue [DIGIGOAT-V](https://digigoat.sentry.io/issues/7319855633/)
+
 ## 7.1.3-beta.1
-* Fixed the suggested page url not updating when a firebase project id is configured
+
+- Fixed the suggested page url not updating when a firebase project id is configured
 
 ## 7.1.2-beta.3
-* Fixed a bug causing unsupported image formats to fail without any error message
-  * Addresses Sentry issue [DIGIGOAT-R](https://digigoat.sentry.io/issues/7298974121/)
+
+- Fixed a bug causing unsupported image formats to fail without any error message
+  - Addresses Sentry issue [DIGIGOAT-R](https://digigoat.sentry.io/issues/7298974121/)
 
 ## 7.1.2-beta.2
-* Fixed a bug causing drag-and-drop to not work for uploading images
-  * Addresses Sentry issue [DIGIGOAT-Q](https://digigoat.sentry.io/issues/7298955442/)
+
+- Fixed a bug causing drag-and-drop to not work for uploading images
+  - Addresses Sentry issue [DIGIGOAT-Q](https://digigoat.sentry.io/issues/7298955442/)
 
 ## 7.1.2-beta.1
-* Used Copilot to fix some tooltip bugs
-  * This addresses Sentry issue DIGIGOAT-D and DIGIGOAT-N
-  * Copilot preemptively fixed some potential bugs with the search dropdown tooltips as well
+
+- Used Copilot to fix some tooltip bugs
+  - This addresses Sentry issue DIGIGOAT-D and DIGIGOAT-N
+  - Copilot preemptively fixed some potential bugs with the search dropdown tooltips as well
 
 ## 7.1.1-beta.12
-* (Hopefully) Fixed a bug causing the Sentry release date to be incorrect
+
+- (Hopefully) Fixed a bug causing the Sentry release date to be incorrect
 
 ## 7.1.1-beta.11
-* Release in sentry now show the "created at" date properly
-  * Uses the date of the first commit in the release range
+
+- Release in sentry now show the "created at" date properly
+  - Uses the date of the first commit in the release range
 
 ## 7.1.1-beta.10
-* Changed the colors of the sentry feedback dialog to better match the DigiGoat theme
-* Removed some unnecessary Sentry integrations to improve performance
-* Added some details to some of the existing adga spans for better diagnostics
-* Updates to the History page
-  * Improved how changes are fetched
-  * Made the changes to push more accurate
-* Added identification data to Sentry events to help group issues by user
-  * This only applies to DigiGoat subscribers, your usage remains anonymous when not subscribed
-* Added spans to monitor the performance of the live preview start/stop process
+
+- Changed the colors of the sentry feedback dialog to better match the DigiGoat theme
+- Removed some unnecessary Sentry integrations to improve performance
+- Added some details to some of the existing adga spans for better diagnostics
+- Updates to the History page
+  - Improved how changes are fetched
+  - Made the changes to push more accurate
+- Added identification data to Sentry events to help group issues by user
+  - This only applies to DigiGoat subscribers, your usage remains anonymous when not subscribed
+- Added spans to monitor the performance of the live preview start/stop process
 
 ## 7.1.1-beta.9
-* Significant improvements to Sentry
-  * Added profiling (main + renderer) to help identify performance bottlenecks
-  * Improved breadcrumbs and automatic context collection (app/window events, HTTP, filesystem, session)
-  * Added renderer integrations for better diagnostics (HTTP client, reporting observer, user feedback)
-  * Improved privacy for replays/logs by masking sensitive inputs (ADGA login + setup fields)
-  * Reduced noise during development by preventing events from being sent when the app is not packaged
-  * Added feedback dialog for users to report issues directly from the app
+
+- Significant improvements to Sentry
+  - Added profiling (main + renderer) to help identify performance bottlenecks
+  - Improved breadcrumbs and automatic context collection (app/window events, HTTP, filesystem, session)
+  - Added renderer integrations for better diagnostics (HTTP client, reporting observer, user feedback)
+  - Improved privacy for replays/logs by masking sensitive inputs (ADGA login + setup fields)
+  - Reduced noise during development by preventing events from being sent when the app is not packaged
+  - Added feedback dialog for users to report issues directly from the app
 
 ## 7.1.1-beta.8
-* Fixed a bug causing source maps to not upload correctly due to the "improvement" in the previous version
+
+- Fixed a bug causing source maps to not upload correctly due to the "improvement" in the previous version
 
 ## 7.1.1-beta.7
-* Improved source maps
-  * Added prefix to separate main, renderer, and preload processes
-  * Disabled output hashing for easier debugging
-* Added console logging integration 
+
+- Improved source maps
+  - Added prefix to separate main, renderer, and preload processes
+  - Disabled output hashing for easier debugging
+- Added console logging integration
 
 ## 7.1.1-beta.6
-* Started tracing all IPC calls with Sentry to help identify performance bottlenecks
-  * With a focus on ADGA API calls & Git operations
+
+- Started tracing all IPC calls with Sentry to help identify performance bottlenecks
+  - With a focus on ADGA API calls & Git operations
 
 ## 7.1.1-beta.5
-* Manually configured the commits for Sentry releases to align with the DigiGoat Releases versioning
+
+- Manually configured the commits for Sentry releases to align with the DigiGoat Releases versioning
 
 ## 7.1.1-beta.4
-* Added back an accidentally deleted script for the sourcemaps of the main process on MacOS
-* Updated release names to be Sentry compatible (i.e. `DigiGoat@7.1.1-beta.4` instead of just `7.1.1-beta.4`)
+
+- Added back an accidentally deleted script for the sourcemaps of the main process on MacOS
+- Updated release names to be Sentry compatible (i.e. `DigiGoat@7.1.1-beta.4` instead of just `7.1.1-beta.4`)
 
 ## 7.1.1-beta.3
-* Fixed a bug causing source maps to not upload correctly on MacOS
+
+- Fixed a bug causing source maps to not upload correctly on MacOS
 
 ## 7.1.1-beta.2
-* Added source maps for easier debugging of crashes and errors!
+
+- Added source maps for easier debugging of crashes and errors!
 
 ## 7.1.1-beta.1
-* Added Sentry!
-  * This will help identify and fix crashes and bugs in the app
-  * No personal data is collected, only crash reports and logs
-  * A feedback 
+
+- Added Sentry!
+  - This will help identify and fix crashes and bugs in the app
+  - No personal data is collected, only crash reports and logs
+  - A feedback
 
 ## 7.1.0-beta.1
-* Added the ability to configure whether images can be viewed internationally
-  * The new default setting is to block images from being viewed outside of the US
+
+- Added the ability to configure whether images can be viewed internationally
+  - The new default setting is to block images from being viewed outside of the US
 
 ## 7.0.5-beta.1
-* Fixed a bug causing the "optimize images" prompt to appear even if there aren't any images
-* Finally identified the bug causing failed clones
-  * It was a result of the .json files being watched and tampered with during the clone process
+
+- Fixed a bug causing the "optimize images" prompt to appear even if there aren't any images
+- Finally identified the bug causing failed clones
+  - It was a result of the .json files being watched and tampered with during the clone process
 
 ## 7.0.4-beta.1
-* Added the ability to move goats between lists!
-  * You can now move goats between the does, bucks, references, and for sale lists
-  * When moving a goat, you can choose to either move it (remove from current list) or copy it (keep in current list)
-* Fixed some bugs causing textareas to not resize properly
+
+- Added the ability to move goats between lists!
+  - You can now move goats between the does, bucks, references, and for sale lists
+  - When moving a goat, you can choose to either move it (remove from current list) or copy it (keep in current list)
+- Fixed some bugs causing textareas to not resize properly
 
 ## 7.0.3-beta.3
-* Fixed a bug causing some inputs for a goats information to be locked on unregistered goats
+
+- Fixed a bug causing some inputs for a goats information to be locked on unregistered goats
 
 ## 7.0.3-beta.2
-* Fixed a bug causing images downloaded not to save correctly
+
+- Fixed a bug causing images downloaded not to save correctly
 
 ## 7.0.3-beta.1
-* Fixed a bug causing a non-current lactation to be marked as current if it was never completed
-  * Now, only the latest freshening can be marked as current
+
+- Fixed a bug causing a non-current lactation to be marked as current if it was never completed
+  - Now, only the latest freshening can be marked as current
 
 ## 7.0.2-beta.1
-* Fixed a bug causing the app to open even if the setup was not complete
-* Hopefully fixed a bug that was preventing git from cloning the repository properly
+
+- Fixed a bug causing the app to open even if the setup was not complete
+- Hopefully fixed a bug that was preventing git from cloning the repository properly
 
 ## 7.0.1-beta.1
-* Fixed a bug causing the website settings window to not work properly
+
+- Fixed a bug causing the website settings window to not work properly
 
 ## 7.0.0-beta.1
-* Parameters that only need to be edited by DigiGoat are now located in their own file
-  * This means that when Digi has to do some work on your site, there won't be any conflicts with your work
-* Some styling changes to the ADGA login window
-* Minor updates to the setup window
-  * Increased the padding between fields
-  * Added a note about how the name and email are used
-  * Fixed a bug causing hitting enter to not submit the form
-* Upgraded from MacOS 13 to MacOS 15 for the macOS intel build
 
+- Parameters that only need to be edited by DigiGoat are now located in their own file
+  - This means that when Digi has to do some work on your site, there won't be any conflicts with your work
+- Some styling changes to the ADGA login window
+- Minor updates to the setup window
+  - Increased the padding between fields
+  - Added a note about how the name and email are used
+  - Fixed a bug causing hitting enter to not submit the form
+- Upgraded from MacOS 13 to MacOS 15 for the macOS intel build
 
 ## 6.0.4-beta.2
-* Fixed multiple bugs with the setup window
-  * The setup window would sometimes not do anything if it was already open and a deep link was used
-  * The app would sometimes open a main window after quitting from the setup window (this bug blocked the app from quitting)
-  * Fixed how the setup window handles multiple quit's being emitted if there are unsaved changes
-* Moved logic that blocks multiple identical windows from the window service to the window base
-* Updated the version guard to also prompt recommended updates, not just requiring major ones
-* Tweaked some bugs with the update button being disabled in the setup window
+
+- Fixed multiple bugs with the setup window
+  - The setup window would sometimes not do anything if it was already open and a deep link was used
+  - The app would sometimes open a main window after quitting from the setup window (this bug blocked the app from quitting)
+  - Fixed how the setup window handles multiple quit's being emitted if there are unsaved changes
+- Moved logic that blocks multiple identical windows from the window service to the window base
+- Updated the version guard to also prompt recommended updates, not just requiring major ones
+- Tweaked some bugs with the update button being disabled in the setup window
 
 ## 6.0.4-beta.1
-* Added the ability to open the setup window via deep link
-  * The link format is `digigoat://setup?payload=ENCRYPTED_PAYLOAD_HERE`
-  * The payload is an optional encrypted base64 JSON object containing `repo`, `token`, `name`, and `email`
+
+- Added the ability to open the setup window via deep link
+  - The link format is `digigoat://setup?payload=ENCRYPTED_PAYLOAD_HERE`
+  - The payload is an optional encrypted base64 JSON object containing `repo`, `token`, `name`, and `email`
 
 ## 6.0.3-beta.1
-* Improved web update checks
-  * Publishing now runs the same update check flow (pull + upstream version check) instead of a plain pull
-* Improved Setup window
-  * Added support for an optional encrypted `payload` query param to prefill Website ID, token, name, and email
-  * Website ID and token fields are only shown when updating an existing setup or when a payload is provided
-  * Removed the demo/blank setup options and default setup now falls back to cloning `web-ui` if no ID is provided
-  * Made pulling upstream changes a part of the setup/update process to ensure the latest changes are always pulled
-* Fixed the "App Update Available" prompt to only trigger when the major version matches
+
+- Improved web update checks
+  - Publishing now runs the same update check flow (pull + upstream version check) instead of a plain pull
+- Improved Setup window
+  - Added support for an optional encrypted `payload` query param to prefill Website ID, token, name, and email
+  - Website ID and token fields are only shown when updating an existing setup or when a payload is provided
+  - Removed the demo/blank setup options and default setup now falls back to cloning `web-ui` if no ID is provided
+  - Made pulling upstream changes a part of the setup/update process to ensure the latest changes are always pulled
+- Fixed the "App Update Available" prompt to only trigger when the major version matches
 
 ## 6.0.2-beta.1
-* Added LICENSE
+
+- Added LICENSE
 
 ## 6.0.1-beta.1
-* Updated bootstrap from `5.3.3` to `5.3.8`
-  * This is a library used for fonts and styles
+
+- Updated bootstrap from `5.3.3` to `5.3.8`
+  - This is a library used for fonts and styles
 
 ## 6.0.0-beta.2
-* When re-arranging custom pages and goats, the name now stays centered
-* If a custom page is using a default name, it is dimmed and italicized
+
+- When re-arranging custom pages and goats, the name now stays centered
+- If a custom page is using a default name, it is dimmed and italicized
 
 ## 6.0.0-beta.1
-* Added Support for Custom Pages!
+
+- Added Support for Custom Pages!
 
 ## 5.6.3-beta.1
-* The version details on the settings page are now updated automatically when web updates are installed
+
+- The version details on the settings page are now updated automatically when web updates are installed
 
 ## 5.6.2-beta.1
-* Fixed a bug with how the adga package version was managed
+
+- Fixed a bug with how the adga package version was managed
 
 ## 5.6.1-beta.2
-* Added alert for when the app successfully downloads changes from the website
+
+- Added alert for when the app successfully downloads changes from the website
 
 ## 5.6.1-beta.1
-* The app now automatically checks for web updates every hour (for if you prefer to just leave the app running in the background)
-  * It checks every 5 minutes if the check fails, mainly for if you're offline
-* You can now view version info at the bottom of the settings page
+
+- The app now automatically checks for web updates every hour (for if you prefer to just leave the app running in the background)
+  - It checks every 5 minutes if the check fails, mainly for if you're offline
+- You can now view version info at the bottom of the settings page
 
 ## 5.6.0-beta.2
-* Fixed a bug that would cause the app to accidentally (and incorrectly) install updates when checking for changes to the website
+
+- Fixed a bug that would cause the app to accidentally (and incorrectly) install updates when checking for changes to the website
 
 ## 5.6.0-beta.1
-* This is the same as `5.5.15-beta.1`, but as a recommended update to go with the accompanying update to the web-ui that allows for lactation data to be synced daily
+
+- This is the same as `5.5.15-beta.1`, but as a recommended update to go with the accompanying update to the web-ui that allows for lactation data to be synced daily
 
 ## 5.5.15-beta.1
-* Fixed a bug causing the status checks to not fix the version correctly when merging into main
+
+- Fixed a bug causing the status checks to not fix the version correctly when merging into main
 
 ## 5.5.14-beta.1
-* Added support for multiple devices!
-  * The app now checks for changes at boot and before publishing
-  * This means that you can now update the website on one device and pick up where you left off on another
+
+- Added support for multiple devices!
+  - The app now checks for changes at boot and before publishing
+  - This means that you can now update the website on one device and pick up where you left off on another
 
 ## 5.5.13-beta.1
-* Tweaked the release process so that it dosen't use a beta version of the ADGA dependency when deploying a release
+
+- Tweaked the release process so that it dosen't use a beta version of the ADGA dependency when deploying a release
 
 ## 5.5.12-beta.1
-* Fixed a bug causing changes to not be truncated on the history page for unpublished changes
+
+- Fixed a bug causing changes to not be truncated on the history page for unpublished changes
 
 ## 5.5.11-beta.1
-* Updated the ADGA dependency
-  * This significantly speeds up the syncing process when fetching the goats you own
+
+- Updated the ADGA dependency
+  - This significantly speeds up the syncing process when fetching the goats you own
 
 ## 5.5.10-beta.2
-* Reverted the scroll behavior as it wan't user-friendly
-* The box description is still hidden when editing to provide more space for the markdown editor
+
+- Reverted the scroll behavior as it wan't user-friendly
+- The box description is still hidden when editing to provide more space for the markdown editor
 
 ## 5.5.10-beta.1
-* Made markdown easier to read
-  * It now scrolls instead of wrapping
-  * The box description is now hidden when editing to provide more space for the markdown editor
+
+- Made markdown easier to read
+  - It now scrolls instead of wrapping
+  - The box description is now hidden when editing to provide more space for the markdown editor
 
 ## 5.5.9-beta.1
-* This is the proper implementation of the bug fixes in `5.5.6-beta.1`
+
+- This is the proper implementation of the bug fixes in `5.5.6-beta.1`
 
 ## 5.5.8-beta.1
-* Fixed a bug causing uploaded images to not be displayed on the homepage
+
+- Fixed a bug causing uploaded images to not be displayed on the homepage
 
 ## 5.5.7-beta.1
-* Fixed a bug causing the sync to fail if a goat isn't present in the CDCB database
+
+- Fixed a bug causing the sync to fail if a goat isn't present in the CDCB database
 
 ## 5.5.6-beta.1
-* Fixed a warning that would appear when syncing goats on a windows system after syncing on a Mac system
+
+- Fixed a warning that would appear when syncing goats on a windows system after syncing on a Mac system
 
 ## 5.5.5-beta.1
-* Removed the universal mac build as it was causing issues with the app
-  * You now need to select the correct build for your system
+
+- Removed the universal mac build as it was causing issues with the app
+  - You now need to select the correct build for your system
 
 ## 5.5.4-beta.1
-* The history page now limits the changes displayed to 30 lines
-  * This makes it significantly easier to navigate - the full list of changes can still be viewed by clicking
+
+- The history page now limits the changes displayed to 30 lines
+  - This makes it significantly easier to navigate - the full list of changes can still be viewed by clicking
 
 ## 5.5.3-beta.4
-* Removed the extra dependencies that were downloaded manually for Mac as they caused issues when constructing the `universal` build of the app
-* Fully reverted `5.5.3-beta.2` as it was not needed
+
+- Removed the extra dependencies that were downloaded manually for Mac as they caused issues when constructing the `universal` build of the app
+- Fully reverted `5.5.3-beta.2` as it was not needed
 
 ## 5.5.3-beta.3
-* Identified the root cause of the bug, which actually was caused by the lactation history update.
-* I am going to keep these previous fixes though, as they are still useful
+
+- Identified the root cause of the bug, which actually was caused by the lactation history update.
+- I am going to keep these previous fixes though, as they are still useful
 
 ## 5.5.3-beta.2
-* Configured the deploy process to manually download extra dependencies
+
+- Configured the deploy process to manually download extra dependencies
 
 ## 5.5.3-beta.1
-* Added an arm build mode for arm-based windows systems
+
+- Added an arm build mode for arm-based windows systems
 
 ## 5.5.1-beta.1
-* You can now view the price of your goats for sale from the goats page
+
+- You can now view the price of your goats for sale from the goats page
 
 ## 5.5.0-beta.2
-* Optimized lactation syncing by fetching the tests for each lactation in parallel
-  * This significantly reduces the time it takes to sync lactations, especially for goats with many lactations (originally ~7 seconds for a goat with 7 lactations, now ~3 seconds)
+
+- Optimized lactation syncing by fetching the tests for each lactation in parallel
+  - This significantly reduces the time it takes to sync lactations, especially for goats with many lactations (originally ~7 seconds for a goat with 7 lactations, now ~3 seconds)
 
 ## 5.5.0-beta.1
-* Added CDCB Support!
-  * This allows you to sync your milk test data straight from the CDCB website
-  * Currently, all lactations from milk test are synced, as well as the individual tests and the performance of each lactation (Somatic cell count is not currently synced)
-  * This is currently only available for does, but may be added for pedigrees in the future
+
+- Added CDCB Support!
+  - This allows you to sync your milk test data straight from the CDCB website
+  - Currently, all lactations from milk test are synced, as well as the individual tests and the performance of each lactation (Somatic cell count is not currently synced)
+  - This is currently only available for does, but may be added for pedigrees in the future
 
 ## 5.4.5-beta.1
-* The history page now color-codes any numbers or boolean (true/false) values
+
+- The history page now color-codes any numbers or boolean (true/false) values
 
 ## 5.4.4-beta.1
-* Fixed a bug causing an unregistered goat to become locked
+
+- Fixed a bug causing an unregistered goat to become locked
 
 ## 5.4.3-beta.3
-* Completely redesigned how images are managed for the goats
-  * Images are now automatically optimized when uploaded
-  * Simplified the UI so that it's just the image and an X to delete it
-  * You can now rearrange images by dragging and dropping them
-  * Images are now loaded in parallel and without blocking the UI
-  * Images added are now put at the start of the list, not the end
+
+- Completely redesigned how images are managed for the goats
+  - Images are now automatically optimized when uploaded
+  - Simplified the UI so that it's just the image and an X to delete it
+  - You can now rearrange images by dragging and dropping them
+  - Images are now loaded in parallel and without blocking the UI
+  - Images added are now put at the start of the list, not the end
 
 ## 5.4.3-beta.2
-* Uploaded images are now auto-resized to a max height of 400px (not to be confused with images uploaded for the goats themselves)
+
+- Uploaded images are now auto-resized to a max height of 400px (not to be confused with images uploaded for the goats themselves)
 
 ## 5.4.3-beta.1
-* Added an "Optimize Images" feature that significantly reduces the size of images, making the website load faster
+
+- Added an "Optimize Images" feature that significantly reduces the size of images, making the website load faster
 
 ## 5.4.2-beta.2
-* Reverted this change as it caused issues when pushing changes
+
+- Reverted this change as it caused issues when pushing changes
 
 ## 5.4.2-beta.1
-* Optimized the cloning process to only download the current state of the website, and not the entire history
+
+- Optimized the cloning process to only download the current state of the website, and not the entire history
 
 ## 5.4.1-beta.2
-* Fixed a bug causing the publish status not to be displayed
+
+- Fixed a bug causing the publish status not to be displayed
 
 ## 5.4.1-beta.1
-* Added more detailed statuses when cloning and publishing
+
+- Added more detailed statuses when cloning and publishing
 
 ## 5.4.0-beta.1
-* Added the ability to configure firebase
+
+- Added the ability to configure firebase
 
 ## 5.3.8-beta.1
-* Fixed node version inconsistency when releasing the app
+
+- Fixed node version inconsistency when releasing the app
 
 ## 5.3.7-beta.1
-* The live preview now automatically reloads when goats are edited!
+
+- The live preview now automatically reloads when goats are edited!
 
 ## 5.3.6-beta.2
-* Fixed a typeerror bug
+
+- Fixed a typeerror bug
 
 ## 5.3.6-beta.1
-* Updated electron to v36
+
+- Updated electron to v36
 
 ## 5.3.5-beta.3
-* Updated the marked dependency to match the one used in the live preview (v15.0.11)
+
+- Updated the marked dependency to match the one used in the live preview (v15.0.11)
 
 ## 5.3.5-beta.2
-* Some minor changes to the Markdown rendering
-  * It now uses a different color when restoring markdown from the cache
-  * Fixed a bug causing the markdown to be double rendered
+
+- Some minor changes to the Markdown rendering
+  - It now uses a different color when restoring markdown from the cache
+  - Fixed a bug causing the markdown to be double rendered
 
 ## 5.3.5-beta.1
-* Improved Markdown rendering
-  * It now uses the built-in compiler to immediately show a rendered output, then it updates it with the gfm once downloaded
+
+- Improved Markdown rendering
+  - It now uses the built-in compiler to immediately show a rendered output, then it updates it with the gfm once downloaded
 
 ## 5.3.4-beta.1
-* Fixed a bug causing drag-and-drop to not work for uploading images
+
+- Fixed a bug causing drag-and-drop to not work for uploading images
 
 ## 5.3.3-beta.1
-* Fixed a bug causing related goats to not be synced for goats for sale
+
+- Fixed a bug causing related goats to not be synced for goats for sale
 
 ## 5.3.2-beta.11
-* Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
+
+- Added the ability to stop the live preview once the server is starting (instead of having to wait until it fully boots)
 
 ## 5.3.2-beta.10
-* Users are now warned if dependencies need to be installed as it takes a while to install them
-* Improved the progress bar when starting the live preview
-* Fixed a bug causing the preview not to quit on Mac
+
+- Users are now warned if dependencies need to be installed as it takes a while to install them
+- Improved the progress bar when starting the live preview
+- Fixed a bug causing the preview not to quit on Mac
 
 ## 5.3.2-beta.9
-* Updated the Live Preview parsing to use built-in functions
+
+- Updated the Live Preview parsing to use built-in functions
 
 ## 5.3.2-beta.8
-* Enhanced the parsing of the Live Preview logs on Windows
+
+- Enhanced the parsing of the Live Preview logs on Windows
 
 ## 5.3.2-beta.7
-* Updated how the app detects if the live preview is running
-  * This will fix a bug causing the window to remain open on Windows
+
+- Updated how the app detects if the live preview is running
+  - This will fix a bug causing the window to remain open on Windows
 
 ## 5.3.2-beta.6
-* Hopefully fixed a bug causing the live preview to not quit after closing it on Windows
+
+- Hopefully fixed a bug causing the live preview to not quit after closing it on Windows
 
 ## 5.3.2-beta.5
-* Added a progress bar while the live preview is loading
-* implemented a temporary fix for the live preview only working once per boot on Windows
+
+- Added a progress bar while the live preview is loading
+- implemented a temporary fix for the live preview only working once per boot on Windows
 
 ## 5.3.2-beta.4
-* Fixed a bug causing the live preview to not work on Windows
-  * The good news is it was actually working, it just didn't know it
+
+- Fixed a bug causing the live preview to not work on Windows
+  - The good news is it was actually working, it just didn't know it
 
 ## 5.3.2-beta.3
-* Hopefully fixed the bug preventing the live preview from working on Windows
+
+- Hopefully fixed the bug preventing the live preview from working on Windows
 
 ## 5.3.2-beta.2
-* Some backend changes to make it easier to debug the app on Windows
+
+- Some backend changes to make it easier to debug the app on Windows
 
 ## 5.3.2-beta.1
-* Added Support for the Live Preview!
+
+- Added Support for the Live Preview!
 
 ## 5.3.1-beta.3
-* Fixed a bug that would cause images to sometimes not be inserted correctly on Windows
+
+- Fixed a bug that would cause images to sometimes not be inserted correctly on Windows
 
 ## 5.3.1-beta.2
-* Fixed a bug that would cause images added to not show up as unsaved changes
+
+- Fixed a bug that would cause images added to not show up as unsaved changes
 
 ## 5.3.1-beta.1
-* Added the ability to upload images! This is currently supported on the homepage and in the sale terms popup
-  * Let me know if you would like this feature added to other areas of the website
+
+- Added the ability to upload images! This is currently supported on the homepage and in the sale terms popup
+  - Let me know if you would like this feature added to other areas of the website
 
 ## 5.3.0-beta.1
-* Added Death Dates to Goats that are deceased
+
+- Added Death Dates to Goats that are deceased
 
 ## 5.2.0-beta.1
-* Added support for Awards!
-* Significant improvements to the Title Case algorithm
+
+- Added support for Awards!
+- Significant improvements to the Title Case algorithm
 
 ## 5.1.0-beta.1
-* Simplified the farm names required to be configured. Instead of a menubar, home, and tab name, there is now just a full name and a short name
+
+- Simplified the farm names required to be configured. Instead of a menubar, home, and tab name, there is now just a full name and a short name
 
 ## 5.0.2-beta.1
-* Added a fallback markdown compiler for when the GitHub API rate limit is reached or you are offline
+
+- Added a fallback markdown compiler for when the GitHub API rate limit is reached or you are offline
 
 ## 5.0.1-beta.1
-* Added a gender dropdown for unregistered goats
-* Added suggestions when looking up a goat's dam or sire
-* Added a dropdown for goats for sale to specify them as pets
-* Added the ability to specify a price for goats for sale
-* Added the ability to specify sale terms for goats for sale
+
+- Added a gender dropdown for unregistered goats
+- Added suggestions when looking up a goat's dam or sire
+- Added a dropdown for goats for sale to specify them as pets
+- Added the ability to specify a price for goats for sale
+- Added the ability to specify sale terms for goats for sale
 
 ## 5.0.0-beta.1
-* Added support for a For Sale page
-  * TODO: Add a designated price section and sale terms popup
+
+- Added support for a For Sale page
+  - TODO: Add a designated price section and sale terms popup
 
 ## 4.1.5-beta.1
-* Fixed a styling issue when scrolling through the kidding schedule
+
+- Fixed a styling issue when scrolling through the kidding schedule
 
 ## 4.1.5-beta.1
-* Added the ability to customize the text at the top of the kidding schedule
+
+- Added the ability to customize the text at the top of the kidding schedule
 
 ## 4.1.4-beta.1
-* Fixed a bug that caused related goats not to be fetched for references (currently currently fetches related goats for references even if the references page is disabled)
+
+- Fixed a bug that caused related goats not to be fetched for references (currently currently fetches related goats for references even if the references page is disabled)
 
 ## 4.1.3-beta.1
-* Updated the history page so that it will automatically refresh when changes are detected
+
+- Updated the history page so that it will automatically refresh when changes are detected
 
 ## 4.1.2-beta.3
-* Updated Electron Forge to v7.6 to comply with Electron v34
+
+- Updated Electron Forge to v7.6 to comply with Electron v34
 
 ## 4.1.2-beta.2
-* Updated Electron to v34
-* Updated Node.js to v20.11
+
+- Updated Electron to v34
+- Updated Node.js to v20.11
 
 ## 4.1.2-beta.1
-* A lot of behind-the-scenes changes to improve the performance & security of the app
-  * Updated Angular from v17 to v19
-  * Updated Typescript
-  * Preparing to update Node.js
-  * Preparing to update Electron
+
+- A lot of behind-the-scenes changes to improve the performance & security of the app
+  - Updated Angular from v17 to v19
+  - Updated Typescript
+  - Preparing to update Node.js
+  - Preparing to update Electron
 
 ## 4.1.1-beta.1
-* Fixed a bug that would cause the search results for adding a goat to be hidden
+
+- Fixed a bug that would cause the search results for adding a goat to be hidden
 
 ## 4.1.0-beta.1
-* The kidding schedule now acceses reference goats when identifying dams and sires
-  * This currently works even if you have disabled the references page on your site, that behavior may change in the future
+
+- The kidding schedule now acceses reference goats when identifying dams and sires
+  - This currently works even if you have disabled the references page on your site, that behavior may change in the future
 
 ## 4.0.0-beta.1
-* Added Support for references!
-  * This is intended for animals that are not in the herd but are related to the herd (animals you have on lease, deceased animals that still have a genetic impact on your herd, etc.)
+
+- Added Support for references!
+  - This is intended for animals that are not in the herd but are related to the herd (animals you have on lease, deceased animals that still have a genetic impact on your herd, etc.)
 
 ## 3.2.0-beta.2
-* Fixed a bug causing changes to be lost when saving too much at a time on Windows
+
+- Fixed a bug causing changes to be lost when saving too much at a time on Windows
 
 ## 3.2.0-beta.1
-* Added Support To Sync Linear Appraisals!
-  * Currently, you can only sync appraisals from ADGA, manual entry will be added in the future
+
+- Added Support To Sync Linear Appraisals!
+  - Currently, you can only sync appraisals from ADGA, manual entry will be added in the future
 
 ## 3.1.1-beta.1
-* Redesigned the windows for editing goats
-  * It's now easier to modify the goats info without it being overidden by the next sync
-  * You can now edit the capatalization of the name and owner of related goats
+
+- Redesigned the windows for editing goats
+  - It's now easier to modify the goats info without it being overidden by the next sync
+  - You can now edit the capatalization of the name and owner of related goats
 
 ## 3.1.0-beta.1
-* Added support for socials!
-  * This currently includes [Facebook](https://facebook.com), [Instagram](https://instagram.com), and [Threads](https://threads.net)
+
+- Added support for socials!
+  - This currently includes [Facebook](https://facebook.com), [Instagram](https://instagram.com), and [Threads](https://threads.net)
 
 ## 3.0.2-beta.1
-* Fixed the kidding schedule suggesting `Invalid Date` if the date bred or due are not proper dates
-* Updated the kidding schedule to show the gestation duration for the due & kidded dates
+
+- Fixed the kidding schedule suggesting `Invalid Date` if the date bred or due are not proper dates
+- Updated the kidding schedule to show the gestation duration for the due & kidded dates
 
 ## 3.0.1-beta.3
-* Added a loading animation to the history page
-* Fixed the local changes section showing up even if there are no changes
+
+- Added a loading animation to the history page
+- Fixed the local changes section showing up even if there are no changes
 
 ## 3.0.1-beta.1
-* Added a History tab!
+
+- Added a History tab!
 
 ## 3.0.0-beta.6
-* Fixed a bug causing the kidding schedule to not show dates if the date is invalid
+
+- Fixed a bug causing the kidding schedule to not show dates if the date is invalid
 
 ## 3.0.0-beta.5
-* Reverted some unnessacary changes from the previous version
+
+- Reverted some unnessacary changes from the previous version
 
 ## 3.0.0-beta.4
-* Fixed a bug causing the kidding schedule to not save any info within the breedings
+
+- Fixed a bug causing the kidding schedule to not save any info within the breedings
 
 ## 3.0.0-beta.3
-* Increased the height of the breedings so that more can be seen at a time
+
+- Increased the height of the breedings so that more can be seen at a time
 
 ## 3.0.0-beta.2
-* Added a separator before the 'Add "x" To Dictionary' menu item
+
+- Added a separator before the 'Add "x" To Dictionary' menu item
 
 ## 3.0.0-beta.1
-* Added support for a Kidding Schedule!
-  * Includes a built-in gestation calculator (currently uses 145 days for Nigerian Dwarfs & 150 days for all other breeds)
-  * Displays the age of your doe when was bred & is due
+
+- Added support for a Kidding Schedule!
+  - Includes a built-in gestation calculator (currently uses 145 days for Nigerian Dwarfs & 150 days for all other breeds)
+  - Displays the age of your doe when was bred & is due
 
 ## 2.1.14-beta.1
-* Fixed the version reported when installing web-ui updates
+
+- Fixed the version reported when installing web-ui updates
 
 ## 2.1.13-beta.1
-* Added support for spell check!
+
+- Added support for spell check!
 
 ## 2.1.12-beta.1
-* Fixed a bug on Mac caused by Apple updating their license agreement
+
+- Fixed a bug on Mac caused by Apple updating their license agreement
 
 ## 2.1.11-beta.1
-* Added a Markdown indicator when text will be rendered as Markdown (clicking on it opens the formatting docs)
+
+- Added a Markdown indicator when text will be rendered as Markdown (clicking on it opens the formatting docs)
 
 ## 2.1.10-beta.1
-* Fixed a bug causing the commit assosciated with releases to be unrelated
+
+- Fixed a bug causing the commit assosciated with releases to be unrelated
 
 ## 2.1.9-beta.2
-* Fixed a bug when calculating the progress while publishing
-  * The progress bar also appears for 1 second after publishing
+
+- Fixed a bug when calculating the progress while publishing
+  - The progress bar also appears for 1 second after publishing
 
 ## 2.1.9-beta.1
-* Improved the publish button progress bar
-* Fixed a bug caused by clicking links in your goat's descriptions
+
+- Improved the publish button progress bar
+- Fixed a bug caused by clicking links in your goat's descriptions
 
 ## 2.1.8-beta.1
-* Moved the `Switch Website's` button to the settings page
-* Made the ID Blacklist hidden by default
+
+- Moved the `Switch Website's` button to the settings page
+- Made the ID Blacklist hidden by default
 
 ## 2.1.7-beta.1
-* Improved the publish button!
-  * The publish button now shows a progress bar when publishing
-  * It is better at handling errors
+
+- Improved the publish button!
+  - The publish button now shows a progress bar when publishing
+  - It is better at handling errors
 
 ## 2.1.6-beta.1
-* Fixed a bug causing changes not to be detected when importing a favicon
-* Updated TitleCase Algorithm
-  * Added RiseUpFromTheAsh, 8SR, LikeA, and FamFarm
+
+- Fixed a bug causing changes not to be detected when importing a favicon
+- Updated TitleCase Algorithm
+  - Added RiseUpFromTheAsh, 8SR, LikeA, and FamFarm
 
 ## 2.1.5-beta.1
-* Added support for Markdown!
-  * When configuring your home description or a goat's description, the app will preview the markdown (NOTE: Requests are limited to 60 per hour! However, if you publish during this time, it will still be rendered.)
+
+- Added support for Markdown!
+  - When configuring your home description or a goat's description, the app will preview the markdown (NOTE: Requests are limited to 60 per hour! However, if you publish during this time, it will still be rendered.)
 
 ## 2.1.4-beta.2
-* Moved documentation to https://github.com/DigiGoat 
-* When quitting the app with unsaved changes, the app will finish quitting after displaying dialog
+
+- Moved documentation to https://github.com/DigiGoat
+- When quitting the app with unsaved changes, the app will finish quitting after displaying dialog
 
 ## 2.1.4-beta.1
-* Added missing photos for README
+
+- Added missing photos for README
 
 ## 2.1.3-beta.7
-* Added a README for documentation!
+
+- Added a README for documentation!
 
 ## 2.1.3-beta.6
-* Added a warning dialog when deleting a goat
+
+- Added a warning dialog when deleting a goat
 
 ## 2.1.3-beta.5
-* Added The Ability To Add Images Via Drag + Drop!
+
+- Added The Ability To Add Images Via Drag + Drop!
 
 ## 2.1.3-beta.4
-* Proper implementation of `2.1.3-beta.3`
+
+- Proper implementation of `2.1.3-beta.3`
 
 ## 2.1.3-beta.3
-* Images now retain their file extension
+
+- Images now retain their file extension
 
 ## 2.1.3-beta.2
-* Fixed a bug causing the app to crash on windows when adding images to goats
+
+- Fixed a bug causing the app to crash on windows when adding images to goats
 
 ## 2.1.3-beta.1
-* Added the ability to select a primary image for a goat
-  * This is the image that will be displayed on the does/bucks page
+
+- Added the ability to select a primary image for a goat
+  - This is the image that will be displayed on the does/bucks page
 
 ## 2.1.2-beta.1
-* Added the ability to rearrange goats!
-* Fixed a bug causing the dropdown showing goat search results to be hidden
+
+- Added the ability to rearrange goats!
+- Fixed a bug causing the dropdown showing goat search results to be hidden
 
 ## 2.1.1-beta.1
-* Added Support To Download Images From A Link!
+
+- Added Support To Download Images From A Link!
 
 ## 2.1.0-beta.1
-* Added owner accounts to related does
+
+- Added owner accounts to related does
 
 ## 2.0.0-beta.1
-* Added related goats!
-  * This allows you to have a pedigree for your does and bucks
-* Fixed a very rare bug that would cause a minor crash when deleting a goat
-* When syncing, goats are now ordered from oldest to youngest (originally it was youngest to oldest)
-* Updated Name Parser
-* App now catches rare error caused by a git hangup and restarts
-* When syncing, goats now show up in the list quicker (before they are all synced individually)
+
+- Added related goats!
+  - This allows you to have a pedigree for your does and bucks
+- Fixed a very rare bug that would cause a minor crash when deleting a goat
+- When syncing, goats are now ordered from oldest to youngest (originally it was youngest to oldest)
+- Updated Name Parser
+- App now catches rare error caused by a git hangup and restarts
+- When syncing, goats now show up in the list quicker (before they are all synced individually)
 
 ## 1.0.2-beta.1
-* Fixed a bug when versioning on windows
+
+- Fixed a bug when versioning on windows
 
 ## 1.0.1-beta.1
-* Starting to investigate a bug that results in an incorrect version being reported by the pre-check
+
+- Starting to investigate a bug that results in an incorrect version being reported by the pre-check
 
 ## 1.0.0-beta.5
-* Fixed a bug causing no changes to be displayed under a release
+
+- Fixed a bug causing no changes to be displayed under a release
 
 ## 1.0.0-beta.4
-* Fixed a bug causing the full changelog to be displayed in the release description
+
+- Fixed a bug causing the full changelog to be displayed in the release description
 
 ## 1.0.0-beta.3
-* Fixed some bugs in the release process
+
+- Fixed some bugs in the release process
 
 ## 1.0.0-beta.2
-* Fixed some bugs related to the release process
+
+- Fixed some bugs related to the release process
 
 ## 1.0.0-beta.1
-* The first release of DigiGoat!
+
+- The first release of DigiGoat!
