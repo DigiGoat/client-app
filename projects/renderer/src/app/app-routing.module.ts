@@ -13,7 +13,8 @@ const routes: Routes = [
   { path: 'login', loadChildren: () => import('./windows/login/login.module').then(m => m.LoginModule) },
   { path: 'image', loadChildren: () => import('./windows/image/image.module').then(m => m.ImageModule) },
   { path: 'custom-page', loadChildren: () => import('./windows/custom-page/custom-page.module').then(m => m.CustomPageModule) },
-  { path: 'settings', loadChildren: () => import('./windows/settings/settings.module').then(m => m.SettingsModule) }
+  { path: 'settings', loadChildren: () => import('./windows/settings/settings.module').then(m => m.SettingsModule) },
+  { path: 'kidding', loadChildren: () => import('./windows/kidding/kidding.module').then(m => m.KiddingModule) }
 ];
 
 @NgModule({

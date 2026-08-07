@@ -1,16 +1,17 @@
 import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { booleanAttribute, Component, EventEmitter, Input, Output, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal, type OnInit } from '@angular/core';
 import type { Observable } from 'rxjs';
-import type { Goat, GoatType } from '../../../../../../../shared/services/goat/goat.service';
+import type { GoatType } from '../../../../../../../shared/services/goat/goat.service';
 import { DialogService } from '../../../../services/dialog/dialog.service';
+import type { GOAT } from '../../../../services/goat/goat.service';
 import { WindowService } from '../../../../services/window/window.service';
 
-
+type Goat = Partial<Pick<GOAT, 'name' | 'normalizeId' | 'nickname' | 'price' | 'id' | 'sex'>>;
 @Component({
   selector: 'app-goat-list',
   templateUrl: './goat-list.component.html',
   styleUrl: './goat-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class GoatListComponent implements OnInit {
@@ -27,14 +28,16 @@ export class GoatListComponent implements OnInit {
   @Output() rearranged = new EventEmitter<CdkDragDrop<Goat[]>>();
   @Input() filter?: (goat: Goat) => boolean;
   @Input() listName?: ListLocations;
-  @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number }>();
-  goats: Goat[] = [];
+  @Output() moveGoat = new EventEmitter<{ goat: Goat; location: ListLocations; keepCopy: boolean; index: number; }>();
+  goats = signal<Goat[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this._goats.subscribe({
       next: goats => {
-        this.goats = goats;
-        //! WARNING: THIS WILL CAUSE THE APP TO CRASH! - this.cdr.detectChanges(); // Notify Angular that the component's data has changed
+        this.loading.set(true);
+        this.goats.set(goats);
+        this.loading.set(false);
       }
     });
   }
@@ -45,7 +48,7 @@ export class GoatListComponent implements OnInit {
 
   async deleteGoat(event: MouseEvent, index: number) {
     event.stopPropagation();
-    const action = await this.dialogService.showMessageBox({ message: `Are you sure you want to delete ${this.goats[index].nickname || this.goats[index].name || 'this goat'}?`, buttons: ['Yes', 'No'], type: 'warning' });
+    const action = await this.dialogService.showMessageBox({ message: `Are you sure you want to delete ${this.goats()[index].nickname || this.goats()[index].name || 'this goat'}?`, buttons: ['Yes', 'No'], type: 'warning' });
     if (action.response === 0) {
       this.deleteIndex.emit(index);
     }
@@ -56,11 +59,11 @@ export class GoatListComponent implements OnInit {
   }
   openImages(event: MouseEvent, index: number) {
     event.stopPropagation();
-    const { normalizeId, name, nickname } = this.goats[index];
+    const { normalizeId, name, nickname } = this.goats()[index];
     this.windowService.openImages([normalizeId, name, nickname].filter(param => param !== undefined) as string[]);
   }
   lookupFilter = (goat: Goat) => {
-    if (this.goats.find(_goat => _goat.id === goat.id)) {
+    if (this.goats().find(_goat => _goat.id === goat['id'])) {
       return false;
     } else if (this.filter) {
       return this.filter(goat);
@@ -69,13 +72,13 @@ export class GoatListComponent implements OnInit {
     }
   };
   rearrange(event: CdkDragDrop<Goat[]>) {
-    moveItemInArray(this.goats, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.goats(), event.previousIndex, event.currentIndex);
     this.rearranged.emit(event);
   }
 
   async _moveGoat(event: MouseEvent, index: number) {
     event.stopPropagation();
-    const goat = this.goats[index];
+    const goat = this.goats()[index] as Goat;
     const options = ['References', 'For Sale', 'Cancel'].filter(option => option != this.listName);
     if (goat.sex === 'Female' && this.listName !== 'Does') {
       options.unshift('Does');

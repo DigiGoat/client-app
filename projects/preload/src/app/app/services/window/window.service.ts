@@ -17,5 +17,6 @@ export const WindowService: WindowServiceType = {
   openImages: (searchQueries) => ipcRenderer.invoke('window:openImages', searchQueries),
   refreshMain: () => ipcRenderer.invoke('window:refreshMain'),
   openImageOptimizer: () => ipcRenderer.invoke('window:openImageOptimizer'),
-  openCustomPage: (index) => ipcRenderer.invoke('window:openCustomPage', index)
+  openCustomPage: (index) => ipcRenderer.invoke('window:openCustomPage', index),
+  openKidding: (index) => ipcRenderer.invoke('window:openKidding', index),
 };

@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, type OnInit } from '@angular/core';
 import { ADGAService } from '../../services/adga/adga.service';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -8,7 +8,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class LoginComponent implements OnInit {
@@ -18,24 +18,24 @@ export class LoginComponent implements OnInit {
   private diffService = inject(DiffService);
   private appService = inject(AppService);
 
-  username = '';
-  password = '';
-  id?: number;
-  status: 'Login' | 'Logging In...' | 'Login Failed' | 'Success!' = 'Login';
-  name?: string;
+  username = signal('');
+  password = signal('');
+  id = signal<number | undefined>(undefined);
+  status = signal<'Login' | 'Logging In...' | 'Login Failed' | 'Success!'>('Login');
+  name = signal('');
   async login() {
     const passwordShowing = this.showPassword;
     try {
       this.windowService.setClosable(false);
-      this.status = 'Logging In...';
+      this.status.set('Logging In...');
       this.showPassword = false;
-      const account = await this.adgaService.login(this.username, this.password, this.id);
-      this.name = this.diffService.titleCase(account.name);
-      this.status = 'Success!';
+      const account = await this.adgaService.login(this.username(), this.password(), this.id());
+      this.name.set(this.diffService.titleCase(account.name));
+      this.status.set('Success!');
       this.windowService.setClosable(true);
       setTimeout(this.windowService.close, 1000);
     } catch (e) {
-      this.status = 'Login Failed';
+      this.status.set('Login Failed');
       this.windowService.setClosable(true);
       const message = (e as { message: string; }).message;
       if (message.includes('ETIMEDOUT')) {
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         await this.dialogService.showMessageBox({ message: 'Login Failed!', type: 'error', detail: message });
 
       }
-      setTimeout(() => this.status = 'Login', 2000);
+      setTimeout(() => this.status.set('Login'), 2000);
     } finally {
       this.showPassword = passwordShowing;
     }
@@ -60,9 +60,9 @@ export class LoginComponent implements OnInit {
   async ngOnInit() {
     try {
       const account = await this.adgaService.getAccount();
-      this.username = account?.username ?? '';
-      this.password = account?.password ?? '';
-      this.id = account?.id;
+      this.username.set(account?.username ?? '');
+      this.password.set(account?.password ?? '');
+      this.id.set(account?.id);
     } catch (e) {
       console.warn('Error Reading Account:', e);
     }

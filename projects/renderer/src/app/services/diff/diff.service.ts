@@ -110,7 +110,7 @@ export class DiffService {
     }
     return parts.join('');
   }
-  softMerge<T extends Record<string, unknown>>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
+  softMerge<T extends Record<string, unknown>>(obj1: T, obj2: Partial<T>): T {
     obj1 = structuredClone(obj1 ?? {});
     obj2 = structuredClone(obj2 ?? {});
     const obj3 = obj1;
@@ -120,7 +120,7 @@ export class DiffService {
       } else if (typeof obj2[key] === 'object' && obj2[key] !== null) {
         obj3[key] = this.softMerge(obj1[key] ?? {}, obj2[key] ?? {}) as T[Extract<keyof T, string>];
       } else {
-        obj3[key] = obj2[key];
+        obj3[key] = obj2[key] || '' as T[Extract<keyof T, string>];
       }
     }
     return obj3;

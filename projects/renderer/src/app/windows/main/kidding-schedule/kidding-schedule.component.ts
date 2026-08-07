@@ -1,166 +1,71 @@
-import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import type { Goat, Kidding } from '../../../../../../shared/services/goat/goat.service';
-import { ConfigService } from '../../../services/config/config.service';
-import { DialogService } from '../../../services/dialog/dialog.service';
-import { DiffService } from '../../../services/diff/diff.service';
-import { GitService } from '../../../services/git/git.service';
-import { GoatService } from '../../../services/goat/goat.service';
+import { type CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Component, computed, inject, signal, type OnInit } from '@angular/core';
+import { CONFIG, ConfigService } from '../../../services/config/config.service';
+import { GoatService, KIDDING } from '../../../services/goat/goat.service';
 import { WindowService } from '../../../services/window/window.service';
+import { SaveableStrategy } from '../../../strategies/saveable/saveable.strategy';
 
 @Component({
   selector: 'app-kidding-schedule',
+  standalone: false,
   templateUrl: './kidding-schedule.component.html',
   styleUrl: './kidding-schedule.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
 })
-export class KiddingScheduleComponent implements OnInit {
+export class KiddingScheduleComponent extends SaveableStrategy implements OnInit {
+  goatService = inject(GoatService);
   configService = inject(ConfigService);
-  private diffService = inject(DiffService);
-  private goatService = inject(GoatService);
-  private cdr = inject(ChangeDetectorRef);
-  private gitService = inject(GitService);
-  private windowService = inject(WindowService);
-  private dialogService = inject(DialogService);
+  windowService = inject(WindowService);
+  private savedConfig = signal(CONFIG);
+  private config = signal(CONFIG);
+  kiddingSchedule = signal<KIDDING[]>([]);
 
-  private oldBreedings: Kidding[] = [];
-  public breedings: Kidding[] = [];
-  public does: Goat[] = [];
-  public bucks: Goat[] = [];
-  async ngOnInit() {
-    this.breedings = await this.goatService.getKiddingSchedule();
-    this.goatService.kiddingSchedule.subscribe({
-      next: breedings => {
-        this.oldBreedings = breedings;
-        this.cdr.detectChanges();
-      }
+  private configLoading = signal(true);
+  private kiddingScheduleLoading = signal(true);
+  loading = computed(() => this.configLoading() || this.kiddingScheduleLoading());
+
+  ngOnInit(): void {
+    this.configService.getConfig().then(config => {
+      this.configLoading.set(true);
+      this.savedConfig.set(config);
+      this.config.set(config);
+      this.configLoading.set(false);
     });
-    this.windowService.onsave = async () => {
-      const action = (await this.dialogService.showMessageBox({ message: 'Unsaved Changes!', detail: 'Would you like to continue anyway?', buttons: ['Save Changes', 'Close Without Saving', 'Cancel'], defaultId: 0 })).response;
-      switch (action) {
-        case 0:
-          await this.saveChanges();
-          await this.windowService.close(true);
-          break;
-        case 1:
-          await this.windowService.close(true);
-          break;
-      }
+
+    this.configService.onchange = config => {
+      this.configLoading.set(true);
+      this.savedConfig.set(config);
+      this.config.set(config);
+      this.configLoading.set(false);
     };
-    this.goatService.getDoes().then(does => this.does.push(...does));
-    this.goatService.getBucks().then(bucks => this.bucks.push(...bucks));
-    this.goatService.getReferences().then(references => {
-      this.does.push(...references.filter(goat => goat.sex === 'Female'));
-      this.bucks.push(...references.filter(goat => goat.sex === 'Male'));
+    this.goatService.kiddingSchedule.subscribe(kiddingSchedule => {
+      this.kiddingScheduleLoading.set(true);
+      this.kiddingSchedule.set(kiddingSchedule);
+      this.kiddingScheduleLoading.set(false);
     });
   }
-  rearrange(event: CdkDragDrop<Kidding[]>) {
-    moveItemInArray(this.breedings, event.previousIndex, event.currentIndex);
+
+  get kiddingScheduleEnabled() {
+    return this.config().kiddingSchedule;
+  }
+  set kiddingScheduleEnabled(enabled: boolean) {
+    this.config.update(oldConfig => ({ ...oldConfig, kiddingSchedule: enabled }));
   }
 
-  calculateDueDate(date?: string, dam?: string, invert?: boolean) {
-    if (!date || !Date.parse(date)) {
-      return;
-    }
-    let days = 150;
-    if (dam && dam.startsWith('PD')) {
-      //Nigerian Dwarf - 145 day gestation
-      days = 145;
-    }
-    if (invert) {
-      days = -days;
-    }
-    const oldDate = new Date(date);
-    const newDate = new Date(oldDate.getTime() + days * 24 * 60 * 60 * 1000);
-    return newDate.toString();
-  }
-  calculateGestation(firstDate?: string, secondDate?: string) {
-    if (!firstDate || !Date.parse(firstDate) || !secondDate || !Date.parse(secondDate)) {
-      return;
-    }
-    const first = new Date(firstDate);
-    const second = new Date(secondDate);
-    const diff = Math.abs(first.getTime() - second.getTime());
-    const days = Math.round(diff / (1000 * 60 * 60 * 24));
-    return `(${days} days)`;
-  }
-  getDiff(index: number, param: keyof Kidding) {
-    if (this.oldBreedings[index] === undefined) return true;
-    return param in this.diffService.diff(this.oldBreedings[index], this.breedings[index]);
-  }
-  getChanges() {
-    const changes = this.getKiddingScheduleChanges() || this.getConfigChanges();
-    this.windowService.setUnsavedChanges(changes);
-    return changes;
-  }
+  unsavedChanges = computed(() => this.savedConfig().kiddingSchedule !== this.config().kiddingSchedule);
+  saveChanges = async () => {
+    await this.configService.saveConfig(this.savedConfig(), this.config());
+  };
 
-  getKiddingScheduleChanges() {
-    const changes = JSON.stringify(this.oldBreedings) !== JSON.stringify(this.breedings);
-    return changes;
+  openKidding(index: number) {
+    this.windowService.openKidding(index);
   }
-  getConfigChanges() {
-    const changes = this.configService.unsavedChanges;
-    return changes;
+  deleteKidding(_event: MouseEvent, index: number) {
+    this.goatService.deleteKidding(index);
   }
-  async saveChanges() {
-    if (this.configService.unsavedChanges) {
-      await this.configService.saveChanges();
-    }
-    if (!this.getKiddingScheduleChanges()) {
-      return;
-    }
-    const diffMessage = ['Updated Kidding Schedule'];
-    const breedingLength = this.breedings.length;
-    const oldBreedingLength = this.oldBreedings.length;
-    for (let i = 0; i < breedingLength; i++) {
-      if (i >= oldBreedingLength) {
-        diffMessage.push(`Added Breeding ${i}`, ...this.diffService.commitMsg({}, this.breedings[i]).map(d => `${this.diffService.spaces}${d}`));
-      } else {
-        const diff = this.diffService.commitMsg(this.oldBreedings[i], this.breedings[i]);
-        if (diff.length) {
-          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `${this.diffService.spaces}${d}`));
-        }
-      }
-    }
-    for (let i = breedingLength; i < oldBreedingLength; i++) {
-      if (i >= breedingLength) {
-        diffMessage.push(`Removed Breeding ${i}`);
-      } else {
-        const diff = this.diffService.commitMsg(this.oldBreedings[i], this.breedings[i]);
-        if (diff.length) {
-          diffMessage.push(`Updated Breeding ${i}`, ...diff.map(d => `${this.diffService.spaces}${d}`));
-        }
-      }
-    }
-    await this.goatService.setKiddingSchedule(this.breedings);
-    await this.gitService.commitKiddingSchedule(diffMessage);
+  rearrangeKidding(event: CdkDragDrop<KIDDING[]>) {
+    this.goatService.rearrangeKiddingSchedule(event);
   }
-  formatGoat(id: string, goats?: Goat[], bredDate?: string, dueDate?: string) {
-    const goat = goats?.find(goat => goat.normalizeId === id);
-    if (goat) {
-      const datePipe = new DatePipe('en-US');
-      let html = '<div class="card color-scheme-quaternary"><div class="card-body">';
-      if (goat.name) {
-        html += `<h5 class="card-title">${goat.name}</h5>`;
-      }
-      if (goat.dateOfBirth) {
-        html += `<h6 class="card-subtitle mb-2 text-body-secondary">Born: ${datePipe.transform(goat.dateOfBirth, 'longDate')}</h6>`;
-        if (bredDate && Date.parse(bredDate)) {
-          const years = Math.floor((new Date(bredDate).getTime() - new Date(goat.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365));
-          const months = Math.floor((new Date(bredDate).getTime() - new Date(goat.dateOfBirth).getTime() - (years * 1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-          html += `<p class="card-text text-body-secondary">Age When Bred: ${years} year${years !== 1 ? 's' : ''} and ${months} month${months !== 1 ? 's' : ''}</p>`;
-        }
-        if (dueDate && Date.parse(dueDate)) {
-          const years = Math.floor((new Date(dueDate).getTime() - new Date(goat.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365));
-          const months = Math.floor((new Date(dueDate).getTime() - new Date(goat.dateOfBirth).getTime() - (years * 1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-          html += `<p class="card-text text-body-secondary">Age When Due: ${years} year${years !== 1 ? 's' : ''} and ${months} month${months !== 1 ? 's' : ''}</p>`;
-        }
-      }
-      html += '</div></div>';
-      return html;
-    }
-    return '';
+  addKidding() {
+    this.goatService.addKidding({});
   }
 }

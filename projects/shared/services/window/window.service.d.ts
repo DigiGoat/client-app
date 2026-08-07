@@ -16,4 +16,5 @@ export interface WindowService {
   refreshMain: () => Promise<void>;
   openImageOptimizer: () => Promise<void>;
   openCustomPage: (index: number) => Promise<void>;
+  openKidding: (index: number) => Promise<void>;
 }

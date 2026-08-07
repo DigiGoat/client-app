@@ -1,8 +1,8 @@
-import { Directive, ElementRef, Input, type OnDestroy, type OnInit, inject } from '@angular/core';
+import { Directive, ElementRef, inject, Input, type OnDestroy, type OnInit } from '@angular/core';
 import type { Dropdown } from 'bootstrap';
-import type { Goat } from '../../../../../shared/services/goat/goat.service';
-import { GoatService } from '../../services/goat/goat.service';
+import { GoatService, type GOAT } from '../../services/goat/goat.service';
 
+type GoatSearchGoat = Partial<Pick<GOAT, 'name' | 'normalizeId'>>;
 @Directive({
   selector: 'input[goat-search]',
   standalone: false
@@ -19,7 +19,9 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
   private inputHandler?: () => void;
   private focusHandler?: () => void;
   private blurHandler?: () => void;
-  @Input({ alias: 'goat-search' }) goats?: Goat[] | 'does' | 'bucks';
+  @Input({ alias: 'goat-search' }) goats?: GoatSearchGoat[] | 'does' | 'bucks';
+  @Input({ alias: 'goat-search-output' }) output: (typeof this.goats extends (infer U)[] ? keyof U : keyof GoatSearchGoat) = 'normalizeId';
+  private nameCaption = this.output === 'name' ? 'normalizeId' : (this.output || 'normalizeId');
   async ngOnInit() {
     this.input.setAttribute('data-bs-toggle', 'dropdown');
     this.input.classList.add('dropdown-toggle');
@@ -41,10 +43,10 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
     this.list.innerHTML = '';
     if (this.goats === 'does') {
       this.goats = [];
-      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getDoes()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Female')))()]);
+      await Promise.all([(async () => (this.goats as GoatSearchGoat[]).push(...await this.goatService.getDoes()))(), (async () => (this.goats as Partial<GoatSearchGoat>[]).push(...(await this.goatService.getReferences()).filter(goat => goat['sex'] === 'Female')))()]);
     } else if (this.goats === 'bucks') {
       this.goats = [];
-      await Promise.all([(async () => (this.goats as Goat[]).push(...await this.goatService.getBucks()))(), (async () => (this.goats as Goat[]).push(...(await this.goatService.getReferences()).filter(goat => goat.sex === 'Male')))()]);
+      await Promise.all([(async () => (this.goats as GoatSearchGoat[]).push(...await this.goatService.getBucks()))(), (async () => (this.goats as Partial<GoatSearchGoat>[]).push(...(await this.goatService.getReferences()).filter(goat => goat['sex'] === 'Male')))()]);
     }
     if (this.goats?.length) {
       const matches = this.goats.filter(doe => doe.normalizeId?.toLowerCase().includes(this.input.value.toLowerCase()));
@@ -54,7 +56,7 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
         const button = this.document.createElement('button');
         button.classList.add('dropdown-item', 'color-scheme-quaternary');
         button.addEventListener('mousedown', () => {
-          this.input.value = match.normalizeId ?? '';
+          this.input.value = match[this.output] ?? '';
           this.input.dispatchEvent(new Event('input'));
         });
 
@@ -64,7 +66,7 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
 
         const id = this.document.createElement('div');
         id.classList.add('fw-light');
-        id.innerHTML = match.normalizeId?.replace(new RegExp(`(${this.input.value})`, 'ig'), '<span class="text-info">$1</span>') ?? '';
+        id.innerHTML = match[this.nameCaption]?.replace(new RegExp(`(${this.input.value})`, 'ig'), '<span class="text-info">$1</span>') ?? '';
 
         button.appendChild(name);
         button.appendChild(id);

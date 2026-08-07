@@ -12,7 +12,10 @@
       "url": "http://localhost:4200",
       "sourceMaps": true,
       "timeout": 10000,
-      "postDebugTask": "Debug"
+      "postDebugTask": "Debug",
+      "outFiles": [
+        "${workspaceFolderBasename}/dist/renderer/**/*.js"
+      ]
     },
     {
       "name": "Main",
@@ -21,17 +24,25 @@
       //"protocol": "inspector",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "program": "${workspaceFolder}/projects/main/src/main.ts",
       "runtimeArgs": [
         "--serve",
         ".",
         "--remote-debugging-port=9876",
-        "--trace-warnings"
+        "--trace-warnings",
+        "--experimental-network-inspection",
+        "--experimental-inspector-network-resource",
+        //"--user-data-dir=remote-debug-profile"
       ],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "preLaunchTask": "Build",
-      "postDebugTask": "terminate: serve:renderer"
+      "postDebugTask": "terminate: serve:renderer",
+      "outFiles": [
+        "${workspaceFolder}/dist/main/**/*.js"
+      ],
+      "sourceMaps": true
     }
   ],
   "compounds": [

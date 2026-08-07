@@ -27,9 +27,7 @@
             "outputPath": "dist/renderer",
             "index": "projects/renderer/src/index.html",
             "browser": "projects/renderer/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "projects/renderer/tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": [

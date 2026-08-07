@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
+import { FormField } from '@angular/forms/signals';
 import { DirectivesModule } from '../../directives/directives.module';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SettingsComponent } from './settings.component';
@@ -15,7 +15,7 @@ import { SettingsComponent } from './settings.component';
     CommonModule,
     SettingsRoutingModule,
     DirectivesModule,
-    FormsModule
+    FormField
   ]
 })
 export class SettingsModule { }

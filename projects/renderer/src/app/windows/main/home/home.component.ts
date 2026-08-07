@@ -1,21 +1,25 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, ViewEncapsulation, type OnInit } from '@angular/core';
+import { disabled, form, readonly } from '@angular/forms/signals';
 import { AppService } from '../../../services/app/app.service';
-import { ConfigService } from '../../../services/config/config.service';
+import { CONFIG, ConfigService } from '../../../services/config/config.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
+import { DiffService } from '../../../services/diff/diff.service';
 import { GitService } from '../../../services/git/git.service';
 import { RepoService } from '../../../services/repo/repo.service';
 import { SuggestionService } from '../../../services/suggestion/suggestion.service';
 import { WindowService } from '../../../services/window/window.service';
+import { SaveableStrategy } from '../../../strategies/saveable/saveable.strategy';
+import { captureException } from '@sentry/angular';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
-export class HomeComponent {
+export class HomeComponent extends SaveableStrategy implements OnInit {
   private windowService = inject(WindowService);
   configService = inject(ConfigService);
   suggestionService = inject(SuggestionService);
@@ -23,7 +27,44 @@ export class HomeComponent {
   private appService = inject(AppService);
   private repoService = inject(RepoService);
   private gitService = inject(GitService);
+  private diffService = inject(DiffService);
 
+  private loading = signal(true);
+  private savedConfig = signal(CONFIG);
+  private configModel = signal(CONFIG);
+  public configForm = form(this.configModel, form => {
+    readonly(form, { when: () => this.loading() });
+    disabled(form.contactForm, { when: ({ valueOf }) => !valueOf(form.email) || (!valueOf(form.title) || !valueOf(form.shortTitle)) });
+  });
+
+  async ngOnInit() {
+    this.savedConfig.set(await this.configService.getConfig());
+    this.configModel.set(this.savedConfig());
+    this.configForm().reset();
+    this.loading.set(false);
+
+    this.configService.onchange = (newConfig) => {
+      this.savedConfig.set(newConfig);
+      this.configForm().reset();
+    };
+  }
+
+  override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
+  override saveChanges = async () => {
+    this.loading.set(true);
+    try {
+      await this.configService.saveConfig(this.savedConfig(), this.configForm().value());
+    } catch (error) {
+      captureException(error);
+      alert('Error saving config');
+    } finally {
+      this.loading.set(false);
+    }
+  };
+
+  dirtyFields = computed(() => {
+    return this.diffService.diff(this.savedConfig(), this.configForm().value()) as Partial<CONFIG>;
+  });
 
   async openLogin() {
     await this.windowService.openLogin();

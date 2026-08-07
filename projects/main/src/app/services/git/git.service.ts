@@ -1,4 +1,4 @@
-import { captureException, metrics, setUser } from '@sentry/electron/main';
+import { captureException, metrics, setUser, startSpan } from '@sentry/electron/main';
 import { exec, execSync } from 'child_process';
 import { BrowserWindow, app, dialog, shell } from 'electron';
 import { emptyDirSync, ensureDirSync, exists, readJSON, writeFile } from 'fs-extra';
@@ -23,7 +23,7 @@ export class GitService {
       message[0] += '\n';
       message = message.join('\n');
     }
-    writeFile(commitPath, message);
+    await writeFile(commitPath, message);
     try {
       return await this.git.raw('commit', '-F', commitPath, ...(files instanceof Array ? files : [files]));
     } catch (err) {
@@ -32,9 +32,29 @@ export class GitService {
       } else if ((err as Error).message.includes('LF will be replaced by CRLF the next time Git touches it')) {
         console.warn('Git will change line endings on next commit');
       } else {
+        captureException(err, { level: 'error', extra: { message, files } });
+        await this.git.raw('restore', ...(files instanceof Array ? files : [files]));
         return Promise.reject(err);
       }
     }
+  }
+
+  private lastStatus?: Omit<StatusResult, 'isClean'>;
+  private lastAhead?: number;
+  async getStatus() {
+    const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
+    delete status.isClean;
+    if (this.lastStatus?.ahead === status.ahead && this.lastAhead !== undefined) {
+      status.ahead = this.lastAhead;
+    } else {
+      await startSpan({ op: 'ipc.git.getStatus', name: 'getHistory' }, async () => {
+        this.lastStatus = { ...status };
+        const local = await this.git.log(['--first-parent', '@{u}..']);
+        this.lastAhead = local.total;
+        status.ahead = this.lastAhead;
+      });
+    }
+    return status;
   }
   api: BackendService<GitServiceType> = {
     isRepo: async () => {
@@ -160,13 +180,7 @@ export class GitService {
       await this.git.clean(CleanOptions.FORCE);
       this.change();
     },
-    getStatus: async () => {
-      const status = await this.git.status() as Omit<StatusResult, 'isClean'> & Partial<Pick<StatusResult, 'isClean'>>;
-      delete status.isClean;
-      const local = await this.git.log(['--first-parent', '@{u}..']);
-      status.ahead = local.total;
-      return status;
-    },
+    getStatus: () => this.getStatus(),
     fetchUpdate: async () => {
       console.debug('Checking for upstream remote...');
       const remotes = await this.git.getRemotes();
@@ -232,11 +246,11 @@ export class GitService {
         return {};
       }
     },
-    getHistory: async () => {
-      return {
-        local: await this.git.log(['--first-parent', '@{u}..']),
-        remote: await this.git.log(['--first-parent', '@{u}']),
-      };
+    getLocalHistory: async () => {
+      return await this.git.log(['--first-parent', '@{u}..']);
+    },
+    getCloudHistory: async () => {
+      return await this.git.log(['--first-parent', '@{u}']);
     }
   };
   git: SimpleGit;
@@ -247,11 +261,17 @@ export class GitService {
   constructor() {
     ensureDirSync(this.base);
     this.git = simpleGit({ baseDir: this.base, progress: this.progress, config: ['credential.helper=""', 'commit.gpgsign=false', 'core.longpaths=true'] });
-    this.checkForUpdates();
+    this.checkForUpdates().catch(() => console.warn('Startup Update Check Failed'));
     this.configureUser();
   }
   async checkForUpdates() {
-    await this.pullChanges();
+    try {
+      await this.pullChanges();
+    } catch (err) {
+      console.warn('Failed to check for updates:', err);
+      this.scheduleUpdateCheck(true);
+      return Promise.reject(err);
+    }
 
     try {
       console.debug('Checking for upstream remote...');
@@ -273,7 +293,7 @@ export class GitService {
       const oldVersion = parse(unparsedOldVersion)!;
       const appVersion = parse(app.getVersion())!;
       if (app.isReady()) {
-        this.determineUpdates(oldVersion, newVersion, appVersion);
+        await this.determineUpdates(oldVersion, newVersion, appVersion);
       } else {
         app.once('ready', () => this.determineUpdates(oldVersion, newVersion, appVersion));
       }
@@ -297,12 +317,12 @@ export class GitService {
         });
       }
     } catch (err) {
-      captureException(err, { level: 'warning' });
-      console.warn('(Non-Fatal) Startup Pull Failed with Error:', err);
+      console.warn('Failed to pull changes:', err);
 
       // If the pull left us in a conflicted state, abort so JSON files are restored.
       try {
         const status = await this.git.status();
+        captureException(err, { level: 'warning', extra: { gitStatus: status } });
         if (status.conflicted?.length) {
           console.warn('Conflicts detected during startup pull, aborting rebase/merge...');
           // Prefer aborting rebase; if that fails, try merge abort.
@@ -312,7 +332,9 @@ export class GitService {
         }
       } catch (abortErr) {
         console.warn('Failed to inspect/abort conflicted state:', abortErr);
+        captureException(abortErr, { level: 'warning' });
       }
+      return Promise.reject(err);
     }
   }
   async determineUpdates(oldVersion: SemVer, newVersion: SemVer, appVersion: SemVer) {

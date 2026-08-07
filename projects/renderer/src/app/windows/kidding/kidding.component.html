@@ -1,0 +1,192 @@
+<div class="container">
+  <h1 class="flex-grow-1 text-center" [class.unsaved]="unsavedChanges()">
+    {{
+      dam()?.nickname || dam()?.name || kiddingForm.dam().value() || "(Unknown)"
+    }}
+    x
+    {{
+      sire()?.nickname ||
+        sire()?.name ||
+        kiddingForm.sire().value() ||
+        "(Unknown)"
+    }}
+  </h1>
+  <div class="row justify-content-around">
+    <div class="col">
+      <div class="row h-25">
+        <div class="col">
+          <div
+            class="mt-3 input-group"
+            [class.unsaved]="'dam' in dirtyFields()"
+          >
+            <span class="input-group-text">Dam:</span>
+            <input
+              type="text"
+              class="form-control"
+              [formField]="kiddingForm.dam"
+              [goat-search]="does()"
+              goat-search-output="name"
+            />
+          </div>
+          <div class="form-text">The ID of the dam in the breeding</div>
+        </div>
+      </div>
+      @if (dam()) {
+        <div class="row">
+          <div class="col">
+            <div class="card color-scheme-quaternary">
+              <div class="card-body">
+                @if (dam()!.name) {
+                  <h5 class="card-title">{{ dam()!.name }}</h5>
+                }
+                @if (dam()!.dateOfBirth) {
+                  <h6 class="mb-2 card-subtitle text-muted">
+                    Born: {{ dam()!.dateOfBirth | longDate }}
+                  </h6>
+                  @if (kiddingForm.exposed().value()) {
+                    <p class="card-text text-muted">
+                      Age When Bred:
+                      {{
+                        calculateAge(
+                          dam()!.dateOfBirth,
+                          kiddingForm.exposed().value()
+                        )
+                      }}
+                    </p>
+                  }
+                  @if (kiddingForm.due().value()) {
+                    <p class="card-text text-muted">
+                      Age When Due:
+                      {{
+                        calculateAge(
+                          dam()!.dateOfBirth,
+                          kiddingForm.due().value()
+                        )
+                      }}
+                    </p>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="col">
+      <div
+        class="mt-3 input-group"
+        [class.unsaved]="'exposed' in dirtyFields()"
+      >
+        <span class="input-group-text">Exposed:</span>
+        <input
+          type="text"
+          class="form-control"
+          #exposed
+          [formField]="kiddingForm.exposed"
+          [suggestion]="projectedExposedDate()"
+        />
+      </div>
+      <div class="form-text">When the doe was exposed</div>
+      <div class="mt-3 input-group" [class.unsaved]="'due' in dirtyFields()">
+        <span class="input-group-text">Due:</span>
+        <input
+          type="text"
+          class="form-control"
+          #due
+          [formField]="kiddingForm.due"
+          [suggestion]="projectedDueDate()"
+        />
+      </div>
+      <div class="form-text">
+        When the doe is due {{ calculateGestation(exposed.value, due.value) }}
+      </div>
+      <div class="mt-3 input-group" [class.unsaved]="'kidded' in dirtyFields()">
+        <span class="input-group-text">Kidded:</span>
+        <input
+          type="text"
+          class="form-control"
+          #kidded
+          [formField]="kiddingForm.kidded"
+          [suggestion]="due.value"
+        />
+      </div>
+      <div class="form-text">
+        When the doe kidded
+        {{ calculateGestation(exposed.value, kidded.value) }}
+      </div>
+      <div
+        class="mt-3 input-group"
+        [class.unsaved]="'description' in dirtyFields()"
+      >
+        <span class="input-group-text">Description:</span>
+        <textarea
+          type="text"
+          class="form-control"
+          [formField]="kiddingForm.description"
+          markdown
+        ></textarea>
+      </div>
+      <div class="form-text">A description of the breeding</div>
+    </div>
+    <div class="col">
+      <div class="row h-25">
+        <div class="col">
+          <div
+            class="mt-3 input-group"
+            [class.unsaved]="'sire' in dirtyFields()"
+          >
+            <span class="input-group-text">Sire:</span>
+            <input
+              type="text"
+              class="form-control"
+              [formField]="kiddingForm.sire"
+              [goat-search]="bucks()"
+              goat-search-output="name"
+            />
+          </div>
+          <div class="form-text">The ID of the sire in the breeding</div>
+        </div>
+      </div>
+      <div class="row">
+        @if (sire()) {
+          <div class="col">
+            <div class="card color-scheme-quaternary">
+              <div class="card-body">
+                @if (sire()!.name) {
+                  <h5 class="card-title">{{ sire()!.name }}</h5>
+                }
+                @if (sire()!.dateOfBirth) {
+                  <h6 class="mb-2 card-subtitle text-muted">
+                    Born: {{ sire()!.dateOfBirth | longDate }}
+                  </h6>
+                  @if (kiddingForm.exposed().value()) {
+                    <p class="card-text text-muted">
+                      Age When Bred:
+                      {{
+                        calculateAge(
+                          sire()!.dateOfBirth,
+                          kiddingForm.exposed().value()
+                        )
+                      }}
+                    </p>
+                  }
+                  @if (kiddingForm.due().value()) {
+                    <p class="card-text text-muted">
+                      Age When Due:
+                      {{
+                        calculateAge(
+                          sire()!.dateOfBirth,
+                          kiddingForm.due().value()
+                        )
+                      }}
+                    </p>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

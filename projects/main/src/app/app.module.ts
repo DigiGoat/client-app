@@ -1,3 +1,4 @@
+import { startInactiveSpan, startSpan } from '@sentry/electron/main';
 import { app, BrowserWindow, dialog, Menu, shell, type MenuItemConstructorOptions } from 'electron';
 import { readJSON } from 'fs-extra';
 import { join, resolve } from 'path';
@@ -9,76 +10,86 @@ import { SetupWindow } from './windows/setup/setup.window';
 export class AppModule {
   openedByDeepLink = false;
   constructor() {
-    new ServiceModule();
-    const template: MenuItemConstructorOptions[] = [
-      { role: 'fileMenu' },
-      { role: 'editMenu' },
-      (app.isPackaged && !app.getVersion().includes('beta')) ? {
-        label: 'View',
-        submenu: [
-          { role: 'resetZoom' },
-          { role: 'zoomIn' },
-          { role: 'zoomOut' },
-          { type: 'separator' },
-          { role: 'togglefullscreen' }
-        ]
-      } : { role: 'viewMenu' },
-      { role: 'windowMenu' },
-      {
-        role: 'help',
-        submenu: [
+    startSpan({ op: 'app', name: 'init' }, () => {
+      startSpan({ op: 'app.init', name: 'services' }, () => {
+        new ServiceModule();
+      });
+      startSpan({ op: 'app.init', name: 'menubar' }, () => {
+        const template: MenuItemConstructorOptions[] = [
+          { role: 'fileMenu' },
+          { role: 'editMenu' },
+          (app.isPackaged && !app.getVersion().includes('beta')) ? {
+            label: 'View',
+            submenu: [
+              { role: 'resetZoom' },
+              { role: 'zoomIn' },
+              { role: 'zoomOut' },
+              { type: 'separator' },
+              { role: 'togglefullscreen' }
+            ]
+          } : { role: 'viewMenu' },
+          { role: 'windowMenu' },
           {
-            label: 'View web-ui Repository',
-            click: async () => {
-              await shell.openExternal('https://github.com/DigiGoat/web-ui');
-            }
-          },
-          {
-            label: 'View client-app Repository',
-            click: async () => {
-              await shell.openExternal('https://github.com/DigiGoat/client-app');
-            }
+            role: 'help',
+            submenu: [
+              {
+                label: 'View web-ui Repository',
+                click: async () => {
+                  await shell.openExternal('https://github.com/DigiGoat/web-ui');
+                }
+              },
+              {
+                label: 'View client-app Repository',
+                click: async () => {
+                  await shell.openExternal('https://github.com/DigiGoat/client-app');
+                }
+              }
+            ]
           }
-        ]
-      }
-    ];
-    if (process.platform === 'darwin') {
-      template.unshift({ role: 'appMenu' });
-    }
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+        ];
+        if (process.platform === 'darwin') {
+          template.unshift({ role: 'appMenu' });
+        }
+        const menu = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menu);
+      });
 
+      this.configureDeepLink();
 
-    this.configureDeepLink();
-    // This method will be called when Electron has finished
-    // initialization and is ready to create browser windows.
-    // Some APIs can only be used after this event occurs.
-    app.on('ready', async () => {
-      if (!this.openedByDeepLink) {
-        await this.checkVersion();
-        new MainWindow();
-      }
-    });
+      const readySpan = startInactiveSpan({ op: 'app.init', name: 'ready' });
+      // This method will be called when Electron has finished
+      // initialization and is ready to create browser windows.
+      // Some APIs can only be used after this event occurs.
+      app.on('ready', async () => {
+        readySpan.end();
+        if (!this.openedByDeepLink) {
+          await startSpan({ op: 'app.init', name: 'createMainWindow' }, async () => {
+            await this.checkVersion();
+            new MainWindow();
+          });
+        }
+      });
 
-    // Quit when all windows are closed, except on macOS. There, it's common
-    // for applications and their menu bar to stay active until the user quits
-    // explicitly with Cmd + Q.
-    app.on('window-all-closed', () => {
-      if (process.platform !== 'darwin') {
-        setTimeout(() => {
-          if (BrowserWindow.getAllWindows().length === 0) {
-            app.quit();
-          }
-        }, 1000);
-      }
-    });
+      // Quit when all windows are closed, except on macOS. There, it's common
+      // for applications and their menu bar to stay active until the user quits
+      // explicitly with Cmd + Q.
+      app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+          setTimeout(() => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+              app.quit();
+            }
+          }, 1000);
+        }
+      });
 
-    app.on('activate', () => {
-      // On OS X it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (BrowserWindow.getAllWindows().length === 0) {
-        new MainWindow();
-      }
+      app.on('activate', () => {
+        // On OS X it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (BrowserWindow.getAllWindows().length === 0) {
+          new MainWindow();
+        }
+      });
     });
   }
   async checkVersion() {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { WindowService } from '../../services/window/window.service';
@@ -7,7 +7,7 @@ import { WindowService } from '../../services/window/window.service';
   selector: 'app-git',
   templateUrl: './git.component.html',
   styleUrl: './git.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class GitComponent {

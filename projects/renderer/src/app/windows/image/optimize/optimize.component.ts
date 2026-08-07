@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import type { ImageMap, OptimizeProgress } from '../../../../../../shared/services/image/image.service';
 import { DialogService } from '../../../services/dialog/dialog.service';
 import { DiffService } from '../../../services/diff/diff.service';
@@ -7,12 +7,16 @@ import { ImageService } from '../../../services/image/image.service';
 import { WindowService } from '../../../services/window/window.service';
 
 
+/**
+ * @deprecated This component is no longer required as images are optimized as they are imported. It will be removed in a future update.
+ */
 @Component({
   selector: 'app-optimize',
   standalone: false,
 
   templateUrl: './optimize.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager, // This component will not be migrated as it will likely be removed in a future update
   styleUrl: './optimize.component.scss'
 })
 export class OptimizeComponent implements OnInit {

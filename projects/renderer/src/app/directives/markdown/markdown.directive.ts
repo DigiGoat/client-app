@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { booleanAttribute, Directive, ElementRef, HostListener, inject, Input, type OnDestroy, type OnInit } from '@angular/core';
+import { startSpan } from '@sentry/angular';
 import type { Tooltip } from 'bootstrap';
 import { AppService } from '../../services/app/app.service';
 import { DialogService } from '../../services/dialog/dialog.service';
@@ -78,43 +79,54 @@ export class MarkdownDirective implements OnInit, OnDestroy {
     this.iconEl.addEventListener('click', this.iconClickHandler);
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.iconEl);
     this.iconTooltip = bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
-    setTimeout(() => this.showMarkdown(), 100);
+
+    requestIdleCallback(() => this.showMarkdown(), { timeout: 1000 });
   }
   oldValue = '';
   async showMarkdown() {
-    const value = this.el.nativeElement.value;
-    if (value) {
-      try {
-        if (value !== this.oldValue) {
+    await startSpan({ op: 'markdown', name: 'show' }, async () => {
+      const value = this.el.nativeElement.value;
+      if (value) {
+        try {
+          if (value !== this.oldValue) {
+            startSpan({ op: 'markdown.show', name: 'localParse' }, () => {
+              this.iconEl.classList.remove('text-success', 'text-warning');
+              this.iconEl.classList.add('text-danger');
+              this.markdownEl.innerHTML = this.markedService.parse(value);
+              this.markdownEl.style.display = 'block';
+              this.el.nativeElement.style.display = 'none';
+              this.iconEl.classList.remove('text-danger', 'text-success');
+              this.iconEl.classList.add('text-warning');
+            });
+            try {
+              await startSpan({ op: 'markdown.show', name: 'cloudParse' }, async () => {
+                this.markdownEl.innerHTML = await this.renderMarkdown(value);
+                this.iconEl.classList.remove('text-danger', 'text-warning');
+                this.iconEl.classList.add('text-success');
+                this.oldValue = value;
+              });
+            } catch (error) {
+              console.warn('Failed to render markdown', error);
+            }
+          } else {
+            this.iconEl.classList.remove('text-danger', 'text-warning', 'text-success');
+            this.iconEl.classList.add('text-info');
+            this.markdownEl.style.display = 'block';
+            this.el.nativeElement.style.display = 'none';
+          }
+          startSpan({ op: 'markdown.show', name: 'renderImages' }, () => {
+            this.renderImages();
+          });
+          this.descriptor?.classList.remove('d-none');
+        } catch {
           this.iconEl.classList.remove('text-success', 'text-warning');
           this.iconEl.classList.add('text-danger');
-          this.markdownEl.innerHTML = this.markedService.parse(value);
-          this.markdownEl.style.display = 'block';
-          this.el.nativeElement.style.display = 'none';
-          this.iconEl.classList.remove('text-danger', 'text-success');
-          this.iconEl.classList.add('text-warning');
-          try {
-            this.markdownEl.innerHTML = await this.renderMarkdown(value);
-            this.iconEl.classList.remove('text-danger', 'text-warning');
-            this.iconEl.classList.add('text-success');
-            this.oldValue = value;
-          } catch (error) {
-            console.warn('Failed to render markdown', error);
-          }
-        } else {
-          this.iconEl.classList.remove('text-danger', 'text-warning', 'text-success');
-          this.iconEl.classList.add('text-info');
-          this.markdownEl.style.display = 'block';
-          this.el.nativeElement.style.display = 'none';
+          this.hideMarkdown();
         }
-        this.renderImages();
-        this.descriptor?.classList.remove('d-none');
-      } catch {
-        this.iconEl.classList.remove('text-success', 'text-warning');
-        this.iconEl.classList.add('text-danger');
-        this.hideMarkdown();
+      } else {
+        setTimeout(() => requestIdleCallback(() => this.showMarkdown(), { timeout: 500 }), 500);
       }
-    }
+    });
   }
   async hideMarkdown() {
     this.el.nativeElement.style.display = 'block';

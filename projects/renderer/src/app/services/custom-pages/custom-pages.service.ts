@@ -1,6 +1,5 @@
 import { type CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
-import type { CustomPage } from '../../../../../shared/services/custom-pages/custom-pages.service';
 import { DiffService } from '../diff/diff.service';
 import { GitService } from '../git/git.service';
 
@@ -12,9 +11,16 @@ export class CustomPagesService {
   private diffService = inject(DiffService);
 
 
-  getCustomPages = window.electron.customPages.getCustomPages;
 
-  async setCustomPage(index: number, customPage: CustomPage) {
+
+  getCustomPages = async () => (await window.electron.customPages.getCustomPages()).map(customPage => this.parseCustomPage(customPage));
+
+  parseCustomPage = (customPage: Record<string, string>): CUSTOM_PAGE => ({
+    ...CUSTOM_PAGE,
+    title: customPage['title'],
+    content: customPage['content']
+  });
+  async setCustomPage(index: number, customPage: CUSTOM_PAGE) {
     const customPages = await this.getCustomPages();
     const diffMessage = this.diffService.commitMsg(customPages[index], customPage);
     customPages[index] = customPage;
@@ -27,13 +33,13 @@ export class CustomPagesService {
     await window.electron.customPages.setCustomPages(customPages);
     await this.gitService.commitCustomPages([`Deleted Custom Page: ${customPage.title || `Custom Page ${index + 1}`}`]);
   }
-  async addCustomPage(customPage: CustomPage) {
+  async addCustomPage(customPage: CUSTOM_PAGE) {
     const customPages = await this.getCustomPages();
     customPages.push(customPage);
     await window.electron.customPages.setCustomPages(customPages);
     await this.gitService.commitCustomPages([`Added Custom Page: ${customPage.title || `Custom Page ${customPages.length}`}`]);
   }
-  async rearrangeCustomPages(event: CdkDragDrop<CustomPage[]>) {
+  async rearrangeCustomPages(event: CdkDragDrop<CUSTOM_PAGE[]>) {
     const customPages = await this.getCustomPages();
     moveItemInArray(customPages, event.previousIndex, event.currentIndex);
     const customPage = customPages[event.currentIndex];
@@ -41,7 +47,13 @@ export class CustomPagesService {
     await this.gitService.commitCustomPages([`Moved Custom Page: ${customPage.title || `Custom Page ${event.currentIndex + 1}`} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) > 1 ? 's' : ''}`]);
   }
 
-  set onCustomPagesChange(callback: (customPages: CustomPage[]) => void) {
-    window.electron.customPages.onCustomPagesChange(callback);
+  set onCustomPagesChange(callback: (customPages: CUSTOM_PAGE[]) => void) {
+    window.electron.customPages.onCustomPagesChange(pages => callback(pages.map(page => this.parseCustomPage(page))));
   }
 }
+
+export type CUSTOM_PAGE = typeof CUSTOM_PAGE;
+export const CUSTOM_PAGE = {
+  title: '',
+  content: ''
+};

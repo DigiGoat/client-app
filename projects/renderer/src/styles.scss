@@ -88,3 +88,19 @@
 .blocked-link>p>a:focus {
   pointer-events: none !important;
 }
+
+:has(> [readonly]),
+:has(> .loading),
+:has(> [readonly])>*,
+:has(> .loading)>* {
+  animation: placeholder-glow 2s ease-in-out infinite;
+  cursor: wait !important;
+  pointer-events: none !important;
+}
+
+.unavailable {
+  color: var(--bs-secondary-color) !important;
+  font-style: italic !important;
+  cursor: wait !important;
+  pointer-events: none !important;
+}

@@ -1,10 +1,10 @@
-import { Directive, ElementRef, HostBinding, HostListener, type AfterViewChecked, inject } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, inject } from '@angular/core';
 
 @Directive({
   selector: 'textarea',
-  standalone: false
+  standalone: false,
 })
-export class TextareaDirective implements AfterViewChecked {
+export class TextareaDirective {
   private el = inject<ElementRef<HTMLTextAreaElement>>(ElementRef);
 
   @HostBinding('style.resize') resize = 'none';
@@ -13,7 +13,13 @@ export class TextareaDirective implements AfterViewChecked {
   @HostListener('window:resize') onResize() {
     this.adjust();
   }
-  ngAfterViewChecked() {
+  @HostListener('input') onInput() {
+    this.adjust();
+  }
+  @HostListener('focus') onFocus() {
+    this.adjust();
+  }
+  @HostListener('blur') onBlur() {
     this.adjust();
   }
   adjust() {

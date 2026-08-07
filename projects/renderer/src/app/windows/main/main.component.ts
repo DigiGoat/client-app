@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, signal, ViewEncapsulation, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, ViewEncapsulation, type OnInit } from '@angular/core';
 import { DialogService } from '../../services/dialog/dialog.service';
 import { GitService } from '../../services/git/git.service';
 import { PreviewService } from '../../services/preview/preview.service';
@@ -10,30 +10,28 @@ import { WindowService } from '../../services/window/window.service';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class MainComponent implements OnInit {
   private gitService = inject(GitService);
-  private cdr = inject(ChangeDetectorRef);
   private dialogService = inject(DialogService);
   private windowService = inject(WindowService);
   private previewService = inject(PreviewService);
   private stdioService = inject(StdioService);
 
-  localChanges = 0;
-  remoteChanges = 0;
+  localChanges = signal(0);
+  remoteChanges = signal(0);
 
   async ngOnInit() {
     this.stdioService.pipeConsole();
     const status = await this.gitService.getStatus();
-    this.localChanges = status.ahead;
-    this.remoteChanges = status.behind;
+    this.localChanges.set(status.ahead);
+    this.remoteChanges.set(status.behind);
     this.gitService.onchange = async () => {
       const status = await this.gitService.getStatus();
-      this.localChanges = status.ahead;
-      this.remoteChanges = status.behind;
-      this.cdr.detectChanges();
+      this.localChanges.set(status.ahead);
+      this.remoteChanges.set(status.behind);
     };
     this.gitService.onprogress = (event) => {
       if (event.method === 'push') {
@@ -63,11 +61,11 @@ export class MainComponent implements OnInit {
     this.previewService.onchange = () => this.updatePreview();
     this.updatePreview();
   }
-  publishing = false;
+  publishing = signal(false);
   publishProgress = signal(0);
   publishStatus = signal('');
   async publish() {
-    this.publishing = true;
+    this.publishing.set(true);
     this.publishProgress.set(5);
     if ((await this.gitService.getSetup()).token) {
       try {
@@ -87,7 +85,7 @@ export class MainComponent implements OnInit {
       }
     }
     setTimeout(() => {
-      this.publishing = false;
+      this.publishing.set(false);
     }, 1000);
   }
   async reset() {
@@ -98,10 +96,10 @@ export class MainComponent implements OnInit {
     }
   }
 
-  previewStatus: 'loading' | 'active' | 'inactive' | 'starting' = 'inactive';
+  previewStatus = signal<'loading' | 'active' | 'inactive' | 'starting'>('inactive');
   previewProgress = signal(0);
   async togglePreview() {
-    switch (this.previewStatus) {
+    switch (this.previewStatus()) {
       case 'active':
       case 'starting':
       case 'loading':
@@ -109,11 +107,12 @@ export class MainComponent implements OnInit {
         break;
       case 'inactive':
         await this.previewService.startPreview();
+        this.previewStatus.set('loading');
+        this.previewProgress.set(0);
         break;
     }
   }
   async updatePreview() {
-    this.previewStatus = await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : (await this.previewService.getPreviewCloseable() ? 'starting' : 'loading')) : 'inactive';
-    this.cdr.detectChanges();
+    this.previewStatus.set(await this.previewService.getPreviewActive() ? (await this.previewService.getPreviewVisible() ? 'active' : (await this.previewService.getPreviewCloseable() ? 'starting' : 'loading')) : 'inactive');
   }
 }

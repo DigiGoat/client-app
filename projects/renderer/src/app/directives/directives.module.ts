@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AdvancedDirective } from './advanced/advanced.directive';
 import { GoatSearchDirective } from './goat-search/goat-search.directive';
@@ -30,7 +30,7 @@ import { TooltipDirective } from './tooltip/tooltip.directive';
     GoatSearchDirective
   ],
   providers: [
-    provideHttpClient(withXhr(), withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class DirectivesModule { }
