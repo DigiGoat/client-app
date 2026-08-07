@@ -11,16 +11,7 @@ export class ConfigService {
   private gitService = inject(GitService);
 
   public async getConfig() {
-    const newConfig = await window.electron.config.get();
-    const config = {
-      ...CONFIG,
-      /* Migrations */
-      title: newConfig['homeTitle'] || newConfig['menubarTitle'],
-      shortTitle: newConfig['tabTitle'],
-      /* ----------- */
-      ...newConfig
-    };
-    return config as CONFIG;
+    return this.parseConfig(await window.electron.config.get());
   };
 
 
@@ -30,7 +21,18 @@ export class ConfigService {
     await this.gitService.commitConfig(['Updated Config', ...diffMessage]);
   }
   set onchange(callback: (config: CONFIG) => void) {
-    window.electron.config.onchange(callback as (config: Config) => void);
+    window.electron.config.onchange(config => callback(this.parseConfig(config)));
+  }
+
+  public parseConfig(config: Config): CONFIG {
+    return {
+      ...CONFIG,
+      /* Migrations */
+      title: config['homeTitle'] || config['menubarTitle'],
+      shortTitle: config['tabTitle'],
+      /* ----------- */
+      ...config
+    } as CONFIG;
   }
 }
 
