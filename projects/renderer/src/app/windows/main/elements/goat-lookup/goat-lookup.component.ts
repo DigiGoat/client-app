@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { ADGAService } from '../../../../services/adga/adga.service';
 import type { GOAT } from '../../../../services/goat/goat.service';
 
@@ -7,25 +7,25 @@ type Goat = Partial<Pick<GOAT, 'name' | 'normalizeId'>>;
   selector: 'app-goat-lookup',
   templateUrl: './goat-lookup.component.html',
   styleUrl: './goat-lookup.component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class GoatLookupComponent {
   private adgaService = inject(ADGAService);
 
-  nameGoats?: Goat[] = [];
-  idGoats?: Goat[] = [];
+  nameGoats = signal<Goat[] | undefined>([]);
+  idGoats = signal<Goat[] | undefined>([]);
   @Output() goatSelected = new EventEmitter<Goat>();
   @Input() filter?: (goat: Goat) => boolean;
   async lookupGoats(search: string) {
     await Promise.all([(async () => {
-      this.idGoats = undefined;
-      this.idGoats = (await this.adgaService.lookupGoatsById(search));
-      if (this.filter) this.idGoats = this.idGoats?.filter(this.filter) ?? [];
+      this.idGoats.set(undefined);
+      this.idGoats.set(await this.adgaService.lookupGoatsById(search));
+      if (this.filter) this.idGoats.update(goats => goats?.filter(this.filter!) ?? []);
     })(), (async () => {
-      this.nameGoats = undefined;
-      this.nameGoats = (await this.adgaService.lookupGoatsByName(search));
-      if (this.filter) this.nameGoats = this.nameGoats?.filter(this.filter) ?? [];
+      this.nameGoats.set(undefined);
+      this.nameGoats.set((await this.adgaService.lookupGoatsByName(search)));
+      if (this.filter) this.nameGoats.update(goats => goats?.filter(this.filter!) ?? []);
     })()]);
   }
   formatGoat(goat: Goat, search: string) {
