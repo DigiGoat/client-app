@@ -49,7 +49,7 @@ export class GoatService {
     await window.electron.goat.setDoes(does);
   }
   async deleteDoe(index: number) {
-    const does = await this.getDoes();
+    const does = await window.electron.goat.getDoes();
     const doe = does.splice(index, 1)[0];
     await window.electron.goat.setDoes(does);
     await this.gitService.commitDoes([`Deleted ${doe['nickname'] || doe['name'] || doe['normalizeId']}`]);
@@ -58,7 +58,7 @@ export class GoatService {
     }
   }
   async addDoe(doe: Partial<GOAT>) {
-    const does = await this.getDoes();
+    const does = await window.electron.goat.getDoes();
     does.push(this.parseGoat(doe));
     await window.electron.goat.setDoes(does);
     await this.gitService.commitDoes([`Added ${doe['nickname'] || doe['name'] || doe['normalizeId']}`, ...this.diffService.commitMsg({}, doe).map(msg => `${this.diffService.spaces}${msg}`)]);
@@ -71,13 +71,14 @@ export class GoatService {
     await this.gitService.commitDoes(['Rearranged Does', `Moved ${doe['nickname'] || doe['name'] || doe['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   bucks = new Observable<(GOAT)[]>(observer => {
-    window.electron.goat.getBucks().then(bucks =>
-      observer.next(bucks.map(buck => this.parseGoat(buck))));
+    this.getBucks().then(bucks =>
+      observer.next(bucks)
+    );
     window.electron.goat.onBucksChange(bucks =>
       observer.next(bucks.map(buck => this.parseGoat(buck))));
   });
 
-  getBucks = window.electron.goat.getBucks;
+  getBucks = async () => (await window.electron.goat.getBucks()).map(goat => this.parseGoat(goat));
   async setBuck(index: number, buck: Partial<GOAT>) {
     const bucks = await window.electron.goat.getBucks();
     const diffMessage = this.diffService.commitMsg(bucks[index], buck);
@@ -112,8 +113,8 @@ export class GoatService {
     }
   }
   async addBuck(buck: Partial<GOAT>) {
-    const bucks = await this.getBucks();
-    bucks.push(buck);
+    const bucks = await window.electron.goat.getBucks();
+    bucks.push(this.parseGoat(buck));
     await window.electron.goat.setBucks(bucks);
     await this.gitService.commitBucks([`Added ${buck['nickname'] || buck['name'] || buck['normalizeId']}`, ...this.diffService.commitMsg({}, buck).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
@@ -125,12 +126,13 @@ export class GoatService {
     await this.gitService.commitBucks(['Rearranged Bucks', `Moved ${buck['nickname'] || buck['name'] || buck['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   references = new Observable<(GOAT)[]>(observer => {
-    window.electron.goat.getReferences().then(references =>
-      observer.next(references.map(reference => this.parseGoat(reference))));
+    this.getReferences().then(references => {
+      observer.next(references);
+    });
     window.electron.goat.onReferencesChange(references =>
       observer.next(references.map(reference => this.parseGoat(reference))));
   });
-  getReferences = window.electron.goat.getReferences;
+  getReferences = async () => (await window.electron.goat.getReferences()).map(reference => this.parseGoat(reference));
   async setReference(index: number, reference: Partial<GOAT>) {
     const references = await window.electron.goat.getReferences();
     const diffMessage = this.diffService.commitMsg(references[index], reference);
@@ -165,8 +167,8 @@ export class GoatService {
     }
   }
   async addReference(reference: Partial<GOAT>) {
-    const references = await this.getReferences();
-    references.push(reference);
+    const references = await window.electron.goat.getReferences();
+    references.push(this.parseGoat(reference));
     await window.electron.goat.setReferences(references);
     await this.gitService.commitReferences([`Added ${reference['nickname'] || reference['name'] || reference['normalizeId']}`, ...this.diffService.commitMsg({}, reference).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
@@ -178,12 +180,13 @@ export class GoatService {
     await this.gitService.commitReferences(['Rearranged References', `Moved ${reference['nickname'] || reference['name'] || reference['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   forSale = new Observable<(GOAT)[]>(observer => {
-    window.electron.goat.getForSale().then(forSale =>
-      observer.next(forSale.map(forSaleGoat => this.parseGoat(forSaleGoat))));
+    this.getForSale().then(forSale => {
+      observer.next(forSale);
+    });
     window.electron.goat.onForSaleChange(forSale =>
       observer.next(forSale.map(forSaleGoat => this.parseGoat(forSaleGoat))));
   });
-  getForSale = window.electron.goat.getForSale;
+  getForSale = async () => (await window.electron.goat.getForSale()).map(goat => this.parseGoat(goat));
   async setForSale(oldForSale: Partial<GOAT>[], newForSale: Partial<GOAT>[]) {
     const diffMessage = ['Synced Goats For Sale'];
     for (let i = 0; i < oldForSale.length; i++) {
@@ -209,14 +212,14 @@ export class GoatService {
     await this.gitService.commitForSale([`Updated ${goat.nickname || goat.name || goat.normalizeId}`, ...diffMessage]);
   }
   async deleteForSale(index: number) {
-    const forSale = await this.getForSale();
+    const forSale = await window.electron.goat.getForSale();
     const goat = forSale.splice(index, 1)[0];
     await window.electron.goat.setForSale(forSale);
     await this.gitService.commitForSale([`Deleted ${goat['nickname'] || goat['name'] || goat['normalizeId']}`]);
   }
   async addForSale(goat: Partial<GOAT>) {
-    const forSale = await this.getForSale();
-    forSale.push(goat);
+    const forSale = await window.electron.goat.getForSale();
+    forSale.push(this.parseGoat(goat));
     await window.electron.goat.setForSale(forSale);
     await this.gitService.commitForSale([`Added ${goat['nickname'] || goat['name'] || goat['normalizeId']}`, ...this.diffService.commitMsg({}, goat).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
@@ -228,12 +231,13 @@ export class GoatService {
     await this.gitService.commitForSale(['Rearranged For Sale', `Moved ${goat['nickname'] || goat['name'] || goat['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   related = new Observable<(GOAT)[]>(observer => {
-    window.electron.goat.getRelated().then(related =>
-      observer.next(related.map(related => this.parseGoat(related))));
+    this.getRelated().then(related => {
+      observer.next(related);
+    });
     window.electron.goat.onRelatedChange(related =>
       observer.next(related.map(related => this.parseGoat(related))));
   });
-  getRelated = window.electron.goat.getRelated;
+  getRelated = async () => (await window.electron.goat.getRelated()).map(related => this.parseGoat(related));
   async setRelated(oldRelated: Partial<GOAT>[], newRelated: Partial<GOAT>[]) {
     const diffMessage = ['Synced Related Goats'];
     for (let i = 0; i < oldRelated.length; i++) {
@@ -270,26 +274,26 @@ export class GoatService {
     window.electron.goat.onKiddingScheduleChange(kiddingSchedule => observer.next(kiddingSchedule.map(kidding => this.parseKidding(kidding))));
   });
   rearrangeKiddingSchedule = async (event: CdkDragDrop<KIDDING[]>) => {
-    const kiddingSchedule = await this.getKiddingSchedule();
+    const kiddingSchedule = await window.electron.goat.getKiddingSchedule();
     moveItemInArray(kiddingSchedule, event.previousIndex, event.currentIndex);
     await window.electron.goat.setKiddingSchedule(kiddingSchedule);
     const kidding = kiddingSchedule[event.currentIndex];
-    await this.gitService.commitKiddingSchedule(['Rearranged Kidding Schedule', `Moved ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+    await this.gitService.commitKiddingSchedule(['Rearranged Kidding Schedule', `Moved ${kidding['dam'] || '(Unknown)'} x ${kidding['sire'] || '(Unknown)'} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   };
   addKidding = async (kidding: Partial<KIDDING>) => {
-    const kiddingSchedule = await this.getKiddingSchedule();
+    const kiddingSchedule = await window.electron.goat.getKiddingSchedule();
     kiddingSchedule.push(this.parseKidding(kidding));
     await window.electron.goat.setKiddingSchedule(kiddingSchedule);
     await this.gitService.commitKiddingSchedule([`Added ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'}`, ...this.diffService.commitMsg({}, kidding).map(msg => `${this.diffService.spaces}${msg}`)]);
   };
   deleteKidding = async (index: number) => {
-    const kiddingSchedule = await this.getKiddingSchedule();
+    const kiddingSchedule = await window.electron.goat.getKiddingSchedule();
     const kidding = kiddingSchedule.splice(index, 1)[0];
     await window.electron.goat.setKiddingSchedule(kiddingSchedule);
-    await this.gitService.commitKiddingSchedule([`Deleted ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'}`]);
+    await this.gitService.commitKiddingSchedule([`Deleted ${kidding['dam'] || '(Unknown)'} x ${kidding['sire'] || '(Unknown)'}`]);
   };
   updateKidding = async (index: number, kidding: Partial<KIDDING>) => {
-    const kiddingSchedule = await this.getKiddingSchedule();
+    const kiddingSchedule = await window.electron.goat.getKiddingSchedule();
     const diffMessage = this.diffService.commitMsg(kiddingSchedule[index], kidding);
     kiddingSchedule[index] = this.parseKidding(kidding);
     await window.electron.goat.setKiddingSchedule(kiddingSchedule);
