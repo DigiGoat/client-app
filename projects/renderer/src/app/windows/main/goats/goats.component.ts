@@ -284,7 +284,9 @@ export class GoatsComponent extends SaveableStrategy implements OnInit {
           related.push(...(await this.adgaService.getGoats(newIds)));
           for (let i = 0; i < related.length; i++) {
             this.syncingRelated.set(i);
-            related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
+            if (oldRelated[i]) {
+              related[i] = this.diffService.softMerge(oldRelated[i], related[i]);
+            }
 
             let linearAppraisals: GOAT['linearAppraisals'] = [];
             let awards: GOAT['awards'] = [];
