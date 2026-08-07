@@ -1,3 +1,4 @@
+import { startInactiveSpan, startSpan } from '@sentry/electron/main';
 import { app, BrowserWindow, Menu, MenuItem, shell, type BrowserWindowConstructorOptions } from 'electron';
 import { join } from 'path';
 
@@ -6,104 +7,114 @@ export class Window {
   private appListeners: (() => void)[] = [];
   protected window?: BrowserWindow;
   constructor(path: string, options?: BrowserWindowConstructorOptions) {
-    const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes(`#/${path}`));
-    if (window) {
-      if (window.isMinimized()) {
-        window.restore();
-      }
-      window.focus();
-      return;
-    }
-    this.window = new BrowserWindow({
-      show: false,
-      backgroundColor: 'hsl(230, 100%, 10%)',
-      useContentSize: true,
-      webPreferences: {
-        preload: join(this.base, 'preload/bundle.js'),
-      },
-      ...options
-    });
-
-    const startURL = app.isPackaged ? `file://${join(this.base, 'renderer/browser', 'index.html')}#${path ?? ''}` : `http://localhost:4200/#/${path ?? ''}`;
-
-    this.window.loadURL(startURL);
-    this.window.once('ready-to-show', () => {
-      if (this.window && !this.window.isVisible()) {
-        this.window.show();
-        this.window.setSize(options?.width ?? options?.minWidth ?? options?.maxWidth ?? -1, options?.height ?? options?.minHeight ?? options?.maxHeight ?? -1);
-        this.window.center();
-      }
-    });
-
-    this.window.on('close', event => {
-      if (this.window && (this.window.documentEdited || this.window.title.endsWith('*'))) {
-        event.preventDefault();
-        this.window.webContents.send('window:onsave');
-      }
-    });
-    this.window.webContents.setWindowOpenHandler(({ url }) => {
-      shell.openExternal(url);
-      return { action: 'deny' };
-    });
-    const beforeQuitListener = () => {
-      if (this.window && !this.window.isDestroyed()) {
-        this.window.setClosable(true);
-        let attempts = 0;
-        this.window.on('close', () => attempts++);
-        this.window.on('closed', () => {
-          if (attempts === 2 /*If there are changes, it takes two attempts to close the window*/) {
-            app.quit();
+    startSpan({ op: 'window', name: 'open' }, () => {
+      let windowFound = false;
+      startSpan({ op: 'window.open', name: 'findExisting' }, () => {
+        const window = BrowserWindow.getAllWindows().find(window => window.webContents.getURL().includes(`#/${path}`));
+        if (window) {
+          if (window.isMinimized()) {
+            window.restore();
           }
-        });
-      }
-    };
-    app.on('before-quit', beforeQuitListener);
-    this.appListeners.push(beforeQuitListener);
-    this.window.webContents.on('context-menu', (_event, params) => {
-      const menu = new Menu();
-
-      // Add each spelling suggestion
-      for (const suggestion of params.dictionarySuggestions) {
-        menu.append(new MenuItem({
-          label: suggestion,
-          click: () => this.window!.webContents.replaceMisspelling(suggestion)
-        }));
-      }
-
-      // Allow users to add the misspelled word to the dictionary
-      if (params.misspelledWord) {
-        menu.append(new MenuItem({
-          type: 'separator'
-        }));
-        menu.append(
-          new MenuItem({
-            label: `Add '${params.misspelledWord}' To Dictionary`,
-            click: () => this.window!.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
-          })
-        );
-      }
-
-      menu.popup();
-    });
-    if (path !== 'main') {
-      let quitRequested = false;
-      const quitListener = () => {
-        quitRequested = true;
-      };
-      app.on('before-quit', quitListener);
-      this.appListeners.push(quitListener);
-      this.window.on('closed', () => {
-        // If the user opened Settings directly (or closed everything else), ensure they aren't left with no windows.
-        if (BrowserWindow.getAllWindows().length === 0 && !quitRequested) {
-          import('./main/main.window.js').then(({ MainWindow }) => {
-            new MainWindow();
-          });
+          window.focus();
+          windowFound = true;
         }
       });
-    }
-    this.window.on('closed', () => {
-      this.appListeners.forEach(listener => app.removeListener('before-quit', listener));
-      this.appListeners = [];
+      if (windowFound) return;
+
+      startSpan({ op: 'window.open', name: 'create' }, () => {
+        this.window = new BrowserWindow({
+          show: false,
+          backgroundColor: 'hsl(230, 100%, 10%)',
+          useContentSize: true,
+          webPreferences: {
+            preload: join(this.base, 'preload/bundle.js'),
+          },
+          ...options
+        });
+
+        const startURL = app.isPackaged ? `file://${join(this.base, 'renderer/browser', 'index.html')}#${path ?? ''}` : `http://localhost:4200/#/${path ?? ''}`;
+        const loadSpan = startInactiveSpan({ op: 'window.open', name: 'load' });
+        this.window.loadURL(startURL);
+        this.window.once('ready-to-show', () => {
+          if (this.window && !this.window.isVisible()) {
+            loadSpan.end();
+            this.window.show();
+            this.window.setSize(options?.width ?? options?.minWidth ?? options?.maxWidth ?? -1, options?.height ?? options?.minHeight ?? options?.maxHeight ?? -1);
+            this.window.center();
+          }
+        });
+
+        this.window.on('close', event => {
+          if (this.window && (this.window.documentEdited || this.window.title.endsWith('*'))) {
+            event.preventDefault();
+            this.window.webContents.send('window:onsave');
+          }
+        });
+        this.window.webContents.setWindowOpenHandler(({ url }) => {
+          shell.openExternal(url);
+          return { action: 'deny' };
+        });
+        const beforeQuitListener = () => {
+          if (this.window && !this.window.isDestroyed()) {
+            this.window.setClosable(true);
+            let attempts = 0;
+            this.window.on('close', () => attempts++);
+            this.window.on('closed', () => {
+              if (attempts === 2 /*If there are changes, it takes two attempts to close the window*/) {
+                app.quit();
+              }
+            });
+          }
+        };
+        app.on('before-quit', beforeQuitListener);
+        this.appListeners.push(beforeQuitListener);
+        this.window.webContents.on('context-menu', (_event, params) => {
+          const menu = new Menu();
+
+          // Add each spelling suggestion
+          for (const suggestion of params.dictionarySuggestions) {
+            menu.append(new MenuItem({
+              label: suggestion,
+              click: () => this.window!.webContents.replaceMisspelling(suggestion)
+            }));
+          }
+
+          // Allow users to add the misspelled word to the dictionary
+          if (params.misspelledWord) {
+            menu.append(new MenuItem({
+              type: 'separator'
+            }));
+            menu.append(
+              new MenuItem({
+                label: `Add '${params.misspelledWord}' To Dictionary`,
+                click: () => this.window!.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
+              })
+            );
+          }
+
+          menu.popup();
+        });
+        if (path !== 'main') {
+          let quitRequested = false;
+          const quitListener = () => {
+            quitRequested = true;
+          };
+          app.on('before-quit', quitListener);
+          this.appListeners.push(quitListener);
+          this.window.on('closed', () => {
+            // If the user opened Settings directly (or closed everything else), ensure they aren't left with no windows.
+            if (BrowserWindow.getAllWindows().length === 0 && !quitRequested) {
+              import('./main/main.window.js').then(({ MainWindow }) => {
+                new MainWindow();
+              });
+            }
+          });
+        }
+        this.window.on('closed', () => {
+          this.appListeners.forEach(listener => app.removeListener('before-quit', listener));
+          this.appListeners = [];
+        });
+      });
     });
   }
 }
