@@ -6,6 +6,7 @@ import { GitWindow } from '../../windows/git/git.window';
 import { GoatWindow } from '../../windows/goat/goat.window';
 import { ImageWindow } from '../../windows/image/image.window';
 import { ImageOptimizeWindow } from '../../windows/image/optimize/optimize.window';
+import { KiddingWindow } from '../../windows/kidding/kidding.window';
 import { LoginWindow } from '../../windows/login/login.window';
 import { MainWindow } from '../../windows/main/main.window';
 import { SettingsWindow } from '../../windows/settings/settings.window';
@@ -156,7 +157,29 @@ export class WindowService {
       } else {
         new CustomPageWindow(index);
       }
-    }
+    },
+    openKidding: async (_event, index) => {
+      const windows = BrowserWindow.getAllWindows();
+      const window = windows.find(window => window.webContents.getURL().endsWith(`kidding/${index}`));
+      const otherWindow = windows.find(window => window.webContents.getURL().includes('#/kidding'));
+      if (window) {
+        if (window.isMinimized()) {
+          window.restore();
+        }
+        window.focus();
+      } else if (otherWindow) {
+        let attempts = 0;
+        otherWindow.on('close', () => attempts++);
+        otherWindow.on('closed', () => {
+          if (attempts < 3 /*If there are changes, it takes two attempts to close the window*/) {
+            new KiddingWindow(index);
+          }
+        });
+        otherWindow.close();
+      } else {
+        new KiddingWindow(index);
+      }
+    },
   };
 
 }

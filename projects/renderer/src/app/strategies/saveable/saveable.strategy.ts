@@ -18,7 +18,7 @@ export abstract class SaveableStrategy {
         switch (action) {
           case 0:
             await this.saveChanges();
-            await windowService.close();
+            await windowService.close(true);
             break;
           case 1:
             await windowService.close(true);

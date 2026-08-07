@@ -1,6 +1,8 @@
 <div class="d-flex justify-content-end">
-  <h1 class="text-center flex-grow-1">Goats:</h1>
-  <div class="btn-group p-1">
+  <h1 class="flex-grow-1 text-center" [class.unsaved]="unsavedChanges()">
+    Goats:
+  </h1>
+  <div class="p-1 btn-group">
     <button
       type="button"
       class="btn btn-secondary color-scheme-quaternary"
@@ -13,7 +15,7 @@
     <button
       #dropdownButton
       type="button"
-      class="btn btn-secondary color-scheme-quaternary dropdown-toggle dropdown-toggle-split"
+      class="btn btn-secondary dropdown-toggle dropdown-toggle-split color-scheme-quaternary"
       data-bs-toggle="dropdown"
       data-bs-auto-close="outside"
       aria-expanded="false"
@@ -35,7 +37,7 @@
         >
           Sync Does
           <i
-            class="bi bi-arrow-repeat float-end"
+            class="float-end bi bi-arrow-repeat"
             [class.spin]="syncingDoes() !== false"
           ></i>
         </button>
@@ -49,7 +51,7 @@
         >
           Sync Bucks
           <i
-            class="bi bi-arrow-repeat float-end"
+            class="float-end bi bi-arrow-repeat"
             [class.spin]="syncingBucks() !== false"
           ></i>
         </button>
@@ -63,7 +65,7 @@
         >
           Sync References
           <i
-            class="bi bi-arrow-repeat float-end"
+            class="float-end bi bi-arrow-repeat"
             [class.spin]="syncingReferences() !== false"
           ></i>
         </button>
@@ -77,7 +79,7 @@
         >
           Sync For Sale
           <i
-            class="bi bi-arrow-repeat float-end"
+            class="float-end bi bi-arrow-repeat"
             [class.spin]="syncingForSale() !== false"
           ></i>
         </button>
@@ -91,7 +93,7 @@
         >
           Sync Related
           <i
-            class="bi bi-arrow-repeat float-end"
+            class="float-end bi bi-arrow-repeat"
             [class.spin]="syncingRelated() !== false"
           ></i>
         </button>
@@ -101,9 +103,9 @@
 </div>
 <div class="container">
   <div
-    class="row px-3 row-cols-2 row-cols-xxl-3 justify-content-around text-center"
+    class="row row-cols-2 row-cols-xxl-3 px-3 justify-content-around text-center"
   >
-    <div class="mb-3 col">
+    <div class="col mb-3">
       <h3>Does:</h3>
       <app-goat-list
         type="doe"
@@ -117,7 +119,7 @@
         (moveGoat)="moveGoat($event, 'Does')"
       ></app-goat-list>
     </div>
-    <div class="mb-3 col">
+    <div class="col mb-3">
       <h3>Bucks:</h3>
       <app-goat-list
         type="buck"
@@ -132,8 +134,8 @@
       ></app-goat-list>
     </div>
 
-    <div class="mb-3 col">
-      <h3>References:</h3>
+    <div class="col mb-3">
+      <h3 [class.unsaved]="'references' in dirtyFields()">References:</h3>
       <app-goat-list
         type="reference"
         [goats]="references"
@@ -146,8 +148,8 @@
         (moveGoat)="moveGoat($event, 'References')"
       ></app-goat-list>
     </div>
-    <div class="mb-3 col">
-      <h3>For Sale:</h3>
+    <div class="col mb-3">
+      <h3 [class.unsaved]="'forSale' in dirtyFields()">For Sale:</h3>
       <app-goat-list
         type="for-sale"
         [goats]="forSale"
@@ -160,7 +162,7 @@
         (moveGoat)="moveGoat($event, 'For Sale')"
       ></app-goat-list>
     </div>
-    <div class="mb-3 col">
+    <div class="col mb-3">
       <h3>Related:</h3>
       <p class="text-muted fst-italic">
         Goats used for the pedigrees of your does and bucks. You typically don't

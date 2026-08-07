@@ -40,7 +40,7 @@ export class PreviewWindow {
       backgroundColor: 'grey',
       useContentSize: true,
       minWidth: 401,
-      width: 992,
+      width: 1000,
       height: 600,
       minHeight: 500,
       closable: false,
@@ -114,7 +114,7 @@ export class PreviewWindow {
               span.end();
               if (this.window && !this.window.isVisible()) {
                 this.window.show();
-                this.window.setSize(992, 600);
+                this.window.setSize(1000, 600);
                 this.window.center();
               }
             });

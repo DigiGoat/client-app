@@ -24,7 +24,6 @@ module.exports = defineConfig([
       ],
       "@angular-eslint/no-input-rename": "off",
       "@angular-eslint/prefer-standalone": "off",
-      "@angular-eslint/prefer-on-push-component-change-detection": "off",
     },
   },
   {

@@ -20,6 +20,8 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
   private focusHandler?: () => void;
   private blurHandler?: () => void;
   @Input({ alias: 'goat-search' }) goats?: GoatSearchGoat[] | 'does' | 'bucks';
+  @Input({ alias: 'goat-search-output' }) output: (typeof this.goats extends (infer U)[] ? keyof U : keyof GoatSearchGoat) = 'normalizeId';
+  private nameCaption = this.output === 'name' ? 'normalizeId' : (this.output || 'normalizeId');
   async ngOnInit() {
     this.input.setAttribute('data-bs-toggle', 'dropdown');
     this.input.classList.add('dropdown-toggle');
@@ -54,7 +56,7 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
         const button = this.document.createElement('button');
         button.classList.add('dropdown-item', 'color-scheme-quaternary');
         button.addEventListener('mousedown', () => {
-          this.input.value = match.normalizeId ?? '';
+          this.input.value = match[this.output] ?? '';
           this.input.dispatchEvent(new Event('input'));
         });
 
@@ -64,7 +66,7 @@ export class GoatSearchDirective implements OnInit, OnDestroy {
 
         const id = this.document.createElement('div');
         id.classList.add('fw-light');
-        id.innerHTML = match.normalizeId?.replace(new RegExp(`(${this.input.value})`, 'ig'), '<span class="text-info">$1</span>') ?? '';
+        id.innerHTML = match[this.nameCaption]?.replace(new RegExp(`(${this.input.value})`, 'ig'), '<span class="text-info">$1</span>') ?? '';
 
         button.appendChild(name);
         button.appendChild(id);

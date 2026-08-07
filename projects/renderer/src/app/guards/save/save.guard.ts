@@ -12,6 +12,7 @@ export const SaveGuard: CanDeactivateFn<SaveableStrategy> = async (component) =>
     switch (action.response) {
       case 0:
         await component.saveChanges();
+        await windowService.setUnsavedChanges(false);
         return true;
       case 1:
         await windowService.setUnsavedChanges(false);

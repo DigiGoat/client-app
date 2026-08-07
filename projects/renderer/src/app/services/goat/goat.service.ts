@@ -2,7 +2,7 @@ import { moveItemInArray, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
 import type { LAClassifications } from 'adga';
 import { Observable } from 'rxjs';
-import type { Kidding, LactationRecord } from '../../../../../shared/services/goat/goat.service';
+import type { LactationRecord } from '../../../../../shared/services/goat/goat.service';
 import { ADGAService } from '../adga/adga.service';
 import { DiffService } from '../diff/diff.service';
 import { GitService } from '../git/git.service';
@@ -68,7 +68,7 @@ export class GoatService {
     moveItemInArray(does, event.previousIndex, event.currentIndex);
     const doe = does[event.currentIndex];
     await window.electron.goat.setDoes(does);
-    await this.gitService.commitDoes([`Moved ${doe['nickname'] || doe['name'] || doe['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+    await this.gitService.commitDoes(['Rearranged Does', `Moved ${doe['nickname'] || doe['name'] || doe['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   bucks = new Observable<(GOAT)[]>(observer => {
     window.electron.goat.getBucks().then(bucks =>
@@ -122,7 +122,7 @@ export class GoatService {
     moveItemInArray(bucks, event.previousIndex, event.currentIndex);
     const buck = bucks[event.currentIndex];
     await window.electron.goat.setBucks(bucks);
-    await this.gitService.commitBucks([`Moved ${buck['nickname'] || buck['name'] || buck['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+    await this.gitService.commitBucks(['Rearranged Bucks', `Moved ${buck['nickname'] || buck['name'] || buck['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   references = new Observable<(GOAT)[]>(observer => {
     window.electron.goat.getReferences().then(references =>
@@ -175,7 +175,7 @@ export class GoatService {
     moveItemInArray(references, event.previousIndex, event.currentIndex);
     const reference = references[event.currentIndex];
     await window.electron.goat.setReferences(references);
-    await this.gitService.commitReferences([`Moved ${reference['nickname'] || reference['name'] || reference['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+    await this.gitService.commitReferences(['Rearranged References', `Moved ${reference['nickname'] || reference['name'] || reference['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   forSale = new Observable<(GOAT)[]>(observer => {
     window.electron.goat.getForSale().then(forSale =>
@@ -225,7 +225,7 @@ export class GoatService {
     moveItemInArray(forSale, event.previousIndex, event.currentIndex);
     const goat = forSale[event.currentIndex];
     await window.electron.goat.setForSale(forSale);
-    await this.gitService.commitForSale([`Moved ${goat['nickname'] || goat['name'] || goat['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+    await this.gitService.commitForSale(['Rearranged For Sale', `Moved ${goat['nickname'] || goat['name'] || goat['normalizeId']} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
   }
   related = new Observable<(GOAT)[]>(observer => {
     window.electron.goat.getRelated().then(related =>
@@ -258,16 +258,50 @@ export class GoatService {
     await window.electron.goat.setRelated(related);
     await this.gitService.commitRelated([`Updated ${goat.nickname || goat.name || goat.normalizeId}`, ...diffMessage]);
   }
-  getKiddingSchedule = window.electron.goat.getKiddingSchedule;
+  async getKiddingSchedule() {
+    return (await window.electron.goat.getKiddingSchedule()).map(kidding => this.parseKidding(kidding));
+  }
   setKiddingSchedule = window.electron.goat.setKiddingSchedule;
   set onKiddingScheduleChange(callback: (kiddingSchedule: Partial<GOAT>[]) => void) {
     window.electron.goat.onKiddingScheduleChange(callback);
   }
-  kiddingSchedule = new Observable<Kidding[]>(observer => {
-    window.electron.goat.getKiddingSchedule().then(kiddingSchedule => observer.next(kiddingSchedule));
-    window.electron.goat.onKiddingScheduleChange(kiddingSchedule => observer.next(kiddingSchedule));
+  kiddingSchedule = new Observable<KIDDING[]>(observer => {
+    this.getKiddingSchedule().then(kiddingSchedule => observer.next(kiddingSchedule));
+    window.electron.goat.onKiddingScheduleChange(kiddingSchedule => observer.next(kiddingSchedule.map(kidding => this.parseKidding(kidding))));
   });
+  rearrangeKiddingSchedule = async (event: CdkDragDrop<KIDDING[]>) => {
+    const kiddingSchedule = await this.getKiddingSchedule();
+    moveItemInArray(kiddingSchedule, event.previousIndex, event.currentIndex);
+    await window.electron.goat.setKiddingSchedule(kiddingSchedule);
+    const kidding = kiddingSchedule[event.currentIndex];
+    await this.gitService.commitKiddingSchedule(['Rearranged Kidding Schedule', `Moved ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'} ${event.previousIndex > event.currentIndex ? 'Up' : 'Down'} ${Math.abs(event.previousIndex - event.currentIndex)} Position${Math.abs(event.previousIndex - event.currentIndex) === 1 ? '' : 's'}`]);
+  };
+  addKidding = async (kidding: Partial<KIDDING>) => {
+    const kiddingSchedule = await this.getKiddingSchedule();
+    kiddingSchedule.push(this.parseKidding(kidding));
+    await window.electron.goat.setKiddingSchedule(kiddingSchedule);
+    await this.gitService.commitKiddingSchedule([`Added ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'}`, ...this.diffService.commitMsg({}, kidding).map(msg => `${this.diffService.spaces}${msg}`)]);
+  };
+  deleteKidding = async (index: number) => {
+    const kiddingSchedule = await this.getKiddingSchedule();
+    const kidding = kiddingSchedule.splice(index, 1)[0];
+    await window.electron.goat.setKiddingSchedule(kiddingSchedule);
+    await this.gitService.commitKiddingSchedule([`Deleted ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'}`]);
+  };
+  updateKidding = async (index: number, kidding: Partial<KIDDING>) => {
+    const kiddingSchedule = await this.getKiddingSchedule();
+    const diffMessage = this.diffService.commitMsg(kiddingSchedule[index], kidding);
+    kiddingSchedule[index] = this.parseKidding(kidding);
+    await window.electron.goat.setKiddingSchedule(kiddingSchedule);
+    await this.gitService.commitKiddingSchedule([`Updated ${kidding.dam || '(Unknown)'} x ${kidding.sire || '(Unknown)'}`, ...diffMessage]);
+  };
 
+  parseKidding(kidding: Record<string, unknown>) {
+    return {
+      ...KIDDING,
+      ...kidding
+    } as KIDDING;
+  }
   parseGoat(goat: Record<string, unknown>): GOAT {
     const animalTattoos = normalizeAnimalTattoos((goat as { animalTattoo?: unknown; }).animalTattoo);
 
@@ -338,3 +372,14 @@ export const GOAT = {
   lactationRecords: [] as LactationRecord[],
   tattoos: [] as { location: string, description: string; }[],
 };
+
+export const KIDDING = {
+  dam: '',
+  sire: '',
+  exposed: '',
+  due: '',
+  kidded: '',
+  description: '',
+
+};
+export type KIDDING = typeof KIDDING;

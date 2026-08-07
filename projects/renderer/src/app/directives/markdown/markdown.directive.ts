@@ -78,7 +78,8 @@ export class MarkdownDirective implements OnInit, OnDestroy {
     this.iconEl.addEventListener('click', this.iconClickHandler);
     this.el.nativeElement.insertAdjacentElement('beforebegin', this.iconEl);
     this.iconTooltip = bootstrap.Tooltip.getOrCreateInstance(this.iconEl);
-    setTimeout(() => this.showMarkdown(), 100);
+
+    requestIdleCallback(() => this.showMarkdown(), { timeout: 1000 });
   }
   oldValue = '';
   async showMarkdown() {
@@ -114,6 +115,8 @@ export class MarkdownDirective implements OnInit, OnDestroy {
         this.iconEl.classList.add('text-danger');
         this.hideMarkdown();
       }
+    } else {
+      setTimeout(() => requestIdleCallback(() => this.showMarkdown(), { timeout: 500 }), 500);
     }
   }
   async hideMarkdown() {

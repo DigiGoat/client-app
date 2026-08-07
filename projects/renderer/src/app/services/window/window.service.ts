@@ -23,4 +23,5 @@ export class WindowService {
   refreshMain = window.electron.window.refreshMain;
   openImageOptimizer = window.electron.window.openImageOptimizer;
   openCustomPage = window.electron.window.openCustomPage;
+  openKidding = window.electron.window.openKidding;
 }
