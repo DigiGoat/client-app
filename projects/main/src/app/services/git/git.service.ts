@@ -33,7 +33,7 @@ export class GitService {
         console.warn('Git will change line endings on next commit');
       } else {
         captureException(err, { level: 'error', extra: { message, files } });
-        await this.git.raw('restore', (files instanceof Array ? files : [files]));
+        await this.git.raw('restore', ...(files instanceof Array ? files : [files]));
         return Promise.reject(err);
       }
     }
