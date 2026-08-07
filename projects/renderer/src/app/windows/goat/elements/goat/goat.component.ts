@@ -5,6 +5,7 @@ import { ADGAService } from '../../../../services/adga/adga.service';
 import { DiffService } from '../../../../services/diff/diff.service';
 import { GOAT } from '../../../../services/goat/goat.service';
 import { SaveableStrategy } from '../../../../strategies/saveable/saveable.strategy';
+import { captureException } from '@sentry/angular';
 
 type Goat = Pick<GOAT, 'name' | 'normalizeId' | 'nickname' | 'price' | 'id' | 'sex' | 'dateOfBirth' | 'dateOfDeath' | 'damId' | 'sireId' | 'usdaId' | 'usdaKey' | 'linearAppraisals' | 'awards' | 'lactationRecords' | 'owner' | 'pet' | 'tattoos' | 'colorAndMarking' | 'description'>;
 @Component({
@@ -44,7 +45,14 @@ export class GoatComponent extends SaveableStrategy implements OnInit {
   override unsavedChanges = computed(() => Object.keys(this.dirtyFields()).length > 0);
   override saveChanges = async () => {
     this.loading.set(true);
-    await this.setter(this.index, this.goatForm().value());
+    try {
+      await this.setter(this.index, this.goatForm().value());
+    } catch (error) {
+      captureException(error);
+      alert('Error saving changes. Please try again.');
+    } finally {
+      this.loading.set(false);
+    }
   };
 
   ngOnInit() {

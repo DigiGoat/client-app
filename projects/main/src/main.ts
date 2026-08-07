@@ -1,5 +1,5 @@
 import { additionalContextIntegration, electronBreadcrumbsIntegration, httpIntegration, init, mainProcessSessionIntegration } from '@sentry/electron/main';
-import { app, dialog, session } from 'electron';
+import { app, BrowserWindow, dialog, session } from 'electron';
 import { AppModule } from './app/app.module';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -30,7 +30,14 @@ init({
     if (app.isPackaged) {
       return event;
     }
-    dialog.showErrorBox('Sentry Error', JSON.stringify(event.exception, null, 2));
+    if (app.isReady()) {
+      const window = new BrowserWindow({
+
+      });
+      window.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(`<html><body><h1 style="color: red;">Sentry Error</h1><pre style="white-space: pre-wrap; word-wrap: break-word;">${JSON.stringify(event, null, 2)}</pre></body></html>`)}`);
+    } else {
+      dialog.showErrorBox('Sentry Error', JSON.stringify(event.exception, null, 2));
+    }
     return null;
   }
 });

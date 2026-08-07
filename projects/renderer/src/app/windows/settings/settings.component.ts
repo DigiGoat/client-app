@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from '@angular/core';
 import { form, readonly } from '@angular/forms/signals';
+import { captureException } from '@sentry/angular';
 import { ConfigService } from '../../services/config/config.service';
 import { DiffService } from '../../services/diff/diff.service';
 import { GitService } from '../../services/git/git.service';
@@ -71,7 +72,14 @@ export class SettingsComponent extends SaveableStrategy implements OnInit {
 
   override saveChanges = async () => {
     this.loading.set(true);
-    await this.settingsService.saveSettings(this.savedSettings(), this.settingsForm().value());
+    try {
+      await this.settingsService.saveSettings(this.savedSettings(), this.settingsForm().value());
+    } catch (error) {
+      captureException(error);
+      alert('Error saving settings');
+    } finally {
+      this.loading.set(false);
+    }
   };
 }
 

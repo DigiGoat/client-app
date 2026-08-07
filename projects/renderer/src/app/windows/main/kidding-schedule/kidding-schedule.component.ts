@@ -35,6 +35,7 @@ export class KiddingScheduleComponent extends SaveableStrategy implements OnInit
       this.configLoading.set(true);
       this.savedConfig.set(config);
       this.config.set(config);
+      this.configLoading.set(false);
     };
     this.goatService.kiddingSchedule.subscribe(kiddingSchedule => {
       this.kiddingScheduleLoading.set(true);
