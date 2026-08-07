@@ -1,3 +1,8 @@
-@if(value !== undefined) { @for (char of value?.split(''); track char; let i = $index) { <span tabindex="0" (click)="invertCase(i)"
-  (keydown)="invertCase(i)">{{ char || '&nbsp;' }}</span> } } @else{ @for (char of signalValue()?.split('') || []; track $index; let i =
-$index) { <span tabindex="0" (click)="invertSignalCase(i)" (keydown)="invertSignalCase(i)">{{ char || '&nbsp;' }}</span> } }
+@for (char of signalValue()?.split("") || []; track $index; let i = $index) {
+  <span
+    tabindex="0"
+    (click)="invertSignalCase(i)"
+    (keydown)="invertSignalCase(i)"
+    >{{ char || "&nbsp;" }}</span
+  >
+}
