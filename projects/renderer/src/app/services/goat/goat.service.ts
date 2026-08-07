@@ -64,7 +64,7 @@ export class GoatService {
     await this.gitService.commitDoes([`Added ${doe['nickname'] || doe['name'] || doe['normalizeId']}`, ...this.diffService.commitMsg({}, doe).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   async rearrangeDoes(event: CdkDragDrop<Record<string, unknown>[]>) {
-    const does = await this.getDoes();
+    const does = await window.electron.goat.getDoes();
     moveItemInArray(does, event.previousIndex, event.currentIndex);
     const doe = does[event.currentIndex];
     await window.electron.goat.setDoes(does);
@@ -104,7 +104,7 @@ export class GoatService {
     await window.electron.goat.setBucks(bucks);
   }
   async deleteBuck(index: number) {
-    const bucks = await this.getBucks();
+    const bucks = await window.electron.goat.getBucks();
     const buck = bucks.splice(index, 1)[0];
     await window.electron.goat.setBucks(bucks);
     await this.gitService.commitBucks([`Deleted ${buck['nickname'] || buck['name'] || buck['normalizeId']}`]);
@@ -119,7 +119,7 @@ export class GoatService {
     await this.gitService.commitBucks([`Added ${buck['nickname'] || buck['name'] || buck['normalizeId']}`, ...this.diffService.commitMsg({}, buck).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   async rearrangeBucks(event: CdkDragDrop<Record<string, unknown>[]>) {
-    const bucks = await this.getBucks();
+    const bucks = await window.electron.goat.getBucks();
     moveItemInArray(bucks, event.previousIndex, event.currentIndex);
     const buck = bucks[event.currentIndex];
     await window.electron.goat.setBucks(bucks);
@@ -158,7 +158,7 @@ export class GoatService {
     await window.electron.goat.setReferences(references);
   }
   async deleteReference(index: number) {
-    const references = await this.getReferences();
+    const references = await window.electron.goat.getReferences();
     const reference = references.splice(index, 1)[0];
     await window.electron.goat.setReferences(references);
     await this.gitService.commitReferences([`Deleted ${reference['nickname'] || reference['name'] || reference['normalizeId']}`]);
@@ -173,7 +173,7 @@ export class GoatService {
     await this.gitService.commitReferences([`Added ${reference['nickname'] || reference['name'] || reference['normalizeId']}`, ...this.diffService.commitMsg({}, reference).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   async rearrangeReferences(event: CdkDragDrop<Record<string, unknown>[]>) {
-    const references = await this.getReferences();
+    const references = await window.electron.goat.getReferences();
     moveItemInArray(references, event.previousIndex, event.currentIndex);
     const reference = references[event.currentIndex];
     await window.electron.goat.setReferences(references);
@@ -224,7 +224,7 @@ export class GoatService {
     await this.gitService.commitForSale([`Added ${goat['nickname'] || goat['name'] || goat['normalizeId']}`, ...this.diffService.commitMsg({}, goat).map(msg => `${this.diffService.spaces}${msg}`)]);
   }
   async rearrangeForSale(event: CdkDragDrop<Record<string, unknown>[]>) {
-    const forSale = await this.getForSale();
+    const forSale = await window.electron.goat.getForSale();
     moveItemInArray(forSale, event.previousIndex, event.currentIndex);
     const goat = forSale[event.currentIndex];
     await window.electron.goat.setForSale(forSale);
