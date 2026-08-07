@@ -1,3 +1,8 @@
+## 7.3.3-beta.1
+
+- Added more spans to track app performance
+- Fixed some bugs when trying to pull changes, especially during a publish
+
 ## 7.3.2-beta.1
 
 - Switching to Angular Signals for change detection and state management!
