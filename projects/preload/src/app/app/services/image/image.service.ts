@@ -1,4 +1,4 @@
-import { ipcRenderer, webUtils } from 'electron';
+import { ipcRenderer } from 'electron';
 import { ImageService as ImageServiceType } from '../../../../../../shared/services/image/image.service';
 
 export const ImageService: ImageServiceType = {
@@ -8,7 +8,7 @@ export const ImageService: ImageServiceType = {
   uploadImages: (...images) => ipcRenderer.invoke('image:uploadImages', ...images),
   mvImage: (oldDir, newDir, image) => ipcRenderer.invoke('image:mvImage', oldDir, newDir, image),
   deleteImages: (directory, images) => ipcRenderer.invoke('image:deleteImages', directory, images),
-  addImages: (directory, ...images) => ipcRenderer.invoke('image:addImages', directory, ...images.map(image => image instanceof File ? webUtils.getPathForFile(image) : image)),
+  addImages: async (directory, ...images) => ipcRenderer.invoke('image:addImages', directory, ...await Promise.all(images.map(image => image instanceof File ? image.arrayBuffer() : image))),
   getUploadDir: () => ipcRenderer.invoke('image:getUploadDir'),
   optimizeImages: (imageMap) => ipcRenderer.invoke('image:optimizeImages', imageMap),
   onOptimizeProgress: (callback) => ipcRenderer.on('image:optimizeProgress', (_event, progress) => callback(progress)),
